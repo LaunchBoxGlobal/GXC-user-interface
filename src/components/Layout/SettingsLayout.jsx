@@ -4,6 +4,7 @@ import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
+import Cookies from "js-cookie";
 
 const settingPages = [
   {
@@ -86,6 +87,30 @@ const SettingsLayout = ({ page }) => {
     fetchUserProfile();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+
+      if (res?.data?.success) {
+        console.log("Logout successful");
+      }
+    } catch (error) {
+      console.log("Logout error >>>", error?.response?.data || error.message);
+    } finally {
+      Cookies.remove("user");
+      Cookies.remove("token");
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="w-full rounded-[10px] relative">
       <div className="w-full bg-white p-5 flex items-center justify-between flex-wrap rounded-[15px] mt-5 gap-5 custom-shadow">
@@ -148,6 +173,14 @@ const SettingsLayout = ({ page }) => {
                 </li>
               );
             })}
+
+            <button
+              type="button"
+              onClick={() => handleLogout()}
+              className={`text-sm flex items-center gap-x-2.5 px-4 font-medium w-full h-[49px] outline-none hover:bg-gray-100 transition-all duration-300`}
+            >
+              Logout
+            </button>
           </ul>
         </div>
         <div className="w-[72%] pt-5 pr-5 pb-5">{page}</div>
