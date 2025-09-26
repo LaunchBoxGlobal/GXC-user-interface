@@ -70,7 +70,7 @@ const CommunitiesPage = () => {
         </div>
       ) : (
         !showPopup && (
-          <div>
+          <div className="w-full padding-x min-h-screen">
             <h1 className="text-2xl font-bold">Community: {communityTitle}</h1>
             <p>General community details.</p>
           </div>
