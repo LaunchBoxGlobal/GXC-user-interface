@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import Cookies from "js-cookie";
-import { BASE_URL } from "../../../../community-owner-interface/src/data/baseUrl";
+import { BASE_URL } from "../../data/baseUrl";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
