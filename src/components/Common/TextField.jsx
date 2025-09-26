@@ -1,0 +1,30 @@
+import React from "react";
+
+const TextField = ({
+  name,
+  value,
+  onChange,
+  onBlur,
+  type,
+  placeholder,
+  error,
+  touched,
+}) => {
+  return (
+    <div className="w-full flex flex-col gap-1">
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        className={`w-full border h-[49px] px-[15px] py-[14px] rounded-[8px] outline-none
+          ${error && touched ? "border-red-500" : "border-[#D9D9D9]"}`}
+      />
+      {error && touched && <p className="text-red-500 text-xs">{error}</p>}
+    </div>
+  );
+};
+
+export default TextField;

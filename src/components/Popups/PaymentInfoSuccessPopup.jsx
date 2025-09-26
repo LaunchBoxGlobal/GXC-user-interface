@@ -1,0 +1,32 @@
+const PaymentInfoSuccessPopup = ({ showPopup, handleTogglePopup }) => {
+  return (
+    showPopup && (
+      <main className="w-full h-screen fixed inset-0 z-50 flex items-center justify-center px-4 bg-[rgba(0,0,0,0.4)]">
+        <div className="w-full max-w-[471px] min-h-[401px] bg-white flex flex-col items-center gap-4 rounded-[18px] p-7 lg:p-10">
+          <img
+            src="/black-check-icon.png"
+            alt="black-check-icon"
+            className="max-w-[107px]"
+          />
+          <h2 className="text-[24px] font-semibold leading-[1.3] text-center">
+            Your Credit Card Has Been successfully added
+          </h2>
+          <p className="text-[var(--secondary-color)] text-center leading-[1.3]">
+            Your credit card has been successfully added to your account. You
+            can now use it for seamless transactions and enjoy our services
+            without interruptions.
+          </p>
+          <button
+            type={"button"}
+            onClick={() => handleTogglePopup()}
+            className="w-full bg-[var(--button-bg)] text-white h-[49px] rounded-[8px] text-center font-medium"
+          >
+            Continue
+          </button>
+        </div>
+      </main>
+    )
+  );
+};
+
+export default PaymentInfoSuccessPopup;

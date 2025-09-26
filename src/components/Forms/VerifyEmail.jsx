@@ -1,0 +1,112 @@
+import TextField from "../Common/TextField";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Button from "../Common/Button";
+import { Link, useNavigate } from "react-router-dom";
+import { RiArrowLeftSLine } from "react-icons/ri";
+import { useEffect } from "react";
+import axios from "axios";
+import { BASE_URL } from "../../data/baseUrl";
+const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
+import Cookies from "js-cookie";
+
+const VerifyEmail = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = `Verify Email - ${PAGETITLE}`;
+  }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email address").required("Required"),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      resetForm();
+
+      try {
+        const res = await axios.post(
+          `${BASE_URL}/auth/forgot-password`,
+          values,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        Cookies.set("email", values.email);
+
+        console.log("verify email response >>> ", res?.data);
+
+        if (res?.data?.success) {
+          resetForm();
+          navigate("/verify-otp", {
+            state: {
+              page: "/forgot-password",
+              email: values.email,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("verify email error:", error);
+        alert(error.response?.data?.message);
+      }
+    },
+  });
+
+  return (
+    <form
+      onSubmit={formik.handleSubmit}
+      className="w-full max-w-[350px] flex flex-col items-start gap-4"
+    >
+      <div className="w-full text-center">
+        <img
+          src="/image-placeholder.png"
+          alt="image-placeholder"
+          className="max-w-[146px] mx-auto"
+        />
+        <h2 className="font-semibold text-[32px] leading-none mt-8 mb-3">
+          Forgot Password
+        </h2>
+        <p className="text-[var(--secondary-color)]">
+          Enter your registered email address below
+        </p>
+      </div>
+
+      <div className="w-full flex flex-col items-start gap-4 mt-4">
+        <TextField
+          type="text"
+          name="email"
+          placeholder="Email Address"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.errors.email}
+          touched={formik.touched.email}
+        />
+
+        <div className="pt-2 w-full">
+          <Button type={"submit"} title={`Send`} />
+        </div>
+      </div>
+
+      <div className="w-full mt-2 flex flex-col items-center gap-4">
+        <Link
+          to={`/login`}
+          className="text-sm font-medium flex items-center gap-1"
+        >
+          <div className="w-[18px] h-[18px] bg-black rounded-full flex items-center justify-center">
+            <RiArrowLeftSLine className="text-white text-base" />
+          </div>
+          Back
+        </Link>
+      </div>
+    </form>
+  );
+};
+
+export default VerifyEmail;
