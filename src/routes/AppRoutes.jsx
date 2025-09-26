@@ -235,7 +235,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/communities/:communityTitle"
+        path="/community/:communityTitle"
         element={
           <PrivateRoute
             redirectTo={"/login"}
