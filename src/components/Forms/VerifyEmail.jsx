@@ -78,16 +78,22 @@ const VerifyEmail = () => {
       </div>
 
       <div className="w-full flex flex-col items-start gap-4 mt-4">
-        <TextField
-          type="text"
-          name="email"
-          placeholder="Email Address"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.email}
-          touched={formik.touched.email}
-        />
+        <div className="w-full space-y-1">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email Address
+          </label>
+
+          <TextField
+            type="text"
+            name="email"
+            placeholder="Email Address"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.email}
+            touched={formik.touched.email}
+          />
+        </div>
 
         <div className="pt-2 w-full">
           <Button type={"submit"} title={`Send`} />
@@ -97,9 +103,9 @@ const VerifyEmail = () => {
       <div className="w-full mt-2 flex flex-col items-center gap-4">
         <Link
           to={`/login`}
-          className="text-sm font-medium flex items-center gap-1"
+          className="text-sm font-medium flex items-center gap-1 text-[var(--button-bg)]"
         >
-          <div className="w-[18px] h-[18px] bg-black rounded-full flex items-center justify-center">
+          <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
             <RiArrowLeftSLine className="text-white text-base" />
           </div>
           Back

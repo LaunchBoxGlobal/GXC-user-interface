@@ -78,24 +78,34 @@ const ChangePassword = () => {
         </div>
 
         <div className="w-full space-y-3 mt-4">
-          <PasswordField
-            name={`password`}
-            placeholder={`New Password`}
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.password}
-            touched={formik.touched.password}
-          />
-          <PasswordField
-            name={`confirmPassword`}
-            placeholder={`Confirm Password`}
-            value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.confirmPassword}
-            touched={formik.touched.confirmPassword}
-          />
+          <div className="w-full space-y-1">
+            <label htmlFor="password" className="text-sm font-medium">
+              New Password
+            </label>
+            <PasswordField
+              name={`password`}
+              placeholder={`New Password`}
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.password}
+              touched={formik.touched.password}
+            />
+          </div>
+          <div className="w-full space-y-1">
+            <label htmlFor="confirmPassword" className="text-sm font-medium">
+              Confirm Password
+            </label>
+            <PasswordField
+              name={`confirmPassword`}
+              placeholder={`Confirm Password`}
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.confirmPassword}
+              touched={formik.touched.confirmPassword}
+            />
+          </div>
 
           <div className="pt-2">
             <Button type={"submit"} title={`Save`} />

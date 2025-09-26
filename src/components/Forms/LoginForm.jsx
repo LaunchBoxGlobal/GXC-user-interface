@@ -61,7 +61,12 @@ const LoginForm = () => {
       onSubmit={formik.handleSubmit}
       className="w-full max-w-[350px] flex flex-col items-start gap-4"
     >
-      <h1 className="text-center mx-auto text-[75px] font-bold">Logo</h1>
+      <img
+        src="/GiveXchangenewlogo.png"
+        alt=""
+        className="mx-auto w-[167px] lg:w-[267px]"
+      />
+
       <div className="w-full text-center space-y-3">
         <h2 className="font-semibold text-[32px] leading-none">Welcome Back</h2>
         <p className="text-[var(--secondary-color)]">
@@ -70,26 +75,36 @@ const LoginForm = () => {
       </div>
 
       <div className="w-full flex flex-col items-start gap-4 mt-3">
-        <TextField
-          type="text"
-          name="email"
-          placeholder="Email Address"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.email}
-          touched={formik.touched.email}
-        />
+        <div className="w-full space-y-1">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email Address
+          </label>
+          <TextField
+            type="text"
+            name="email"
+            placeholder="Email Address"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.email}
+            touched={formik.touched.email}
+          />
+        </div>
 
-        <PasswordField
-          name={`password`}
-          placeholder={`Password`}
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.password}
-          touched={formik.touched.password}
-        />
+        <div className="w-full space-y-1">
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <PasswordField
+            name={`password`}
+            placeholder={`Password`}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.password}
+            touched={formik.touched.password}
+          />
+        </div>
 
         <div className="w-full text-end">
           <Link to={`/forgot-password`} className="text-xs font-medium">

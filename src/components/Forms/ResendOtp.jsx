@@ -32,7 +32,7 @@ const ResendOtp = ({ email }) => {
   return (
     <button
       type="button"
-      className="font-medium"
+      className="font-medium text-[var(--button-bg)]"
       onClick={() => handleResendOtp()}
     >
       Resend

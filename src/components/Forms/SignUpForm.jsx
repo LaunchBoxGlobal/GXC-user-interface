@@ -99,7 +99,7 @@ const SignUpForm = () => {
         </p>
       </div>
 
-      <div className="w-full h-[100px] flex flex-col items-center justify-center gap-2 my-3">
+      {/* <div className="w-full h-[100px] flex flex-col items-center justify-center gap-2 my-3">
         <AuthImageUpload
           name="profileImage"
           setFieldValue={formik.setFieldValue}
@@ -107,62 +107,86 @@ const SignUpForm = () => {
             formik.errors.profileImage ? formik.touched.profileImage : null
           }
         />
-        {/* {formik.errors.profileImage && formik.touched.profileImage && (
-          <p className="text-red-500 text-sm">{formik.errors.profileImage}</p>
-        )} */}
-      </div>
+      </div> */}
 
       <div className="w-full space-y-3">
-        <TextField
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.name}
-          touched={formik.touched.name}
-        />
-        <TextField
-          type="text"
-          name="email"
-          placeholder="Email Address"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.email}
-          touched={formik.touched.email}
-        />
+        <div className="w-full space-y-1">
+          <label htmlFor="name" className="text-sm font-medium">
+            Full Name
+          </label>
+          <TextField
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.name}
+            touched={formik.touched.name}
+          />
+        </div>
 
-        <TextField
-          type="number"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formik.values.phoneNumber}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.phoneNumber}
-          touched={formik.touched.phoneNumber}
-        />
+        <div className="w-full space-y-1">
+          <label htmlFor="email" className="text-sm font-medium">
+            Email Address
+          </label>
 
-        <PasswordField
-          name="password"
-          placeholder="Password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.password}
-          touched={formik.touched.password}
-        />
-        <PasswordField
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formik.values.confirmPassword}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.errors.confirmPassword}
-          touched={formik.touched.confirmPassword}
-        />
+          <TextField
+            type="text"
+            name="email"
+            placeholder="Email Address"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.email}
+            touched={formik.touched.email}
+          />
+        </div>
+
+        <div className="w-full space-y-1">
+          <label htmlFor="phoneNumber" className="text-sm font-medium">
+            Phone Number
+          </label>
+          <TextField
+            type="number"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formik.values.phoneNumber}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.phoneNumber}
+            touched={formik.touched.phoneNumber}
+          />
+        </div>
+        <div className="w-full space-y-1">
+          <label htmlFor="password" className="text-sm font-medium">
+            Password
+          </label>
+          <PasswordField
+            name="password"
+            placeholder="Password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.password}
+            touched={formik.touched.password}
+          />
+        </div>
+
+        <div className="w-full space-y-1">
+          <label htmlFor="confirmPassword" className="text-sm font-medium">
+            Confirm Password
+          </label>
+          <PasswordField
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.confirmPassword}
+            touched={formik.touched.confirmPassword}
+          />
+        </div>
 
         <div className="pt-2">
           <Button type="submit" title="Sign Up" />
@@ -170,9 +194,9 @@ const SignUpForm = () => {
       </div>
 
       <div className="w-full flex items-center justify-between gap-6 mt-4">
-        <div className="w-full border border-gray-300" />
-        <p className="text-gray-400 font-medium">OR</p>
-        <div className="w-full border border-gray-300" />
+        <div className="w-full border border-gray-400" />
+        <p className="text-gray-500 font-medium">OR</p>
+        <div className="w-full border border-gray-400" />
       </div>
 
       <div className="w-full mt-2 flex flex-col items-center gap-4">
@@ -180,15 +204,15 @@ const SignUpForm = () => {
           <p className="text-[var(--secondary-color)]">
             Already have an account?{" "}
           </p>
-          <Link to={`/login`} className="font-medium">
+          <Link to={`/login`} className="font-medium text-[var(--button-bg)]">
             Sign In
           </Link>
         </div>
         <Link
           to={`/login`}
-          className="text-sm font-medium flex items-center gap-1"
+          className="text-sm font-medium flex items-center gap-1 text-[var(--button-bg)]"
         >
-          <div className="w-[18px] h-[18px] bg-black rounded-full flex items-center justify-center">
+          <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
             <RiArrowLeftSLine className="text-white text-base" />
           </div>
           Back
