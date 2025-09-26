@@ -1,8 +1,21 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 
 const EmailVerificationStatusPage = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const redirect = searchParams?.get("redirect");
+
+  const handleNavigate = () => {
+    if (redirect) {
+      navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
+    } else {
+      navigate("/add-payment-info");
+    }
+  };
+
   useEffect(() => {
     document.title = `Account verified - ${PAGETITLE}`;
   }, []);
@@ -18,12 +31,14 @@ const EmailVerificationStatusPage = () => {
         <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
           Email Address <br /> Verified Successfully
         </h1>
-        <Link
-          to={`/add-payment-info`}
-          className="bg-[var(--button-bg)] text-white rounded-[8px] font-medium text-center h-[49px] block py-[14px]"
+        <button
+          // to={`/add-payment-info`}
+          type="button"
+          onClick={() => handleNavigate()}
+          className="bg-[var(--button-bg)] text-white rounded-[8px] font-medium text-center h-[49px] block py-[14px] w-full"
         >
           Continue
-        </Link>
+        </button>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import Button from "../Common/Button";
 import PasswordField from "../Common/PasswordField";
 import TextField from "../Common/TextField";
 import AuthImageUpload from "../Common/AuthImageUpload";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { useEffect } from "react";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
@@ -14,6 +14,7 @@ import { BASE_URL } from "../../data/baseUrl";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     document.title = `Sign up - ${PAGETITLE}`;
@@ -64,14 +65,15 @@ const SignUpForm = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-
+        const redirect = searchParams?.get("redirect");
         if (res?.data?.success) {
+          Cookies.set("userEmail", values.email);
           Cookies.set("isVerified", false);
           Cookies.set("token", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           resetForm();
 
-          navigate("/verify-otp", {
+          navigate(`/verify-otp${redirect ? `?redirect=${redirect}` : ""}`, {
             state: {
               page: "/signup",
               email: values.email,
@@ -80,7 +82,7 @@ const SignUpForm = () => {
         }
       } catch (error) {
         console.error("Sign up error:", error.response?.data);
-        alert(error.response?.data?.message);
+        alert(error.response?.data?.message || error.message);
       }
     },
   });

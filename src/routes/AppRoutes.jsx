@@ -16,6 +16,7 @@ import Layout from "../components/Layout/Layout";
 import ProfilePage from "../pages/Profile/ProfilePage";
 import EditProfile from "../pages/Profile/EditProfile";
 import ChangePasswordPage from "../pages/Profile/ChangePasswordPage";
+import CommunitiesPage from "../pages/Communities/CommunitiesPage";
 
 // const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
@@ -30,10 +31,6 @@ const isUnverified = () => {
   return !!token && !isVerified;
 };
 
-// const PrivateRoute = ({ element, redirectTo }) => {
-//   return isAuthenticated() ? element : <Navigate to={redirectTo} />;
-// };
-
 export const PrivateRoute = ({ element, redirectTo }) => {
   const location = useLocation();
 
@@ -41,19 +38,21 @@ export const PrivateRoute = ({ element, redirectTo }) => {
     return element;
   }
 
-  if (isUnverified()) {
-    // user has token but not verified → send to OTP
-    return <Navigate to="/verify-otp" replace />;
-  }
+  // if (isUnverified()) {
+  //   return <Navigate to="/verify-otp" replace />;
+  // }
 
-  // no token at all → send to login (or passed redirectTo)
+  const redirectUrl = location.pathname + location.search + location.hash;
+  localStorage.setItem("invitation-link", redirectUrl);
+
   return (
     <Navigate
-      to={`${redirectTo}?redirect=${encodeURIComponent(location.pathname)}`}
+      to={`${redirectTo}?redirect=${encodeURIComponent(redirectUrl)}`}
       replace
     />
   );
 };
+
 const PublicRoute = ({ element, redirectTo }) => {
   return isAuthenticated() ? <Navigate to={redirectTo} /> : element;
 };
@@ -118,13 +117,13 @@ const AppRoutes = () => {
       <Route
         path="/verify-otp"
         element={
-          isUnverified() ? (
-            <AuthLayout>
-              <VerifyOtp />
-            </AuthLayout>
-          ) : (
-            <Navigate to="/" />
-          )
+          // isUnverified() ? (
+          <AuthLayout>
+            <VerifyOtp />
+          </AuthLayout>
+          // ) : (
+          // <Navigate to="/" />
+          // )
         }
       />
 
@@ -229,6 +228,20 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <ChangePasswordPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/communities/:communityTitle"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <CommunitiesPage />
               </Layout>
             }
           />

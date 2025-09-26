@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "../Common/Button";
 import PasswordField from "../Common/PasswordField";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
@@ -12,6 +12,9 @@ import Cookies from "js-cookie";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const redirect = searchParams?.get("redirect");
 
   useEffect(() => {
     document.title = `Login - ${PAGETITLE}`;
@@ -36,17 +39,19 @@ const LoginForm = () => {
           },
         });
 
-        console.log("login response >>> ", res?.data);
-
         if (res?.data?.success) {
           Cookies.set("token", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           resetForm();
-          navigate("/");
+          if (redirect) {
+            navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
+          } else {
+            navigate("/");
+          }
         }
       } catch (error) {
         console.error("login error:", error);
-        alert(error.response?.data?.message);
+        alert(error.response?.data?.message || error?.message);
       }
     },
   });
@@ -108,7 +113,10 @@ const LoginForm = () => {
           <p className="text-[var(--secondary-color)]">
             Don't have an account?{" "}
           </p>
-          <Link to={`/signup`} className="font-medium">
+          <Link
+            to={redirect ? `/signup?redirect=${redirect}` : "/signup"}
+            className="font-medium"
+          >
             Sign Up
           </Link>
         </div>

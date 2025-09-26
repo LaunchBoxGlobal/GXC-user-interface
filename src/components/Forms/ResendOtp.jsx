@@ -1,8 +1,13 @@
 import React from "react";
 import axios from "axios";
+import { BASE_URL } from "../../data/baseUrl";
+import Cookies from "js-cookie";
 
 const ResendOtp = ({ email }) => {
+  // const [email, setEmail] = useState(Cookies.get("email"));
+
   const handleResendOtp = async () => {
+    const email = Cookies.get("email");
     try {
       const res = await axios.post(
         `${BASE_URL}/auth/forgot-password`,

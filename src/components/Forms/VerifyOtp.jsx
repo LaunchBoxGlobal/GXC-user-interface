@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "../Common/Button";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -14,9 +14,12 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { page, email } = location?.state || {};
+  const { page } = location?.state || {};
+  const [email, setEmail] = useState(Cookies.get("email"));
 
   useEffect(() => {
+    // const email = Cookies.get("email");
+
     document.title = `Verify OTP - ${PAGETITLE}`;
   }, []);
 
@@ -49,8 +52,6 @@ const VerifyOtp = () => {
             "Content-Type": "application/json",
           },
         });
-
-        console.log("Response:", res?.data);
 
         const redirect = searchParams?.get("redirect");
         console.log("redirect >>> ", redirect);
@@ -111,6 +112,23 @@ const VerifyOtp = () => {
       newOtp.forEach((val, i) => {
         if (inputRefs.current[i]) inputRefs.current[i].value = val;
       });
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      const res = await axios.post(`${BASE_URL}/auth/resend-otp`, {});
+
+      if (res?.data?.success) {
+        alert(res.data.message || "OTP resent successfully");
+      } else {
+        alert(res.data?.message || "Failed to resend OTP");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      alert(
+        error?.response?.data?.message || "Something went wrong, try again"
+      );
     }
   };
 
