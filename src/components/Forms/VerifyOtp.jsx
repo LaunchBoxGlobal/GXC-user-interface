@@ -15,7 +15,7 @@ const VerifyOtp = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { page } = location?.state || {};
-  const [email, setEmail] = useState(Cookies.get("email"));
+  const [email, setEmail] = useState(Cookies.get("userEmail"));
 
   useEffect(() => {
     // const email = Cookies.get("email");
