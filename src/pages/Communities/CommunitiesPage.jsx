@@ -27,7 +27,7 @@ const CommunitiesPage = () => {
     setShowPopup(false);
   };
   return (
-    <div className="p-5">
+    <div className="p-5 min-h-screen">
       {/* Popup Modal */}
       {showPopup && !hasAccepted && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

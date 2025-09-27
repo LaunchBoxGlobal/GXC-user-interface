@@ -69,7 +69,7 @@ const SignUpForm = () => {
         if (res?.data?.success) {
           Cookies.set("userEmail", values.email);
           Cookies.set("isVerified", false);
-          Cookies.set("token", res?.data?.data?.token);
+          Cookies.set("userToken", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           resetForm();
 

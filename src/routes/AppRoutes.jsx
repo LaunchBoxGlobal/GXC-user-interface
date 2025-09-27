@@ -17,10 +17,11 @@ import ProfilePage from "../pages/Profile/ProfilePage";
 import EditProfile from "../pages/Profile/EditProfile";
 import ChangePasswordPage from "../pages/Profile/ChangePasswordPage";
 import CommunitiesPage from "../pages/Communities/CommunitiesPage";
+import CompleteProfileForm from "../components/Forms/CompleteProfileForm";
 
 // const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
-  const token = Cookies.get("token");
+  const token = Cookies.get("userToken");
   const isVerified = Cookies.get("isVerified") === "true";
   return !!token && isVerified;
 };
@@ -88,6 +89,7 @@ const AppRoutes = () => {
           />
         }
       />
+
       <Route
         path="/forgot-password"
         element={
@@ -128,13 +130,13 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/email-verification"
+        path="/complete-profile"
         element={
           <PrivateRoute
             redirectTo={`/`}
             element={
               <AuthLayout>
-                <EmailVerificationStatusPage />
+                <CompleteProfileForm />
               </AuthLayout>
             }
           />

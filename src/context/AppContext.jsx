@@ -11,6 +11,10 @@ export const AppProvider = ({ children }) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [user, setUser] = useState(null);
 
+  const [showEmailVerificationPopup, setShowEmailVerificationPopup] =
+    useState(false);
+  // const [showCommunityLinkPopup, setShowCommunityLinkPopup] = useState(false);
+
   const handleShowPaymentModal = () => {
     setShowPaymentModal((prev) => !prev);
   };
@@ -81,6 +85,8 @@ export const AppProvider = ({ children }) => {
         user,
         setUser,
         fetchUserProfile,
+        showEmailVerificationPopup,
+        setShowEmailVerificationPopup,
       }}
     >
       {children}

@@ -105,7 +105,7 @@ const SettingsLayout = ({ page }) => {
     } catch (error) {
       console.log("Logout error >>>", error?.response?.data || error.message);
     } finally {
-      Cookies.remove("user");
+      Cookies.remove("userToken");
       Cookies.remove("token");
       navigate("/login");
     }

@@ -9,11 +9,18 @@ const TextField = ({
   placeholder,
   error,
   touched,
+  label,
 }) => {
   return (
     <div className="w-full flex flex-col gap-1">
+      {label && (
+        <label htmlFor="" className="text-sm font-medium">
+          {label}
+        </label>
+      )}
       <input
         type={type}
+        autoComplete="off"
         name={name}
         placeholder={placeholder}
         value={value}

@@ -8,6 +8,8 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import ResendOtp from "./ResendOtp";
 import Cookies from "js-cookie";
+import EmailVerificationPopup from "../Popups/EmailVerificationPopup";
+import { useAppContext } from "../../context/AppContext";
 
 const VerifyOtp = () => {
   const inputRefs = useRef([]);
@@ -15,11 +17,31 @@ const VerifyOtp = () => {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { page } = location?.state || {};
+  const redirect = searchParams?.get("redirect");
   const [email, setEmail] = useState(Cookies.get("userEmail"));
+  const { showEmailVerificationPopup, setShowEmailVerificationPopup } =
+    useAppContext();
+  console.log("page >> ", page);
+
+  const toggleEmailVerificationPopup = () => {
+    setShowEmailVerificationPopup((prev) => !prev);
+  };
+
+  const handleNavigate = () => {
+    if (page === "/signup") {
+      navigate(`/complete-profile${redirect ? `?redirect=${redirect}` : ""}`, {
+        state: { page: "/verify-otp" },
+      });
+      toggleEmailVerificationPopup();
+    } else if (page == "/forgot-password") {
+      navigate(`/change-password`, {
+        state: { email, otp },
+      });
+      toggleEmailVerificationPopup();
+    }
+  };
 
   useEffect(() => {
-    // const email = Cookies.get("email");
-
     document.title = `Verify OTP - ${PAGETITLE}`;
   }, []);
 
@@ -53,28 +75,17 @@ const VerifyOtp = () => {
           },
         });
 
-        const redirect = searchParams?.get("redirect");
-        console.log("redirect >>> ", redirect);
         if (res?.data?.success) {
           resetForm();
+          toggleEmailVerificationPopup();
           Cookies.set("isVerified", true);
-
-          if (page == "/signup") {
-            navigate(
-              `/email-verification${redirect ? `?redirect=${redirect}` : ""}`,
-              {
-                state: { page: "/email-verification" },
-              }
-            );
-          } else if (page == "/forgot-password") {
-            navigate(`/change-password`, {
-              state: { email, otp },
-            });
-          }
         }
       } catch (error) {
         console.error("verify email error:", error);
-        alert(error?.message || error.response?.data?.message);
+
+        alert(
+          error?.message || error.response?.data?.message || error?.message
+        );
       }
     },
   });
@@ -115,79 +126,69 @@ const VerifyOtp = () => {
     }
   };
 
-  const handleResendOtp = async () => {
-    try {
-      const res = await axios.post(`${BASE_URL}/auth/resend-otp`, {});
-
-      if (res?.data?.success) {
-        alert(res.data.message || "OTP resent successfully");
-      } else {
-        alert(res.data?.message || "Failed to resend OTP");
-      }
-    } catch (error) {
-      console.error("Resend OTP error:", error);
-      alert(
-        error?.response?.data?.message || "Something went wrong, try again"
-      );
-    }
-  };
-
   return (
-    <form
-      onSubmit={formik.handleSubmit}
-      className="w-full max-w-[350px] flex flex-col items-start gap-4"
-    >
-      <div className="w-full">
-        <img
-          src="/image-placeholder.png"
-          alt=""
-          className="w-[107px] h-[107px] rounded-full object-contain mx-auto"
-        />
-      </div>
-
-      <div className="w-full text-center space-y-3 mt-4">
-        <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
-        <p className="text-[var(--secondary-color)]">
-          The code was sent to{" "}
-          {email && <span className="text-black font-medium">{email}</span>}
-        </p>
-      </div>
-
-      <div className="w-full space-y-3 mt-3">
-        <div className="w-full flex justify-between" onPaste={handlePaste}>
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <input
-              key={i}
-              type="text"
-              maxLength="1"
-              ref={(el) => (inputRefs.current[i] = el)}
-              value={formik.values.otp[i]}
-              onChange={(e) => handleChange(e, i)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              className={`w-[49px] border h-[49px] text-center text-lg font-medium rounded-[8px] outline-none 
-                ${formik.errors.otp ? "border-red-500" : "border-[#D9D9D9]"}`}
-            />
-          ))}
+    <>
+      <form
+        onSubmit={formik.handleSubmit}
+        className="w-full max-w-[350px] flex flex-col items-start gap-4"
+      >
+        <div className="w-full">
+          <img
+            src="/image-placeholder.png"
+            alt=""
+            className="w-[107px] h-[107px] rounded-full object-contain mx-auto"
+          />
         </div>
 
-        {/* {formik.errors.otp && (
+        <div className="w-full text-center space-y-3 mt-4">
+          <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
+          <p className="text-[var(--secondary-color)]">
+            The code was sent to{" "}
+            {email && <span className="text-black font-medium">{email}</span>}
+          </p>
+        </div>
+
+        <div className="w-full space-y-3 mt-3">
+          <div className="w-full flex justify-between" onPaste={handlePaste}>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <input
+                key={i}
+                type="text"
+                maxLength="1"
+                ref={(el) => (inputRefs.current[i] = el)}
+                value={formik.values.otp[i]}
+                onChange={(e) => handleChange(e, i)}
+                onKeyDown={(e) => handleKeyDown(e, i)}
+                className={`w-[49px] border h-[49px] text-center text-lg font-medium rounded-[8px] outline-none 
+                ${formik.errors.otp ? "border-red-500" : "border-[#D9D9D9]"}`}
+              />
+            ))}
+          </div>
+
+          {/* {formik.errors.otp && (
           <p className="text-red-500 text-sm">{formik.errors.otp}</p>
         )} */}
 
-        <div className="pt-3">
-          <Button type="submit" title="Verify" />
+          <div className="pt-3">
+            <Button type="submit" title="Verify" />
+          </div>
         </div>
-      </div>
 
-      <div className="w-full mt-2 flex flex-col items-center gap-4">
-        <div className="w-full flex items-center justify-center gap-1">
-          <p className="text-[var(--secondary-color)]">
-            Didn't receive the code yet?{" "}
-          </p>
-          <ResendOtp />
+        <div className="w-full mt-2 flex flex-col items-center gap-4">
+          <div className="w-full flex items-center justify-center gap-1">
+            <p className="text-[var(--secondary-color)]">
+              Didn't receive the code yet?{" "}
+            </p>
+            <ResendOtp />
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+
+      <EmailVerificationPopup
+        showPopup={showEmailVerificationPopup}
+        togglePopup={handleNavigate}
+      />
+    </>
   );
 };
 

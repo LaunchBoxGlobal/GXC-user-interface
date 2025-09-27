@@ -1,0 +1,243 @@
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import Button from "../Common/Button";
+import PasswordField from "../Common/PasswordField";
+import TextField from "../Common/TextField";
+import AuthImageUpload from "../Common/AuthImageUpload";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { RiArrowLeftSLine } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { BASE_URL } from "../../data/baseUrl";
+import Cookies from "js-cookie";
+import { useAppContext } from "../../context/AppContext";
+import { getToken } from "../../utils/getToken";
+import AccountSuccessPopup from "../Popups/AccountSuccessPopup";
+
+const CompleteProfileForm = () => {
+  const navigate = useNavigate();
+  const { user } = useAppContext();
+  const userData = JSON.parse(Cookies.get("user"));
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams?.get("redirect");
+
+  const togglePopup = () => {
+    setShowPopup((prev) => !prev);
+  };
+
+  useEffect(() => {
+    document.title = `Complete Profile - GiveXChange`;
+  }, []);
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: userData?.fullName || "",
+      email: userData?.email || "",
+      phoneNumber: "",
+      location: "",
+      description: "",
+      profileImage: null,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .max(25, "Name must be 25 characters or less")
+        .required("Name is required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+      phoneNumber: Yup.string().min(11, `Phone number must contain 11 digits`),
+      description: Yup.string()
+        .min(50, `Description can not be less than 50 characters`)
+        .max(500, `Description can not be more than 500 characters`),
+      location: Yup.string()
+        .min(11, `Address cannot be less than 11 characters`)
+        .max(150, `Address can not be more than 150 characters`),
+
+      profileImage: Yup.mixed().nullable(),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        setLoading(true);
+        const profileRes = await axios.put(
+          `${BASE_URL}/auth/profile`,
+          {
+            fullName: values.name,
+            email: values.email,
+            description: values.description,
+            address: values.location,
+            phone: values.phoneNumber,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          }
+        );
+
+        if (values.profileImage instanceof File) {
+          const formData = new FormData();
+          formData.append("profilePicture", values.profileImage);
+
+          const imageRes = await axios.post(
+            `${BASE_URL}/auth/upload-profile-picture`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${getToken()}`,
+              },
+            }
+          );
+          console.log("Image uploaded response:", imageRes.data);
+        }
+
+        if (profileRes?.data?.success) {
+          resetForm();
+
+          // alert("Profile Updated Successfully!");
+          // navigate("/");
+          togglePopup();
+        }
+      } catch (error) {
+        console.error("Sign up error:", error.response?.data);
+        alert(error.response?.data?.message || error?.message);
+        if (error?.response?.status === 401) {
+          Cookies.remove("token");
+          Cookies.remove("user");
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
+
+  return (
+    <>
+      <form
+        onSubmit={formik.handleSubmit}
+        className="w-full max-w-[500px] flex flex-col items-start gap-4"
+      >
+        <div className="w-full text-center space-y-3">
+          <h1 className="font-semibold text-[32px] leading-none">
+            Complete Profile Details
+          </h1>
+          <p className="text-[var(--secondary-color)]">
+            Please complete details to access all features
+          </p>
+        </div>
+
+        <div className="w-full h-[100px] flex flex-col items-center justify-center gap-2 my-3">
+          <AuthImageUpload
+            name="profileImage"
+            setFieldValue={formik.setFieldValue}
+            error={formik.touched.profileImage && formik.errors.profileImage}
+          />
+        </div>
+
+        <div className="w-full">
+          <h2 className="font-semibold text-[24px] leading-none">
+            Basic Details
+          </h2>
+        </div>
+        <div className="w-full space-y-3">
+          <TextField
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.name}
+            touched={formik.touched.name}
+            label={`Full Name`}
+          />
+
+          <div className="w-full grid grid-cols-2 gap-4">
+            <TextField
+              type="text"
+              name="email"
+              placeholder="Email Address"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.email}
+              touched={formik.touched.email}
+              label={"Email Address"}
+            />
+
+            <TextField
+              type="text"
+              name="phoneNumber"
+              placeholder="+000 0000 00"
+              value={formik.values.phoneNumber}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.phoneNumber}
+              touched={formik.touched.phoneNumber}
+              label={"Phone Number"}
+            />
+          </div>
+
+          <TextField
+            type="text"
+            name="location"
+            placeholder="Enter your location"
+            value={formik.values.location}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.location}
+            touched={formik.touched.location}
+            label={"Location"}
+          />
+
+          <div className="w-full flex flex-col gap-1">
+            <label htmlFor="description" className="text-sm font-medium">
+              Description
+            </label>
+            <textarea
+              name="description"
+              id="description"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.description}
+              placeholder="Describe yourself"
+              className={`w-full border h-[124px] px-[15px] py-[14px] rounded-[8px] outline-none ${
+                formik.touched.description && formik.errors.description
+                  ? "border-red-500"
+                  : "border-[#D9D9D9]"
+              }`}
+            ></textarea>
+            {formik.touched.description && formik.errors.description ? (
+              <div className="text-red-500 text-xs">
+                {formik.errors.description}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="pt-2 flex items-center justify-between">
+            <Link
+              to={redirect ? redirect : `/`}
+              className="text-sm font-medium flex items-center gap-1 text-black"
+            >
+              Skip
+            </Link>{" "}
+            <div className="w-full max-w-[110px]">
+              <Button type="submit" title="Save" isLoading={loading} />
+            </div>
+          </div>
+        </div>
+      </form>
+      <AccountSuccessPopup
+        showPopup={showPopup}
+        togglePopup={togglePopup}
+        redirect={redirect}
+      />
+    </>
+  );
+};
+
+export default CompleteProfileForm;

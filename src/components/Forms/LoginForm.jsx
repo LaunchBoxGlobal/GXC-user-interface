@@ -40,7 +40,7 @@ const LoginForm = () => {
         });
 
         if (res?.data?.success) {
-          Cookies.set("token", res?.data?.data?.token);
+          Cookies.set("userToken", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           resetForm();
           if (redirect) {
