@@ -24,23 +24,36 @@ const SignUpForm = () => {
     initialValues: {
       name: "",
       email: "",
-      phoneNumber: "",
+      // phoneNumber: "",
       password: "",
       confirmPassword: "",
       profileImage: null,
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .max(25, "Name must be 25 characters or less")
+        .min(3, "Name must contain at least 3 characters")
+        .max(30, "Name must be 30 characters or less")
+        .matches(
+          /^[A-Z][a-zA-Z ]*$/,
+          "Name must start with a capital letter and contain only letters and spaces"
+        )
         .required("Name is required"),
-      phoneNumber: Yup.string()
-        .matches(/^\d{11}$/, "Phone number must be exactly 11 digits")
-        .required("Phone number is required"),
+      // phoneNumber: Yup.string()
+      //   .matches(/^[0-9]{11}$/, "Phone number must contain 11 digits")
+      //   .required("Enter your phone number"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
       password: Yup.string()
-        .min(8, "Password must be at least 6 characters")
+        .min(8, "Password must be at least 8 characters")
+        .max(25, "Password cannot be more than 25 characters")
+        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+        .matches(/\d/, "Password must contain at least one number")
+        .matches(
+          /[@$!%*?&^#_.-]/,
+          "Password must contain at least one special character"
+        )
         .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords do not match")
@@ -53,7 +66,7 @@ const SignUpForm = () => {
         formData.append("fullName", values.name);
         formData.append("email", values.email);
         formData.append("password", values.password);
-        formData.append("phone", values.phoneNumber);
+        // formData.append("phone", values.phoneNumber);
         formData.append("userType", "regular_user");
 
         if (values.profileImage) {
@@ -71,6 +84,7 @@ const SignUpForm = () => {
           Cookies.set("isVerified", false);
           Cookies.set("userToken", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
+          // Cookies.set("verification")
           resetForm();
 
           navigate(`/verify-otp${redirect ? `?redirect=${redirect}` : ""}`, {
@@ -117,7 +131,7 @@ const SignUpForm = () => {
           <TextField
             type="text"
             name="name"
-            placeholder="Full Name"
+            placeholder="Enter your full name"
             value={formik.values.name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -134,7 +148,7 @@ const SignUpForm = () => {
           <TextField
             type="text"
             name="email"
-            placeholder="Email Address"
+            placeholder="Enter email address"
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -143,21 +157,21 @@ const SignUpForm = () => {
           />
         </div>
 
-        <div className="w-full space-y-1">
+        {/* <div className="w-full space-y-1">
           <label htmlFor="phoneNumber" className="text-sm font-medium">
             Phone Number
           </label>
           <TextField
             type="number"
             name="phoneNumber"
-            placeholder="Phone Number"
+            placeholder="Enter your phone number"
             value={formik.values.phoneNumber}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.phoneNumber}
             touched={formik.touched.phoneNumber}
           />
-        </div>
+        </div> */}
         <div className="w-full space-y-1">
           <label htmlFor="password" className="text-sm font-medium">
             Password
@@ -208,15 +222,6 @@ const SignUpForm = () => {
             Sign In
           </Link>
         </div>
-        <Link
-          to={`/login`}
-          className="text-sm font-medium flex items-center gap-1 text-[var(--button-bg)]"
-        >
-          <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
-            <RiArrowLeftSLine className="text-white text-base" />
-          </div>
-          Back
-        </Link>
       </div>
     </form>
   );

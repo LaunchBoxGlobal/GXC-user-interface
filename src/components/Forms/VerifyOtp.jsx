@@ -18,10 +18,11 @@ const VerifyOtp = () => {
   const [searchParams] = useSearchParams();
   const { page } = location?.state || {};
   const redirect = searchParams?.get("redirect");
-  const [email, setEmail] = useState(Cookies.get("userEmail"));
+  const [email, setEmail] = useState(Cookies.get("verificationEmail"));
   const { showEmailVerificationPopup, setShowEmailVerificationPopup } =
     useAppContext();
-  console.log("page >> ", page);
+  const [loading, setLoading] = useState(false);
+  const [userOtp, setUserOtp] = useState(null);
 
   const toggleEmailVerificationPopup = () => {
     setShowEmailVerificationPopup((prev) => !prev);
@@ -35,14 +36,18 @@ const VerifyOtp = () => {
       toggleEmailVerificationPopup();
     } else if (page == "/forgot-password") {
       navigate(`/change-password`, {
-        state: { email, otp },
+        state: { email, otp: userOtp },
       });
       toggleEmailVerificationPopup();
+    } else if (page === "/login") {
+      navigate("/");
+    } else {
+      navigate("/");
     }
   };
 
   useEffect(() => {
-    document.title = `Verify OTP - ${PAGETITLE}`;
+    document.title = `Verify OTP - GiveXChange`;
   }, []);
 
   const formik = useFormik({
@@ -60,12 +65,18 @@ const VerifyOtp = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       const otp = values.otp.join("");
+      if (!otp) {
+        return;
+      }
+      setLoading(true);
 
       const body = page === "/signup" ? { code: otp } : { code: otp, email };
 
       try {
         const url =
           page === "/signup"
+            ? `${BASE_URL}/auth/verify-email`
+            : page === "/login"
             ? `${BASE_URL}/auth/verify-email`
             : `${BASE_URL}/auth/verify-reset-code`;
 
@@ -76,6 +87,7 @@ const VerifyOtp = () => {
         });
 
         if (res?.data?.success) {
+          setUserOtp(otp);
           resetForm();
           toggleEmailVerificationPopup();
           Cookies.set("isVerified", true);
@@ -86,6 +98,8 @@ const VerifyOtp = () => {
         alert(
           error?.message || error.response?.data?.message || error?.message
         );
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -170,7 +184,7 @@ const VerifyOtp = () => {
         )} */}
 
           <div className="pt-3">
-            <Button type="submit" title="Verify" />
+            <Button type="submit" title="Verify" isLoading={loading} />
           </div>
         </div>
 
@@ -179,7 +193,7 @@ const VerifyOtp = () => {
             <p className="text-[var(--secondary-color)]">
               Didn't receive the code yet?{" "}
             </p>
-            <ResendOtp />
+            <ResendOtp page={page} />
           </div>
         </div>
       </form>

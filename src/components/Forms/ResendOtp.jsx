@@ -1,25 +1,31 @@
-import React from "react";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import Cookies from "js-cookie";
+import { getToken } from "../../utils/getToken";
+import { useState } from "react";
 
-const ResendOtp = ({ email }) => {
+const ResendOtp = ({ email, page }) => {
   // const [email, setEmail] = useState(Cookies.get("email"));
+  const [loading, setLoading] = useState(false);
 
   const handleResendOtp = async () => {
     const email = Cookies.get("email");
+    setLoading(true);
     try {
+      const url =
+        page === "/login" || page === "/signup"
+          ? `${BASE_URL}/auth/resend-verification`
+          : `${BASE_URL}/auth/forgot-password`;
       const res = await axios.post(
-        `${BASE_URL}/auth/forgot-password`,
+        url,
         { email },
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
-
-      console.log("verify email response >>> ", res?.data);
 
       if (res?.data?.success) {
         alert(res?.data?.message);
@@ -27,11 +33,14 @@ const ResendOtp = ({ email }) => {
     } catch (error) {
       console.error("verify email error:", error);
       alert(error?.message || error.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <button
       type="button"
+      disabled={loading}
       className="font-medium text-[var(--button-bg)]"
       onClick={() => handleResendOtp()}
     >

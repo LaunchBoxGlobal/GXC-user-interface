@@ -88,10 +88,16 @@ const EditProfile = () => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .max(25, "Name must be 25 characters or less")
+        .min(3, "Name must contain at least 3 characters")
+        .max(30, "Name must be 30 characters or less")
+        .matches(
+          /^[A-Z][a-zA-Z ]*$/,
+          "Name must start with a capital letter and contain only letters and spaces"
+        )
         .required("Name is required"),
       address: Yup.string()
         .min(15, "Address must be atleast 15 characters")
+        .max(50, "Address cannot contain more than 50 characters")
         .required("Address is required"),
       phoneNumber: Yup.string()
         .matches(/^\d{11}$/, "Phone number must be exactly 11 digits")
@@ -140,6 +146,7 @@ const EditProfile = () => {
           resetForm();
           fetchUserProfile();
           alert("Profile Updated Successfully!");
+          navigate("/profile");
         }
       } catch (error) {
         console.error("Update profile error:", error.response?.data);

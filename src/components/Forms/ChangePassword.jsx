@@ -8,12 +8,17 @@ import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const location = useLocation();
   const { email, otp } = location?.state || {};
+  const [loading, setLoading] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState(
+    Cookies.get("verificationEmail")
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -21,15 +26,26 @@ const ChangePassword = () => {
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      password: Yup.string().required("Password is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .max(25, "Password cannot be more than 25 characters")
+        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+        .matches(/\d/, "Password must contain at least one number")
+        .matches(
+          /[@$!%*?&^#_.-]/,
+          "Password must contain at least one special character"
+        )
+        .required("Password is required"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords do not match")
         .required("Password is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        setLoading(true);
         const res = await axios.post(`${BASE_URL}/auth/reset-password`, {
-          email,
+          email: verificationEmail,
           code: otp,
           password: values?.password,
         });
@@ -37,13 +53,16 @@ const ChangePassword = () => {
         console.log("reset password response >>> ", res?.data);
 
         if (res?.data?.success) {
-          alert(res?.data?.message);
+          // alert(res?.data?.message);
           resetForm();
           setShowPopup(true);
+          Cookies.remove("verificationEmail");
         }
       } catch (error) {
         console.log(`reset password error >>> `, error);
         alert(res?.message || res?.response?.data?.message);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -64,11 +83,6 @@ const ChangePassword = () => {
         className="w-full max-w-[350px] flex flex-col items-start gap-4"
       >
         <div className="w-full text-center">
-          <img
-            src="/image-placeholder.png"
-            alt="image-placeholder"
-            className="max-w-[146px] mx-auto"
-          />
           <h2 className="font-semibold text-[32px] leading-none mt-8 mb-3">
             Set New Password
           </h2>
@@ -108,7 +122,7 @@ const ChangePassword = () => {
           </div>
 
           <div className="pt-2">
-            <Button type={"submit"} title={`Save`} />
+            <Button type={"submit"} title={`Save`} isLoading={loading} />
           </div>
         </div>
       </form>

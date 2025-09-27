@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import TextField from "../Common/TextField";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 const LoginForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
   const redirect = searchParams?.get("redirect");
 
@@ -32,6 +33,7 @@ const LoginForm = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       resetForm();
+      setLoading(true);
       try {
         const res = await axios.post(`${BASE_URL}/auth/login`, values, {
           headers: {
@@ -50,8 +52,49 @@ const LoginForm = () => {
           }
         }
       } catch (error) {
-        console.error("login error:", error);
-        alert(error.response?.data?.message || error?.message);
+        console.error("login error:", error?.response);
+
+        const apiRes = error?.response?.data;
+
+        // check if it's email not verified case
+        if (
+          apiRes?.message === "Please verify your email before logging in" &&
+          apiRes?.data?.token
+        ) {
+          const newToken = apiRes.data.token;
+          Cookies.set("token", newToken);
+
+          try {
+            const resendRes = await axios.post(
+              `${BASE_URL}/auth/resend-verification`,
+              { email: values.email },
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${newToken}`,
+                },
+              }
+            );
+
+            if (resendRes?.data?.success) {
+              alert(resendRes.data.message);
+              navigate("/verify-otp", {
+                state: {
+                  email: values.email,
+                  page: "/login",
+                },
+              });
+            }
+          } catch (err) {
+            console.error("verify email error:", err);
+            alert(err.response?.data?.message || err.message);
+          }
+        } else {
+          // for all other errors show normal error
+          alert(apiRes?.message || error?.message);
+        }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -82,7 +125,7 @@ const LoginForm = () => {
           <TextField
             type="text"
             name="email"
-            placeholder="Email Address"
+            placeholder="JohnDoe@mail.com"
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -113,7 +156,7 @@ const LoginForm = () => {
         </div>
 
         <div className="pt-2 w-full">
-          <Button type={"submit"} title={`Login`} />
+          <Button type={"submit"} title={`Login`} isLoading={loading} />
         </div>
       </div>
 
