@@ -21,7 +21,7 @@ const AuthLayout = ({ children }) => {
           />
         ) : location?.pathname === "/verify-otp" ? (
           <img
-            src="/verify-otp-mockup.png"
+            src="/verify-otp.png"
             alt=""
             className="w-full h-full object-cover"
           />

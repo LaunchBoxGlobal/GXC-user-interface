@@ -156,10 +156,12 @@ const VerifyOtp = () => {
 
         <div className="w-full text-center space-y-3 mt-4">
           <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
-          <p className="text-[var(--secondary-color)]">
-            The code was sent to{" "}
-            {email && <span className="text-black font-medium">{email}</span>}
-          </p>
+          {email && (
+            <p className="text-[var(--secondary-color)]">
+              The code was sent to{" "}
+              {email && <span className="text-black font-medium">{email}</span>}
+            </p>
+          )}
         </div>
 
         <div className="w-full space-y-3 mt-3">
