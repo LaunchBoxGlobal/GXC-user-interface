@@ -146,14 +146,6 @@ const VerifyOtp = () => {
         onSubmit={formik.handleSubmit}
         className="w-full max-w-[350px] flex flex-col items-start gap-4"
       >
-        <div className="w-full">
-          <img
-            src="/image-placeholder.png"
-            alt=""
-            className="w-[107px] h-[107px] rounded-full object-contain mx-auto"
-          />
-        </div>
-
         <div className="w-full text-center space-y-3 mt-4">
           <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
           {email && (
