@@ -9,7 +9,7 @@ const AuthLayout = ({ children }) => {
       <div className="w-full h-full bg-transparent hidden lg:block">
         {location?.pathname === "/login" ? (
           <img
-            src="/login-page-mockup.png"
+            src="/sign-in-mockup.png"
             alt=""
             className="w-full h-full object-cover"
           />

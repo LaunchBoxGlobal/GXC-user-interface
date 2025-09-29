@@ -6,7 +6,7 @@ import TextField from "../Common/TextField";
 import AuthImageUpload from "../Common/AuthImageUpload";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine } from "react-icons/ri";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -15,6 +15,7 @@ import { BASE_URL } from "../../data/baseUrl";
 const SignUpForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     document.title = `Sign up - ${PAGETITLE}`;
@@ -62,6 +63,7 @@ const SignUpForm = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        setLoading(true);
         const formData = new FormData();
         formData.append("fullName", values.name);
         formData.append("email", values.email);
@@ -97,6 +99,8 @@ const SignUpForm = () => {
       } catch (error) {
         console.error("Sign up error:", error.response?.data);
         alert(error.response?.data?.message || error.message);
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -203,7 +207,7 @@ const SignUpForm = () => {
         </div>
 
         <div className="pt-2">
-          <Button type="submit" title="Sign Up" />
+          <Button type="submit" title="Sign Up" isLoading={loading} />
         </div>
       </div>
 
