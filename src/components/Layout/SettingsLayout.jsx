@@ -153,7 +153,7 @@ const SettingsLayout = ({ page }) => {
       </div>
 
       <div className="w-full mt-10 min-h-screen flex items-start justify-between bg-white rounded-[12px] custom-shadow">
-        <div className="w-[25%] min-h-screen border-r p-8">
+        <div className="w-[25%] min-h-screen border-r px-8 pt-5">
           <h2 className="text-[28px] font-semibold">Settings</h2>
           <ul className="w-full flex flex-col mt-5">
             {settingPages?.map((link, index) => {

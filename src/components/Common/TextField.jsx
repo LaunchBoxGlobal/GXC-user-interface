@@ -10,6 +10,7 @@ const TextField = ({
   error,
   touched,
   label,
+  disabled,
 }) => {
   return (
     <div className="w-full flex flex-col gap-1">
@@ -22,6 +23,7 @@ const TextField = ({
         type={type}
         autoComplete="off"
         name={name}
+        disabled={disabled}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

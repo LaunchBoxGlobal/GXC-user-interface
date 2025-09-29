@@ -2,23 +2,34 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import Cookies from "js-cookie";
 import { getToken } from "../../utils/getToken";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ResendOtp = ({ email, page }) => {
-  // const [email, setEmail] = useState(Cookies.get("email"));
-  const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(60);
+
+  useEffect(() => {
+    if (timer <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleResendOtp = async () => {
-    const email = Cookies.get("email");
-    setLoading(true);
+    if (timer > 0) return;
+
+    const savedEmail = Cookies.get("signupEmail");
+    const url =
+      page === "/login" || page === "/signup"
+        ? `${BASE_URL}/auth/resend-verification`
+        : `${BASE_URL}/auth/forgot-password`;
+
     try {
-      const url =
-        page === "/login" || page === "/signup"
-          ? `${BASE_URL}/auth/resend-verification`
-          : `${BASE_URL}/auth/forgot-password`;
       const res = await axios.post(
         url,
-        { email },
+        { email: savedEmail || email },
         {
           headers: {
             "Content-Type": "application/json",
@@ -29,22 +40,24 @@ const ResendOtp = ({ email, page }) => {
 
       if (res?.data?.success) {
         alert(res?.data?.message);
+        setTimer(60); // start 60s countdown
       }
     } catch (error) {
       console.error("verify email error:", error);
-      alert(error?.message || error.response?.data?.message);
-    } finally {
-      setLoading(false);
+      alert(error?.response?.data?.message || error.message);
     }
   };
+
   return (
     <button
       type="button"
-      disabled={loading}
-      className="font-medium text-[var(--button-bg)]"
-      onClick={() => handleResendOtp()}
+      className={`font-medium ${
+        timer > 0 ? "opacity-50 cursor-not-allowed" : ""
+      }`}
+      onClick={handleResendOtp}
+      disabled={timer > 0 || !email}
     >
-      Resend
+      {timer > 0 ? `Resend in ${timer}s` : "Resend"}
     </button>
   );
 };

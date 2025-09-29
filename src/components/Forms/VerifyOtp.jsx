@@ -23,6 +23,7 @@ const VerifyOtp = () => {
     useAppContext();
   const [loading, setLoading] = useState(false);
   const [userOtp, setUserOtp] = useState(null);
+  const userEmail = Cookies.get("userEmail");
 
   const toggleEmailVerificationPopup = () => {
     setShowEmailVerificationPopup((prev) => !prev);
@@ -144,14 +145,16 @@ const VerifyOtp = () => {
     <>
       <form
         onSubmit={formik.handleSubmit}
-        className="w-full max-w-[350px] flex flex-col items-start gap-4"
+        className="w-full max-w-[370px] flex flex-col items-start gap-4"
       >
         <div className="w-full text-center space-y-3 mt-4">
           <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
-          {email && (
-            <p className="text-[var(--secondary-color)]">
+          {(email || userEmail) && (
+            <p className="text-[var(--secondary-color)] flex justify-center flex-wrap gap-1">
               The code was sent to{" "}
-              {email && <span className="text-black font-medium">{email}</span>}
+              <span className="text-black font-medium">
+                {email ? email : userEmail}
+              </span>
             </p>
           )}
         </div>
@@ -187,7 +190,7 @@ const VerifyOtp = () => {
             <p className="text-[var(--secondary-color)]">
               Didn't receive the code yet?{" "}
             </p>
-            <ResendOtp page={page} />
+            <ResendOtp page={page} email={userEmail || email} />
           </div>
         </div>
       </form>

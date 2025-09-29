@@ -232,6 +232,7 @@ const EditProfile = () => {
             type="text"
             name="email"
             placeholder=""
+            disabled={true}
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

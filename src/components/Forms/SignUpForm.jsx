@@ -48,8 +48,11 @@ const SignUpForm = () => {
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
         .max(25, "Password cannot be more than 25 characters")
-        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+        .matches(
+          /[A-Z]/,
+          "Password must contain at least one uppercase & one lowercase letter"
+        )
+        // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
         .matches(/\d/, "Password must contain at least one number")
         .matches(
           /[@$!%*?&^#_.-]/,
@@ -152,7 +155,7 @@ const SignUpForm = () => {
           <TextField
             type="text"
             name="email"
-            placeholder="Enter email address"
+            placeholder="Enter your email address"
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -182,7 +185,7 @@ const SignUpForm = () => {
           </label>
           <PasswordField
             name="password"
-            placeholder="Password"
+            placeholder="Enter your password"
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -197,7 +200,7 @@ const SignUpForm = () => {
           </label>
           <PasswordField
             name="confirmPassword"
-            placeholder="Confirm Password"
+            placeholder="Enter your password"
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

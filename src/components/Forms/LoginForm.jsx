@@ -105,9 +105,9 @@ const LoginForm = () => {
       className="w-full max-w-[350px] flex flex-col items-start gap-4"
     >
       <img
-        src="/GiveXchangenewlogo.png"
-        alt=""
-        className="mx-auto w-[167px] lg:w-[267px]"
+        src="/logo.svg"
+        alt="logo"
+        className="w-[167px] lg:w-[267px] object-contain mx-auto"
       />
 
       <div className="w-full text-center space-y-3">
@@ -125,7 +125,7 @@ const LoginForm = () => {
           <TextField
             type="text"
             name="email"
-            placeholder="JohnDoe@mail.com"
+            placeholder="johndoe@gmail.com"
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}

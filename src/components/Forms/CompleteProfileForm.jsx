@@ -13,15 +13,17 @@ import Cookies from "js-cookie";
 import { useAppContext } from "../../context/AppContext";
 import { getToken } from "../../utils/getToken";
 import AccountSuccessPopup from "../Popups/AccountSuccessPopup";
+import PhoneNumberField from "../Common/PhoneNumberField";
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
   const { user } = useAppContext();
-  const userData = JSON.parse(Cookies.get("user"));
+  const userData = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [searchParams] = useSearchParams();
   const redirect = searchParams?.get("redirect");
+  const [value, setValue] = useState();
 
   const togglePopup = () => {
     setShowPopup((prev) => !prev);
@@ -62,7 +64,8 @@ const CompleteProfileForm = () => {
         .required("Please enter description"),
       location: Yup.string()
         .min(11, `Address cannot be less than 11 characters`)
-        .max(150, `Address can not be more than 150 characters`),
+        .max(150, `Address can not be more than 150 characters`)
+        .required("Enter your location"),
 
       profileImage: Yup.mixed().nullable(),
     }),
@@ -177,7 +180,18 @@ const CompleteProfileForm = () => {
               label={"Email Address"}
             />
 
-            <TextField
+            {/* <TextField
+              type="text"
+              name="phoneNumber"
+              placeholder="+000 0000 00"
+              value={formik.values.phoneNumber}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.phoneNumber}
+              touched={formik.touched.phoneNumber}
+              label={"Phone Number"}
+            /> */}
+            <PhoneNumberField
               type="text"
               name="phoneNumber"
               placeholder="+000 0000 00"

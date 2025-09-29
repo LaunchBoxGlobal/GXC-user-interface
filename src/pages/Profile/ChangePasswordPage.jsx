@@ -12,14 +12,10 @@ const ChangePasswordPage = () => {
 
   const formik = useFormik({
     initialValues: {
-      currentPassword: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      currentPassword: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .required("Password is required"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
         .max(25, "Password cannot be more than 25 characters")
@@ -48,7 +44,7 @@ const ChangePasswordPage = () => {
           }
         );
 
-        console.log("change password:", res?.data?.data?.token);
+        // console.log("change password:", res?.data);
 
         if (res?.data?.success) {
           resetForm();
@@ -71,7 +67,7 @@ const ChangePasswordPage = () => {
       <h1 className="font-semibold text-[24px]">Change Password</h1>
 
       <form onSubmit={formik.handleSubmit} className="w-full space-y-5 mt-5">
-        <PasswordField
+        {/* <PasswordField
           name="currentPassword"
           placeholder="Current Password"
           value={formik.values.currentPassword}
@@ -79,7 +75,7 @@ const ChangePasswordPage = () => {
           onBlur={formik.handleBlur}
           error={formik.errors.currentPassword}
           touched={formik.touched.currentPassword}
-        />
+        /> */}
         <PasswordField
           name="password"
           placeholder="Password"
