@@ -28,7 +28,9 @@ const LoginForm = () => {
       password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Invalid email address").required("Required"),
+      email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: async (values, { resetForm }) => {

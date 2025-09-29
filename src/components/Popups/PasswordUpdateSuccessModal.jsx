@@ -2,7 +2,7 @@ const PasswordUpdateSuccessModal = ({ showPopup, handleTogglePopup }) => {
   return (
     showPopup && (
       <main className="w-full h-screen fixed inset-0 z-50 flex items-center justify-center px-4 bg-[rgba(0,0,0,0.4)]">
-        <div className="w-full max-w-[471px] min-h-[301px] bg-white flex flex-col items-center gap-4 rounded-[18px] p-7 lg:p-10">
+        <div className="w-full max-w-[471px] min-h-[301px] bg-[#D0E3D1] flex flex-col items-center gap-4 rounded-[18px] p-7 lg:p-10">
           <img
             src="/green-check.png"
             alt="green-check"

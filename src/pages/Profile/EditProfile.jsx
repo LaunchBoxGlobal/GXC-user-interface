@@ -8,6 +8,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import * as Yup from "yup";
 import { getToken } from "../../utils/getToken";
+import PhoneNumberField from "../../components/Common/PhoneNumberField";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
@@ -244,7 +245,7 @@ const EditProfile = () => {
           <label htmlFor="phoneNumber" className="font-medium text-sm">
             Phone Number
           </label>
-          <TextField
+          <PhoneNumberField
             type="text"
             name="phoneNumber"
             placeholder=""
