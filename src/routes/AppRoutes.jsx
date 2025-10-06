@@ -18,16 +18,22 @@ import EditProfile from "../pages/Profile/EditProfile";
 import ChangePasswordPage from "../pages/Profile/ChangePasswordPage";
 import CommunitiesPage from "../pages/Communities/CommunitiesPage";
 import CompleteProfileForm from "../components/Forms/CompleteProfileForm";
+import CommunityPage from "../pages/Communities/CommunityPage";
+import SettingsPage from "../pages/Settings/SettingsPage";
+import ReportingPage from "../pages/Reporting/ReportingPage";
+import WalletPage from "../pages/Wallet/WalletPage";
+import OrdersPage from "../pages/Orders/OrdersPage";
+import ProductManagementPage from "../pages/ProductManagement/ProductManagementPage";
 
 // const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
   const token = Cookies.get("userToken");
   const isVerified = Cookies.get("isVerified") === "true";
-  return !!token && isVerified;
+  return !!token;
 };
 
 const isUnverified = () => {
-  const token = Cookies.get("token");
+  const token = Cookies.get("userToken");
   const isVerified = Cookies.get("isVerified") === "true";
   return !!token && !isVerified;
 };
@@ -237,13 +243,97 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/community/:communityTitle"
+        path="/communities"
         element={
           <PrivateRoute
             redirectTo={"/login"}
             element={
               <Layout>
                 <CommunitiesPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/community/:communityTitle"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <CommunityPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <ProfilePage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/reporting"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <ReportingPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/wallet"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <WalletPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/orders"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <OrdersPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/products"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <ProductManagementPage />
               </Layout>
             }
           />

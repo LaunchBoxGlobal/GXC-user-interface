@@ -61,9 +61,8 @@ const ProfilePage = () => {
   }, []);
 
   return (
-    <div className="w-full relative">
-      <div className="w-full bg-[#DEDEDE] h-[160px]"></div>
-      <div className="w-full rounded-[15px] padding-x relative -top-24">
+    <div className="w-full relative padding-x ">
+      <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4">
         <SettingsLayout page={<ChangePasswordPage />} />
       </div>
     </div>

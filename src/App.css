@@ -28,3 +28,11 @@
 .react-tel-input .flag-dropdown.open {
   box-shadow: none !important;
 }
+
+.hero {
+  width: 100%;
+  height: 340px;
+  background-image: url("/header-background-image.png");
+  background-position: center;
+  background-size: cover;
+}

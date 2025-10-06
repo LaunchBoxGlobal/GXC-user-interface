@@ -113,7 +113,7 @@ const SettingsLayout = ({ page }) => {
 
   return (
     <div className="w-full rounded-[10px] relative">
-      <div className="w-full bg-white p-5 flex items-center justify-between flex-wrap rounded-[15px] mt-5 gap-5 custom-shadow">
+      <div className="w-full bg-white p-5 flex items-center justify-between flex-wrap rounded-[15px] gap-5 custom-shadow">
         <div className="w-full md:max-w-[50%] flex items-start lg:items-center gap-3">
           <div className="">
             {user?.profilePictureUrl ? (
@@ -152,8 +152,8 @@ const SettingsLayout = ({ page }) => {
         </div>
       </div>
 
-      <div className="w-full mt-10 min-h-screen flex items-start justify-between bg-white rounded-[12px] custom-shadow">
-        <div className="w-[25%] min-h-screen border-r px-8 pt-5">
+      <div className="w-full mt-5 min-h-[50vh] flex items-start justify-between bg-white rounded-[12px] custom-shadow">
+        <div className="w-[25%] min-h-[70vh] border-r px-8 pt-5">
           <h2 className="text-[28px] font-semibold">Settings</h2>
           <ul className="w-full flex flex-col mt-5">
             {settingPages?.map((link, index) => {

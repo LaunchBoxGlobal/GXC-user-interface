@@ -1,68 +1,63 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CgMenu } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
-
-const pages = [
-  {
-    title: "Home",
-    url: "/",
-  },
-  {
-    title: "Product Management",
-    url: "/products",
-  },
-  {
-    title: "Orders",
-    url: "/orders",
-  },
-  {
-    title: "Wallet",
-    url: "/wallet",
-  },
-  {
-    title: "Communities",
-    url: "/communities",
-  },
-  {
-    title: "Reporting",
-    url: "/reporting",
-  },
-  {
-    title: "Settings",
-    url: "/setings",
-  },
-];
+import { PAGE_LINKS } from "../../data/pageLinks";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useAppContext();
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="w-full py-4 text-center padding-x bg-[#DEDEDE] flex items-center justify-between gap-8 xl:gap-20 relative overflow-hidden">
+    <header
+      className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-hidden transition-colors duration-300 ${
+        isScrolled ? "bg-white shadow-md" : "bg-transparent"
+      }`}
+    >
       <div className="block">
         <Link to={`/`}>
-          <img
-            src="/GiveXchangenewlogo.png"
-            alt="logo"
-            className="w-[70px] lg:w-[100px] xl:w-[120px]"
-          />
+          {isScrolled ? (
+            <img
+              src="/logo.svg"
+              alt="logo"
+              className="w-[70px] lg:w-[100px] xl:w-[120px]"
+            />
+          ) : (
+            <img
+              src="/logo-light.png"
+              alt="logo"
+              className="w-[70px] lg:w-[100px] xl:w-[120px]"
+            />
+          )}
         </Link>
       </div>
 
       <ul className="w-full max-w-[80%] hidden lg:flex items-center justify-between gap-5">
-        {pages?.map((page, index) => {
+        {PAGE_LINKS?.map((page, index) => {
           return (
             <li>
               <Link
                 to={page?.url}
                 key={index}
-                className="font-medium text-sm xl:text-base whitespace-nowrap"
+                className={`font-medium text-sm xl:text-base whitespace-nowrap ${
+                  isScrolled ? "text-gray-900" : "text-gray-200"
+                }`}
               >
                 {page?.title}
               </Link>
@@ -72,42 +67,70 @@ const Navbar = () => {
 
         <div className="flex items-center gap-10">
           <Link to={`/cart`}>
-            <img
-              src="/cart-icon.png"
-              alt="cart icon"
-              className="min-w-[22px] h-[22px]"
-            />
+            {isScrolled ? (
+              <img
+                src="/cart-icon.png"
+                alt="cart icon"
+                className="min-w-[22px] h-[22px]"
+              />
+            ) : (
+              <img
+                src="/cart-white-icon.svg"
+                alt="cart icon"
+                className="min-w-[22px] h-[22px]"
+              />
+            )}
           </Link>
           <button type="button">
-            <img
-              src="/notification-icon.png"
-              alt="cart icon"
-              className="min-w-[15px] h-[18px]"
-            />
+            {isScrolled ? (
+              <img
+                src="/notification-icon.png"
+                alt="cart icon"
+                className="min-w-[21px] h-[21px]"
+              />
+            ) : (
+              <img
+                src="/notification-white-icon.svg"
+                alt="cart icon"
+                className="min-w-[21px] h-[21px]"
+              />
+            )}
           </button>
-          <Link to={"/profile"}>
-            <div className="w-[57px] h-[57px] rounded-full bg-white flex items-center justify-center">
-              {user?.profilePicture ? (
+          {user && (
+            <Link to={"/profile"}>
+              {isScrolled ? (
                 <img
-                  src={user?.profilePictureUrl}
+                  src="/public/profile-icon.png"
                   alt="profile icon"
-                  className="w-full h-full rounded-full object-cover"
+                  className="w-[57px] h-[57px]"
                 />
               ) : (
-                <img
-                  src="/user-profile-icon.png"
-                  alt="profile icon"
-                  className="w-[14px] h-[19px]"
-                />
+                <div
+                  className={`w-[57px] h-[57px] rounded-full bg-white flex items-center justify-center`}
+                >
+                  {user?.profilePicture ? (
+                    <img
+                      src={user?.profilePictureUrl}
+                      alt="profile icon"
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src="/user-profile-icon.png"
+                      alt="profile icon"
+                      className="w-[14px] h-[19px]"
+                    />
+                  )}
+                </div>
               )}
-            </div>
-          </Link>
+            </Link>
+          )}
         </div>
       </ul>
 
       <div className={`flex items-center justify-end gap-10 lg:hidden`}>
         <button type="button" onClick={handleToggleSidebar}>
-          <CgMenu className="text-xl" />
+          <CgMenu className="text-xl text-gray-200" />
         </button>
 
         <div
@@ -122,10 +145,10 @@ const Navbar = () => {
           </div>
 
           <ul className="w-full flex flex-col items-start justify-start gap-5 pt-10">
-            {pages?.map((page, index) => {
+            {PAGE_LINKS?.map((page, index) => {
               return (
-                <li>
-                  <Link to={page?.url} key={index} className="font-medium">
+                <li key={index}>
+                  <Link to={page?.url} className="font-medium">
                     {page?.title}
                   </Link>
                 </li>

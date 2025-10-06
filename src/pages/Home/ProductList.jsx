@@ -13,6 +13,9 @@ const ProductList = () => {
       <ProductCard />
       <ProductCard />
       <ProductCard />
+      <ProductCard />
+      <ProductCard />
+      <ProductCard />
     </div>
   );
 };

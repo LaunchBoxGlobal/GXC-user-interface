@@ -9,9 +9,9 @@ const ProductCard = () => {
         <div className="w-full relative">
           <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
             <img
-              src="/image-placeholder.png"
+              src="/denim-jacket-image.png"
               alt="image placeholder"
-              className="w-[92px] h-[94px]"
+              className="w-w-full h-full max-h-[276px] object-cover rounded-[15px]"
             />
           </div>
         </div>

@@ -9,6 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -34,7 +35,6 @@ const LoginForm = () => {
       password: Yup.string().required("Password is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      resetForm();
       setLoading(true);
       try {
         const res = await axios.post(`${BASE_URL}/auth/login`, values, {
@@ -54,11 +54,8 @@ const LoginForm = () => {
           }
         }
       } catch (error) {
-        console.error("login error:", error?.response);
-
         const apiRes = error?.response?.data;
 
-        // check if it's email not verified case
         if (
           apiRes?.message === "Please verify your email before logging in" &&
           apiRes?.data?.token
@@ -79,7 +76,10 @@ const LoginForm = () => {
             );
 
             if (resendRes?.data?.success) {
-              alert(resendRes.data.message);
+              resetForm();
+              enqueueSnackbar(resendRes.data.message, {
+                variant: "error",
+              });
               navigate("/verify-otp", {
                 state: {
                   email: values.email,
@@ -88,12 +88,16 @@ const LoginForm = () => {
               });
             }
           } catch (err) {
-            console.error("verify email error:", err);
-            alert(err.response?.data?.message || err.message);
+            // console.error("verify email error:", err);
+            enqueueSnackbar(err.response?.data?.message || err.message, {
+              variant: "error",
+            });
           }
         } else {
           // for all other errors show normal error
-          alert(apiRes?.message || error?.message);
+          enqueueSnackbar(apiRes?.message || error?.message, {
+            variant: "error",
+          });
         }
       } finally {
         setLoading(false);
@@ -175,20 +179,11 @@ const LoginForm = () => {
           </p>
           <Link
             to={redirect ? `/signup?redirect=${redirect}` : "/signup"}
-            className="font-medium"
+            className="font-medium text-[var(--button-bg)]"
           >
             Sign Up
           </Link>
         </div>
-        {/* <Link
-          to={`/login`}
-          className="text-sm font-medium flex items-center gap-1"
-        >
-          <div className="w-[18px] h-[18px] bg-black rounded-full flex items-center justify-center">
-            <RiArrowLeftSLine className="text-white text-base" />
-          </div>
-          Back
-        </Link> */}
       </div>
     </form>
   );

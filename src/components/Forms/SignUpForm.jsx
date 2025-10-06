@@ -11,6 +11,7 @@ const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../data/baseUrl";
+import { enqueueSnackbar } from "notistack";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -101,7 +102,10 @@ const SignUpForm = () => {
         }
       } catch (error) {
         console.error("Sign up error:", error.response?.data);
-        alert(error.response?.data?.message || error.message);
+        enqueueSnackbar(error.response?.data?.message || error.message, {
+          autoHideDuration: 1500,
+          variant: "error",
+        });
       } finally {
         setLoading(false);
       }

@@ -9,6 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
@@ -40,9 +41,8 @@ const VerifyEmail = () => {
           }
         );
 
-        Cookies.set("verificationEmail", values.email);
-
         if (res?.data?.success) {
+          Cookies.set("userEmail", values.email);
           resetForm();
           alert(res?.data?.message);
           navigate("/verify-otp", {
@@ -54,7 +54,10 @@ const VerifyEmail = () => {
         }
       } catch (error) {
         console.error("verify email error:", error);
-        alert(error.response?.data?.message || error?.message);
+        enqueueSnackbar(error.response?.data?.message || error?.message, {
+          autoHideDuration: 1500,
+          variant: "error",
+        });
       } finally {
         setLoading(false);
       }

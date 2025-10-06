@@ -10,6 +10,7 @@ import ResendOtp from "./ResendOtp";
 import Cookies from "js-cookie";
 import EmailVerificationPopup from "../Popups/EmailVerificationPopup";
 import { useAppContext } from "../../context/AppContext";
+import { enqueueSnackbar } from "notistack";
 
 const VerifyOtp = () => {
   const inputRefs = useRef([]);
@@ -18,7 +19,6 @@ const VerifyOtp = () => {
   const [searchParams] = useSearchParams();
   const { page } = location?.state || {};
   const redirect = searchParams?.get("redirect");
-  const [email, setEmail] = useState(Cookies.get("verificationEmail"));
   const { showEmailVerificationPopup, setShowEmailVerificationPopup } =
     useAppContext();
   const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ const VerifyOtp = () => {
       toggleEmailVerificationPopup();
     } else if (page == "/forgot-password") {
       navigate(`/change-password`, {
-        state: { email, otp: userOtp },
+        state: { email: userEmail, otp: userOtp },
       });
       toggleEmailVerificationPopup();
     } else if (page === "/login") {
@@ -71,7 +71,8 @@ const VerifyOtp = () => {
       }
       setLoading(true);
 
-      const body = page === "/signup" ? { code: otp } : { code: otp, email };
+      const body =
+        page === "/signup" ? { code: otp } : { code: otp, email: userEmail };
 
       try {
         const url =
@@ -94,10 +95,12 @@ const VerifyOtp = () => {
           Cookies.set("isVerified", true);
         }
       } catch (error) {
-        console.error("verify email error:", error);
-
-        alert(
-          error?.message || error.response?.data?.message || error?.message
+        enqueueSnackbar(
+          error?.message || error.response?.data?.message || error?.message,
+          {
+            variant: "error",
+            autoHideDuration: 1500,
+          }
         );
       } finally {
         setLoading(false);
@@ -149,12 +152,10 @@ const VerifyOtp = () => {
       >
         <div className="w-full text-center space-y-3 mt-4">
           <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
-          {(email || userEmail) && (
+          {userEmail && (
             <p className="text-[var(--secondary-color)] flex justify-center flex-wrap gap-1">
               The code was sent to{" "}
-              <span className="text-black font-medium">
-                {email ? email : userEmail}
-              </span>
+              <span className="text-black font-medium">{userEmail}</span>
             </p>
           )}
         </div>
