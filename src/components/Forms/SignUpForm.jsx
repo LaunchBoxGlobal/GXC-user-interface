@@ -19,7 +19,7 @@ const SignUpForm = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = `Sign up - ${PAGETITLE}`;
+    document.title = `Sign up - GiveXChange`;
   }, []);
 
   const formik = useFormik({

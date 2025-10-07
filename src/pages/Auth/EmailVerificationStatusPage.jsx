@@ -17,7 +17,7 @@ const EmailVerificationStatusPage = () => {
   };
 
   useEffect(() => {
-    document.title = `Account verified - ${PAGETITLE}`;
+    document.title = `Account verified - GiveXChange`;
   }, []);
 
   return (

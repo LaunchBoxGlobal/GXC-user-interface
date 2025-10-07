@@ -19,7 +19,7 @@ const LoginForm = () => {
   const redirect = searchParams?.get("redirect");
 
   useEffect(() => {
-    document.title = `Login - ${PAGETITLE}`;
+    document.title = `Login - GiveXChange`;
   }, []);
 
   const formik = useFormik({

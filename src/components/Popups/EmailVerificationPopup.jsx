@@ -18,7 +18,7 @@ const EmailVerificationPopup = ({ showPopup, togglePopup, redirectParams }) => {
     useAppContext();
 
   useEffect(() => {
-    document.title = `Account verified - ${PAGETITLE}`;
+    document.title = `Account verified - GiveXChange`;
   }, []);
 
   const handleContinue = () => {
