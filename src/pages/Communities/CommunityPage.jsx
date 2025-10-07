@@ -127,7 +127,6 @@ const CommunityPage = () => {
       navigate(`/?community=${communityTitle}`);
     } catch (error) {
       console.log("accept invitation error >>>>> ", error);
-      // handleApiError(error, navigate);
       if (error.response.status === 401) {
         Cookies.remove("userToken");
         Cookies.remove("user");
