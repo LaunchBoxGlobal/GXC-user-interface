@@ -36,7 +36,7 @@ const VerifyOtp = () => {
       });
       toggleEmailVerificationPopup();
     } else if (page == "/forgot-password") {
-      navigate(`/change-password`, {
+      navigate(`/change-password${redirect && `?redirect=${redirect}`}`, {
         state: { email: userEmail, otp: userOtp },
       });
       toggleEmailVerificationPopup();

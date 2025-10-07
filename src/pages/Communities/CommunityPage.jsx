@@ -2,11 +2,13 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import CommunityDetails from "./CommunityDetails";
 import { useAppContext } from "../../context/AppContext";
+import { handleApiError } from "../../utils/handleApiError";
+import Cookies from "js-cookie";
 
 const CommunityPage = () => {
   const { communityTitle } = useParams();
@@ -17,7 +19,10 @@ const CommunityPage = () => {
   const [loading, setLoading] = useState(false);
   const [alreadyMember, setAlreadyMember] = useState(null);
   const [community, setCommunity] = useState(null);
+  const [initializing, setInitializing] = useState(true);
   const { user } = useAppContext();
+  const [notFound, setNotFound] = useState(false);
+  const navigate = useNavigate();
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
@@ -33,36 +38,15 @@ const CommunityPage = () => {
       setCommunity(res?.data?.data);
     } catch (error) {
       console.log(error);
-      handleApiError(error, navigate);
+      if (error?.response?.status === 404) {
+        setNotFound(true);
+      } else {
+        handleApiError(error, navigate);
+      }
     } finally {
       setFetchingCommunity(false);
     }
   };
-
-  useEffect(() => {
-    const initCommunityPage = async () => {
-      const key = `invite-${communityTitle} ${user?.id}`;
-      const alreadyAccepted = localStorage.getItem(key);
-      if (alreadyAccepted) setHasAccepted(true);
-
-      // 🔹 2. Check membership
-      const isMember = await checkIamAlreadyMember();
-      if (isMember) {
-        setAlreadyMember(true);
-        // fetch details after membership is confirmed
-        await fetchCommunityDetails();
-        return;
-      }
-
-      // 🔹 3. Not a member → check join status
-      await checkJoinStatus();
-
-      // 🔹 4. Finally fetch community details
-      await fetchCommunityDetails();
-    };
-
-    initCommunityPage();
-  }, [communityTitle]);
 
   const checkIamAlreadyMember = async () => {
     try {
@@ -97,9 +81,8 @@ const CommunityPage = () => {
       const canJoinStatus = res?.data?.data?.canJoin;
       setCanJoin(canJoinStatus);
 
-      // Show popup only if not accepted yet and joinable
       if (
-        !localStorage.getItem(`invite-${communityTitle} ${user?.id}}`) &&
+        !localStorage.getItem(`invite-${communityTitle} ${user?.id}`) &&
         canJoinStatus
       ) {
         setShowPopup(true);
@@ -133,8 +116,6 @@ const CommunityPage = () => {
         }
       );
 
-      console.log("accept invitation res >>>>> ", res?.data);
-
       localStorage.setItem(`invite-${communityTitle} ${user?.id}`, "accepted");
       setHasAccepted(true);
       setShowPopup(false);
@@ -143,16 +124,78 @@ const CommunityPage = () => {
         variant: "success",
         autoHideDuration: 2000,
       });
+      navigate(`/?community=${communityTitle}`);
     } catch (error) {
       console.log("accept invitation error >>>>> ", error);
-      enqueueSnackbar(error?.response?.data?.message || error?.message, {
-        variant: "error",
-        autoHideDuration: 2000,
-      });
+      // handleApiError(error, navigate);
+      if (error.response.status === 401) {
+        Cookies.remove("userToken");
+        Cookies.remove("user");
+        navigate("/login");
+      } else if (error?.response?.status === 403) {
+        enqueueSnackbar(error?.response?.data?.message || error?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+        navigate("/");
+      } else {
+        enqueueSnackbar(error?.response?.data?.message || error?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const initCommunityPage = async () => {
+      const key = `invite-${communityTitle} ${user?.id}`;
+      const alreadyAccepted = localStorage.getItem(key);
+      if (alreadyAccepted) setHasAccepted(true);
+
+      const isMember = await checkIamAlreadyMember();
+      if (isMember) {
+        setAlreadyMember(true);
+        await fetchCommunityDetails();
+        navigate(`/?community=${communityTitle}`); // 👈 Redirect to home with param
+        setInitializing(false);
+        return;
+      }
+
+      await checkJoinStatus();
+      await fetchCommunityDetails();
+      setInitializing(false);
+    };
+
+    initCommunityPage();
+  }, [communityTitle]);
+
+  if (initializing || fetchingCommunity) {
+    // 👈 Full page loader until everything finishes
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (notFound && !fetchingCommunity) {
+    return (
+      <div className="min-h-screen flex items-start justify-center text-center padding-x pt-20">
+        <div>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+            Community Not Found
+          </h2>
+          <p className="text-gray-600">
+            The community you’re trying to access doesn’t exist or has been
+            removed.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-5 min-h-screen">
@@ -191,38 +234,14 @@ const CommunityPage = () => {
       )}
 
       {/* Community Details */}
-      {alreadyMember ? (
-        <div className="w-full padding-x min-h-screen">
-          <h1 className="text-2xl font-bold">
-            Welcome back to {communityTitle} 🎉
-          </h1>
-          <p>You are already a member of this community.</p>
-        </div>
-      ) : hasAccepted ? (
-        <div className="w-full padding-x min-h-screen">
-          <h1 className="text-2xl font-bold">Welcome to {communityTitle} 🎉</h1>
-          <p>Here are the details of the community...</p>
-        </div>
-      ) : canJoin === false ? (
-        <div className="w-full padding-x min-h-screen">
-          <CommunityDetails
-            community={community}
-            canJoin={canJoin}
-            loading={loading}
-            setLoading={setLoading}
-            communityTitle={communityTitle}
-          />
-        </div>
-      ) : (
-        !showPopup && (
-          <CommunityDetails
-            community={community}
-            canJoin={canJoin}
-            loading={loading}
-            setLoading={setLoading}
-            communityTitle={communityTitle}
-          />
-        )
+      {!showPopup && (
+        <CommunityDetails
+          community={community}
+          canJoin={canJoin}
+          loading={loading}
+          setLoading={setLoading}
+          communityTitle={communityTitle}
+        />
       )}
     </div>
   );

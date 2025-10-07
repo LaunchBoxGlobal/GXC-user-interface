@@ -2,7 +2,7 @@ import TextField from "../Common/TextField";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "../Common/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -14,6 +14,7 @@ import { enqueueSnackbar } from "notistack";
 const VerifyEmail = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     document.title = `Verify Email - ${PAGETITLE}`;
@@ -29,6 +30,7 @@ const VerifyEmail = () => {
     onSubmit: async (values, { resetForm }) => {
       resetForm();
       setLoading(true);
+      const redirect = searchParams?.get("redirect");
 
       try {
         const res = await axios.post(
@@ -45,7 +47,7 @@ const VerifyEmail = () => {
           Cookies.set("userEmail", values.email);
           resetForm();
           alert(res?.data?.message);
-          navigate("/verify-otp", {
+          navigate(`/verify-otp${redirect && `?redirect=${redirect}`}`, {
             state: {
               page: "/forgot-password",
               email: values.email,

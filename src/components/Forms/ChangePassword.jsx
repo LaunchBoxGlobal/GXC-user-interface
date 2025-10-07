@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "../Common/Button";
 import PasswordField from "../Common/PasswordField";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate, useSearchParams } from "react-router-dom";
 import PasswordUpdateSuccessModal from "../Popups/PasswordUpdateSuccessModal";
 import { useState } from "react";
 import axios from "axios";
@@ -17,8 +17,10 @@ const ChangePassword = () => {
   const { email, otp } = location?.state || {};
   const [loading, setLoading] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState(
-    Cookies.get("verificationEmail")
+    Cookies.get("userEmail")
   );
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams?.get("redirect");
 
   const formik = useFormik({
     initialValues: {
@@ -44,6 +46,7 @@ const ChangePassword = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
+
         const res = await axios.post(`${BASE_URL}/auth/reset-password`, {
           email: verificationEmail,
           code: otp,
@@ -69,7 +72,7 @@ const ChangePassword = () => {
 
   const handleTogglePopup = () => {
     setShowPopup(false);
-    navigate("/login");
+    navigate(`/login${redirect && `?redirect=${redirect}`}`);
   };
 
   return (

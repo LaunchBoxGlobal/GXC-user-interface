@@ -50,7 +50,7 @@ const LoginForm = () => {
           if (redirect) {
             navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
           } else {
-            navigate("/");
+            navigate(`/${redirect && `?community=${redirect}`}`);
           }
         }
       } catch (error) {
@@ -156,7 +156,10 @@ const LoginForm = () => {
         </div>
 
         <div className="w-full text-end">
-          <Link to={`/forgot-password`} className="text-xs font-medium">
+          <Link
+            to={`/forgot-password${redirect && `?redirect=${redirect}`}`}
+            className="text-xs font-medium"
+          >
             Forgot Password?
           </Link>
         </div>

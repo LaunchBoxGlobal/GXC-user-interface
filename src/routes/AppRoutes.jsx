@@ -24,6 +24,8 @@ import ReportingPage from "../pages/Reporting/ReportingPage";
 import WalletPage from "../pages/Wallet/WalletPage";
 import OrdersPage from "../pages/Orders/OrdersPage";
 import ProductManagementPage from "../pages/ProductManagement/ProductManagementPage";
+import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
+import AddProductPage from "../pages/ProductManagement/AddProductPage";
 
 // const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
@@ -334,6 +336,34 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <ProductManagementPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/products/:productName"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <ProductDetailsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/products/add-product"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <AddProductPage />
               </Layout>
             }
           />

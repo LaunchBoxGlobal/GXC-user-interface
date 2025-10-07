@@ -24,20 +24,38 @@ const SignUpForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      // name: "",
       email: "",
       // phoneNumber: "",
+      firstName: "",
+      lastName: "",
       password: "",
       confirmPassword: "",
       profileImage: null,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(3, "Name must contain at least 3 characters")
-        .max(30, "Name must be 30 characters or less")
+      // name: Yup.string()
+      //   .min(3, "Name must contain at least 3 characters")
+      //   .max(30, "Name must be 30 characters or less")
+      //   .matches(
+      //     /^[A-Z][a-zA-Z ]*$/,
+      //     "Name must start with a capital letter and contain only letters and spaces"
+      //   )
+      //   .required("Name is required"),
+      firstName: Yup.string()
+        .min(3, "First name must contain at least 3 characters")
+        .max(10, "First name must be 10 characters or less")
         .matches(
           /^[A-Z][a-zA-Z ]*$/,
-          "Name must start with a capital letter and contain only letters and spaces"
+          "First name must start with a capital letter and contain only letters and spaces"
+        )
+        .required("Name is required"),
+      lastName: Yup.string()
+        .min(3, "Last name must contain at least 3 characters")
+        .max(10, "Last name must be 10 characters or less")
+        .matches(
+          /^[A-Z][a-zA-Z ]*$/,
+          "Last name must start with a capital letter and contain only letters and spaces"
         )
         .required("Name is required"),
       // phoneNumber: Yup.string()
@@ -69,7 +87,9 @@ const SignUpForm = () => {
       try {
         setLoading(true);
         const formData = new FormData();
-        formData.append("fullName", values.name);
+        // formData.append("fullName", values.name);
+        formData.append("firstName", values.firstName);
+        formData.append("lastName", values.lastName);
         formData.append("email", values.email);
         formData.append("password", values.password);
         // formData.append("phone", values.phoneNumber);
@@ -135,20 +155,37 @@ const SignUpForm = () => {
       </div> */}
 
       <div className="w-full space-y-3">
-        <div className="w-full space-y-1">
-          <label htmlFor="name" className="text-sm font-medium">
-            Full Name
-          </label>
-          <TextField
-            type="text"
-            name="name"
-            placeholder="Enter your full name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.name}
-            touched={formik.touched.name}
-          />
+        <div className="w-full grid grid-cols-2 gap-2">
+          <div className="w-full space-y-1">
+            <label htmlFor="firstName" className="text-sm font-medium">
+              First Name
+            </label>
+            <TextField
+              type="text"
+              name="firstName"
+              placeholder="Enter your first name"
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.firstName}
+              touched={formik.touched.firstName}
+            />
+          </div>
+          <div className="w-full space-y-1">
+            <label htmlFor="lastName" className="text-sm font-medium">
+              Last Name
+            </label>
+            <TextField
+              type="text"
+              name="lastName"
+              placeholder="Enter your last name"
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.errors.lastName}
+              touched={formik.touched.lastName}
+            />
+          </div>
         </div>
 
         <div className="w-full space-y-1">
