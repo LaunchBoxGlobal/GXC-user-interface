@@ -72,7 +72,7 @@ const ChangePassword = () => {
 
   const handleTogglePopup = () => {
     setShowPopup(false);
-    navigate(`/login${redirect && `?redirect=${redirect}`}`);
+    navigate(`/login${redirect ? `?redirect=${redirect}` : ""}`);
   };
 
   return (

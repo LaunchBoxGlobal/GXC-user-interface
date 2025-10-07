@@ -47,12 +47,15 @@ const VerifyEmail = () => {
           Cookies.set("userEmail", values.email);
           resetForm();
           alert(res?.data?.message);
-          navigate(`/verify-otp${redirect && `?redirect=${redirect}`}`, {
-            state: {
-              page: "/forgot-password",
-              email: values.email,
-            },
-          });
+          navigate(
+            redirect ? `/verify-otp?redirect=${redirect}` : "/verify-otp",
+            {
+              state: {
+                page: "/forgot-password",
+                email: values.email,
+              },
+            }
+          );
         }
       } catch (error) {
         console.error("verify email error:", error);

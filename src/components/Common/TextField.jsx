@@ -28,8 +28,10 @@ const TextField = ({
         value={value}
         onChange={onChange}
         onBlur={onBlur}
-        className={`w-full border h-[49px] px-[15px] py-[14px] rounded-[8px] outline-none
-          ${error && touched ? "border-red-500" : "border-[#D9D9D9]"}`}
+        className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none
+          ${
+            error && touched ? "border-red-500" : "border-[var(--secondary-bg)]"
+          }`}
       />
       {error && touched && <p className="text-red-500 text-xs">{error}</p>}
     </div>

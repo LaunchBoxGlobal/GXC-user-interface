@@ -157,7 +157,11 @@ const LoginForm = () => {
 
         <div className="w-full text-end">
           <Link
-            to={`/forgot-password${redirect && `?redirect=${redirect}`}`}
+            to={
+              redirect
+                ? `/forgot-password?redirect=${redirect}`
+                : "/forgot-password"
+            }
             className="text-xs font-medium"
           >
             Forgot Password?

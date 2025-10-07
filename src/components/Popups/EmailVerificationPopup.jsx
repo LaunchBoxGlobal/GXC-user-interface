@@ -1,19 +1,7 @@
 import { useEffect } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
-const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 
-const EmailVerificationPopup = ({ showPopup, togglePopup, redirectParams }) => {
-  // const location = useLocation();
-  // const { page } = location.state || {};
-  // const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  // const redirect = searchParams.get("redirect");
+const EmailVerificationPopup = ({ togglePopup }) => {
   const { setShowEmailVerificationPopup, showEmailVerificationPopup } =
     useAppContext();
 

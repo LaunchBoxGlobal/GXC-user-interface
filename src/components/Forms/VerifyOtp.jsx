@@ -35,8 +35,8 @@ const VerifyOtp = () => {
         state: { page: "/verify-otp" },
       });
       toggleEmailVerificationPopup();
-    } else if (page == "/forgot-password") {
-      navigate(`/change-password${redirect && `?redirect=${redirect}`}`, {
+    } else if (page === "/forgot-password") {
+      navigate(`/change-password${redirect ? `?redirect=${redirect}` : ""}`, {
         state: { email: userEmail, otp: userOtp },
       });
       toggleEmailVerificationPopup();
@@ -177,10 +177,6 @@ const VerifyOtp = () => {
             ))}
           </div>
 
-          {/* {formik.errors.otp && (
-          <p className="text-red-500 text-sm">{formik.errors.otp}</p>
-        )} */}
-
           <div className="pt-3">
             <Button type="submit" title="Verify" isLoading={loading} />
           </div>
@@ -191,7 +187,7 @@ const VerifyOtp = () => {
             <p className="text-[var(--secondary-color)]">
               Didn't receive the code yet?{" "}
             </p>
-            <ResendOtp page={page} email={userEmail || email} />
+            <ResendOtp page={page} email={userEmail} />
           </div>
         </div>
       </form>
