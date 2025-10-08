@@ -18,11 +18,13 @@ const EmailVerificationPopup = ({ togglePopup }) => {
       <div className="w-full h-screen fixed inset-0 px-5 z-50 bg-[rgba(0,0,0,0.4)] flex items-center justify-center">
         <div className="w-full max-w-[471px] bg-white p-8 rounded-2xl">
           <div className="w-full text-center">
-            <img
-              src="/green-check.png"
-              alt="check-icon"
-              className="w-[107px] h-[107px] mx-auto"
-            />
+            <div className="w-[107px] h-[107px] bg-[var(--button-bg)] flex items-center justify-center rounded-full mx-auto">
+              <img
+                src="/check-icon-white.png"
+                alt="check-icon"
+                className="w-[31px] h-[23px]"
+              />
+            </div>
             <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
               Email Address <br /> Verified Successfully
             </h1>

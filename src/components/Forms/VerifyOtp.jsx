@@ -154,7 +154,7 @@ const VerifyOtp = () => {
           <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
           {userEmail && (
             <p className="text-[var(--secondary-color)] flex justify-center flex-wrap gap-1">
-              The code was sent to{" "}
+              Verify the code sent at{" "}
               <span className="text-black font-medium">{userEmail}</span>
             </p>
           )}

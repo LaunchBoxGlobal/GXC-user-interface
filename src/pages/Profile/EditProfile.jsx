@@ -87,6 +87,10 @@ const EditProfile = () => {
       email: user?.email || "",
       address: user?.address || "",
       phoneNumber: user?.phone || "",
+      city: user?.city || "",
+      zipcode: user?.zipcode || "",
+      state: user?.state || "",
+      country: user?.country || "",
       profileImage: null,
     },
     validationSchema: Yup.object({
@@ -116,6 +120,21 @@ const EditProfile = () => {
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
+      zipcode: Yup.string()
+        .matches(/^[0-9]{5}$/, "Zip code must contain 5 digits")
+        .required("Enter your zip code"),
+      city: Yup.string()
+        .min(3, `City name cannot be less than 11 characters`)
+        .max(15, `City name cannot be more than 15 characters`)
+        .required("Enter your city"),
+      state: Yup.string()
+        .min(3, `State cannot be less than 11 characters`)
+        .max(15, `State can not be more than 15 characters`)
+        .required("Enter your state"),
+      country: Yup.string()
+        .min(3, `Country name cannot be less than 11 characters`)
+        .max(15, `Country name cannot be more than 15 characters`)
+        .required("Enter your country"),
       profileImage: Yup.mixed().nullable(),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -128,6 +147,10 @@ const EditProfile = () => {
             email: values.email,
             phone: values.phoneNumber,
             address: values.address,
+            city: values.city,
+            zipcode: values.zipcode,
+            state: values.state,
+            country: values.country,
           },
           {
             headers: {
@@ -287,9 +310,48 @@ const EditProfile = () => {
         </div>
 
         <div className="w-full">
-          <label htmlFor="address" className="font-medium text-sm">
-            Home Address
-          </label>
+          <TextField
+            type="text"
+            name="city"
+            placeholder=""
+            value={formik.values.city}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.city}
+            touched={formik.touched.city}
+            label={"City"}
+          />
+        </div>
+
+        <div className="w-full">
+          <TextField
+            type="text"
+            name="state"
+            placeholder="Enter your state"
+            value={formik.values.state}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.state}
+            touched={formik.touched.state}
+            label={"State"}
+          />
+        </div>
+
+        <div className="w-full">
+          <TextField
+            type="text"
+            name="zipcode"
+            placeholder="Enter your zip code"
+            value={formik.values.zipcode}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.zipcode}
+            touched={formik.touched.zipcode}
+            label={"Zip Code"}
+          />
+        </div>
+
+        <div className="w-full">
           <TextField
             type="text"
             name="address"
@@ -299,6 +361,21 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.address}
             touched={formik.touched.address}
+            label={"Home Address"}
+          />
+        </div>
+
+        <div className="w-full">
+          <TextField
+            type="text"
+            name="country"
+            placeholder="Enter your country"
+            value={formik.values.country}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.country}
+            touched={formik.touched.country}
+            label={"Country"}
           />
         </div>
 

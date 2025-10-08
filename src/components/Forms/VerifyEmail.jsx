@@ -46,7 +46,9 @@ const VerifyEmail = () => {
         if (res?.data?.success) {
           Cookies.set("userEmail", values.email);
           resetForm();
-          alert(res?.data?.message);
+          enqueueSnackbar("Email has been verified successfully", {
+            variant: "success",
+          });
           navigate(
             redirect ? `/verify-otp?redirect=${redirect}` : "/verify-otp",
             {
@@ -60,7 +62,6 @@ const VerifyEmail = () => {
       } catch (error) {
         console.error("verify email error:", error);
         enqueueSnackbar(error.response?.data?.message || error?.message, {
-          autoHideDuration: 1500,
           variant: "error",
         });
       } finally {

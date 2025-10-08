@@ -50,7 +50,7 @@ const PhoneNumberField = ({
             width: "100%",
             height: "100%",
             borderRadius: "12px",
-            backgroundColor: "red",
+            backgroundColor: "#fff",
           }}
           inputStyle={{
             width: "100%",
