@@ -116,7 +116,7 @@ const SignUpForm = () => {
   return (
     <form
       onSubmit={formik.handleSubmit}
-      className="w-full max-w-[350px] flex flex-col items-start gap-4"
+      className="w-full max-w-[400px] flex flex-col items-start gap-4"
     >
       <div className="w-full text-center space-y-3">
         <h1 className="font-semibold text-[32px] leading-none">Sign Up</h1>

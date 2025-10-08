@@ -50,7 +50,7 @@ const LoginForm = () => {
           if (redirect) {
             navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
           } else {
-            navigate(`/${redirect && `?community=${redirect}`}`);
+            navigate(`/${redirect ? `?community=${redirect}` : ""}`);
           }
         }
       } catch (error) {

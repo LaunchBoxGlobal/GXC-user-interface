@@ -9,6 +9,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import * as Yup from "yup";
 import { getToken } from "../../utils/getToken";
 import PhoneNumberField from "../../components/Common/PhoneNumberField";
+import { enqueueSnackbar } from "notistack";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
@@ -81,21 +82,30 @@ const EditProfile = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: user?.fullName || "",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
       email: user?.email || "",
       address: user?.address || "",
       phoneNumber: user?.phone || "",
       profileImage: null,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(3, "Name must contain at least 3 characters")
-        .max(30, "Name must be 30 characters or less")
+      firstName: Yup.string()
+        .min(3, "First name must contain at least 3 characters")
+        .max(10, "First name must be 10 characters or less")
         .matches(
           /^[A-Z][a-zA-Z ]*$/,
-          "Name must start with a capital letter and contain only letters and spaces"
+          "First must start with a capital letter and contain only letters and spaces"
         )
-        .required("Name is required"),
+        .required("First name is required"),
+      lastName: Yup.string()
+        .min(3, "Last name must contain at least 3 characters")
+        .max(10, "Last name must be 10 characters or less")
+        .matches(
+          /^[A-Z][a-zA-Z ]*$/,
+          "Last name must start with a capital letter and contain only letters and spaces"
+        )
+        .required("Last name is required"),
       address: Yup.string()
         .min(15, "Address must be atleast 15 characters")
         .max(50, "Address cannot contain more than 50 characters")
@@ -113,7 +123,8 @@ const EditProfile = () => {
         const profileRes = await axios.put(
           `${BASE_URL}/auth/profile`,
           {
-            fullName: values.name,
+            firstName: values.firstName,
+            lastName: values.lastName,
             email: values.email,
             phone: values.phoneNumber,
             address: values.address,
@@ -146,15 +157,26 @@ const EditProfile = () => {
         if (profileRes?.data?.success) {
           resetForm();
           fetchUserProfile();
-          alert("Profile Updated Successfully!");
+          enqueueSnackbar(
+            profileRes?.data?.message || "Profile Updated Successfully!",
+            {
+              variant: "success",
+            }
+          );
+          // alert("Profile Updated Successfully!");
           navigate("/profile");
         }
       } catch (error) {
         console.error("Update profile error:", error.response?.data);
         if (error?.response?.status === 401) {
-          alert("Session expired, please login again.");
+          enqueueSnackbar(error?.response?.data?.message || error?.message, {
+            variant: "error",
+          });
+          // alert("Session expired, please login again.");
         } else {
-          alert(error.response?.data?.message || error?.message);
+          enqueueSnackbar(error?.response?.data?.message || error?.message, {
+            variant: "error",
+          });
         }
       }
     },
@@ -210,25 +232,31 @@ const EditProfile = () => {
       </div>
 
       <div className="w-full max-w-[500px] flex flex-col items-center gap-4">
-        <div className="w-full space-y-1">
-          <label htmlFor="firstName" className="font-medium text-sm">
-            Full Name
-          </label>
+        <div className="w-full grid grid-cols-2 gap-2">
           <TextField
             type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formik.values.name}
+            name="firstName"
+            placeholder="First Name"
+            value={formik.values.firstName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.errors.name}
-            touched={formik.touched.name}
+            error={formik.errors.firstName}
+            touched={formik.touched.firstName}
+            label={"First Name"}
+          />
+          <TextField
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={formik.values.lastName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.errors.lastName}
+            touched={formik.touched.lastName}
+            label={"First Name"}
           />
         </div>
         <div className="w-full">
-          <label htmlFor="emailAddress" className="font-medium text-sm">
-            Email Address
-          </label>
           <TextField
             type="text"
             name="email"
@@ -239,6 +267,7 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
+            label={"Email Address"}
           />
         </div>
         <div className="w-full">

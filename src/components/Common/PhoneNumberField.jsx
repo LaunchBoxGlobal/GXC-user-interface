@@ -33,8 +33,8 @@ const PhoneNumberField = ({
       )}
 
       <div
-        className={`w-full h-[49px] rounded-[10px] ${
-          error && touched ? "border border-red-500" : "border border-[#D9D9D9]"
+        className={`w-full h-[49px] rounded-[10px] bg-[var(--secondary-bg)] ${
+          error && touched ? "border border-red-500" : "border border-[#f5f5f5]"
         }`}
       >
         <PhoneInput
@@ -50,6 +50,7 @@ const PhoneNumberField = ({
             width: "100%",
             height: "100%",
             borderRadius: "12px",
+            backgroundColor: "red",
           }}
           inputStyle={{
             width: "100%",
@@ -60,7 +61,7 @@ const PhoneNumberField = ({
             color: "gray",
             padding: "10px 50px",
             margin: "0",
-            background: "white",
+            background: "#f5f5f5",
             borderRadius: "10px",
           }}
           buttonStyle={{

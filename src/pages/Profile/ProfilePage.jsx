@@ -57,6 +57,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
+    if (!user) return;
     fetchUserProfile();
   }, []);
 

@@ -227,10 +227,10 @@ const CompleteProfileForm = () => {
               onBlur={formik.handleBlur}
               value={formik.values.description}
               placeholder="Describe yourself"
-              className={`w-full border h-[124px] px-[15px] py-[14px] rounded-[8px] outline-none ${
+              className={`w-full border h-[124px] px-[15px] py-[14px] rounded-[8px] outline-none bg-[var(--secondary-bg)] ${
                 formik.touched.description && formik.errors.description
                   ? "border-red-500"
-                  : "border-[#D9D9D9]"
+                  : "border-[var(--secondary-bg)]"
               }`}
             ></textarea>
             {formik.touched.description && formik.errors.description ? (

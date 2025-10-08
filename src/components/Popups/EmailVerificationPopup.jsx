@@ -16,7 +16,7 @@ const EmailVerificationPopup = ({ togglePopup }) => {
   return (
     showEmailVerificationPopup && (
       <div className="w-full h-screen fixed inset-0 px-5 z-50 bg-[rgba(0,0,0,0.4)] flex items-center justify-center">
-        <div className="w-full max-w-[471px] bg-[#D0E3D0] p-8 rounded-2xl">
+        <div className="w-full max-w-[471px] bg-white p-8 rounded-2xl">
           <div className="w-full text-center">
             <img
               src="/green-check.png"

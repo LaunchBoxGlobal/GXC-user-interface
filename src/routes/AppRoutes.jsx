@@ -26,6 +26,7 @@ import OrdersPage from "../pages/Orders/OrdersPage";
 import ProductManagementPage from "../pages/ProductManagement/ProductManagementPage";
 import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
 import AddProductPage from "../pages/ProductManagement/AddProductPage";
+import CartPage from "../pages/Cart/CartPage";
 
 // const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
@@ -364,6 +365,20 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <AddProductPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/cart"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <CartPage />
               </Layout>
             }
           />

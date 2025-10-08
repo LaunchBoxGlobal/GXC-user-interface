@@ -171,6 +171,11 @@ const CommunityPage = () => {
     initCommunityPage();
   }, [communityTitle]);
 
+  const handleCancelInvitation = () => {
+    setShowPopup(false);
+    navigate("/");
+  };
+
   if (initializing || fetchingCommunity) {
     // 👈 Full page loader until everything finishes
     return (
@@ -201,7 +206,7 @@ const CommunityPage = () => {
       {/* Popup Modal */}
       {showPopup && !hasAccepted && canJoin && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-[#D0E3D0] p-8 rounded-[32px] shadow-lg max-w-[471px] w-full text-center">
+          <div className="bg-[#fff] p-8 rounded-[32px] shadow-lg max-w-[471px] w-full text-center">
             <img
               src="/invitation-popup-icon.png"
               alt="invitation-popup-icon"
@@ -210,14 +215,20 @@ const CommunityPage = () => {
             <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
               You’ve Been Invited to Join a Community!
             </h2>
-            <p className="mb-4">
-              You’ve been invited to join this community. Would you like to
-              accept?
-            </p>
+            {community && community?.owner?.fullName && (
+              <p className="mb-4">
+                {community && community?.owner?.fullName && (
+                  <span className="font-medium">
+                    {community?.owner?.fullName}
+                  </span>
+                )}{" "}
+                has invited to join this community. Would you like to accept?
+              </p>
+            )}
             <div className="w-full grid grid-cols-2 gap-3">
               <button
-                onClick={() => setShowPopup(false)}
-                className="w-full px-4 py-3 rounded-lg bg-white"
+                onClick={() => handleCancelInvitation()}
+                className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
               >
                 Cancel
               </button>

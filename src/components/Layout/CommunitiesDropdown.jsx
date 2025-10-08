@@ -5,9 +5,10 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { TiArrowSortedDown } from "react-icons/ti";
+import { useAppContext } from "../../context/AppContext";
 
 const CommunitiesDropdown = () => {
-  const [communities, setCommunities] = useState([]);
+  const { communities, setCommunities } = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const CommunitiesDropdown = () => {
   const communityFromQuery = searchParams.get("community");
   const [selected, setSelected] = useState(null);
 
-  // 🔹 Fetch joined communities
   const fetchCommunities = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
@@ -28,7 +28,6 @@ const CommunitiesDropdown = () => {
       setCommunities(list);
 
       if (list.length > 0) {
-        // Try matching community from query param
         const matched =
           communityFromQuery &&
           list.find(
@@ -37,10 +36,8 @@ const CommunitiesDropdown = () => {
               c.name?.toLowerCase() === communityFromQuery.toLowerCase()
           );
 
-        // Set matched one or fallback to first
         setSelected(matched || list[0]);
 
-        // If no match found and no param — set param to first one
         if (!communityFromQuery && list[0]) {
           navigate(`/?community=${list[0].slug}`, { replace: true });
         }
@@ -51,7 +48,6 @@ const CommunitiesDropdown = () => {
     }
   };
 
-  // 🔹 Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -62,19 +58,15 @@ const CommunitiesDropdown = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 🔹 Fetch communities when component mounts or query changes
   useEffect(() => {
     fetchCommunities();
   }, [communityFromQuery]);
 
-  // 🔹 Handle selecting a new community
   const handleSelect = (c) => {
     setSelected(c);
     setIsOpen(false);
     navigate(`/?community=${c.slug}`, { replace: true });
   };
-
-  console.log(selected);
 
   return (
     communities.length > 0 && (
@@ -99,7 +91,7 @@ const CommunitiesDropdown = () => {
               {communities.map((c) => (
                 <li
                   key={c.id}
-                  className={`px-4 py-2 cursor-pointer text-gray-800 hover:bg-gray-100 ${
+                  className={`px-4 py-2 cursor-pointer text-gray-800 hover:bg-gray-100 rounded-lg ${
                     selected?.id === c.id ? "bg-gray-100 font-semibold" : ""
                   }`}
                   onClick={() => handleSelect(c)}

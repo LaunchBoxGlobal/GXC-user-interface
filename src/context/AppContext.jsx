@@ -12,6 +12,7 @@ export const AppProvider = ({ children }) => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [communities, setCommunities] = useState([]);
 
   const [showEmailVerificationPopup, setShowEmailVerificationPopup] =
     useState(false);
@@ -92,6 +93,8 @@ export const AppProvider = ({ children }) => {
         fetchUserProfile,
         showEmailVerificationPopup,
         setShowEmailVerificationPopup,
+        communities,
+        setCommunities,
       }}
     >
       {children}

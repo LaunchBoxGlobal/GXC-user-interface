@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-// signup-page-mockup
 
 const AuthLayout = ({ children }) => {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <main className="w-full min-h-screen relative grid grid-cols-1 lg:grid-cols-2 p-4 auth-bg">
       <div className="w-full h-full bg-transparent hidden lg:block">

@@ -171,8 +171,12 @@ const VerifyOtp = () => {
                 value={formik.values.otp[i]}
                 onChange={(e) => handleChange(e, i)}
                 onKeyDown={(e) => handleKeyDown(e, i)}
-                className={`w-[49px] border h-[49px] text-center text-lg font-medium rounded-[8px] outline-none 
-                ${formik.errors.otp ? "border-red-500" : "border-[#D9D9D9]"}`}
+                className={`w-[49px] border h-[49px] text-center text-lg font-medium rounded-[8px] outline-none bg-[var(--secondary-bg)]
+                ${
+                  formik.errors.otp
+                    ? "border-red-500"
+                    : "border-[var(--secondary-bg)]"
+                }`}
               />
             ))}
           </div>
