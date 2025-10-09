@@ -181,25 +181,29 @@ const LoginForm = () => {
         </div>
       </div>
 
-      <div className="w-full flex items-center justify-between gap-6 mt-4">
-        <div className="w-full border border-gray-300" />
-        <p className="text-gray-400 font-medium">OR</p>
-        <div className="w-full border border-gray-300" />
-      </div>
+      {redirect && redirect !== "/" && redirect.trim() !== "" && (
+        <>
+          <div className="w-full flex items-center justify-between gap-6 mt-4">
+            <div className="w-full border border-gray-300" />
+            <p className="text-gray-400 font-medium">OR</p>
+            <div className="w-full border border-gray-300" />
+          </div>
 
-      <div className="w-full mt-2 flex flex-col items-center gap-4">
-        <div className="w-full flex items-center justify-center gap-1">
-          <p className="text-[var(--secondary-color)]">
-            Don't have an account?{" "}
-          </p>
-          <Link
-            to={redirect ? `/signup?redirect=${redirect}` : "/signup"}
-            className="font-medium text-[var(--button-bg)]"
-          >
-            Sign Up
-          </Link>
-        </div>
-      </div>
+          <div className="w-full mt-2 flex flex-col items-center gap-4">
+            <div className="w-full flex items-center justify-center gap-1">
+              <p className="text-[var(--secondary-color)]">
+                Don't have an account?{" "}
+              </p>
+              <Link
+                to={redirect ? `/signup?redirect=${redirect}` : "/signup"}
+                className="font-medium text-[var(--button-bg)]"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </div>
+        </>
+      )}
     </form>
   );
 };

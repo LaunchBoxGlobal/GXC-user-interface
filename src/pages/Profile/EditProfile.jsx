@@ -10,11 +10,19 @@ import * as Yup from "yup";
 import { getToken } from "../../utils/getToken";
 import PhoneNumberField from "../../components/Common/PhoneNumberField";
 import { enqueueSnackbar } from "notistack";
+import {
+  CountrySelect,
+  StateSelect,
+  CitySelect,
+} from "react-country-state-city";
+import "react-country-state-city/dist/react-country-state-city.css";
+import Loader from "../../components/Common/Loader";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
   const { user, setUser } = useAppContext();
+  const [loading, setLoading] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -92,6 +100,8 @@ const EditProfile = () => {
       state: user?.state || "",
       country: user?.country || "",
       profileImage: null,
+      countryId: "",
+      stateId: "",
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
@@ -120,25 +130,40 @@ const EditProfile = () => {
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
+      city: Yup.string()
+        .min(3, "City name cannot be less than 3 characters")
+        .max(15, "City name cannot be more than 15 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "City must start with uppercase and contain only letters and spaces"
+        )
+        .required("Enter your city"),
+
+      state: Yup.string()
+        .min(3, "State cannot be less than 3 characters")
+        .max(15, "State cannot be more than 15 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "State must start with uppercase and contain only letters and spaces"
+        )
+        .required("Enter your state"),
+
+      country: Yup.string()
+        .min(3, "Country name cannot be less than 3 characters")
+        .max(15, "Country name cannot be more than 15 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "Country must start with uppercase and contain only letters and spaces"
+        )
+        .required("Enter your country"),
       zipcode: Yup.string()
         .matches(/^[0-9]{5}$/, "Zip code must contain 5 digits")
         .required("Enter your zip code"),
-      city: Yup.string()
-        .min(3, `City name cannot be less than 11 characters`)
-        .max(15, `City name cannot be more than 15 characters`)
-        .required("Enter your city"),
-      state: Yup.string()
-        .min(3, `State cannot be less than 11 characters`)
-        .max(15, `State can not be more than 15 characters`)
-        .required("Enter your state"),
-      country: Yup.string()
-        .min(3, `Country name cannot be less than 11 characters`)
-        .max(15, `Country name cannot be more than 15 characters`)
-        .required("Enter your country"),
       profileImage: Yup.mixed().nullable(),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        setLoading(true);
         const profileRes = await axios.put(
           `${BASE_URL}/auth/profile`,
           {
@@ -201,6 +226,8 @@ const EditProfile = () => {
             variant: "error",
           });
         }
+      } finally {
+        setLoading(false);
       }
     },
   });
@@ -309,45 +336,90 @@ const EditProfile = () => {
           />
         </div>
 
-        <div className="w-full">
-          <TextField
-            type="text"
-            name="city"
-            placeholder=""
-            value={formik.values.city}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.city}
-            touched={formik.touched.city}
-            label={"City"}
-          />
+        <div className="w-full grid grid-cols-2 gap-3">
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-sm font-medium">Country</label>
+            <CountrySelect
+              containerClassName="w-full"
+              inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none bg-[var(--secondary-bg)] ${
+                formik.touched.country && formik.errors.country
+                  ? "border-red-500"
+                  : "border-gray-200"
+              }`}
+              placeHolder="Select Country"
+              onChange={(val) => {
+                formik.setFieldValue("country", val.name);
+                formik.setFieldValue("countryId", val.id);
+                formik.setFieldValue("state", "");
+                formik.setFieldValue("city", "");
+              }}
+              defaultValue={
+                formik.values.country ? { name: formik.values.country } : null
+              }
+            />
+            {formik.touched.country && formik.errors.country && (
+              <p className="text-red-500 text-xs">{formik.errors.country}</p>
+            )}
+          </div>
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-sm font-medium">State</label>
+            <StateSelect
+              countryid={formik.values.countryId || undefined}
+              containerClassName="w-full"
+              inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none bg-[var(--secondary-bg)] ${
+                formik.touched.state && formik.errors.state
+                  ? "border-red-500"
+                  : "border-gray-200"
+              }`}
+              placeHolder="Select State"
+              onChange={(val) => {
+                formik.setFieldValue("state", val.name);
+                formik.setFieldValue("stateId", val.id);
+                formik.setFieldValue("city", "");
+              }}
+              defaultValue={
+                formik.values.state ? { name: formik.values.state } : null
+              }
+            />
+            {formik.touched.state && formik.errors.state && (
+              <p className="text-red-500 text-xs">{formik.errors.state}</p>
+            )}
+          </div>
         </div>
 
-        <div className="w-full">
-          <TextField
-            type="text"
-            name="state"
-            placeholder="Enter your state"
-            value={formik.values.state}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.state}
-            touched={formik.touched.state}
-            label={"State"}
-          />
-        </div>
+        <div className="w-full grid grid-cols-2 gap-3">
+          <div className="w-full flex flex-col gap-1">
+            <label className="text-sm font-medium">City</label>
+            <CitySelect
+              countryid={formik.values.countryId || undefined}
+              stateid={formik.values.stateId || undefined}
+              containerClassName="w-full"
+              inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none bg-[var(--secondary-bg)] ${
+                formik.touched.city && formik.errors.city
+                  ? "border-red-500"
+                  : "border-gray-200"
+              }`}
+              placeHolder="Select City"
+              onChange={(val) => formik.setFieldValue("city", val.name)}
+              defaultValue={
+                formik.values.city ? { name: formik.values.city } : null
+              }
+            />
+            {formik.touched.city && formik.errors.city && (
+              <p className="text-red-500 text-xs">{formik.errors.city}</p>
+            )}
+          </div>
 
-        <div className="w-full">
           <TextField
             type="text"
             name="zipcode"
-            placeholder="Enter your zip code"
+            placeholder="Enter zip code"
             value={formik.values.zipcode}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.zipcode}
             touched={formik.touched.zipcode}
-            label={"Zip Code"}
+            label="Zip Code"
           />
         </div>
 
@@ -366,22 +438,8 @@ const EditProfile = () => {
         </div>
 
         <div className="w-full">
-          <TextField
-            type="text"
-            name="country"
-            placeholder="Enter your country"
-            value={formik.values.country}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.errors.country}
-            touched={formik.touched.country}
-            label={"Country"}
-          />
-        </div>
-
-        <div className="w-full">
           <button type="submit" className="button">
-            Save
+            {loading ? <Loader /> : "Save"}
           </button>
         </div>
       </div>

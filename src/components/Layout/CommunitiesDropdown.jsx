@@ -102,12 +102,25 @@ const CommunitiesDropdown = () => {
             </ul>
           )}
         </div>
-        <Link
+
+        <div className="w-full max-w-[327px] h-[49px] flex items-center rounded-[19px] px-4 gap-2 productSearchInput">
+          <img
+            src="/search-icon.png"
+            alt="search icon"
+            className="w-[15px] h-[16px]"
+          />
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-full border-none outline-none bg-transparent text-[15px] font-normal text-white placeholder:text-gray-300"
+          />
+        </div>
+        {/* <Link
           to={`/products/add-product?community=${selected?.slug}`}
           className={`w-[130px] lg:w-[214px] h-[58px] bg-white flex items-center justify-center text-sm lg:text-lg font-medium rounded-[12px] text-[var(--button-bg)]`}
         >
           Add Product
-        </Link>
+        </Link> */}
       </div>
     )
   );

@@ -22,7 +22,7 @@ const EmailVerificationPopup = ({ togglePopup }) => {
               <img
                 src="/check-icon-white.png"
                 alt="check-icon"
-                className="w-[31px] h-[23px]"
+                className="w-[31px] h-[23px] invert brightness-0"
               />
             </div>
             <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">

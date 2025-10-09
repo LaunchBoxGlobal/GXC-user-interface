@@ -48,6 +48,9 @@ const VerifyOtp = () => {
   };
 
   useEffect(() => {
+    if (!userEmail) {
+      navigate("/login");
+    }
     document.title = `Verify OTP - GiveXChange`;
   }, []);
 
