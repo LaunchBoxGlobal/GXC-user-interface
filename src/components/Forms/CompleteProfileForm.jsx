@@ -45,7 +45,7 @@ const CompleteProfileForm = () => {
       city: "",
       state: "",
       country: "",
-      countryId: "", // store id separately
+      countryId: "",
       stateId: "",
     },
     validationSchema: Yup.object({
