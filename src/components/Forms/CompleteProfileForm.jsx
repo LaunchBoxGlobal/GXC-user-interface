@@ -75,16 +75,30 @@ const CompleteProfileForm = () => {
         .matches(/^[0-9]{5}$/, "Zip code must contain 5 digits")
         .required("Enter your zip code"),
       city: Yup.string()
-        .min(3, `City name cannot be less than 11 characters`)
-        .max(15, `City name cannot be more than 15 characters`)
+        .min(3, "City name cannot be less than 3 characters")
+        .max(15, "City name cannot be more than 15 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "City must start with uppercase and contain only letters and spaces"
+        )
         .required("Enter your city"),
+
       state: Yup.string()
-        .min(3, `State cannot be less than 11 characters`)
-        .max(15, `State can not be more than 15 characters`)
+        .min(3, "State cannot be less than 3 characters")
+        .max(15, "State cannot be more than 15 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "State must start with uppercase and contain only letters and spaces"
+        )
         .required("Enter your state"),
+
       country: Yup.string()
-        .min(3, `Country name cannot be less than 11 characters`)
-        .max(15, `Country name cannot be more than 15 characters`)
+        .min(3, "Country name cannot be less than 3 characters")
+        .max(25, "Country name cannot be more than 25 characters")
+        .matches(
+          /^[A-Z][a-zA-Z\s]*$/,
+          "Country must start with uppercase and contain only letters and spaces"
+        )
         .required("Enter your country"),
       profileImage: Yup.mixed().nullable(),
     }),
@@ -232,7 +246,7 @@ const CompleteProfileForm = () => {
             />{" "}
             <TextField
               type="text"
-              name="zipCode"
+              name="zipcode"
               placeholder="Enter zip code"
               value={formik.values.zipcode}
               onChange={formik.handleChange}
@@ -306,7 +320,7 @@ const CompleteProfileForm = () => {
 
           <div className="pt-2 flex items-center justify-between">
             <Link
-              to={redirect ? redirect : `/`}
+              to={`/`}
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
               Skip

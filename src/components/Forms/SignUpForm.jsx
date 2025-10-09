@@ -48,6 +48,14 @@ const SignUpForm = () => {
 
       email: Yup.string()
         .email("Invalid email address")
+        .matches(
+          /^(?![._-])([a-zA-Z0-9._%+-]{1,64})@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+          "Please enter a valid email address"
+        )
+        .matches(
+          /^(?!.*[._-]{2,})(?!.*\.\.).*$/,
+          "Email cannot contain consecutive special characters"
+        )
         .required("Email is required"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")

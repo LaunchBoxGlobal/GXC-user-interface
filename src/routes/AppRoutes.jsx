@@ -28,17 +28,9 @@ import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
 import AddProductPage from "../pages/ProductManagement/AddProductPage";
 import CartPage from "../pages/Cart/CartPage";
 
-// const isAuthenticated = () => !!Cookies.get("token");
 const isAuthenticated = () => {
   const token = Cookies.get("userToken");
-  const isVerified = Cookies.get("isVerified") === "true";
   return !!token;
-};
-
-const isUnverified = () => {
-  const token = Cookies.get("userToken");
-  const isVerified = Cookies.get("isVerified") === "true";
-  return !!token && !isVerified;
 };
 
 export const PrivateRoute = ({ element, redirectTo }) => {
@@ -47,10 +39,6 @@ export const PrivateRoute = ({ element, redirectTo }) => {
   if (isAuthenticated()) {
     return element;
   }
-
-  // if (isUnverified()) {
-  //   return <Navigate to="/verify-otp" replace />;
-  // }
 
   const redirectUrl = location.pathname + location.search + location.hash;
   localStorage.setItem("invitation-link", redirectUrl);

@@ -99,11 +99,23 @@ const Navbar = () => {
           {user && (
             <Link to={"/profile"}>
               {isScrolled ? (
-                <img
-                  src="/public/profile-icon.png"
-                  alt="profile icon"
-                  className="w-[57px] h-[57px]"
-                />
+                <div
+                  className={`w-[57px] h-[57px] rounded-full bg-white flex items-center justify-center`}
+                >
+                  {user?.profilePicture ? (
+                    <img
+                      src={user?.profilePictureUrl}
+                      alt="profile icon"
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src="/user-profile-icon.png"
+                      alt="profile icon"
+                      className="w-[14px] h-[19px]"
+                    />
+                  )}
+                </div>
               ) : (
                 <div
                   className={`w-[57px] h-[57px] rounded-full bg-white flex items-center justify-center`}

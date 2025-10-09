@@ -37,11 +37,19 @@ const LoginForm = () => {
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
       try {
-        const res = await axios.post(`${BASE_URL}/auth/login`, values, {
-          headers: {
-            "Content-Type": "application/json",
+        const res = await axios.post(
+          `${BASE_URL}/auth/login`,
+          {
+            email: values?.email,
+            password: values?.password,
+            userType: "regular_user",
           },
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (res?.data?.success) {
           Cookies.set("userToken", res?.data?.data?.token);
