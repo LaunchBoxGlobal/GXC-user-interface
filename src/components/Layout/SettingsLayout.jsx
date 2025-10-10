@@ -152,10 +152,10 @@ const SettingsLayout = ({ page }) => {
         </div>
       </div>
 
-      <div className="w-full mt-5 min-h-[50vh] flex items-start justify-between bg-white rounded-[12px] custom-shadow">
-        <div className="w-[25%] min-h-[70vh] border-r px-8 pt-5">
+      <div className="w-full mt-5 min-h-[50vh] flex flex-col lg:flex-row items-start lg:justify-between bg-white rounded-[12px] custom-shadow">
+        <div className="w-full lg:w-[25%] lg:min-h-[70vh] border-r px-8 pt-5 overflow-hidden">
           <h2 className="text-[28px] font-semibold">Settings</h2>
-          <ul className="w-full flex flex-col mt-5">
+          <ul className="w-full flex lg:flex-col mt-5 overflow-auto">
             {settingPages?.map((link, index) => {
               return (
                 <li
@@ -166,7 +166,7 @@ const SettingsLayout = ({ page }) => {
                     to={link?.url}
                     className={`text-sm flex items-center gap-x-2.5 px-4 font-medium w-full h-[49px] outline-none ${
                       link?.title === "Change Password" && "bg-gray-100"
-                    }`}
+                    } whitespace-nowrap`}
                   >
                     <span className="">{link?.title}</span>
                   </Link>
@@ -183,7 +183,9 @@ const SettingsLayout = ({ page }) => {
             </button>
           </ul>
         </div>
-        <div className="w-[72%] pt-5 pr-5 pb-5">{page}</div>
+        <div className="w-full lg:w-[72%] pt-5 pr-5 pb-5 pl-5 lg:pl-0">
+          {page}
+        </div>
       </div>
     </div>
   );

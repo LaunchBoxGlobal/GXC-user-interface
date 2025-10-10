@@ -142,7 +142,11 @@ const Navbar = () => {
 
       <div className={`flex items-center justify-end gap-10 lg:hidden`}>
         <button type="button" onClick={handleToggleSidebar}>
-          <CgMenu className="text-xl text-gray-200" />
+          <CgMenu
+            className={`text-xl  ${
+              isScrolled ? "text-black" : "text-gray-200"
+            }`}
+          />
         </button>
 
         <div
@@ -160,7 +164,11 @@ const Navbar = () => {
             {PAGE_LINKS?.map((page, index) => {
               return (
                 <li key={index}>
-                  <Link to={page?.url} className="font-medium">
+                  <Link
+                    to={page?.url}
+                    className="font-medium"
+                    onClick={handleToggleSidebar}
+                  >
                     {page?.title}
                   </Link>
                 </li>

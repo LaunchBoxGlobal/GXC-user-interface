@@ -70,12 +70,12 @@ const CommunitiesDropdown = () => {
 
   return (
     communities.length > 0 && (
-      <div className="w-full relative flex items-center justify-between gap-2">
+      <div className="w-full relative flex flex-col md:flex-row gap-y-5 items-center justify-between gap-2">
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
             onClick={() => setIsOpen((prev) => !prev)}
-            className="flex items-center gap-4 bg-transparent text-white font-semibold text-[32px] leading-none outline-none"
+            className="flex items-center gap-4 bg-transparent text-white font-semibold text-[24px] lg:text-[32px] leading-none outline-none"
           >
             {selected ? selected.name : "Select Community"}
             <TiArrowSortedDown
