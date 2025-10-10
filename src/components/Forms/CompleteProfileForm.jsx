@@ -341,7 +341,7 @@ const CompleteProfileForm = () => {
           {/* Buttons */}
           <div className="pt-2 flex items-center justify-between">
             <Link
-              to={`/`}
+              to={redirect ? redirect : `/`}
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
               Skip
