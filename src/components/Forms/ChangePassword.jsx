@@ -9,6 +9,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -56,7 +57,6 @@ const ChangePassword = () => {
         console.log("reset password response >>> ", res?.data);
 
         if (res?.data?.success) {
-          // alert(res?.data?.message);
           resetForm();
           setShowPopup(true);
           Cookies.remove(`userEmail`);
@@ -65,7 +65,14 @@ const ChangePassword = () => {
         }
       } catch (error) {
         console.log(`reset password error >>> `, error);
-        alert(res?.message || res?.response?.data?.message);
+        enqueueSnackbar(
+          res?.message ||
+            res?.response?.data?.message ||
+            "Something went wrong",
+          {
+            variant: "error",
+          }
+        );
       } finally {
         setLoading(false);
       }

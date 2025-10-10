@@ -38,7 +38,6 @@ const AddPaymentInfo = () => {
         .required("CVC is required"),
     }),
     onSubmit: (values, { resetForm }) => {
-      alert(JSON.stringify(values, null, 2));
       setIsPaymentMethodAdded(true);
       resetForm();
     },

@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { getToken } from "../../utils/getToken";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
@@ -48,11 +49,15 @@ const ChangePasswordPage = () => {
 
         if (res?.data?.success) {
           resetForm();
-          alert("Password changed");
+          enqueueSnackbar("Password changed successfully", {
+            variant: "success",
+          });
         }
       } catch (error) {
         console.error("change password error:", error.response?.data);
-        alert(error?.message || error?.response?.data?.message);
+        enqueueSnackbar(error?.message || error?.response?.data?.message, {
+          variant: "error",
+        });
         if (error?.response?.status === 401) {
           Cookies.remove("token");
           Cookies.remove("user");

@@ -211,7 +211,6 @@ const EditProfile = () => {
               variant: "success",
             }
           );
-          // alert("Profile Updated Successfully!");
           navigate("/profile");
         }
       } catch (error) {
@@ -220,7 +219,6 @@ const EditProfile = () => {
           enqueueSnackbar(error?.response?.data?.message || error?.message, {
             variant: "error",
           });
-          // alert("Session expired, please login again.");
         } else {
           enqueueSnackbar(error?.response?.data?.message || error?.message, {
             variant: "error",

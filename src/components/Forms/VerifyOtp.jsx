@@ -210,7 +210,10 @@ const VerifyOtp = () => {
         <div className="w-full mt-2 flex flex-col items-center gap-4">
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              navigate(-1);
+              Cookies.remove("userEmail");
+            }}
             className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
           >
             <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">

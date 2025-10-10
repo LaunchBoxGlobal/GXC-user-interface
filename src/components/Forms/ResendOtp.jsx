@@ -3,6 +3,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import Cookies from "js-cookie";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
+import { enqueueSnackbar } from "notistack";
 
 const ResendOtp = ({ email, page }) => {
   const [timer, setTimer] = useState(60);
@@ -39,12 +40,16 @@ const ResendOtp = ({ email, page }) => {
       );
 
       if (res?.data?.success) {
-        alert(res?.data?.message);
+        enqueueSnackbar(res?.data?.message, {
+          variant: "success",
+        });
         setTimer(60); // start 60s countdown
       }
     } catch (error) {
       console.error("verify email error:", error);
-      alert(error?.response?.data?.message || error.message);
+      enqueueSnackbar(error?.response?.data?.message || error.message, {
+        variant: "error",
+      });
     }
   };
 

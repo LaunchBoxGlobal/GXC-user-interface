@@ -26,7 +26,7 @@ const EmailVerificationPopup = ({ togglePopup }) => {
               />
             </div>
             <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
-              Email Address <br /> Verified Successfully
+              Email has been <br /> Verified Successfully
             </h1>
             <button
               type="button"
