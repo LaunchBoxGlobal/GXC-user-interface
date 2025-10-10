@@ -95,17 +95,25 @@ const VerifyOtp = () => {
         if (res?.data?.success) {
           setUserOtp(otp);
           resetForm();
+          // Cookies.remove(`userEmail`);
+          // Cookies.remove(`verifyEmail`);
+          Cookies.remove("isUserEmailVerified");
+
+          const rawUser = Cookies.get("user");
+          if (rawUser) {
+            const user = JSON.parse(rawUser);
+            user.emailVerified = true;
+            Cookies.set("user", JSON.stringify(user));
+          }
+
           toggleEmailVerificationPopup();
-          Cookies.set("isVerified", true);
+          Cookies.set("isUserEmailVerified", true);
         }
       } catch (error) {
-        enqueueSnackbar(
-          error?.message || error.response?.data?.message || error?.message,
-          {
-            variant: "error",
-            autoHideDuration: 1500,
-          }
-        );
+        enqueueSnackbar(error.response?.data?.message || error?.message, {
+          variant: "error",
+          autoHideDuration: 1500,
+        });
       } finally {
         setLoading(false);
       }

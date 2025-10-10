@@ -45,10 +45,8 @@ const VerifyEmail = () => {
 
         if (res?.data?.success) {
           Cookies.set("userEmail", values.email);
+          Cookies.set("isUserEmailVerified", false);
           resetForm();
-          enqueueSnackbar("Email has been verified successfully", {
-            variant: "success",
-          });
           navigate(
             redirect ? `/verify-otp?redirect=${redirect}` : "/verify-otp",
             {

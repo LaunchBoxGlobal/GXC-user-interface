@@ -59,7 +59,9 @@ const ChangePassword = () => {
           // alert(res?.data?.message);
           resetForm();
           setShowPopup(true);
-          Cookies.remove("verificationEmail");
+          Cookies.remove(`userEmail`);
+          Cookies.remove(`verifyEmail`);
+          Cookies.remove("verificationEmsail");
         }
       } catch (error) {
         console.log(`reset password error >>> `, error);

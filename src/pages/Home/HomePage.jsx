@@ -2,9 +2,13 @@ import { useEffect } from "react";
 import CommunityList from "./CommunityList";
 import ProductList from "./ProductList";
 import { useAppContext } from "../../context/AppContext";
+import Cookies from "js-cookie";
 
 const HomePage = () => {
   const { communities } = useAppContext();
+  Cookies.remove(`userEmail`);
+  Cookies.remove(`verifyEmail`);
+  Cookies.remove("verificationEmsail");
 
   useEffect(() => {
     document.title = "Home - GiveXChange";

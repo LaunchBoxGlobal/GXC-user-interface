@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import Button from "../Common/Button";
 import TextField from "../Common/TextField";
 import AuthImageUpload from "../Common/AuthImageUpload";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -22,11 +22,19 @@ import "react-country-state-city/dist/react-country-state-city.css";
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
   const userData = JSON.parse(Cookies.get("user"));
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+
+  const redirect = searchParams?.get("redirect");
   const [showPopup, setShowPopup] = useState(false);
   Cookies.remove("userEmail");
 
   const togglePopup = () => setShowPopup((prev) => !prev);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+    navigate(redirect ? redirect : `/`);
+  };
 
   useEffect(() => {
     document.title = `Complete Profile - GiveXChange`;
@@ -130,9 +138,15 @@ const CompleteProfileForm = () => {
         }
       } catch (error) {
         console.error("complete profile error:", error);
-        enqueueSnackbar(error.response?.data?.message || error?.message, {
-          variant: "error",
-        });
+        enqueueSnackbar(
+          error.response?.data?.errors[0]?.message ||
+            error.response?.data?.message ||
+            error?.message,
+
+          {
+            variant: "error",
+          }
+        );
         if (error?.response?.status === 401) {
           Cookies.remove("token");
           Cookies.remove("user");
@@ -321,7 +335,7 @@ const CompleteProfileForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.location}
             touched={formik.touched.location}
-            label="Home Address"
+            label="Address"
           />
 
           {/* Buttons */}
@@ -338,7 +352,11 @@ const CompleteProfileForm = () => {
           </div>
         </div>
       </form>
-      <AccountSuccessPopup showPopup={showPopup} togglePopup={togglePopup} />
+      <AccountSuccessPopup
+        showPopup={showPopup}
+        togglePopup={togglePopup}
+        redirect={redirect}
+      />
     </>
   );
 };
