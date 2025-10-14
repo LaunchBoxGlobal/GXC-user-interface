@@ -4,7 +4,7 @@ import { IoStar } from "react-icons/io5";
 
 const ProductCard = () => {
   return (
-    <Link to={`/products/4589848457874`}>
+    <Link to={`/`}>
       <div className="w-full md:max-w-[290px] h-[410px] bg-white rounded-[20px] p-3 custom-shadow">
         <div className="w-full relative">
           <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
