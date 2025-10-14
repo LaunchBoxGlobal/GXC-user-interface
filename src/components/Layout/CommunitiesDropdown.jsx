@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { useAppContext } from "../../context/AppContext";
+import Cookies from "js-cookie";
 
 const CommunitiesDropdown = () => {
   const { communities, setCommunities } = useAppContext();
@@ -65,6 +66,7 @@ const CommunitiesDropdown = () => {
   const handleSelect = (c) => {
     setSelected(c);
     setIsOpen(false);
+    Cookies.set("selected-community", JSON.stringify(c));
     navigate(`/?community=${c.slug}`, { replace: true });
   };
 

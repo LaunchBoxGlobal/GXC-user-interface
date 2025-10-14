@@ -13,10 +13,12 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [communities, setCommunities] = useState([]);
+  const selectedCommunity = Cookies.get("selected-community")
+    ? JSON.parse(Cookies.get("selected-community"))
+    : null;
 
   const [showEmailVerificationPopup, setShowEmailVerificationPopup] =
     useState(false);
-  // const [showCommunityLinkPopup, setShowCommunityLinkPopup] = useState(false);
 
   const handleShowPaymentModal = () => {
     setShowPaymentModal((prev) => !prev);
@@ -95,6 +97,7 @@ export const AppProvider = ({ children }) => {
         setShowEmailVerificationPopup,
         communities,
         setCommunities,
+        selectedCommunity,
       }}
     >
       {children}

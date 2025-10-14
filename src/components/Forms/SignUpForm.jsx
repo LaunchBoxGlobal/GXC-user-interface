@@ -17,7 +17,6 @@ const SignUpForm = () => {
   const redirect = searchParams?.get("redirect");
 
   useEffect(() => {
-    // If there's no redirect or it's just "/", go to login
     if (!redirect || redirect === "/" || redirect.trim() === "") {
       navigate("/login", { replace: true });
       return;
@@ -100,7 +99,6 @@ const SignUpForm = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-        // const redirect = searchParams?.get("redirect");
         if (res?.data?.success) {
           Cookies.set("userEmail", values.email);
           Cookies.set("isUserEmailVerified", false);

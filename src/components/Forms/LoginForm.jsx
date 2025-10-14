@@ -70,6 +70,7 @@ const LoginForm = () => {
         ) {
           const newToken = apiRes.data.token;
           Cookies.set("token", newToken);
+          Cookies.set("userToken", newToken);
 
           try {
             const resendRes = await axios.post(
@@ -84,16 +85,21 @@ const LoginForm = () => {
             );
 
             if (resendRes?.data?.success) {
+              Cookies.set("userEmail", values.email);
               resetForm();
+
               enqueueSnackbar(resendRes.data.message, {
                 variant: "error",
               });
-              navigate("/verify-otp", {
-                state: {
-                  email: values.email,
-                  page: "/login",
-                },
-              });
+              navigate(
+                `/verify-otp${redirect ? `?redirect=${redirect}` : ""}`,
+                {
+                  state: {
+                    email: values.email,
+                    page: "/login",
+                  },
+                }
+              );
             }
           } catch (err) {
             // console.error("verify email error:", err);

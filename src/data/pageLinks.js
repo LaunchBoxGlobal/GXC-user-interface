@@ -5,7 +5,7 @@ export const PAGE_LINKS = [
   },
   {
     title: "Product Management",
-    url: "/products",
+    url: "/product-management",
   },
   {
     title: "Order Management",

@@ -97,7 +97,7 @@ const VerifyOtp = () => {
           resetForm();
           // Cookies.remove(`userEmail`);
           // Cookies.remove(`verifyEmail`);
-          Cookies.remove("isUserEmailVerified");
+          // Cookies.remove("isUserEmailVerified");
 
           const rawUser = Cookies.get("user");
           if (rawUser) {
@@ -107,7 +107,7 @@ const VerifyOtp = () => {
           }
 
           toggleEmailVerificationPopup();
-          Cookies.set("isUserEmailVerified", true);
+          // Cookies.set("isUserEmailVerified", true);
         }
       } catch (error) {
         enqueueSnackbar(error.response?.data?.message || error?.message, {
@@ -207,12 +207,32 @@ const VerifyOtp = () => {
           </div>
         </div>
 
-        <div className="w-full mt-2 flex flex-col items-center gap-4">
+        <div className="w-full mt-2 flex items-center gap-2 justify-center">
+          <p className="text-[var(--secondary-color)]">Typed wrong email?</p>
           <button
             type="button"
             onClick={() => {
-              navigate(-1);
               Cookies.remove("userEmail");
+              Cookies.remove("isUserEmailVerified");
+              Cookies.remove("userToken");
+              Cookies.remove("user");
+              navigate(`/signup`);
+            }}
+            className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
+          >
+            Change Email
+          </button>
+        </div>
+
+        {/* <div className="w-full mt-2 flex flex-col items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              Cookies.remove("userEmail");
+              Cookies.remove("isUserEmailVerified");
+              Cookies.remove("userToken");
+              Cookies.remove("user");
+              navigate(`/signup`);
             }}
             className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
           >
@@ -221,7 +241,7 @@ const VerifyOtp = () => {
             </div>
             Back
           </button>
-        </div>
+        </div> */}
       </form>
 
       <EmailVerificationPopup

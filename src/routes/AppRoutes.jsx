@@ -59,7 +59,7 @@ import CartPage from "../pages/Cart/CartPage";
 // const PublicRoute = ({ element, redirectTo }) => {
 //   return isAuthenticated() ? <Navigate to={redirectTo} /> : element;
 // };
-
+// === Helpers ===
 const getUser = () => {
   const userCookie = Cookies.get("user");
   return userCookie ? JSON.parse(userCookie) : null;
@@ -67,18 +67,12 @@ const getUser = () => {
 
 const isAuthenticated = () => !!Cookies.get("userToken");
 
-// ✅ Use the user object to check email verification status
-const isEmailVerified = () => {
-  const user = getUser();
-  return user?.emailVerified === true;
-};
-
-export const PrivateRoute = ({ element, redirectTo }) => {
+// === PrivateRoute ===
+export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
   const location = useLocation();
   const auth = isAuthenticated();
-  const verified = isEmailVerified();
 
-  // If not authenticated → redirect to login
+  // Not authenticated → redirect to login, preserve intended route
   if (!auth) {
     const redirectUrl = location.pathname + location.search + location.hash;
     localStorage.setItem("invitation-link", redirectUrl);
@@ -90,33 +84,19 @@ export const PrivateRoute = ({ element, redirectTo }) => {
     );
   }
 
-  // ✅ If authenticated but email not verified → go to verify-otp
-  if (auth && !verified) {
-    return (
-      <Navigate
-        to={`/verify-otp?redirect=${encodeURIComponent(
-          location.pathname + location.search + location.hash
-        )}`}
-        replace
-      />
-    );
-  }
-
-  // Otherwise → allow access
   return element;
 };
 
-export const PublicRoute = ({ element, redirectTo }) => {
+// === PublicRoute ===
+export const PublicRoute = ({ element, redirectTo = "/" }) => {
   const auth = isAuthenticated();
-  const verified = isEmailVerified();
 
-  // ✅ If logged in & verified → redirect to dashboard/home
-  if (auth && verified) return <Navigate to={redirectTo} replace />;
+  // If already logged in → redirect to dashboard/home
+  if (auth) {
+    return <Navigate to={redirectTo} replace />;
+  }
 
-  // ✅ If logged in but not verified → redirect to verify-otp
-  if (auth && !verified) return <Navigate to="/verify-otp" replace />;
-
-  // Otherwise → show the public page
+  // Otherwise → show public page
   return element;
 };
 
@@ -379,7 +359,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/products"
+        path="/product-management"
         element={
           <PrivateRoute
             redirectTo={"/login"}
@@ -393,7 +373,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/products/:productName"
+        path="/products/:productId"
         element={
           <PrivateRoute
             redirectTo={"/login"}
