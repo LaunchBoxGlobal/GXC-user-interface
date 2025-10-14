@@ -26,6 +26,8 @@ const VerifyOtp = () => {
   const [userOtp, setUserOtp] = useState(null);
   const userEmail = Cookies.get("userEmail");
 
+  console.log(redirect);
+
   const toggleEmailVerificationPopup = () => {
     setShowEmailVerificationPopup((prev) => !prev);
   };
@@ -42,9 +44,9 @@ const VerifyOtp = () => {
       });
       toggleEmailVerificationPopup();
     } else if (page === "/login") {
-      navigate("/");
+      navigate(redirect ? redirect : "/");
     } else {
-      navigate("/");
+      navigate(redirect ? redirect : "/");
     }
   };
 

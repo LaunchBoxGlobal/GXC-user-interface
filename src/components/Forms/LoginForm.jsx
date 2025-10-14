@@ -104,7 +104,7 @@ const LoginForm = () => {
           } catch (err) {
             // console.error("verify email error:", err);
             enqueueSnackbar(err.response?.data?.message || err.message, {
-              variant: "error",
+              variant: "success",
             });
           }
         } else {
