@@ -15,9 +15,9 @@ const AddProductPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
-  const { selectedCommunity } = useAppContext();
+  const { selectedCommunity, user } = useAppContext();
+  const [customPickupAddress, setCustomPickupAddress] = useState("");
 
-  // ✅ Formik setup
   const formik = useFormik({
     initialValues: {
       productName: "",
@@ -57,36 +57,38 @@ const AddProductPage = () => {
 
     onSubmit: async (values, { resetForm }) => {
       try {
+        if (!selectedCommunity?.id) {
+          enqueueSnackbar(
+            "Please select a community before adding a product.",
+            { variant: "warning" }
+          );
+          return;
+        }
         setLoading(true);
 
-        // const convertToBase64 = (file) =>
-        //   new Promise((resolve, reject) => {
-        //     const reader = new FileReader();
-        //     reader.readAsDataURL(file);
-        //     reader.onload = () => resolve(reader.result);
-        //     reader.onerror = (error) => reject(error);
-        //   });
-
-        // const base64Images = await Promise.all(
-        //   values.productImages.map((file) => convertToBase64(file))
-        // );
-
-        // const payload = {
-        //   title: values.productName,
-        //   price: values.price,
-        //   description: values.description,
-        //   deliveryMethod: values.deliveryType,
-        //   productImages: base64Images,
-        // };
-
         const formData = new FormData();
+        const deliveryTypes = Array.isArray(values.deliveryType)
+          ? values.deliveryType
+          : values.deliveryType.split(",");
+
+        const deliveryMethod =
+          deliveryTypes.length === 2 ? "both" : deliveryTypes[0];
         formData.append("title", values.productName);
         formData.append("price", values.price);
         formData.append("description", values.description);
-        formData.append("deliveryMethod", values.deliveryType.join(","));
+
+        formData.append("deliveryMethod", deliveryMethod);
         values.productImages.forEach((file) =>
           formData.append("productImages", file)
         );
+        if (values.deliveryType.includes("pickup")) {
+          formData.append(
+            "pickupAddress",
+            customPickupAddress || user?.address || ""
+          );
+          formData.append("pickupCity", user?.city || "");
+          formData.append("pickupState", user?.state || "");
+        }
 
         // Send JSON request
         const res = await axios.post(
@@ -94,21 +96,26 @@ const AddProductPage = () => {
           formData,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${getToken()}`,
             },
           }
         );
 
         if (res?.data?.success) {
+          console.log("add product res >>> ", res);
           enqueueSnackbar(res?.data?.message || "Product added successfully!", {
             variant: "success",
           });
           resetForm();
           setPreviewImages([]);
-          navigate(
-            `/products/${res?.data?.data?.product?.title}?productId=${res?.data?.data?.product?.id}`
-          );
+          const product = res?.data?.data?.product;
+
+          if (product && Object.keys(product).length > 0) {
+            navigate(`/products/${product.title}?productId=${product.id}`);
+          } else {
+            navigate("/product-management");
+          }
         }
       } catch (error) {
         console.error("Add product error:", error.response?.data);
@@ -131,6 +138,16 @@ const AddProductPage = () => {
       );
     } else {
       formik.setFieldValue("deliveryType", [...deliveryType, type]);
+
+      if (type === "pickup") {
+        // Check user address info
+        if (!user?.address || !user?.city || !user?.state || !user?.zipcode) {
+          enqueueSnackbar("Please add your full address first.", {
+            variant: "info",
+          });
+          navigate("/edit-profile");
+        }
+      }
     }
   };
 
@@ -138,23 +155,53 @@ const AddProductPage = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
-    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const maxSize = 5 * 1024 * 1024; // 5 MB in bytes
 
-    if (files.length !== validFiles.length) {
-      enqueueSnackbar("Only PNG, JPG, and JPEG images are allowed!", {
-        variant: "warning",
-        autoHideDuration: 2000,
-      });
-    }
+    const validFiles = files.filter((file) => {
+      const fileExt = file.name.split(".").pop().toLowerCase();
+      const isValidType = allowedTypes.includes(file.type);
+      const isValidExt = ["png", "jpg", "jpeg"].includes(fileExt);
+      const isValidSize = file.size <= maxSize;
 
-    // Combine with existing images, max 5
+      if (!isValidExt) {
+        enqueueSnackbar(
+          `${file.name} has an invalid extension (PNG/JPG/JPEG only)`,
+          {
+            variant: "warning",
+            autoHideDuration: 2000,
+          }
+        );
+      }
+
+      if (!isValidType) {
+        enqueueSnackbar(
+          `${file.name} is not a supported format (PNG/JPG/JPEG only)`,
+          {
+            variant: "warning",
+            autoHideDuration: 2000,
+          }
+        );
+      }
+
+      if (!isValidSize) {
+        enqueueSnackbar(`${file.name} exceeds 5MB size limit`, {
+          variant: "warning",
+          autoHideDuration: 2000,
+        });
+      }
+
+      return isValidType && isValidExt && isValidSize;
+    });
+
+    // ✅ Reset input value to allow re-selecting same file
+    e.target.value = "";
+
     const newImages = [...formik.values.productImages, ...validFiles].slice(
       0,
       5
     );
     formik.setFieldValue("productImages", newImages);
 
-    // Preview setup
     const previews = newImages.map((file) => URL.createObjectURL(file));
     setPreviewImages(previews);
   };
@@ -248,6 +295,22 @@ const AddProductPage = () => {
                     </p>
                   ) : null}
                 </div>
+                {/* pickup address */}
+                {formik.values.deliveryType.includes("pickup") && (
+                  <div className="w-full">
+                    <label className="font-medium text-sm mb-2 block">
+                      Self Pickup Address
+                    </label>
+
+                    {/* Editable pre-filled address field */}
+                    <textarea
+                      placeholder="Enter pickup address"
+                      value={customPickupAddress || user?.address || ""}
+                      onChange={(e) => setCustomPickupAddress(e.target.value)}
+                      className="w-full bg-[var(--secondary-bg)] px-[15px] py-[10px] rounded-[8px] outline-none h-[49px] resize-none"
+                    />
+                  </div>
+                )}
 
                 {/* Description */}
                 <div className="w-full">

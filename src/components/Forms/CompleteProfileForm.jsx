@@ -18,6 +18,7 @@ import {
   CitySelect,
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
@@ -61,30 +62,38 @@ const CompleteProfileForm = () => {
         .min(3, "First name must contain at least 3 characters")
         .max(10, "First name must be 10 characters or less")
         .matches(
-          /^[A-Z][a-zA-Z ]*$/,
-          "First must start with a capital letter and contain only letters and spaces"
+          /^[a-zA-Z ]*$/,
+          "First name can only contain letters and spaces"
         )
         .required("First name is required"),
       lastName: Yup.string()
         .min(3, "Last name must contain at least 3 characters")
         .max(10, "Last name must be 10 characters or less")
         .matches(
-          /^[A-Z][a-zA-Z ]*$/,
-          "Last name must start with a capital letter and contain only letters and spaces"
+          /^[a-zA-Z ]*$/,
+          "Last name can only contain letters and spaces"
         )
         .required("Last name is required"),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
       phoneNumber: Yup.string()
-        .matches(/^[0-9]{11}$/, "Phone number must contain 11 digits")
-        .required("Enter your phone number"),
+        .required("Phone number is required")
+        .test("is-valid-phone", "Invalid phone number", (value) => {
+          if (!value) return false;
+
+          // Parse the full phone number string (e.g. +14155552671)
+          const phone = parsePhoneNumberFromString(value);
+
+          // If it's a valid phone number according to libphonenumber-js rules, pass validation
+          return phone ? phone.isValid() : false;
+        }),
       location: Yup.string()
         .min(11, `Address cannot be less than 11 characters`)
         .max(150, `Address can not be more than 150 characters`)
         .required("Please enter your location"),
       zipcode: Yup.string()
-        .matches(/^[0-9]{5}$/, "Zip code must contain 5 digits")
+        .matches(/^\d{4,10}$/, "Please add a valid Zip code")
         .required("Enter your zip code"),
       city: Yup.string().required("Enter your city"),
       state: Yup.string().required("Enter your state"),

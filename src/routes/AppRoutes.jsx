@@ -27,6 +27,7 @@ import ProductManagementPage from "../pages/ProductManagement/ProductManagementP
 import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
 import AddProductPage from "../pages/ProductManagement/AddProductPage";
 import CartPage from "../pages/Cart/CartPage";
+import EditProductPage from "../pages/ProductManagement/EditProductPage";
 
 // const getUser = () => {
 //   const userCookie = Cookies.get("user");
@@ -380,6 +381,19 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <ProductDetailsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+      <Route
+        path="/edit-product"
+        element={
+          <PrivateRoute
+            redirectTo={"/login"}
+            element={
+              <Layout>
+                <EditProductPage />
               </Layout>
             }
           />

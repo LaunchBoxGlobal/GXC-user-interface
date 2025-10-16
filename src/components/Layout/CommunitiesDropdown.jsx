@@ -9,13 +9,22 @@ import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
 
 const CommunitiesDropdown = () => {
-  const { communities, setCommunities } = useAppContext();
+  const {
+    communities,
+    setCommunities,
+    setProductSearchValue,
+    selectedCommunity,
+  } = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const communityFromQuery = searchParams.get("community");
+  const searchFromQuery = searchParams.get("search") || "";
+
   const [selected, setSelected] = useState(null);
+  const [searchValue, setSearchValue] = useState(searchFromQuery);
+  setProductSearchValue(searchFromQuery);
 
   const fetchCommunities = async () => {
     try {
@@ -37,37 +46,54 @@ const CommunitiesDropdown = () => {
               c.name?.toLowerCase() === communityFromQuery.toLowerCase()
           );
 
-        setSelected(matched || list[0]);
+        const selectedCommunity = matched || list[0];
+        setSelected(selectedCommunity);
 
-        if (!communityFromQuery && list[0]) {
-          navigate(`/?community=${list[0].slug}`, { replace: true });
+        Cookies.set("selected-community", JSON.stringify(selectedCommunity));
+
+        if (!communityFromQuery) {
+          setTimeout(() => {
+            navigate(`/?community=${selectedCommunity.slug}`, {
+              replace: true,
+            });
+          }, 50);
         }
       }
     } catch (error) {
-      console.log("err while fetching my communities >> ", error);
+      console.log("Error fetching communities:", error);
       handleApiError(error, navigate);
     }
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
     fetchCommunities();
   }, [communityFromQuery]);
 
+  // ✅ Handle selecting community
   const handleSelect = (c) => {
     setSelected(c);
     setIsOpen(false);
     Cookies.set("selected-community", JSON.stringify(c));
-    navigate(`/?community=${c.slug}`, { replace: true });
+    navigate(
+      `/?community=${c.slug}${searchValue ? `&search=${searchValue}` : ""}`,
+      { replace: true }
+    );
+  };
+
+  // ✅ Handle search input changes
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    // Update query params dynamically
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+
+    navigate(`/?${params.toString()}`, { replace: true });
   };
 
   return (
@@ -87,7 +113,6 @@ const CommunitiesDropdown = () => {
             />
           </button>
 
-          {/* Dropdown list */}
           {isOpen && (
             <ul className="absolute mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
               {communities.map((c) => (
@@ -105,6 +130,7 @@ const CommunitiesDropdown = () => {
           )}
         </div>
 
+        {/* ✅ Search Input */}
         <div className="w-full max-w-[327px] h-[49px] flex items-center rounded-[19px] px-4 gap-2 productSearchInput">
           <img
             src="/search-icon.png"
@@ -115,14 +141,10 @@ const CommunitiesDropdown = () => {
             type="text"
             placeholder="Search here"
             className="w-full border-none outline-none bg-transparent text-[15px] font-normal text-white placeholder:text-gray-300"
+            value={searchValue}
+            onChange={handleSearchChange}
           />
         </div>
-        {/* <Link
-          to={`/products/add-product?community=${selected?.slug}`}
-          className={`w-[130px] lg:w-[214px] h-[58px] bg-white flex items-center justify-center text-sm lg:text-lg font-medium rounded-[12px] text-[var(--button-bg)]`}
-        >
-          Add Product
-        </Link> */}
       </div>
     )
   );

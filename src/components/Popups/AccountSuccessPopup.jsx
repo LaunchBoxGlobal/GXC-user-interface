@@ -20,7 +20,7 @@ const AccountSuccessPopup = ({ showPopup, togglePopup, redirect }) => {
               />
             </div>
             <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
-              Account created <br /> Successfully
+              Account created <br /> successfully
             </h1>
             <button
               type="button"

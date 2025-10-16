@@ -11,7 +11,7 @@ const PaymentInfoSuccessPopup = ({ showPopup, handleTogglePopup }) => {
             />
           </div>
           <h2 className="text-[24px] font-semibold leading-[1.3] text-center">
-            Your Credit Card Has Been successfully added
+            Your credit card has been successfully added
           </h2>
           <p className="text-[var(--secondary-color)] text-center leading-[1.3]">
             Your credit card has been successfully added to your account. You

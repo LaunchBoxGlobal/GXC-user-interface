@@ -51,10 +51,9 @@ const Navbar = () => {
       <ul className="w-full max-w-[80%] hidden lg:flex items-center justify-between gap-5">
         {PAGE_LINKS?.map((page, index) => {
           return (
-            <li>
+            <li key={index}>
               <Link
                 to={page?.url}
-                key={index}
                 className={`font-medium text-sm xl:text-base whitespace-nowrap ${
                   isScrolled ? "text-gray-900" : "text-gray-200"
                 }`}
@@ -163,7 +162,7 @@ const Navbar = () => {
           <ul className="w-full flex flex-col items-start justify-start gap-5 pt-10">
             {PAGE_LINKS?.map((page, index) => {
               return (
-                <li key={index}>
+                <li key={page?.title}>
                   <Link
                     to={page?.url}
                     className="font-medium"

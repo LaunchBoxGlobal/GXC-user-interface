@@ -107,6 +107,11 @@ const SettingsLayout = ({ page }) => {
     } finally {
       Cookies.remove("userToken");
       Cookies.remove("user");
+      Cookies.remove("selected-community");
+      Cookies.remove("page");
+      Cookies.remove("userEmail");
+      Cookies.remove("isUserEmailVerified");
+
       navigate("/login");
     }
   };

@@ -6,7 +6,7 @@ import CommunitiesDropdown from "./CommunitiesDropdown";
 import { Link, useLocation } from "react-router-dom";
 
 const Layout = ({ children }) => {
-  const { user, fetchUserProfile } = useAppContext();
+  const { user, fetchUserProfile, selectedCommunity } = useAppContext();
   const pathname = useLocation();
 
   useEffect(() => {
@@ -22,7 +22,8 @@ const Layout = ({ children }) => {
       <Navbar />
       <div className="w-full hero flex items-end padding-x pb-10">
         {pathname?.pathname === "/" && <CommunitiesDropdown />}
-        {/* {pathname?.pathname == "/product-management" && (
+
+        {pathname?.pathname == "/product-management" && selectedCommunity && (
           <div className="w-full flex justify-end">
             <Link
               to={`/products/add-product`}
@@ -31,7 +32,7 @@ const Layout = ({ children }) => {
               Add New Product
             </Link>
           </div>
-        )} */}
+        )}
       </div>
 
       {children}

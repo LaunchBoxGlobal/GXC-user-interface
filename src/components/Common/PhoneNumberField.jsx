@@ -1,6 +1,11 @@
-import React from "react";
-import "react-phone-input-2/lib/style.css";
-import PhoneInput from "react-phone-input-2";
+import React, { useState } from "react";
+import {
+  parsePhoneNumberFromString,
+  getCountries,
+  getCountryCallingCode,
+} from "libphonenumber-js";
+
+const countries = getCountries();
 
 const PhoneNumberField = ({
   name,
@@ -11,18 +16,47 @@ const PhoneNumberField = ({
   error,
   touched,
   label,
+  defaultCountry,
 }) => {
-  const handlePhoneChange = (phone) => {
-    // Update Formik state manually
-    if (onChange) {
-      onChange({
-        target: {
-          name,
-          value: phone,
-        },
-      });
-    }
+  const [selectedCountry, setSelectedCountry] = useState(
+    defaultCountry || "US"
+  );
+
+  const handleCountryChange = (e) => {
+    const newCountry = e.target.value;
+    setSelectedCountry(newCountry);
+
+    const callingCode = getCountryCallingCode(newCountry);
+    const formatted = value.startsWith("+")
+      ? value
+      : `+${callingCode}${value.replace(/\D/g, "")}`;
+
+    // Update parent (Formik)
+    onChange({
+      target: {
+        name,
+        value: formatted,
+      },
+    });
   };
+
+  const handleNumberChange = (e) => {
+    const number = e.target.value.replace(/\D/g, ""); // keep digits only
+    const callingCode = getCountryCallingCode(selectedCountry);
+    const fullNumber = `+${callingCode}${number}`;
+
+    onChange({
+      target: {
+        name,
+        value: fullNumber,
+      },
+    });
+  };
+
+  const displayedNumber = (() => {
+    const code = getCountryCallingCode(selectedCountry);
+    return value.replace(`+${code}`, "").replace(/\D/g, "");
+  })();
 
   return (
     <div className="w-full flex flex-col gap-1">
@@ -33,42 +67,29 @@ const PhoneNumberField = ({
       )}
 
       <div
-        className={`w-full h-[49px] rounded-[10px] bg-[var(--secondary-bg)] ${
-          error && touched ? "border border-red-500" : "border border-[#f5f5f5]"
+        className={`flex items-center gap-2 border rounded-[10px] px-3 h-[49px] bg-[var(--secondary-bg)] ${
+          error && touched ? "border-red-500" : "border-[#f5f5f5]"
         }`}
       >
-        <PhoneInput
-          country={"us"}
-          value={value}
-          onChange={handlePhoneChange}
-          inputProps={{
-            name,
-            onBlur,
-            placeholder: placeholder || "+000 0000 00",
-          }}
-          containerStyle={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "12px",
-            backgroundColor: "#fff",
-          }}
-          inputStyle={{
-            width: "100%",
-            height: "100%",
-            outline: "none",
-            border: "none",
-            fontSize: "14px",
-            color: "gray",
-            padding: "10px 50px",
-            margin: "0",
-            background: "#f5f5f5",
-            borderRadius: "10px",
-          }}
-          buttonStyle={{
-            border: "none",
-            background: "transparent",
-          }}
-          className="text-sm font-normal outline-none"
+        <select
+          value={selectedCountry}
+          onChange={handleCountryChange}
+          className="bg-transparent text-sm outline-none border-none w-[60px] cursor-pointer"
+        >
+          {countries.map((c) => (
+            <option key={c} value={c}>
+              +{getCountryCallingCode(c)}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="tel"
+          value={displayedNumber}
+          onChange={handleNumberChange}
+          onBlur={onBlur}
+          placeholder={placeholder || "Enter phone number"}
+          className="flex-1 bg-transparent outline-none text-sm font-normal"
         />
       </div>
 

@@ -12,6 +12,7 @@ const CommunityDetails = ({
   setLoading,
   loading,
   communityTitle,
+  errorMessage,
 }) => {
   const navigate = useNavigate();
 
@@ -37,6 +38,7 @@ const CommunityDetails = ({
       console.log("accept invitation res >>>>> ", res?.data);
 
       localStorage.setItem(`invite-${communityTitle}`, "accepted");
+      // Cookies.set('selected-community', JSON.stringify())
 
       enqueueSnackbar("Welcome! You’ve joined the community 🎉", {
         variant: "success",
@@ -87,9 +89,7 @@ const CommunityDetails = ({
         </>
       ) : (
         <div className="w-full flex justify-center pt-20 text-center">
-          <p className="text-center text-lg font-medium">
-            Community joining is currently disabled
-          </p>
+          <p className="text-center text-lg font-medium">{errorMessage}</p>
         </div>
       )}
     </div>

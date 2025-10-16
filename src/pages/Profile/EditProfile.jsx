@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import { FiPlus } from "react-icons/fi";
@@ -17,12 +17,17 @@ import {
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import Loader from "../../components/Common/Loader";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
   const { user, setUser } = useAppContext();
   const [loading, setLoading] = useState(false);
+
+  const parsedPhone = parsePhoneNumberFromString(user?.phone || "");
+  const defaultCountry = parsedPhone ? parsedPhone.country : "US";
+  const defaultPhoneNumber = parsedPhone ? parsedPhone.nationalNumber : "";
 
   const fetchUserProfile = async () => {
     try {
@@ -87,6 +92,7 @@ const EditProfile = () => {
     }
   };
 
+  console.log(user?.phone);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -94,7 +100,7 @@ const EditProfile = () => {
       lastName: user?.lastName || "",
       email: user?.email || "",
       address: user?.address || "",
-      phoneNumber: user?.phone || "",
+      phoneNumber: defaultPhoneNumber || "",
       city: user?.city || "",
       zipcode: user?.zipcode || "",
       state: user?.state || "",
@@ -108,16 +114,16 @@ const EditProfile = () => {
         .min(3, "First name must contain at least 3 characters")
         .max(10, "First name must be 10 characters or less")
         .matches(
-          /^[A-Z][a-zA-Z ]*$/,
-          "First must start with a capital letter and contain only letters and spaces"
+          /^[a-zA-Z ]*$/,
+          "First name can only contain letters and spaces"
         )
         .required("First name is required"),
       lastName: Yup.string()
         .min(3, "Last name must contain at least 3 characters")
         .max(10, "Last name must be 10 characters or less")
         .matches(
-          /^[A-Z][a-zA-Z ]*$/,
-          "Last name must start with a capital letter and contain only letters and spaces"
+          /^[a-zA-Z ]*$/,
+          "Last name can only contain letters and spaces"
         )
         .required("Last name is required"),
       address: Yup.string()
@@ -125,8 +131,14 @@ const EditProfile = () => {
         .max(50, "Address cannot contain more than 50 characters")
         .required("Address is required"),
       phoneNumber: Yup.string()
-        .matches(/^\d{11}$/, "Phone number must be exactly 11 digits")
-        .required("Phone number is required"),
+        .required("Phone number is required")
+        .test("is-valid-phone", "Invalid phone number", (value) => {
+          if (!value) return false;
+
+          const phone = parsePhoneNumberFromString(value);
+
+          return phone ? phone.isValid() : false;
+        }),
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
@@ -157,7 +169,7 @@ const EditProfile = () => {
         )
         .required("Enter your country"),
       zipcode: Yup.string()
-        .matches(/^[0-9]{5}$/, "Zip code must contain 5 digits")
+        .matches(/^\d{4,10}$/, "Please add a valid Zip code")
         .required("Enter your zip code"),
       profileImage: Yup.mixed().nullable(),
     }),
@@ -211,7 +223,7 @@ const EditProfile = () => {
               variant: "success",
             }
           );
-          navigate("/profile");
+          navigate(-1 || "/profile");
         }
       } catch (error) {
         console.error("Update profile error:", error.response?.data);
@@ -331,6 +343,7 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.phoneNumber}
             touched={formik.touched.phoneNumber}
+            defaultCountry={defaultCountry}
           />
         </div>
 

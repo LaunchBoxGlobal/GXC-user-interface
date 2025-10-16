@@ -61,7 +61,7 @@ const SignUpForm = () => {
           /^(?!.*[._-]{2,})(?!.*\.\.).*$/,
           "Email cannot contain consecutive special characters"
         )
-        .required("Email is required"),
+        .required("Email address is required"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
         .max(25, "Password cannot be more than 25 characters")
