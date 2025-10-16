@@ -9,7 +9,7 @@ const ProductCard = ({ product, index }) => {
           to={`/products/${product?.title}?productId=${product?.id}`}
           key={index}
         >
-          <div className="w-full md:max-w-[290px] h-[410px] bg-white rounded-[20px] p-3 custom-shadow">
+          <div className="w-full md:max-w-[290px] h-[410px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
             <div className="w-full relative">
               <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
                 {product?.images[0]?.imageUrl ? (
@@ -29,8 +29,10 @@ const ProductCard = ({ product, index }) => {
             </div>
 
             <div className="w-full mt-4">
-              <h3 className="text-[20px] font-semibold leading-none tracking-tight text-start">
-                {product?.title}
+              <h3 className="text-[20px] font-semibold leading-none tracking-tight text-start break-words">
+                {product?.title?.length > 40
+                  ? `${product?.title?.slice(0, 30)}`
+                  : product?.title}
               </h3>
 
               <p className="text-[#9D9D9DDD] text-[15px] font-normal text-start my-2">

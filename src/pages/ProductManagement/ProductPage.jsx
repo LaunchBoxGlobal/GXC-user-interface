@@ -11,16 +11,20 @@ import { useAppContext } from "../../context/AppContext";
 import Loader from "../../components/Common/Loader";
 import DeleteProductPopup from "./DeleteProductPopup";
 import { FaCheck } from "react-icons/fa6";
+import { enqueueSnackbar } from "notistack";
+import { useCart } from "../../context/cartContext";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const productId = searchParams.get("productId");
   const [productDetails, setProductDetails] = useState(null);
-  const { user } = useAppContext();
+  const { user, selectedCommunity } = useAppContext();
+  const { fetchCartCount } = useCart();
   const [loading, setLoading] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
+  const [addProductInCart, setAddProductInCart] = useState(false);
 
   // Dropdown open/close state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -49,7 +53,7 @@ const ProductDetailsPage = () => {
           Authorization: `Bearer ${getToken()}`,
         },
       });
-      console.log("product >>>> ", res?.data?.data);
+      // console.log("product >>>> ", res?.data?.data);
       setProductDetails(res?.data?.data?.product);
     } catch (error) {
       handleApiError(error, navigate);
@@ -68,6 +72,50 @@ const ProductDetailsPage = () => {
   const handleEdit = () => {
     navigate(`/edit-product?productId=${productId}`);
     setIsDropdownOpen(false);
+  };
+
+  const handleAddToCartProduct = async () => {
+    setAddProductInCart(true);
+    if (!selectedCommunity?.id) {
+      enqueueSnackbar(`Community ID not found!`, {
+        variant: "error",
+      });
+      return;
+    }
+
+    if (!productId) {
+      enqueueSnackbar(`Product ID not found!`, {
+        variant: "error",
+      });
+      return;
+    }
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/communities/${selectedCommunity?.id}/cart/${productId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      // console.log("add to cart res >>> ", res?.data);
+      if (res?.data?.success) {
+        enqueueSnackbar(
+          res?.data?.message || "Product added to cart successfully!",
+          {
+            variant: "success",
+          }
+        );
+        fetchCartCount();
+      }
+    } catch (error) {
+      console.log(`err while adding to cart >>> `, error);
+      handleApiError(error, navigate);
+    } finally {
+      setAddProductInCart(false);
+    }
   };
 
   if (loading) {
@@ -221,85 +269,53 @@ const ProductDetailsPage = () => {
                   <div className="w-full space-y-3">
                     <p className="text-sm font-semibold">Delivery Type</p>
                     <div className="w-full max-w-[350px] grid grid-cols-2 gap-2">
-                      {productDetails?.deliveryMethod === "delivery" ? (
+                      {productDetails?.deliveryMethod !== "pickup" && (
                         <button
                           type="button"
                           onClick={() => setDeliveryType("delivery")}
-                          className={` rounded-[12px] text-sm font-medium w-[134px] h-[41px] ${
+                          className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                             deliveryType === "delivery"
-                              ? `bg-[var(--button-bg)] text-white`
-                              : `bg-[var(--secondary-bg)]`
-                          } relative`}
+                              ? "bg-[var(--button-bg)] text-white"
+                              : "bg-[var(--secondary-bg)] text-black"
+                          }`}
                         >
-                          <div
-                            className={`w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] ${
-                              deliveryType === "delivery" ? "flex" : "hidden"
-                            } items-center justify-center absolute -top-1 -right-1 z-10`}
-                          >
-                            <FaCheck />
-                          </div>
-                          Delivery at home
+                          {deliveryType === "delivery" && (
+                            <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">
+                              <FaCheck className="text-white text-xs" />
+                            </div>
+                          )}
+                          Deliver at home
                         </button>
-                      ) : productDetails?.deliveryMethod === "pickup" ? (
+                      )}
+
+                      {productDetails?.deliveryMethod !== "delivery" && (
                         <button
                           type="button"
                           onClick={() => setDeliveryType("pickup")}
-                          className={`rounded-[12px] text-sm font-medium w-[134px] h-[41px] ${
+                          className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                             deliveryType === "pickup"
-                              ? `bg-[var(--button-bg)] text-white`
-                              : `bg-[var(--secondary-bg)] text-black`
-                          } relative`}
+                              ? "bg-[var(--button-bg)] text-white"
+                              : "bg-[var(--secondary-bg)] text-black"
+                          }`}
                         >
-                          <div
-                            className={`w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] ${
-                              deliveryType === "pickup" ? "flex" : "hidden"
-                            } items-center justify-center absolute -top-1 -right-1 z-10`}
-                          >
-                            <FaCheck />
-                          </div>
+                          {deliveryType === "pickup" && (
+                            <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">
+                              <FaCheck className="text-white text-xs" />
+                            </div>
+                          )}
                           Self Pickup
                         </button>
-                      ) : (
-                        <div className="ull">
-                          <button
-                            type="button"
-                            onClick={() => setDeliveryType("delivery")}
-                            className={` rounded-[12px] text-sm font-medium w-[134px] h-[41px] ${
-                              deliveryType === "delivery"
-                                ? `bg-[var(--button-bg)] text-white`
-                                : `bg-[var(--secondary-bg)]`
-                            } relative`}
-                          >
-                            <div
-                              className={`w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] ${
-                                deliveryType === "delivery" ? "flex" : "hidden"
-                              } items-center justify-center absolute -top-1 -right-1 z-10`}
-                            >
-                              <FaCheck />
-                            </div>
-                            Delivery at home
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setDeliveryType("pickup")}
-                            className={`bg-[var(--secondary-bg)] rounded-[12px] text-sm font-medium w-[134px] h-[41px] ${
-                              deliveryType === "pickup" &&
-                              `bg-[var(--button-bg)] text-white`
-                            } relative`}
-                          >
-                            <div className="w-5 h-5 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1 z-10">
-                              <FaCheck />
-                            </div>
-                            Self Pickup
-                          </button>
-                        </div>
                       )}
                     </div>
                   </div>
 
-                  <button type="button" className="button mt-5">
-                    Add To Cart
+                  <button
+                    type="button"
+                    disabled={addProductInCart}
+                    className="button mt-5"
+                    onClick={() => handleAddToCartProduct()}
+                  >
+                    {addProductInCart ? <Loader /> : `Add To Cart`}
                   </button>
                 </div>
               )}

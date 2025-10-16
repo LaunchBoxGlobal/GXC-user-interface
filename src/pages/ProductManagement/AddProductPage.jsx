@@ -30,7 +30,7 @@ const AddProductPage = () => {
     validationSchema: Yup.object({
       productName: Yup.string()
         .min(3, "Product name must contain at least 3 characters")
-        .max(50, "Product name must be 50 characters or less")
+        .max(30, "Product name must be 30 characters or less")
         .required("Product name is required"),
 
       price: Yup.number()

@@ -89,7 +89,7 @@ const LoginForm = () => {
               resetForm();
 
               enqueueSnackbar(resendRes.data.message, {
-                variant: "error",
+                variant: "success",
               });
               navigate(
                 `/verify-otp${redirect ? `?redirect=${redirect}` : ""}`,

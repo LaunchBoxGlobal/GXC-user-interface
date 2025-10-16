@@ -9,12 +9,8 @@ import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
 
 const CommunitiesDropdown = () => {
-  const {
-    communities,
-    setCommunities,
-    setProductSearchValue,
-    selectedCommunity,
-  } = useAppContext();
+  const { communities, setCommunities, setProductSearchValue } =
+    useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -29,15 +25,19 @@ const CommunitiesDropdown = () => {
   const fetchCommunities = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
+        headers: { Authorization: `Bearer ${getToken()}` },
       });
 
       const list = res?.data?.data?.communities || [];
       setCommunities(list);
 
       if (list.length > 0) {
+        // ✅ 1. Get selected community from cookies (if available)
+        const cookieCommunity = Cookies.get("selected-community")
+          ? JSON.parse(Cookies.get("selected-community"))
+          : null;
+
+        // ✅ 2. Find matching community from query param
         const matched =
           communityFromQuery &&
           list.find(
@@ -46,11 +46,19 @@ const CommunitiesDropdown = () => {
               c.name?.toLowerCase() === communityFromQuery.toLowerCase()
           );
 
-        const selectedCommunity = matched || list[0];
-        setSelected(selectedCommunity);
+        // ✅ 3. Determine final selected community
+        let selectedCommunity = matched || cookieCommunity || list[0];
 
+        // If cookie exists but user left that community, fallback to first one
+        if (cookieCommunity && !list.find((c) => c.id === cookieCommunity.id)) {
+          selectedCommunity = list[0];
+        }
+
+        // ✅ 4. Update state and cookies
+        setSelected(selectedCommunity);
         Cookies.set("selected-community", JSON.stringify(selectedCommunity));
 
+        // ✅ 5. Navigate only if no community in query
         if (!communityFromQuery) {
           setTimeout(() => {
             navigate(`/?community=${selectedCommunity.slug}`, {

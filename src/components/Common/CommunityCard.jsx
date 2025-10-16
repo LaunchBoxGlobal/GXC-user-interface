@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const CommunityCard = () => {
   return (
     <Link to={`/community/45u98965`}>
-      <div className="w-full bg-white p-5 rounded-[20px]">
+      <div className="w-full bg-white p-5 rounded-[20px] overflow-hidden">
         <div className="w-full flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div>
@@ -26,7 +26,7 @@ const CommunityCard = () => {
           </div>
         </div>
 
-        <div className="w-full my-4">
+        <div className="w-full my-4 overflow-hidden">
           <p className="text-sm leading-[1.2] text-[var(--secondary-color)]">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. In
             consequatur architecto placeat nesciunt possimus similique ratione

@@ -5,6 +5,7 @@ import { BASE_URL } from "../data/baseUrl";
 import { getToken } from "../utils/getToken";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { handleApiError } from "../utils/handleApiError";
 
 const AppContext = createContext();
 
@@ -19,6 +20,7 @@ export const AppProvider = ({ children }) => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
+  const [cartCount, setCartCount] = useState(null);
 
   const [productSearchValue, setProductSearchValue] = useState(null);
 

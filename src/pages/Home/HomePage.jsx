@@ -76,7 +76,7 @@ const HomePage = () => {
         }
       );
 
-      console.log("join status from home page >> ", res?.data);
+      // console.log("join status from home page >> ", res?.data);
       if (res?.data?.data?.isMember) {
         fetchCommunityProducts();
         return;

@@ -5,10 +5,12 @@ import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { PAGE_LINKS } from "../../data/pageLinks";
+import { useCart } from "../../context/cartContext";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useAppContext();
+  const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
 
   const handleToggleSidebar = () => {
@@ -67,17 +69,29 @@ const Navbar = () => {
         <div className="flex items-center gap-10">
           <Link to={`/cart`}>
             {isScrolled ? (
-              <img
-                src="/cart-icon.png"
-                alt="cart icon"
-                className="min-w-[22px] h-[22px]"
-              />
+              <div className="relative">
+                <img
+                  src="/cart-icon.png"
+                  alt="cart icon"
+                  className="min-w-[22px] h-[22px]"
+                />
+                <div className="w-4 h-4 rounded-full bg-[var(--button-bg)] absolute -top-1 -right-2 z-5 flex items-center justify-center">
+                  <span className="text-xs font-medium text-white">
+                    {cartCount}
+                  </span>
+                </div>
+              </div>
             ) : (
-              <img
-                src="/cart-white-icon.svg"
-                alt="cart icon"
-                className="min-w-[22px] h-[22px]"
-              />
+              <div className="relative">
+                <img
+                  src="/cart-white-icon.svg"
+                  alt="cart icon"
+                  className="min-w-[22px] h-[22px]"
+                />
+                <div className="w-4 h-4 rounded-full bg-white absolute -top-1 -right-2 z-5 flex items-center justify-center">
+                  <span className="text-xs font-medium">{cartCount}</span>
+                </div>
+              </div>
             )}
           </Link>
           <button type="button">
