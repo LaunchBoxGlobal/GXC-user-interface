@@ -64,9 +64,19 @@ const VerifyOtp = () => {
   };
 
   useEffect(() => {
+    const userCookie = Cookies.get("user")
+      ? JSON.parse(Cookies.get("user"))
+      : null;
+    if (userCookie?.emailVerified) {
+      navigate(`/complete-profile${redirect ? `?redirect=${redirect}` : ""}`, {
+        replace: true,
+      });
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     document.title = `Verify OTP - GiveXChange`;
   }, []);
-  console.log(page);
 
   const formik = useFormik({
     initialValues: {

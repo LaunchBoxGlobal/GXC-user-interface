@@ -22,6 +22,14 @@ const ChangeEmailForm = () => {
     document.title = `Change Email - GiveXChange`;
   }, []);
 
+  const handleBack = () => {
+    // if (redirect) {
+    //   navigate(redirect);
+    // } else {
+    navigate(-1); // go back in history
+    // }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -75,39 +83,6 @@ const ChangeEmailForm = () => {
     },
   });
 
-  const handleResendOtp = async () => {
-    const url = `${BASE_URL}/auth/resend-verification`;
-
-    try {
-      const res = await axios.post(
-        url,
-        { newEmail: values.email },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
-
-      if (res?.data?.success) {
-        enqueueSnackbar(res?.data?.message, {
-          variant: "success",
-        });
-        navigate(`/verify-otp${redirect ? `?redirect=${redirect}` : ""}`, {
-          state: {
-            email: values.email,
-          },
-        });
-      }
-    } catch (error) {
-      console.error("verify email error:", error);
-      enqueueSnackbar(error?.response?.data?.message || error.message, {
-        variant: "error",
-      });
-    }
-  };
-
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -143,15 +118,17 @@ const ChangeEmailForm = () => {
       </div>
 
       <div className="w-full mt-2 flex flex-col items-center gap-4">
-        <Link
-          to={redirect ? `${-1}?redirect=${redirect}` : -1}
+        <button
+          // to={redirect ? `${-1}?redirect=${redirect}` : -1}
+          type="button"
+          onClick={() => handleBack()}
           className="text-sm font-medium flex items-center gap-1 text-[var(--button-bg)]"
         >
           <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
             <RiArrowLeftSLine className="text-white text-base" />
           </div>
           Back
-        </Link>
+        </button>
       </div>
     </form>
   );
