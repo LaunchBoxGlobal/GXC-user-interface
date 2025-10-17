@@ -11,22 +11,19 @@ import Cookies from "js-cookie";
 import EmailVerificationPopup from "../Popups/EmailVerificationPopup";
 import { useAppContext } from "../../context/AppContext";
 import { enqueueSnackbar } from "notistack";
-import { RiArrowLeftSLine } from "react-icons/ri";
 
 const VerifyOtp = () => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { page } = location?.state || {};
+  const page = Cookies.get("page");
   const redirect = searchParams?.get("redirect");
   const { showEmailVerificationPopup, setShowEmailVerificationPopup } =
     useAppContext();
   const [loading, setLoading] = useState(false);
   const [userOtp, setUserOtp] = useState(null);
   const userEmail = Cookies.get("userEmail");
-
-  console.log(redirect);
 
   const toggleEmailVerificationPopup = () => {
     setShowEmailVerificationPopup((prev) => !prev);
@@ -50,12 +47,26 @@ const VerifyOtp = () => {
     }
   };
 
-  useEffect(() => {
-    if (!userEmail) {
-      navigate("/login");
+  const handleNavigateToChangeEmail = () => {
+    if (page === "/signup") {
+      navigate(`/change-email${redirect ? `?redirect=${redirect}` : ""}`, {
+        state: { page: "/signup" },
+      });
+    } else if (page === "/forgot-password") {
+      navigate(`/forgot-password${redirect ? `?redirect=${redirect}` : ""}`, {
+        state: { email: userEmail },
+      });
+    } else if (page === "/login") {
+      navigate(redirect ? redirect : "/");
+    } else {
+      navigate(-1);
     }
+  };
+
+  useEffect(() => {
     document.title = `Verify OTP - GiveXChange`;
   }, []);
+  console.log(page);
 
   const formik = useFormik({
     initialValues: {
@@ -97,6 +108,7 @@ const VerifyOtp = () => {
         if (res?.data?.success) {
           setUserOtp(otp);
           resetForm();
+          Cookies.set("isUserEmailVerified", true);
           // Cookies.remove(`userEmail`);
           // Cookies.remove(`verifyEmail`);
           // Cookies.remove("isUserEmailVerified");
@@ -214,36 +226,18 @@ const VerifyOtp = () => {
           <button
             type="button"
             onClick={() => {
-              Cookies.remove("userEmail");
-              Cookies.remove("isUserEmailVerified");
-              Cookies.remove("userToken");
-              Cookies.remove("user");
-              navigate(`/signup`);
+              // Cookies.remove("userEmail");
+              // Cookies.remove("isUserEmailVerified");
+              // Cookies.remove("userToken");
+              // Cookies.remove("user");
+              // navigate(-1);
+              handleNavigateToChangeEmail();
             }}
             className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
           >
             Change Email
           </button>
         </div>
-
-        {/* <div className="w-full mt-2 flex flex-col items-center gap-4">
-          <button
-            type="button"
-            onClick={() => {
-              Cookies.remove("userEmail");
-              Cookies.remove("isUserEmailVerified");
-              Cookies.remove("userToken");
-              Cookies.remove("user");
-              navigate(`/signup`);
-            }}
-            className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
-          >
-            <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
-              <RiArrowLeftSLine className="text-white text-base" />
-            </div>
-            Back
-          </button>
-        </div> */}
       </form>
 
       <EmailVerificationPopup

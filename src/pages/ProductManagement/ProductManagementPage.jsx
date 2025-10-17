@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import ProductCard from "../../components/Common/ProductCard";
 import { useAppContext } from "../../context/AppContext";
+import { useUser } from "../../context/userContext";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState(false);
@@ -14,8 +15,14 @@ const ProductManagementPage = () => {
   const navigate = useNavigate();
   const { selectedCommunity } = useAppContext();
   const [errorMessage, setErrorMessage] = useState(null);
+  const { checkIamAlreadyMember } = useUser();
 
   const [error, setError] = useState(false);
+
+  // useEffect(() => {
+  //   const isBanned = checkIamAlreadyMember();
+  //   console.log(isBanned);
+  // }, []);
 
   const fetchProducts = async () => {
     if (!selectedCommunity) {

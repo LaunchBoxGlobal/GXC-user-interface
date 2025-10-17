@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
-import { FiPlus } from "react-icons/fi";
 import TextField from "../../components/Common/TextField";
 import { useFormik } from "formik";
 import axios from "axios";
@@ -18,6 +17,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import Loader from "../../components/Common/Loader";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import AuthImageUpload from "../../components/Common/AuthImageUpload";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
@@ -127,9 +127,9 @@ const EditProfile = () => {
         )
         .required("Last name is required"),
       address: Yup.string()
-        .min(15, "Address must be atleast 15 characters")
-        .max(50, "Address cannot contain more than 50 characters")
-        .required("Address is required"),
+        .min(11, `Address cannot be less than 11 characters`)
+        .max(150, `Address can not be more than 150 characters`)
+        .required("Please enter your location"),
       phoneNumber: Yup.string()
         .required("Phone number is required")
         .test("is-valid-phone", "Invalid phone number", (value) => {
@@ -142,34 +142,11 @@ const EditProfile = () => {
       email: Yup.string()
         .email("Invalid email address")
         .required("Email is required"),
-      city: Yup.string()
-        .min(3, "City name cannot be less than 3 characters")
-        .max(15, "City name cannot be more than 15 characters")
-        .matches(
-          /^[A-Z][a-zA-Z\s]*$/,
-          "City must start with uppercase and contain only letters and spaces"
-        )
-        .required("Enter your city"),
-
-      state: Yup.string()
-        .min(3, "State cannot be less than 3 characters")
-        .max(15, "State cannot be more than 15 characters")
-        .matches(
-          /^[A-Z][a-zA-Z\s]*$/,
-          "State must start with uppercase and contain only letters and spaces"
-        )
-        .required("Enter your state"),
-
-      country: Yup.string()
-        .min(3, "Country name cannot be less than 3 characters")
-        .max(15, "Country name cannot be more than 15 characters")
-        .matches(
-          /^[A-Z][a-zA-Z\s]*$/,
-          "Country must start with uppercase and contain only letters and spaces"
-        )
-        .required("Enter your country"),
+      city: Yup.string().required("Enter your city"),
+      state: Yup.string().required("Enter your state"),
+      country: Yup.string().required("Enter your country"),
       zipcode: Yup.string()
-        .matches(/^\d{4,10}$/, "Please add a valid Zip code")
+        .matches(/^[A-Za-z0-9\- ]{4,10}$/, "Please enter a valid zip code")
         .required("Enter your zip code"),
       profileImage: Yup.mixed().nullable(),
     }),
@@ -253,7 +230,12 @@ const EditProfile = () => {
       </p>
 
       <div className="w-full max-w-[500px] my-6">
-        <div className="w-full flex items-center justify-start gap-4">
+        <AuthImageUpload
+          name="profileImage"
+          setFieldValue={formik.setFieldValue}
+          error={formik.touched.profileImage && formik.errors.profileImage}
+        />
+        {/* <div className="w-full flex items-center justify-start gap-4">
           <label
             htmlFor="profileImage"
             className="bg-[var(--secondary-bg)] text-slate-500 font-semibold text-base w-[100px] h-[100px] rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed overflow-hidden"
@@ -284,11 +266,8 @@ const EditProfile = () => {
             >
               Change Profile
             </label>
-            {/* {error && (
-                <span className="text-xl text-red-500 font-medium">*</span>
-              )} */}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full max-w-[500px] flex flex-col items-center gap-4">

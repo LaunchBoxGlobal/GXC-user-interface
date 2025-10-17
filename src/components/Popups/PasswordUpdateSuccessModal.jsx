@@ -14,7 +14,7 @@ const PasswordUpdateSuccessModal = ({ showPopup, handleTogglePopup }) => {
             Password Updated!
           </h2>
           <p className="text-[var(--secondary-color)] text-center leading-[1.3]">
-            Your password has been reset successfully
+            Your password has been updated successfully
           </p>
           <button
             type={"button"}

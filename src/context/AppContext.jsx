@@ -20,7 +20,6 @@ export const AppProvider = ({ children }) => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
-  const [cartCount, setCartCount] = useState(null);
 
   const [productSearchValue, setProductSearchValue] = useState(null);
 
@@ -42,7 +41,6 @@ export const AppProvider = ({ children }) => {
   };
 
   const fetchUserProfile = async () => {
-    if (user) return;
     try {
       const res = await axios.get(`${BASE_URL}/auth/profile`, {
         headers: {

@@ -23,8 +23,6 @@ const HomePage = () => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
-  const [isMember, setIsMember] = useState(false);
-  const [isBanned, setIsBanned] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {

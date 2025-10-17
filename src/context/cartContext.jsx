@@ -5,11 +5,13 @@ import { BASE_URL } from "../data/baseUrl";
 import { enqueueSnackbar } from "notistack";
 import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
+import { useNavigate } from "react-router-dom";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
   const [selectedCommunity, setSelectedCommunity] = useState(
     Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
@@ -17,15 +19,16 @@ export const CartProvider = ({ children }) => {
   );
 
   const fetchCartCount = async () => {
-    if (!selectedCommunity) {
-      enqueueSnackbar(`Community ID not found!`, {
-        variant: "error",
-      });
+    const community = Cookies.get("selected-community")
+      ? JSON.parse(Cookies.get("selected-community"))
+      : null;
+    setSelectedCommunity(community);
+    if (!community) {
       return;
     }
     try {
       const res = await axios.get(
-        `${BASE_URL}/communities/${selectedCommunity?.id}/cart/count`,
+        `${BASE_URL}/communities/${community?.id}/cart/count`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -33,10 +36,8 @@ export const CartProvider = ({ children }) => {
         }
       );
 
-      // console.log("cart count >>> ", res?.data);
       setCartCount(res?.data?.data?.count);
     } catch (error) {
-      // console.log("err while cart count >>> ", error);
       handleApiError(error, navigate);
     }
   };
@@ -46,7 +47,9 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cartCount, setCartCount, fetchCartCount }}>
+    <CartContext.Provider
+      value={{ cartCount, setCartCount, fetchCartCount, selectedCommunity }}
+    >
       {children}
     </CartContext.Provider>
   );

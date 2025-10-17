@@ -3,20 +3,34 @@ import { FiPlus } from "react-icons/fi";
 
 const AuthImageUpload = ({ name, setFieldValue, error }) => {
   const [preview, setPreview] = useState(null);
+  const [fileError, setFileError] = useState(null); // 👈 local error for invalid file type
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setFieldValue(name, file);
+    if (!file) return;
+
+    // 👇 Validate file type
+    const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      setFileError("Only PNG, JPG, or JPEG images are allowed.");
+      setPreview(null);
+      setFieldValue(name, null);
+      return;
     }
+
+    // 👇 Clear error and set preview
+    setFileError(null);
+    setPreview(URL.createObjectURL(file));
+    setFieldValue(name, file);
   };
 
   return (
     <div className="w-full flex items-center justify-start gap-4">
       <label
         htmlFor="profileImage"
-        className="bg-[var(--secondary-bg)] text-slate-500 font-semibold text-base w-[100px] h-[100px] rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed overflow-hidden"
+        className={`bg-[var(--secondary-bg)] text-slate-500 font-semibold text-base w-[100px] h-[100px] rounded-full flex items-center justify-center cursor-pointer border-2 border-dashed overflow-hidden ${
+          fileError || error ? "border-red-500" : "border-gray-300"
+        }`}
       >
         {preview ? (
           <img
@@ -30,22 +44,28 @@ const AuthImageUpload = ({ name, setFieldValue, error }) => {
         <input
           type="file"
           id="profileImage"
-          accept="image/*"
+          accept="image/png, image/jpeg, image/jpg" // 👈 restrict file picker
           onChange={handleImageChange}
           className="hidden"
         />
       </label>
 
-      <div className="">
+      <div>
         <label
           htmlFor="profileImage"
           className={`underline text-[15px] font-medium cursor-pointer ${
-            !error ? "text-[var(--primary-blue)]" : "text-red-500"
+            fileError || error ? "text-red-500" : "text-[var(--primary-blue)]"
           }`}
         >
           Upload Profile Picture
         </label>
-        {error && <span className="text-xl text-red-500 font-medium">*</span>}
+
+        {/* 👇 Display error message */}
+        {(fileError || error) && (
+          <p className="text-red-500 text-xs mt-1">
+            {fileError || "Profile picture is required"}
+          </p>
+        )}
       </div>
     </div>
   );

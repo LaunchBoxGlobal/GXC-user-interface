@@ -9,12 +9,14 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../data/baseUrl";
 import { enqueueSnackbar } from "notistack";
+import { useAppContext } from "../../context/AppContext";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const redirect = searchParams?.get("redirect");
+  const { fetchUserProfile } = useAppContext();
 
   useEffect(() => {
     if (!redirect || redirect === "/" || redirect.trim() === "") {
@@ -80,6 +82,8 @@ const SignUpForm = () => {
         .required("Confirm password is required"),
       profileImage: Yup.mixed().nullable(),
     }),
+    validateOnChange: true,
+    validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
@@ -102,6 +106,7 @@ const SignUpForm = () => {
         if (res?.data?.success) {
           Cookies.set("userEmail", values.email);
           Cookies.set("isUserEmailVerified", false);
+          Cookies.set("page", "/signup");
           Cookies.set("userToken", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           resetForm();
@@ -112,9 +117,9 @@ const SignUpForm = () => {
               email: values.email,
             },
           });
+          fetchUserProfile();
         }
       } catch (error) {
-        console.error("Sign up error:", error.response?.data);
         enqueueSnackbar(error.response?.data?.message || error.message, {
           autoHideDuration: 1500,
           variant: "error",
@@ -140,9 +145,6 @@ const SignUpForm = () => {
       <div className="w-full space-y-3">
         <div className="w-full grid grid-cols-2 gap-2">
           <div className="w-full space-y-1">
-            <label htmlFor="firstName" className="text-sm font-medium">
-              First Name
-            </label>
             <TextField
               type="text"
               name="firstName"
@@ -152,12 +154,10 @@ const SignUpForm = () => {
               onBlur={formik.handleBlur}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
+              label={"First Name"}
             />
           </div>
           <div className="w-full space-y-1">
-            <label htmlFor="lastName" className="text-sm font-medium">
-              Last Name
-            </label>
             <TextField
               type="text"
               name="lastName"
@@ -167,15 +167,12 @@ const SignUpForm = () => {
               onBlur={formik.handleBlur}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
+              label={"Last Name"}
             />
           </div>
         </div>
 
         <div className="w-full space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email Address
-          </label>
-
           <TextField
             type="text"
             name="email"
@@ -185,13 +182,11 @@ const SignUpForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
+            label={"Email Address"}
           />
         </div>
 
         <div className="w-full space-y-1">
-          <label htmlFor="password" className="text-sm font-medium">
-            Password
-          </label>
           <PasswordField
             name="password"
             placeholder="Enter your password"
@@ -200,13 +195,11 @@ const SignUpForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
+            label={"Password"}
           />
         </div>
 
         <div className="w-full space-y-1">
-          <label htmlFor="confirmPassword" className="text-sm font-medium">
-            Confirm Password
-          </label>
           <PasswordField
             name="confirmPassword"
             placeholder="Enter your password"
@@ -215,6 +208,7 @@ const SignUpForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.confirmPassword}
             touched={formik.touched.confirmPassword}
+            label={"Confirm Password"}
           />
         </div>
 

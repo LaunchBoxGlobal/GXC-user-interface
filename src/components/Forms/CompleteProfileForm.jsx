@@ -32,11 +32,6 @@ const CompleteProfileForm = () => {
 
   const togglePopup = () => setShowPopup((prev) => !prev);
 
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    navigate(redirect ? redirect : `/`);
-  };
-
   useEffect(() => {
     document.title = `Complete Profile - GiveXChange`;
   }, []);
@@ -62,16 +57,16 @@ const CompleteProfileForm = () => {
         .min(3, "First name must contain at least 3 characters")
         .max(10, "First name must be 10 characters or less")
         .matches(
-          /^[a-zA-Z ]*$/,
-          "First name can only contain letters and spaces"
+          /^[A-Za-z ]+$/,
+          "First name must contain only letters and spaces"
         )
         .required("First name is required"),
       lastName: Yup.string()
         .min(3, "Last name must contain at least 3 characters")
         .max(10, "Last name must be 10 characters or less")
         .matches(
-          /^[a-zA-Z ]*$/,
-          "Last name can only contain letters and spaces"
+          /^[A-Za-z ]+$/,
+          "Last name must contain only letters and spaces"
         )
         .required("Last name is required"),
       email: Yup.string()
@@ -82,10 +77,8 @@ const CompleteProfileForm = () => {
         .test("is-valid-phone", "Invalid phone number", (value) => {
           if (!value) return false;
 
-          // Parse the full phone number string (e.g. +14155552671)
           const phone = parsePhoneNumberFromString(value);
 
-          // If it's a valid phone number according to libphonenumber-js rules, pass validation
           return phone ? phone.isValid() : false;
         }),
       location: Yup.string()
@@ -93,7 +86,7 @@ const CompleteProfileForm = () => {
         .max(150, `Address can not be more than 150 characters`)
         .required("Please enter your location"),
       zipcode: Yup.string()
-        .matches(/^\d{4,10}$/, "Please add a valid Zip code")
+        .matches(/^[A-Za-z0-9\- ]{4,10}$/, "Please enter a valid zip code")
         .required("Enter your zip code"),
       city: Yup.string().required("Enter your city"),
       state: Yup.string().required("Enter your state"),
@@ -344,7 +337,7 @@ const CompleteProfileForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.location}
             touched={formik.touched.location}
-            label="Address"
+            label="Suite / Apartment / Street"
           />
 
           {/* Buttons */}

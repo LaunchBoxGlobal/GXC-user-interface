@@ -23,6 +23,7 @@ const CommunityPage = () => {
   const { user } = useAppContext();
   const [notFound, setNotFound] = useState(false);
   const navigate = useNavigate();
+  const [blocked, setBlocked] = useState(false);
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
@@ -56,8 +57,11 @@ const CommunityPage = () => {
           headers: { Authorization: `Bearer ${getToken()}` },
         }
       );
+      console.log("my-membership >> ", res);
       const isMember = res?.data?.data?.isMember;
       setAlreadyMember(isMember);
+      const isBanned = res?.data?.data?.membership?.status;
+      setBlocked(isBanned);
       return isMember;
     } catch (error) {
       console.log("membership error >>>>> ", error);
@@ -200,6 +204,22 @@ const CommunityPage = () => {
       </div>
     );
   }
+
+  if (blocked && blocked === "banned") {
+    return (
+      <div className="w-full text-center h-screen py-40">
+        <p className="">You’ve been blocked from this community.</p>
+      </div>
+    );
+  }
+
+  // if (blocked && blocked === "removed") {
+  //   return (
+  //     <div className="w-full text-center h-screen py-40">
+  //       <p className="">You’ve been removed from this community.</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-5 min-h-screen">

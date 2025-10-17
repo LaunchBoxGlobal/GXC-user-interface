@@ -86,6 +86,7 @@ const LoginForm = () => {
 
             if (resendRes?.data?.success) {
               Cookies.set("userEmail", values.email);
+              Cookies.set("page", "/login");
               resetForm();
 
               enqueueSnackbar(resendRes.data.message, {

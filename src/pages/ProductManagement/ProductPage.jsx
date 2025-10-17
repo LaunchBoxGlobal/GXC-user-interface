@@ -153,9 +153,9 @@ const ProductDetailsPage = () => {
 
             <div className="w-full pt-3">
               <div className="w-full flex items-start justify-between gap-4 relative">
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-[70%]">
                   {productDetails?.title && (
-                    <p className="font-semibold text-[20px] leading-none tracking-tight">
+                    <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
                       {productDetails?.title}
                     </p>
                   )}

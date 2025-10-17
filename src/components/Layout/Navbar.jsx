@@ -75,11 +75,13 @@ const Navbar = () => {
                   alt="cart icon"
                   className="min-w-[22px] h-[22px]"
                 />
-                <div className="w-4 h-4 rounded-full bg-[var(--button-bg)] absolute -top-1 -right-2 z-5 flex items-center justify-center">
-                  <span className="text-xs font-medium text-white">
-                    {cartCount}
-                  </span>
-                </div>
+                {cartCount > 0 && (
+                  <div className="w-4 h-4 rounded-full bg-[var(--button-bg)] absolute -top-1 -right-2 z-5 flex items-center justify-center">
+                    <span className="text-xs font-medium text-white">
+                      {cartCount}
+                    </span>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="relative">
@@ -88,9 +90,11 @@ const Navbar = () => {
                   alt="cart icon"
                   className="min-w-[22px] h-[22px]"
                 />
-                <div className="w-4 h-4 rounded-full bg-white absolute -top-1 -right-2 z-5 flex items-center justify-center">
-                  <span className="text-xs font-medium">{cartCount}</span>
-                </div>
+                {cartCount > 0 && (
+                  <div className="w-4 h-4 rounded-full bg-white absolute -top-1 -right-2 z-5 flex items-center justify-center">
+                    <span className="text-xs font-medium">{cartCount}</span>
+                  </div>
+                )}
               </div>
             )}
           </Link>

@@ -7,10 +7,12 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
+import { useCart } from "../../context/cartContext";
 
 const CommunitiesDropdown = () => {
   const { communities, setCommunities, setProductSearchValue } =
     useAppContext();
+  const { fetchCartCount } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -36,6 +38,7 @@ const CommunitiesDropdown = () => {
         const cookieCommunity = Cookies.get("selected-community")
           ? JSON.parse(Cookies.get("selected-community"))
           : null;
+        fetchCartCount();
 
         // ✅ 2. Find matching community from query param
         const matched =
