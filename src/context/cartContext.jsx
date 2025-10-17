@@ -38,7 +38,7 @@ export const CartProvider = ({ children }) => {
 
       setCartCount(res?.data?.data?.count);
     } catch (error) {
-      handleApiError(error, navigate);
+      // handleApiError(error, navigate);
     }
   };
 

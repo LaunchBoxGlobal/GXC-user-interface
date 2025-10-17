@@ -42,7 +42,7 @@ const CommunityPage = () => {
       if (error?.response?.status === 404) {
         setNotFound(true);
       } else {
-        handleApiError(error, navigate);
+        // handleApiError(error, navigate);
       }
     } finally {
       setFetchingCommunity(false);
@@ -65,10 +65,11 @@ const CommunityPage = () => {
       return isMember;
     } catch (error) {
       console.log("membership error >>>>> ", error);
-      enqueueSnackbar(error?.response?.data?.message || error?.message, {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
+      handleApiError(error, navigate);
+      // enqueueSnackbar(error?.response?.data?.message || error?.message, {
+      //   variant: "error",
+      //   autoHideDuration: 1500,
+      // });
       return false;
     }
   };
@@ -93,10 +94,10 @@ const CommunityPage = () => {
       }
     } catch (error) {
       console.log("join-status error >>>>> ", error);
-      enqueueSnackbar(error?.response?.data?.message || error?.message, {
-        variant: "error",
-        autoHideDuration: 1500,
-      });
+      // enqueueSnackbar(error?.response?.data?.message || error?.message, {
+      //   variant: "error",
+      //   autoHideDuration: 1500,
+      // });
       setCanJoin(false);
     }
   };
