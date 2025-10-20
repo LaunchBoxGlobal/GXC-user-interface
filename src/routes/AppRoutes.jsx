@@ -1,4 +1,10 @@
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import AuthLayout from "../components/Layout/AuthLayout";
 import Layout from "../components/Layout/Layout";
 import Cookies from "js-cookie";
@@ -36,18 +42,52 @@ import CartPage from "../pages/Cart/CartPage";
 const isAuthenticated = () => !!Cookies.get("userToken");
 
 // --- Private Route ---
+// export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
+//   const location = useLocation();
+//   const auth = isAuthenticated();
+
+//   if (!auth) {
+//     const redirectUrl = location.pathname + location.search + location.hash;
+//     localStorage.setItem("invitation-link", redirectUrl);
+
+//     return (
+//       <Navigate
+//         to={`${redirectTo}?redirect=${encodeURIComponent(redirectUrl)}`}
+//         replace
+//       />
+//     );
+//   }
+
+//   return element;
+// };
+
 export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
   const location = useLocation();
-  const auth = isAuthenticated();
+  const token = Cookies.get("userToken");
+  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
 
-  if (!auth) {
-    // store the attempted path for redirect after login
-    const redirectUrl = location.pathname + location.search + location.hash;
+  const isAuthenticated = !!token;
+  const isEmailVerified = user?.emailVerified;
+
+  // Save attempted path for redirect
+  const redirectUrl = location.pathname + location.search + location.hash;
+
+  if (!isAuthenticated) {
     localStorage.setItem("invitation-link", redirectUrl);
-
     return (
       <Navigate
         to={`${redirectTo}?redirect=${encodeURIComponent(redirectUrl)}`}
+        replace
+      />
+    );
+  }
+
+  // ✅ Block unverified users from accessing the dashboard
+  if (!isEmailVerified && !location.pathname.includes("/verify-otp")) {
+    return (
+      <Navigate
+        to={`/verify-otp${redirectUrl ? `?redirect=${redirectUrl}` : ""}`}
+        state={{ from: location }}
         replace
       />
     );
@@ -59,9 +99,16 @@ export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
 // --- Public Route ---
 export const PublicRoute = ({ element, redirectTo = "/" }) => {
   const auth = isAuthenticated();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams?.get("redirect");
 
   if (auth) {
-    return <Navigate to={redirectTo} replace />;
+    return (
+      <Navigate
+        to={`${redirectTo}?redirect=${encodeURIComponent(redirect)}`}
+        replace
+      />
+    );
   }
 
   return element;

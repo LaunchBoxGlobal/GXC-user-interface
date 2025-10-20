@@ -24,6 +24,18 @@ const HomePage = () => {
       : null
   );
 
+  // useEffect(() => {
+  //   const userCookie = Cookies.get("user")
+  //     ? JSON.parse(Cookies.get("user"))
+  //     : null;
+  //   console.log(userCookie?.emailVerified);
+  //   if (!userCookie?.emailVerified) {
+  //     navigate(-1, {
+  //       replace: true,
+  //     });
+  //   }
+  // }, [navigate]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const newCommunity = Cookies.get("selected-community");
