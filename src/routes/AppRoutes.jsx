@@ -37,6 +37,8 @@ import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
 import AddProductPage from "../pages/ProductManagement/AddProductPage";
 import EditProductPage from "../pages/ProductManagement/EditProductPage";
 import CartPage from "../pages/Cart/CartPage";
+import CartSummary from "../pages/Cart/CartSummary";
+import Checkout from "../pages/Cart/Checkout";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -415,13 +417,38 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
+      {/* <Route
         path="/cart"
         element={
           <PrivateRoute
             element={
               <Layout>
                 <CartPage />
+              </Layout>
+            }
+          />
+        }
+      /> */}
+
+      <Route
+        path="/cart/:communityId"
+        element={
+          <PrivateRoute
+            element={
+              <Layout>
+                <CartSummary />
+              </Layout>
+            }
+          />
+        }
+      />
+      <Route
+        path="/cart/:communityId/checkout"
+        element={
+          <PrivateRoute
+            element={
+              <Layout>
+                <Checkout />
               </Layout>
             }
           />

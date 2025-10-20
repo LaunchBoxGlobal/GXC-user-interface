@@ -12,6 +12,7 @@ const Navbar = () => {
   const { user } = useAppContext();
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { selectedCommunity } = useAppContext();
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -33,7 +34,7 @@ const Navbar = () => {
       }`}
     >
       <div className="block">
-        <Link to={`/`}>
+        <Link to={`/`} className="outline-none border-none">
           {isScrolled ? (
             <img
               src="/logo.svg"
@@ -67,7 +68,7 @@ const Navbar = () => {
         })}
 
         <div className="flex items-center gap-10">
-          <Link to={`/cart`}>
+          <Link to={`/cart/${selectedCommunity?.id}`}>
             {isScrolled ? (
               <div className="relative">
                 <img

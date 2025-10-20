@@ -23,27 +23,26 @@ const HomePage = () => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
+  const [searchParams] = useSearchParams();
+  const minPrice = searchParams.get("min");
+  const maxPrice = searchParams.get("max");
+  const params = new URLSearchParams();
 
-  // useEffect(() => {
-  //   const userCookie = Cookies.get("user")
-  //     ? JSON.parse(Cookies.get("user"))
-  //     : null;
-  //   console.log(userCookie?.emailVerified);
-  //   if (!userCookie?.emailVerified) {
-  //     navigate(-1, {
-  //       replace: true,
-  //     });
-  //   }
-  // }, [navigate]);
+  if (productSearchValue) params.set("search", productSearchValue);
+  if (minPrice) params.set("minPrice", minPrice);
+  if (maxPrice) params.set("maxPrice", maxPrice);
 
   useEffect(() => {
     const interval = setInterval(() => {
       const newCommunity = Cookies.get("selected-community");
       if (newCommunity) {
         const parsed = JSON.parse(newCommunity);
-        if (parsed?.id !== community?.id) {
-          setCommunity(parsed);
-        }
+        setCommunity((prev) => {
+          if (parsed?.id !== prev?.id) {
+            return parsed;
+          }
+          return prev;
+        });
       }
     }, 1000);
 
@@ -54,14 +53,12 @@ const HomePage = () => {
     if (!community) return;
     try {
       setLoading(true);
-      const res = await axios.get(
-        `${BASE_URL}/communities/${community.id}/products${
-          productSearchValue ? `?search=${productSearchValue}` : ``
-        }`,
-        {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
-      );
+      const url = `${BASE_URL}/communities/${community.id}/products${
+        params.toString() ? `?${params.toString()}` : ""
+      }`;
+      const res = await axios.get(url, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
 
       setProducts(res?.data?.data?.products || null);
       setPagination(res?.data?.data?.pagination);
@@ -110,10 +107,16 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    if (community) {
-      checkJoinStatus();
-    }
-  }, [community, productSearchValue]);
+    const run = async () => {
+      if (!community) return;
+
+      const isMember = await checkJoinStatus();
+      if (isMember) {
+        fetchCommunityProducts();
+      }
+    };
+    run();
+  }, [community, productSearchValue, minPrice, maxPrice]);
 
   useEffect(() => {
     document.title = "Home - GiveXChange";

@@ -105,6 +105,7 @@ export const AppProvider = ({ children }) => {
         selectedCommunity,
         productSearchValue,
         setProductSearchValue,
+        setSelectedCommunity,
       }}
     >
       {children}

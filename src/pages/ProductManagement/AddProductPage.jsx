@@ -290,7 +290,7 @@ const AddProductPage = () => {
                     ))}
                   </div>
                   {formik.touched.deliveryType && formik.errors.deliveryType ? (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs mt-1">
                       {formik.errors.deliveryType}
                     </p>
                   ) : null}
@@ -331,7 +331,7 @@ const AddProductPage = () => {
                     }`}
                   ></textarea>
                   {formik.touched.description && formik.errors.description ? (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs mt-1">
                       {formik.errors.description}
                     </p>
                   ) : null}
@@ -415,7 +415,7 @@ const AddProductPage = () => {
 
               {/* Error message */}
               {formik.touched.productImages && formik.errors.productImages ? (
-                <p className="text-red-500 text-sm mt-2">
+                <p className="text-red-500 text-xs mt-2">
                   {formik.errors.productImages}
                 </p>
               ) : null}
