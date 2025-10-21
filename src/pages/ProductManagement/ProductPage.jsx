@@ -13,13 +13,15 @@ import DeleteProductPopup from "./DeleteProductPopup";
 import { FaCheck } from "react-icons/fa6";
 import { enqueueSnackbar } from "notistack";
 import { useCart } from "../../context/cartContext";
+import { useUser } from "../../context/userContext";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const productId = searchParams.get("productId");
   const [productDetails, setProductDetails] = useState(null);
-  const { user, selectedCommunity } = useAppContext();
+  const { user } = useAppContext();
+  const { selectedCommunity } = useUser();
   const { fetchCartCount } = useCart();
   const [loading, setLoading] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);

@@ -1,9 +1,23 @@
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
+import { useUser } from "../../context/userContext";
 
-const OrderSummary = ({ cartProducts, handleNavigate }) => {
+const OrderSummary = ({
+  cartProducts,
+  handleNavigate,
+  handlePlaceOrder,
+  isLoading,
+}) => {
   const location = useLocation();
-  const { selectedCommunity } = useAppContext();
+  const { selectedCommunity } = useUser();
+
+  const handleClick = () => {
+    if (location?.pathname === `/cart/${selectedCommunity?.id}/checkout`) {
+      handlePlaceOrder();
+    } else {
+      handleNavigate();
+    }
+  };
   return (
     <div className="bg-white rounded-[18px] w-full">
       <h2 className="text-[24px] font-semibold leading-none px-5 pt-5 lg:pt-7">
@@ -46,7 +60,7 @@ const OrderSummary = ({ cartProducts, handleNavigate }) => {
             <button
               type="button"
               className="button"
-              onClick={() => handleNavigate()}
+              onClick={() => handleClick()}
             >
               {location?.pathname === `/cart/${selectedCommunity?.id}/checkout`
                 ? "Place Order"

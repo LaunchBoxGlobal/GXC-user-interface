@@ -9,46 +9,48 @@ import Loader from "../../components/Common/Loader";
 import OrderSummary from "./OrderSummary";
 import CartProductCard from "./CartProductCard";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/userContext";
 
 const CartPage = () => {
-  const { fetchCartCount, selectedCommunity } = useCart();
+  const { fetchCartCount, fetchCartProducts } = useCart();
+  const { selectedCommunity } = useUser();
   const [cartProducts, setCartProducts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cartDetails, setCartDetails] = useState(null);
   const navigate = useNavigate();
 
-  const fetchCartProducts = async () => {
-    if (!selectedCommunity) {
-      enqueueSnackbar(`Community ID not found!`, { variant: "error" });
-      return;
-    }
-    setLoading(true);
-    setError(null);
+  // const fetchCartProducts = async () => {
+  //   if (!selectedCommunity) {
+  //     enqueueSnackbar(`Community ID not found!`, { variant: "error" });
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   setError(null);
 
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+  //   try {
+  //     const res = await axios.get(
+  //       `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${getToken()}`,
+  //         },
+  //       }
+  //     );
 
-      setCartProducts(res?.data?.data?.items);
-      setCartDetails(res?.data?.data);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      const message =
-        error?.response?.data?.message ||
-        "Failed to load cart items. Please try again later.";
-      setError(message);
-      handleApiError(error, navigate);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setCartProducts(res?.data?.data?.items);
+  //     setCartDetails(res?.data?.data);
+  //   } catch (error) {
+  //     console.error("Error fetching cart:", error);
+  //     const message =
+  //       error?.response?.data?.message ||
+  //       "Failed to load cart items. Please try again later.";
+  //     setError(message);
+  //     handleApiError(error, navigate);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     fetchCartCount();

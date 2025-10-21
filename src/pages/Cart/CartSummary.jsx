@@ -15,76 +15,59 @@ import CartProductCard from "./CartProductCard";
 import UserDeliveryAddress from "./UserDeliveryAddress";
 import UserPaymentMethod from "./UserPaymentMethod";
 import { FiArrowLeft } from "react-icons/fi";
+import EditAddressModal from "./EditAddressModal";
 
 const CartSummary = () => {
-  const { fetchCartCount, selectedCommunity } = useCart();
-  const [cartProducts, setCartProducts] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [cartDetails, setCartDetails] = useState(null);
-  const navigate = useNavigate();
-  const { user } = useAppContext();
-  const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
-  const userDeliveryAddress = Cookies.get("newDeliveryAddress")
-    ? JSON.parse(Cookies.get("newDeliveryAddress"))
-    : null;
-  const [userNewDeliveryAddress, setUserNewDeliveryAddress] =
-    useState(userDeliveryAddress);
+  const {
+    fetchCartCount,
+    selectedCommunity,
+    loading,
+    setLoading,
+    setError,
+    error,
+    fetchCartProducts,
+    cartProducts,
+    cartDetails,
+  } = useCart();
 
+  const navigate = useNavigate();
+  const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
+  const [openEditAddressModal, setOpenEditAddressModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [userNewDeliveryAddress, setUserNewDeliveryAddress] = useState(null);
 
-  const toggleAddAddressModal = () => {
-    setOpenAddAddressModal((prev) => !prev);
-  };
-
-  const fetchCartProducts = async () => {
-    if (!selectedCommunity) {
-      enqueueSnackbar(`Community ID not found!`, { variant: "error" });
-      return;
+  // 🔁 Load user’s saved delivery address (from cookies)
+  useEffect(() => {
+    const savedAddress = Cookies.get("newDeliveryAddress");
+    if (savedAddress) {
+      setUserNewDeliveryAddress(JSON.parse(savedAddress));
     }
-    setLoading(true);
-    setError(null);
+  }, []);
 
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
-
-      setCartProducts(res?.data?.data?.items);
-      setCartDetails(res?.data?.data);
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      const message =
-        error?.response?.data?.message ||
-        "Failed to load cart items. Please try again later.";
-      setError(message);
-      handleApiError(error, navigate);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // 🔁 Fetch cart data on mount
   useEffect(() => {
     fetchCartCount();
     fetchCartProducts();
   }, []);
 
+  const toggleAddAddressModal = () => setOpenAddAddressModal((prev) => !prev);
+  const toggleEditAddressModal = () => setOpenEditAddressModal((prev) => !prev);
+
+  // ✅ Check if any product requires delivery
+  const isAnyDeliveryTypeProduct = cartProducts?.some(
+    (p) =>
+      p?.product?.deliveryMethod === "delivery" ||
+      p?.product?.deliveryMethod === "both"
+  );
+
+  // 🧹 Remove all cart items
   const removeAllItemsFromCart = async () => {
     setLoading(true);
     try {
       const response = await axios.delete(
         `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
       if (response?.data?.success) {
@@ -94,7 +77,9 @@ const CartSummary = () => {
             variant: "success",
           }
         );
+        Cookies.remove("newDeliveryAddress");
         fetchCartProducts();
+        fetchCartCount();
       }
     } catch (error) {
       handleApiError(error, navigate);
@@ -103,28 +88,27 @@ const CartSummary = () => {
     }
   };
 
+  // 🛒 Proceed to checkout validation
   const handleNavigate = () => {
-    if (!selectedAddress) {
-      enqueueSnackbar("Please select a delivery address!", {
+    if (isAnyDeliveryTypeProduct && !selectedAddress) {
+      return enqueueSnackbar("Please select a delivery address!", {
         variant: "error",
       });
-      return;
     }
     if (!selectedPaymentMethod) {
-      enqueueSnackbar("Please select a payment method!", {
+      return enqueueSnackbar("Please select a payment method!", {
         variant: "error",
       });
-      return;
     }
     navigate(`/cart/${selectedCommunity?.id}/checkout`);
   };
 
-  // ✅ Loader
+  // 🌀 Loader
   if (loading) {
     return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex items-center justify-center">
+      <div className="w-full padding-x relative -top-20">
+        <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-2">
+          <div className="w-full rounded-[18px] min-h-[60vh] bg-white flex items-center justify-center">
             <Loader />
           </div>
         </div>
@@ -132,13 +116,13 @@ const CartSummary = () => {
     );
   }
 
-  // ✅ Error UI
+  // ⚠️ Error UI
   if (error) {
     return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex flex-col items-center justify-center gap-4">
-            <p className="text-lg font-semibold text-gray-800 text-center max-w-md">
+      <div className="w-full padding-x relative -top-20">
+        <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-2">
+          <div className="w-full rounded-[18px] min-h-[60vh] bg-white flex flex-col items-center justify-center gap-4">
+            <p className="text-lg font-medium text-gray-800 text-center max-w-md">
               {error}
             </p>
             <button
@@ -155,88 +139,94 @@ const CartSummary = () => {
 
   // ✅ Normal UI
   return (
-    <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
-      <div className="w-full">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="text-sm text-white flex items-center gap-2"
-        >
-          <FiArrowLeft className="text-base" /> Back
-        </button>
-      </div>
-      <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
-        <div className="w-full rounded-[18px] relative">
-          {cartProducts && cartProducts?.length > 0 ? (
-            <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
-              <div className="w-full col-span-3 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
-                <div className="w-full flex items-center justify-between">
-                  <h1 className="text-[24px] font-semibold leading-none">
-                    Cart
-                  </h1>
-                  {cartProducts && cartProducts?.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => removeAllItemsFromCart()}
-                      className="flex items-center gap-1"
-                    >
-                      <img
-                        src="/trash-icon-red.png"
-                        alt="trash icon"
-                        className="w-[14px] h-[15px] object-contain"
-                      />
-                      <span className="text-sm">Remove All</span>
-                    </button>
-                  )}
-                </div>
-                <div className="w-full border my-5" />
+    <div className="w-full padding-x relative -top-28">
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="text-sm text-white flex items-center gap-2"
+      >
+        <FiArrowLeft className="text-base" /> Back
+      </button>
 
-                <div className="w-full mb-5">
-                  <UserDeliveryAddress
-                    toggleAddAddressModal={toggleAddAddressModal}
-                    userNewDeliveryAddress={userNewDeliveryAddress}
-                    selectedAddress={selectedAddress}
-                    setSelectedAddress={setSelectedAddress}
-                  />
-                  <div className="w-full border my-5" />
+      <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-5">
+        <div className="w-full rounded-[18px]">
+          {cartProducts?.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+              {/* 🛒 Cart Section */}
+              <div className="col-span-3 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
+                <div className="flex items-center justify-between">
+                  <h1 className="text-[24px] font-semibold">Cart</h1>
+                  <button
+                    type="button"
+                    onClick={removeAllItemsFromCart}
+                    className="flex items-center gap-1"
+                  >
+                    <img
+                      src="/trash-icon-red.png"
+                      alt="trash icon"
+                      className="w-[14px] h-[15px]"
+                    />
+                    <span className="text-sm">Remove All</span>
+                  </button>
+                </div>
+
+                <div className="mb-5">
+                  {isAnyDeliveryTypeProduct && (
+                    <UserDeliveryAddress
+                      toggleAddAddressModal={toggleAddAddressModal}
+                      userNewDeliveryAddress={userNewDeliveryAddress}
+                      selectedAddress={selectedAddress}
+                      setSelectedAddress={setSelectedAddress}
+                      toggleEditAddressModal={toggleEditAddressModal}
+                      openEditAddressModal={openEditAddressModal}
+                    />
+                  )}
+
+                  <div className="border my-5" />
                   <UserPaymentMethod
                     selectedPaymentMethod={selectedPaymentMethod}
                     setSelectedPaymentMethod={setSelectedPaymentMethod}
                   />
                 </div>
 
-                <div className="w-full border my-5" />
-
-                {cartProducts && cartProducts.length > 0 ? (
-                  cartProducts.map((product, index) => (
-                    <CartProductCard product={product} index={index} />
-                  ))
-                ) : (
-                  <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-gray-500">
-                    <p className="text-base font-medium">Your cart is empty.</p>
-                  </div>
-                )}
+                <div className="border my-5" />
+                {cartProducts.map((product, index) => (
+                  <CartProductCard
+                    key={index}
+                    product={product}
+                    index={index}
+                    setLoading={setLoading}
+                    cartDetails={cartDetails}
+                    fetchCartProducts={fetchCartProducts}
+                  />
+                ))}
               </div>
 
-              <div className="col-span-1 w-full">
+              {/* 📦 Order Summary */}
+              <div className="col-span-1">
                 <OrderSummary
                   cartProducts={cartDetails}
-                  navigate={navigate}
                   handleNavigate={handleNavigate}
                 />
               </div>
             </div>
           ) : (
-            <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-[18px]">
+            <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-[18px]">
               <p className="text-base font-medium">Your cart is empty.</p>
             </div>
           )}
         </div>
       </div>
 
+      {/* 📦 Address Modals */}
       <AddAddressModal
         openAddAddressModal={openAddAddressModal}
         toggleAddAddressModal={toggleAddAddressModal}
+        setUserNewDeliveryAddress={setUserNewDeliveryAddress}
+      />
+      <EditAddressModal
+        openAddAddressModal={openEditAddressModal}
+        toggleAddAddressModal={toggleEditAddressModal}
         setUserNewDeliveryAddress={setUserNewDeliveryAddress}
       />
     </div>

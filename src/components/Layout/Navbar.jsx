@@ -6,13 +6,14 @@ import { useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { PAGE_LINKS } from "../../data/pageLinks";
 import { useCart } from "../../context/cartContext";
+import { useUser } from "../../context/userContext";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useAppContext();
   const { cartCount } = useCart();
   const [isScrolled, setIsScrolled] = useState(false);
-  const { selectedCommunity } = useAppContext();
+  const { selectedCommunity } = useUser();
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);

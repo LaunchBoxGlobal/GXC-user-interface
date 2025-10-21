@@ -13,7 +13,7 @@ const ProductManagementPage = () => {
   const [products, setProducts] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { selectedCommunity } = useAppContext();
+  const { selectedCommunity } = useUser();
   const [errorMessage, setErrorMessage] = useState(null);
   const { checkIamAlreadyMember } = useUser();
 

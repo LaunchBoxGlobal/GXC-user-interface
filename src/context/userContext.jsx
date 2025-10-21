@@ -17,6 +17,11 @@ export const UserProvider = ({ children }) => {
   const [checking, setChecking] = useState(false);
   const [communities, setCommunities] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [selectedCommunity, setSelectedCommunity] = useState(
+    Cookies.get("selected-community")
+      ? JSON.parse(Cookies.get("selected-community"))
+      : null
+  );
 
   const communityFromQuery = searchParams.get("community");
 
@@ -127,8 +132,13 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    checkIamAlreadyMember(); // initial check
-    const interval = setInterval(checkIamAlreadyMember, 30000); // check every 30s
+    const init = async () => {
+      await fetchCommunities();
+      await checkIamAlreadyMember();
+    };
+    init();
+
+    const interval = setInterval(checkIamAlreadyMember, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -141,6 +151,8 @@ export const UserProvider = ({ children }) => {
         selected,
         fetchCommunities,
         checkIamAlreadyMember,
+        selectedCommunity,
+        setSelectedCommunity,
       }}
     >
       {children}

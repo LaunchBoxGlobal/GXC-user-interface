@@ -10,12 +10,14 @@ import { BASE_URL } from "../../data/baseUrl";
 import Button from "../../components/Common/Button";
 import { useAppContext } from "../../context/AppContext";
 import { getToken } from "../../utils/getToken";
+import { useUser } from "../../context/userContext";
 
 const AddProductPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
-  const { selectedCommunity, user } = useAppContext();
+  const { user } = useAppContext();
+  const { selectedCommunity } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
 
   const formik = useFormik({
@@ -285,7 +287,7 @@ const AddProductPage = () => {
                             : "bg-[var(--secondary-bg)] text-gray-700 border-[var(--secondary-bg)]"
                         }`}
                       >
-                        {type}
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
                       </button>
                     ))}
                   </div>

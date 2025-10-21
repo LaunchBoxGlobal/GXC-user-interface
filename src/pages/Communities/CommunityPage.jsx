@@ -13,27 +13,25 @@ import Cookies from "js-cookie";
 const CommunityPage = () => {
   const { communityTitle } = useParams();
   const [showPopup, setShowPopup] = useState(false);
-  const [hasAccepted, setHasAccepted] = useState(false);
   const [canJoin, setCanJoin] = useState(null);
   const [fetchingCommunity, setFetchingCommunity] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [alreadyMember, setAlreadyMember] = useState(null);
+  const [alreadyMember, setAlreadyMember] = useState(false);
   const [community, setCommunity] = useState(null);
   const [initializing, setInitializing] = useState(true);
   const { user } = useAppContext();
   const [notFound, setNotFound] = useState(false);
-  const navigate = useNavigate();
   const [blocked, setBlocked] = useState(false);
+  const navigate = useNavigate();
 
+  // ✅ Fetch community details
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
     try {
       const res = await axios.get(
         `${BASE_URL}/communities/${communityTitle}/details`,
         {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
+          headers: { Authorization: `Bearer ${getToken()}` },
         }
       );
       setCommunity(res?.data?.data);
@@ -41,14 +39,13 @@ const CommunityPage = () => {
       console.log(error);
       if (error?.response?.status === 404) {
         setNotFound(true);
-      } else {
-        // handleApiError(error, navigate);
       }
     } finally {
       setFetchingCommunity(false);
     }
   };
 
+  // ✅ Check current membership
   const checkIamAlreadyMember = async () => {
     try {
       const res = await axios.get(
@@ -57,23 +54,22 @@ const CommunityPage = () => {
           headers: { Authorization: `Bearer ${getToken()}` },
         }
       );
-      console.log("my-membership >> ", res);
+
       const isMember = res?.data?.data?.isMember;
       setAlreadyMember(isMember);
-      const isBanned = res?.data?.data?.membership?.status;
-      setBlocked(isBanned);
+
+      const status = res?.data?.data?.membership?.status;
+      setBlocked(status);
+
       return isMember;
     } catch (error) {
       console.log("membership error >>>>> ", error);
       handleApiError(error, navigate);
-      // enqueueSnackbar(error?.response?.data?.message || error?.message, {
-      //   variant: "error",
-      //   autoHideDuration: 1500,
-      // });
       return false;
     }
   };
 
+  // ✅ Check if community allows joining
   const checkJoinStatus = async () => {
     try {
       const res = await axios.get(
@@ -86,22 +82,16 @@ const CommunityPage = () => {
       const canJoinStatus = res?.data?.data?.canJoin;
       setCanJoin(canJoinStatus);
 
-      if (
-        !localStorage.getItem(`invite-${communityTitle} ${user?.id}`) &&
-        canJoinStatus
-      ) {
+      if (canJoinStatus) {
         setShowPopup(true);
       }
     } catch (error) {
       console.log("join-status error >>>>> ", error);
-      // enqueueSnackbar(error?.response?.data?.message || error?.message, {
-      //   variant: "error",
-      //   autoHideDuration: 1500,
-      // });
       setCanJoin(false);
     }
   };
 
+  // ✅ Handle invite acceptance
   const handleAcceptInvite = async () => {
     if (!canJoin) {
       enqueueSnackbar("Community is not accepting new members anymore!", {
@@ -110,8 +100,8 @@ const CommunityPage = () => {
       });
       return;
     }
-    setLoading(true);
 
+    setLoading(true);
     try {
       const res = await axios.post(
         `${BASE_URL}/communities/${communityTitle}/join`,
@@ -121,27 +111,19 @@ const CommunityPage = () => {
         }
       );
 
-      localStorage.setItem(`invite-${communityTitle} ${user?.id}`, "accepted");
-      setHasAccepted(true);
-      setShowPopup(false);
-
       enqueueSnackbar("Welcome! You’ve joined the community 🎉", {
         variant: "success",
         autoHideDuration: 2000,
       });
+
+      setShowPopup(false);
       navigate(`/?community=${communityTitle}`);
     } catch (error) {
       console.log("accept invitation error >>>>> ", error);
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         Cookies.remove("userToken");
         Cookies.remove("user");
         navigate("/login");
-      } else if (error?.response?.status === 403) {
-        enqueueSnackbar(error?.response?.data?.message || error?.message, {
-          variant: "error",
-          autoHideDuration: 2000,
-        });
-        navigate("/");
       } else {
         enqueueSnackbar(error?.response?.data?.message || error?.message, {
           variant: "error",
@@ -153,17 +135,16 @@ const CommunityPage = () => {
     }
   };
 
+  // ✅ Init page logic
   useEffect(() => {
-    const initCommunityPage = async () => {
-      const key = `invite-${communityTitle} ${user?.id}`;
-      const alreadyAccepted = localStorage.getItem(key);
-      if (alreadyAccepted) setHasAccepted(true);
+    if (!user) return; // wait until user context is ready
 
+    const initCommunityPage = async () => {
       const isMember = await checkIamAlreadyMember();
+
       if (isMember) {
-        setAlreadyMember(true);
         await fetchCommunityDetails();
-        navigate(`/?community=${communityTitle}`); // 👈 Redirect to home with param
+        navigate(`/?community=${communityTitle}`);
         setInitializing(false);
         return;
       }
@@ -174,15 +155,15 @@ const CommunityPage = () => {
     };
 
     initCommunityPage();
-  }, [communityTitle]);
+  }, [communityTitle, user]);
 
   const handleCancelInvitation = () => {
     setShowPopup(false);
     navigate("/");
   };
 
+  // ✅ Render states
   if (initializing || fetchingCommunity) {
-    // 👈 Full page loader until everything finishes
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader />
@@ -209,23 +190,16 @@ const CommunityPage = () => {
   if (blocked && blocked === "banned") {
     return (
       <div className="w-full text-center h-screen py-40">
-        <p className="">You’ve been blocked from this community.</p>
+        <p>You’ve been blocked from this community.</p>
       </div>
     );
   }
 
-  // if (blocked && blocked === "removed") {
-  //   return (
-  //     <div className="w-full text-center h-screen py-40">
-  //       <p className="">You’ve been removed from this community.</p>
-  //     </div>
-  //   );
-  // }
-
+  // ✅ Main Render
   return (
     <div className="p-5 min-h-screen">
-      {/* Popup Modal */}
-      {showPopup && !hasAccepted && canJoin && (
+      {/* Invitation Popup */}
+      {showPopup && canJoin && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-[#fff] p-8 rounded-[32px] shadow-lg max-w-[471px] w-full text-center">
             <img
@@ -236,19 +210,16 @@ const CommunityPage = () => {
             <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
               You’ve Been Invited to Join a Community!
             </h2>
-            {community && community?.owner?.fullName && (
+            {community?.owner?.fullName && (
               <p className="mb-4">
-                {community && community?.owner?.fullName && (
-                  <span className="font-medium">
-                    {community?.owner?.fullName}
-                  </span>
-                )}{" "}
-                has invited to join this community. Would you like to accept?
+                <span className="font-medium">{community.owner.fullName}</span>{" "}
+                has invited you to join this community. Would you like to
+                accept?
               </p>
             )}
             <div className="w-full grid grid-cols-2 gap-3">
               <button
-                onClick={() => handleCancelInvitation()}
+                onClick={handleCancelInvitation}
                 className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
               >
                 Cancel

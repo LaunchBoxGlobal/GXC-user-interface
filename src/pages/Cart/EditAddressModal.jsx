@@ -9,21 +9,24 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import TextField from "../../components/Common/TextField";
 import Cookies from "js-cookie";
-import { useState } from "react";
 
-const AddAddressModal = ({
+const EditAddressModal = ({
   openAddAddressModal,
   toggleAddAddressModal,
   setUserNewDeliveryAddress,
 }) => {
+  const address = Cookies.get("newDeliveryAddress")
+    ? JSON.parse(Cookies.get("newDeliveryAddress"))
+    : null;
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      location: "",
-      zipcode: "",
-      city: "",
-      state: "",
-      country: "",
+      location: address?.location || "",
+      zipcode: address?.zipcode || "",
+      city: address?.city || "",
+      state: address?.state || "",
+      country: address?.country || "",
       countryId: "",
       stateId: "",
     },
@@ -42,7 +45,6 @@ const AddAddressModal = ({
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
       const userAddress = {
         country: values.country,
         state: values.state,
@@ -70,7 +72,7 @@ const AddAddressModal = ({
           className="w-full bg-white max-w-[470px] rounded-[12px] p-7"
         >
           <h2 className="text-[24px] font-semibold leading-none">
-            Add New Address
+            Edit New Address
           </h2>
           <div className="w-full border my-4" />
 
@@ -79,11 +81,14 @@ const AddAddressModal = ({
               <label className="text-sm font-medium">Country</label>
               <CountrySelect
                 containerClassName="w-full"
-                inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none ${
-                  formik.touched.country && formik.errors.country
-                    ? "border-red-500"
-                    : "border-gray-200"
-                }`}
+                inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none 
+        ${
+          formik.touched.country && formik.errors.country
+            ? "border-red-500"
+            : "border-gray-200"
+        }
+      `}
+                placeHolder="Select Country"
                 defaultValue={
                   formik.values.country
                     ? {
@@ -92,7 +97,6 @@ const AddAddressModal = ({
                       }
                     : null
                 }
-                placeHolder="Select Country"
                 onChange={(val) => {
                   formik.setFieldValue("country", val.name);
                   formik.setFieldValue("countryId", val.id);
@@ -151,6 +155,9 @@ const AddAddressModal = ({
         }
       `}
                 placeHolder="Select City"
+                defaultValue={
+                  formik.values.city ? { name: formik.values.city } : null
+                }
                 onChange={(val) => formik.setFieldValue("city", val.name)}
               />
               {formik.touched.city && formik.errors.city && (
@@ -203,4 +210,4 @@ const AddAddressModal = ({
   );
 };
 
-export default AddAddressModal;
+export default EditAddressModal;

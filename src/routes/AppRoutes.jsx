@@ -33,12 +33,13 @@ import ReportingPage from "../pages/Reporting/ReportingPage";
 import WalletPage from "../pages/Wallet/WalletPage";
 import OrdersPage from "../pages/Orders/OrdersPage";
 import ProductManagementPage from "../pages/ProductManagement/ProductManagementPage";
-import ProductDetailsPage from "../pages/ProductManagement/ProductPage";
+import ProductDetailsPage from "../pages/ProductManagement/ProductDetailsPage";
 import AddProductPage from "../pages/ProductManagement/AddProductPage";
 import EditProductPage from "../pages/ProductManagement/EditProductPage";
 import CartPage from "../pages/Cart/CartPage";
 import CartSummary from "../pages/Cart/CartSummary";
 import Checkout from "../pages/Cart/Checkout";
+import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -71,7 +72,6 @@ export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
   const isAuthenticated = !!token;
   const isEmailVerified = user?.emailVerified;
 
-  // Save attempted path for redirect
   const redirectUrl = location.pathname + location.search + location.hash;
 
   if (!isAuthenticated) {
@@ -84,7 +84,6 @@ export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
     );
   }
 
-  // ✅ Block unverified users from accessing the dashboard
   if (!isEmailVerified && !location.pathname.includes("/verify-otp")) {
     return (
       <Navigate
@@ -384,6 +383,7 @@ const AppRoutes = () => {
           <PrivateRoute
             element={
               <Layout>
+                {/* <ProductDetailsPage /> */}
                 <ProductDetailsPage />
               </Layout>
             }
@@ -435,7 +435,7 @@ const AppRoutes = () => {
         element={
           <PrivateRoute
             element={
-              <Layout>
+              <Layout key="cart-summary">
                 <CartSummary />
               </Layout>
             }
@@ -447,8 +447,21 @@ const AppRoutes = () => {
         element={
           <PrivateRoute
             element={
-              <Layout>
+              <Layout key="checkout">
                 <Checkout />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/order/order-details/:orderId"
+        element={
+          <PrivateRoute
+            element={
+              <Layout key="order-details">
+                <OrderDetailsPage />
               </Layout>
             }
           />

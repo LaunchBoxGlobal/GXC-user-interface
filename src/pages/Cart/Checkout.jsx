@@ -12,9 +12,13 @@ import { useAppContext } from "../../context/AppContext";
 import AddAddressModal from "./AddAddressModal";
 import Cookies from "js-cookie";
 import { FiArrowLeft } from "react-icons/fi";
+import OrderSuccessPopup from "./OrderSuccessPopup";
+import { FaLocationDot } from "react-icons/fa6";
+import { useUser } from "../../context/userContext";
 
 const Checkout = () => {
-  const { fetchCartCount, selectedCommunity } = useCart();
+  const { fetchCartCount } = useCart();
+  const { selectedCommunity } = useUser();
   const [cartProducts, setCartProducts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,6 +32,10 @@ const Checkout = () => {
   const [userNewDeliveryAddress, setUserNewDeliveryAddress] =
     useState(userDeliveryAddress);
 
+  const ids = cartProducts?.map((p) => p?.product?.id);
+
+  const [productIds, setProductIds] = useState();
+
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
@@ -35,10 +43,17 @@ const Checkout = () => {
     setOpenAddAddressModal((prev) => !prev);
   };
 
-  const savedAddress = JSON.parse(Cookies.get("userSelectedDeliveryAddress"));
-  const savedPaymentMethod = JSON.parse(
-    Cookies.get("userSelectedPaymentMethod")
-  );
+  const savedAddress = Cookies.get("userSelectedDeliveryAddress")
+    ? JSON.parse(Cookies.get("userSelectedDeliveryAddress"))
+    : null;
+  const savedPaymentMethod = Cookies.get("userSelectedPaymentMethod")
+    ? JSON.parse(Cookies.get("userSelectedPaymentMethod"))
+    : null;
+  const [ShowOrderPlacePopup, setShowOrderPlacePopup] = useState(false);
+
+  const handleCloseSuccessPopup = () => {
+    setShowOrderPlacePopup((prev) => !prev);
+  };
 
   const fetchCartProducts = async () => {
     if (!selectedCommunity) {
@@ -91,6 +106,47 @@ const Checkout = () => {
       return;
     }
     navigate(`/cart/${selectedCommunity?.id}/checkout`);
+  };
+
+  // 🧹 Remove all cart items
+  const removeAllItemsFromCart = async () => {
+    if (!ids) {
+      enqueueSnackbar("Something went wrong. Try again!");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await axios.delete(
+        `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
+        { headers: { Authorization: `Bearer ${getToken()}` } }
+      );
+
+      if (response?.data?.success) {
+        setShowOrderPlacePopup(true);
+        Cookies.remove("newDeliveryAddress");
+        Cookies.remove("userSelectedDeliveryAddress");
+        Cookies.remove("userSelectedPaymentMethod");
+        fetchCartProducts();
+        fetchCartCount();
+      }
+    } catch (error) {
+      handleApiError(error, navigate);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      if (!ids) {
+        enqueueSnackbar("Something went wrong. Try again!");
+        return;
+      }
+
+      setShowOrderPlacePopup(true);
+    } catch (error) {
+      setShowOrderPlacePopup(false);
+    }
   };
 
   // ✅ Loader
@@ -191,60 +247,82 @@ const Checkout = () => {
                 {cartProducts && cartProducts.length > 0 ? (
                   cartProducts.map((product, index) => (
                     <div
-                      key={index}
-                      className={`w-full flex items-center justify-between border-b ${
-                        index === 0 ? "pb-5" : "py-5"
+                      className={`w-full border-b ${
+                        index === 0 ? "pb-5" : "pt-5 pb-3"
                       }`}
+                      key={index}
                     >
-                      <div className="flex items-center gap-3 col-span-4 lg:col-span-2">
-                        <img
-                          src={product?.product?.images[0]?.imageUrl}
-                          alt=""
-                          className="min-w-[80px] max-w-[80px] h-[80px] max-h-[80px] object-cover rounded-xl"
-                        />
-                        <div className="w-full flex flex-col gap-2">
-                          <p className="font-semibold leading-none break-words max-w-[280px] text-sm lg:text-base">
-                            {product?.product?.title?.length > 30
-                              ? `${product?.product?.title?.slice(0, 30)}...`
-                              : product?.product?.title}
-                          </p>
-                          <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-base">
-                            {product?.product?.deliveryMethod === "pickup"
-                              ? "Pickup"
-                              : product?.product?.deliveryMethod === "delivery"
-                              ? "Delivery"
-                              : "Pickup/Delivery"}
-                          </p>
-                          <div className="w-full lg:hidden flex items-end justify-between">
-                            <div className="flex flex-col items-start justify-center gap-0 col-span-4">
-                              <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-sm">
-                                Price
-                              </p>
-                              <p className="font-semibold text-sm lg:text-[20px] leading-none">
-                                ${product?.product?.price}
-                              </p>
+                      <div
+                        className={`w-full flex items-center justify-between`}
+                      >
+                        <div className="flex items-center gap-3 col-span-4 lg:col-span-2">
+                          <img
+                            src={product?.product?.images[0]?.imageUrl}
+                            alt=""
+                            className="min-w-[80px] max-w-[80px] h-[80px] max-h-[80px] object-cover rounded-xl"
+                          />
+                          <div className="w-full flex flex-col gap-2">
+                            <p className="font-semibold leading-none break-words max-w-[280px] text-sm lg:text-base">
+                              {product?.product?.title?.length > 30
+                                ? `${product?.product?.title?.slice(0, 30)}...`
+                                : product?.product?.title}
+                            </p>
+                            <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-base">
+                              {product?.product?.deliveryMethod === "pickup"
+                                ? "Pickup"
+                                : product?.product?.deliveryMethod ===
+                                  "delivery"
+                                ? "Delivery"
+                                : "Pickup/Delivery"}
+                            </p>
+                            <div className="w-full lg:hidden flex items-end justify-between">
+                              <div className="flex flex-col items-start justify-center gap-0 col-span-4">
+                                <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-sm">
+                                  Price
+                                </p>
+                                <p className="font-semibold text-sm lg:text-[20px] leading-none">
+                                  ${product?.product?.price}
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                className="flex items-center gap-1"
+                              >
+                                <img
+                                  src="/trash-icon-red.png"
+                                  alt="trash icon"
+                                  className="w-[14px] h-[15px] object-contain"
+                                />
+                              </button>
                             </div>
-                            <button
-                              type="button"
-                              className="flex items-center gap-1"
-                            >
-                              <img
-                                src="/trash-icon-red.png"
-                                alt="trash icon"
-                                className="w-[14px] h-[15px] object-contain"
-                              />
-                            </button>
                           </div>
                         </div>
+                        <div className="hidden lg:flex flex-col items-start justify-center gap-2 col-span-4 lg:col-span-1">
+                          <p className="font-normal text-[#7B7B7B] leading-none text-sm">
+                            Price
+                          </p>
+                          <p className="font-semibold text-[20px] leading-none">
+                            ${product?.product?.price}
+                          </p>
+                        </div>
                       </div>
-                      <div className="hidden lg:flex flex-col items-start justify-center gap-2 col-span-4 lg:col-span-1">
-                        <p className="font-normal text-[#7B7B7B] leading-none text-sm">
-                          Price
-                        </p>
-                        <p className="font-semibold text-[20px] leading-none">
-                          ${product?.product?.price}
-                        </p>
-                      </div>
+                      {product?.product?.deliveryMethod === "pickup" && (
+                        <div className="flex flex-col items-start justify-start gap-1 mt-3">
+                          <p className="text-sm font-semibold">
+                            Pickup Address:{" "}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <FaLocationDot className="text-base text-[var(--button-bg)]" />
+                            <p className="text-sm">
+                              {product?.product?.pickupAddress}{" "}
+                              {product?.product?.pickupCity}{" "}
+                              {product?.product?.pickupState}{" "}
+                              {product?.product?.zipcode}{" "}
+                              {product?.product?.pickupCountry}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -259,6 +337,7 @@ const Checkout = () => {
                   cartProducts={cartDetails}
                   navigate={navigate}
                   handleNavigate={handleNavigate}
+                  handlePlaceOrder={removeAllItemsFromCart}
                 />
               </div>
             </div>
@@ -274,6 +353,11 @@ const Checkout = () => {
         openAddAddressModal={openAddAddressModal}
         toggleAddAddressModal={toggleAddAddressModal}
         setUserNewDeliveryAddress={setUserNewDeliveryAddress}
+      />
+
+      <OrderSuccessPopup
+        handleCloseSuccessPopup={handleCloseSuccessPopup}
+        ShowOrderPlacePopup={ShowOrderPlacePopup}
       />
     </div>
   );

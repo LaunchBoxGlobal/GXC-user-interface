@@ -15,11 +15,11 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [communities, setCommunities] = useState([]);
-  const [selectedCommunity, setSelectedCommunity] = useState(
-    Cookies.get("selected-community")
-      ? JSON.parse(Cookies.get("selected-community"))
-      : null
-  );
+  // const [selectedCommunity, setSelectedCommunity] = useState(
+  //   Cookies.get("selected-community")
+  //     ? JSON.parse(Cookies.get("selected-community"))
+  //     : null
+  // );
 
   const [productSearchValue, setProductSearchValue] = useState(null);
 
@@ -102,10 +102,10 @@ export const AppProvider = ({ children }) => {
         setShowEmailVerificationPopup,
         communities,
         setCommunities,
-        selectedCommunity,
+        // selectedCommunity,
+        // setSelectedCommunity,
         productSearchValue,
         setProductSearchValue,
-        setSelectedCommunity,
       }}
     >
       {children}

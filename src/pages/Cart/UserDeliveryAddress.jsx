@@ -7,18 +7,18 @@ const UserDeliveryAddress = ({
   toggleAddAddressModal,
   selectedAddress,
   setSelectedAddress,
+  toggleEditAddressModal,
+  openEditAddressModal,
 }) => {
   const { user } = useAppContext();
 
-  // ✅ Load selected address from cookies on mount
   useEffect(() => {
     const savedAddress = Cookies.get("userSelectedDeliveryAddress");
     if (savedAddress) {
       setSelectedAddress(JSON.parse(savedAddress));
     }
-  }, []);
+  }, [userNewDeliveryAddress]);
 
-  // ✅ Handle address selection
   const handleSelectAddress = (address) => {
     setSelectedAddress(address);
     Cookies.set("userSelectedDeliveryAddress", JSON.stringify(address));
@@ -26,6 +26,7 @@ const UserDeliveryAddress = ({
 
   return (
     <div className="w-full">
+      <div className="w-full border my-5" />
       <div className="w-full flex items-center justify-between gap-3">
         <p className="font-semibold leading-none">Delivery Address</p>
         {!userNewDeliveryAddress && (
@@ -77,37 +78,51 @@ const UserDeliveryAddress = ({
       )}
 
       {/* ✅ New address (if exists) */}
+
       {userNewDeliveryAddress && (
-        <div
-          className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border 
+        <>
+          <div className="w-full mt-3 flex justify-end">
+            <button
+              type="button"
+              onClick={toggleEditAddressModal}
+              className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
+            >
+              + Edit delivery address
+            </button>
+          </div>
+
+          <div
+            className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border 
             ${
               selectedAddress?.type === "new"
                 ? "border-[var(--button-bg)]"
                 : "border-transparent"
             }`}
-        >
-          <div className="w-full max-w-[90%]">
-            <label className="w-full break-words cursor-pointer">
-              {userNewDeliveryAddress?.location}, {userNewDeliveryAddress?.city}{" "}
-              {userNewDeliveryAddress?.state} {userNewDeliveryAddress?.zipcode}{" "}
-              {userNewDeliveryAddress?.country}
-            </label>
+          >
+            <div className="w-full max-w-[90%]">
+              <label className="w-full break-words cursor-pointer">
+                {userNewDeliveryAddress?.location},{" "}
+                {userNewDeliveryAddress?.city} {userNewDeliveryAddress?.state}{" "}
+                {userNewDeliveryAddress?.zipcode}{" "}
+                {userNewDeliveryAddress?.country}
+              </label>
+            </div>
+            <div className="h-full flex items-center justify-end">
+              <input
+                type="radio"
+                name="userDeliveryAddress"
+                checked={selectedAddress?.type === "new"}
+                onChange={() =>
+                  handleSelectAddress({
+                    type: "new",
+                    ...userNewDeliveryAddress,
+                  })
+                }
+                className="w-[16px] h-[16px] accent-[var(--button-bg)]"
+              />
+            </div>
           </div>
-          <div className="h-full flex items-center justify-end">
-            <input
-              type="radio"
-              name="userDeliveryAddress"
-              checked={selectedAddress?.type === "new"}
-              onChange={() =>
-                handleSelectAddress({
-                  type: "new",
-                  ...userNewDeliveryAddress,
-                })
-              }
-              className="w-[16px] h-[16px] accent-[var(--button-bg)]"
-            />
-          </div>
-        </div>
+        </>
       )}
     </div>
   );

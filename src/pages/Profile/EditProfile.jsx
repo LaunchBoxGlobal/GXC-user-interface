@@ -423,7 +423,7 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.address}
             touched={formik.touched.address}
-            label={"Address"}
+            label={"Suite / Apartment / Street"}
           />
         </div>
 

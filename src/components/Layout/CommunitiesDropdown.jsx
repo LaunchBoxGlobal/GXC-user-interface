@@ -9,15 +9,13 @@ import Cookies from "js-cookie";
 import { useCart } from "../../context/cartContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SearchFilterBox from "./SearchFilterBox";
+import { useUser } from "../../context/userContext";
 
 const CommunitiesDropdown = () => {
-  const {
-    communities,
-    setCommunities,
-    setProductSearchValue,
-    setSelectedCommunity,
-    selectedCommunity,
-  } = useAppContext();
+  const { communities, setCommunities, setProductSearchValue } =
+    useAppContext();
+
+  const { setSelectedCommunity, selectedCommunity } = useUser();
 
   const { fetchCartCount } = useCart();
   const navigate = useNavigate();

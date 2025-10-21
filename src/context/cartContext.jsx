@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "./userContext";
 
 const CartContext = createContext();
 
@@ -17,6 +18,11 @@ export const CartProvider = ({ children }) => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
+  // const { setSelectedCommunity } = useUser();
+  const [cartProducts, setCartProducts] = useState(null);
+  const [cartDetails, setCartDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchCartCount = async () => {
     const community = Cookies.get("selected-community")
@@ -42,13 +48,58 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const fetchCartProducts = async () => {
+    if (!selectedCommunity) {
+      // enqueueSnackbar(`Community ID not found!`, { variant: "error" });
+      return;
+    }
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      setCartProducts(res?.data?.data?.items);
+      setCartDetails(res?.data?.data);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      const message =
+        error?.response?.data?.message ||
+        "Failed to load cart items. Please try again later.";
+      setError(message);
+      handleApiError(error, navigate);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchCartCount();
+    fetchCartProducts();
   }, []);
 
   return (
     <CartContext.Provider
-      value={{ cartCount, setCartCount, fetchCartCount, selectedCommunity }}
+      value={{
+        cartCount,
+        setCartCount,
+        fetchCartCount,
+        // selectedCommunity,
+        loading,
+        setLoading,
+        setError,
+        error,
+        fetchCartProducts,
+        cartProducts,
+        cartDetails,
+      }}
     >
       {children}
     </CartContext.Provider>
