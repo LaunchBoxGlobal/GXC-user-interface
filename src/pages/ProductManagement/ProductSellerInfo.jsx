@@ -8,7 +8,7 @@ const ProductSellerInfo = ({ productDetails }) => {
           <div className="w-full border my-5" />
           <div className="w-full space-y-3">
             <p className="text-sm font-semibold">Pickup Address</p>
-            <p className="text-sm font-normal">
+            <p className="text-sm font-normal break-words">
               <span className="font-medium">Address:</span>{" "}
               {productDetails?.pickupAddress?.address}
             </p>

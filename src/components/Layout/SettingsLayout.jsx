@@ -100,10 +100,10 @@ const SettingsLayout = ({ page }) => {
       );
 
       if (res?.data?.success) {
-        console.log("Logout successful");
+        // console.log("Logout successful");
       }
     } catch (error) {
-      console.log("Logout error >>>", error?.response?.data || error.message);
+      // console.log("Logout error >>>", error?.response?.data || error.message);
     } finally {
       Cookies.remove("userToken");
       Cookies.remove("user");

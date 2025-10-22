@@ -7,6 +7,7 @@ import { getToken } from "../../utils/getToken";
 import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
+import { FaLocationDot } from "react-icons/fa6";
 
 const ProductBuySection = ({
   productDetails,
@@ -90,11 +91,11 @@ const ProductBuySection = ({
         <p className="text-sm font-semibold">Delivery Type</p>
 
         <div
-          className={`w-full max-w-[350px] grid ${
+          className={`w-full max-w-[320px] grid ${
             showDeliveryButton && showPickupButton
-              ? "grid-cols-2 gap-2"
+              ? "grid-cols-2"
               : "grid-cols-1"
-          }`}
+          } gap-2 lg:gap-1`}
         >
           {/* ✅ Delivery Option (only shown if applicable) */}
           {showDeliveryButton && (
@@ -106,14 +107,14 @@ const ProductBuySection = ({
                 deliveryType === "delivery"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"
-              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[140px]`}
+              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[150px]`}
             >
               {deliveryType === "delivery" && (
                 <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">
                   <FaCheck className="text-white text-xs" />
                 </div>
               )}
-              Deliver at home
+              Delivery at home
             </button>
           )}
 
@@ -127,34 +128,41 @@ const ProductBuySection = ({
                 deliveryType === "pickup"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"
-              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[120px]`}
+              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[130px]`}
             >
               {deliveryType === "pickup" && (
                 <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">
                   <FaCheck className="text-white text-xs" />
                 </div>
               )}
-              Self Pickup
+              Pickup
             </button>
           )}
         </div>
       </div>
 
-      {productDetails?.pickupAddress?.address && (
-        <>
-          <div className="w-full border my-5" />
-          <p className="text-sm font-semibold">Pickup Address</p>
-          <div className="w-full mt-2 flex items-center justify-start gap-1 flex-wrap">
-            {Object.entries(productDetails.pickupAddress)
-              .filter(([_, value]) => value)
-              .map(([key, value]) => (
-                <p key={key} className="text-sm font-normal">
-                  {value}
-                </p>
-              ))}
-          </div>
-        </>
-      )}
+      {/* ✅ Pickup Address (conditional display) */}
+      {productDetails?.pickupAddress?.address &&
+        // Show if: deliveryMethod === "pickup"
+        // OR deliveryMethod === "both" AND user selected pickup
+        (productDetails?.deliveryMethod === "pickup" ||
+          (productDetails?.deliveryMethod === "both" &&
+            deliveryType === "pickup")) && (
+          <>
+            <div className="w-full border my-5" />
+            <p className="text-sm font-semibold">Pickup Address</p>
+            <div className="w-full mt-2 flex items-center gap-2">
+              <FaLocationDot className="text-base" />
+              <div className="text-sm font-normal flex flex-wrap gap-1 break-words">
+                {Object.entries(productDetails.pickupAddress)
+                  .filter(([_, value]) => value)
+                  .map(([key, value]) => (
+                    <span key={key}>{value}</span>
+                  ))}
+              </div>
+            </div>
+          </>
+        )}
 
       {/* ✅ Action Button */}
       {isProductInCart ? (

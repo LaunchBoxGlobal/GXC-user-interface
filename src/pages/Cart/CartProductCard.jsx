@@ -61,11 +61,11 @@ const CartProductCard = ({
                 : product?.product?.title}
             </p>
             <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-base">
-              {product?.product?.deliveryMethod === "pickup"
+              {product?.product?.selectedDeliveryMethod === "pickup"
                 ? "Pickup"
-                : product?.product?.deliveryMethod === "delivery"
+                : product?.product?.selectedDeliveryMethod === "delivery"
                 ? "Delivery"
-                : "Pickup/Delivery"}
+                : "Pickup / Delivery"}
             </p>
             <div className="w-full lg:hidden flex items-end justify-between">
               <div className="flex flex-col items-start justify-center gap-0 col-span-4">
@@ -110,7 +110,9 @@ const CartProductCard = ({
         </div>
       </div>
 
-      {product?.product?.deliveryMethod === "pickup" || product?.product?.deliveryMethod === "both" ? (
+      {(product?.product?.selectedDeliveryMethod &&
+        product?.product?.selectedDeliveryMethod === "pickup") ||
+      product?.product?.selectedDeliveryMethod === "both" ? (
         <div className="flex flex-col items-start justify-start gap-1 mt-3">
           <p className="text-sm font-semibold">Pickup Address: </p>
           <div className="flex items-center gap-2">
@@ -122,7 +124,7 @@ const CartProductCard = ({
             </p>
           </div>
         </div>
-      ): null}
+      ) : null}
     </div>
   );
 };

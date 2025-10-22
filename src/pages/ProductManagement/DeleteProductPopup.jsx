@@ -54,7 +54,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
             />
           </div>
           <h2 className="text-lg lg:text-[32px] font-semibold mt-3 mb-1 leading-[1.2]">
-            Delist Product
+            Delete Product
           </h2>
           <p className="mb-4">Are you sure you want to delist this product?</p>
           <div className="w-full grid grid-cols-2 gap-3 mt-1">

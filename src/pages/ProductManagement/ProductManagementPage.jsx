@@ -61,7 +61,7 @@ const ProductManagementPage = () => {
   }, []);
 
   return (
-    <div className="w-full min-h-screen padding-x py-20">
+    <div className="w-full min-h-[80vh] padding-x py-10">
       {products && products?.length > 0 ? (
         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 max-w-[1280px] mx-auto">
           {products?.map((product, index) => {
@@ -73,7 +73,9 @@ const ProductManagementPage = () => {
           {error ? (
             <p className="">{errorMessage}</p>
           ) : (
-            <p className="">You do not have any products</p>
+            <div className="w-full text-center h-[70vh] flex flex-col items-center justify-center">
+              <p className="">You do not have any products.</p>
+            </div>
           )}
         </div>
       )}

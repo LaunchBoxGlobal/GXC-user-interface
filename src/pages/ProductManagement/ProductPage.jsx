@@ -167,7 +167,7 @@ const ProductDetailsPage = () => {
                         ? "Pickup"
                         : productDetails?.deliveryMethod === "delivery"
                         ? "Delivery"
-                        : "Pickup/Delivery"}
+                        : "Pickup / Delivery"}
                     </p>
                   )}
                 </div>
@@ -264,18 +264,17 @@ const ProductDetailsPage = () => {
                     </div>
                   </>
                 )}
-
               {productDetails?.seller?.id !== user?.id && (
                 <div className="w-full">
                   <div className="w-full border my-5" />
                   <div className="w-full space-y-3">
                     <p className="text-sm font-semibold">Delivery Type</p>
-                    <div className="w-full max-w-[350px] grid grid-cols-2 gap-2">
+                    <div className="w-full border border-black max-w-[450px] grid grid-cols-2 gap-2">
                       {productDetails?.deliveryMethod !== "pickup" && (
                         <button
                           type="button"
                           onClick={() => setDeliveryType("delivery")}
-                          className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
+                          className={`rounded-[12px] text-sm font-medium w-full h-[41px] flex items-center justify-center relative transition-all ${
                             deliveryType === "delivery"
                               ? "bg-[var(--button-bg)] text-white"
                               : "bg-[var(--secondary-bg)] text-black"
@@ -294,7 +293,7 @@ const ProductDetailsPage = () => {
                         <button
                           type="button"
                           onClick={() => setDeliveryType("pickup")}
-                          className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
+                          className={`rounded-[12px] text-sm font-medium w-full h-[41px] flex items-center justify-center relative transition-all ${
                             deliveryType === "pickup"
                               ? "bg-[var(--button-bg)] text-white"
                               : "bg-[var(--secondary-bg)] text-black"
@@ -305,7 +304,7 @@ const ProductDetailsPage = () => {
                               <FaCheck className="text-white text-xs" />
                             </div>
                           )}
-                          Self Pickup
+                          Pickup
                         </button>
                       )}
                     </div>

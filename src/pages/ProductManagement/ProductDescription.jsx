@@ -6,7 +6,9 @@ const ProductDescription = ({ description }) => (
     <div className="w-full space-y-3">
       <p className="text-sm font-semibold">Description</p>
       {description && (
-        <p className="text-sm font-normal leading-[1.3]">{description}</p>
+        <p className="text-sm font-normal leading-[1.3] break-words">
+          {description}
+        </p>
       )}
     </div>
   </>

@@ -8,8 +8,6 @@ import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import OrderSummary from "./OrderSummary";
 import { useNavigate } from "react-router-dom";
-import { useAppContext } from "../../context/AppContext";
-import AddAddressModal from "./AddAddressModal";
 import Cookies from "js-cookie";
 import { FiArrowLeft } from "react-icons/fi";
 import OrderSuccessPopup from "./OrderSuccessPopup";
@@ -278,12 +276,13 @@ const Checkout = () => {
                                 : product?.product?.title}
                             </p>
                             <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-base">
-                              {product?.product?.deliveryMethod === "pickup"
+                              {product?.product?.selectedDeliveryMethod ===
+                              "pickup"
                                 ? "Pickup"
-                                : product?.product?.deliveryMethod ===
+                                : product?.product?.selectedDeliveryMethod ===
                                   "delivery"
                                 ? "Delivery"
-                                : "Pickup/Delivery"}
+                                : ""}
                             </p>
                             <div className="w-full lg:hidden flex items-end justify-between">
                               <div className="flex flex-col items-start justify-center gap-0 col-span-4">
@@ -316,7 +315,8 @@ const Checkout = () => {
                           </p>
                         </div>
                       </div>
-                      {product?.product?.deliveryMethod === "pickup" && (
+                      {product?.product?.selectedDeliveryMethod ===
+                        "pickup" && (
                         <div className="flex flex-col items-start justify-start gap-1 mt-3">
                           <p className="text-sm font-semibold">
                             Pickup Address:{" "}

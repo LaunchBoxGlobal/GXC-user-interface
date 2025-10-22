@@ -78,13 +78,13 @@ const ProductDetailsPage = () => {
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
-        <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[70vh]">
-          <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-14">
-            <div className="w-full">
+        <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[50vh]">
+          <div className="w-full flex items-start justify-between flex-wrap gap-y-7">
+            <div className="w-full lg:max-w-[44%]">
               <Gallery images={productDetails?.images} />
             </div>
 
-            <div className="w-full">
+            <div className="w-full lg:max-w-[53%]">
               <div className="w-full pt-3">
                 <ProductHeader
                   productDetails={productDetails}

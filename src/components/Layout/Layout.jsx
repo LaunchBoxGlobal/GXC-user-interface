@@ -28,7 +28,10 @@ const Layout = ({ children }) => {
         )}
 
         {pathname?.pathname == "/product-management" && selectedCommunity && (
-          <div className="w-full flex justify-end">
+          <div className="w-full flex items-center justify-between flex-wrap gap-5">
+            <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
+              Product Management
+            </h1>
             <Link
               to={`/products/add-product`}
               className="button max-w-[214px] h-[58px] flex items-center justify-center"
