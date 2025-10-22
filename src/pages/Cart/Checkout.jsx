@@ -110,6 +110,9 @@ const Checkout = () => {
       enqueueSnackbar("Something went wrong. Try again!");
       return;
     }
+    const savedAddress = Cookies.get("userSelectedDeliveryAddress")
+      ? JSON.parse(Cookies.get("userSelectedDeliveryAddress"))
+      : null;
 
     setRemovingItems(true);
     try {
@@ -117,7 +120,8 @@ const Checkout = () => {
         `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
         {
           productIds: ids,
-          deliveryAddress: savedAddress?.location || "",
+          deliveryAddress:
+            savedAddress?.location || savedAddress?.address || "",
           deliveryCity: savedAddress?.city || "",
           deliveryState: savedAddress?.state || "",
           deliveryZipcode: savedAddress?.zipcode || "",
@@ -127,6 +131,14 @@ const Checkout = () => {
       );
 
       if (response?.data?.success) {
+        await axios.delete(
+          `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          }
+        );
         fetchCartCount();
         Cookies.remove("newDeliveryAddress");
         Cookies.remove("userSelectedDeliveryAddress");
