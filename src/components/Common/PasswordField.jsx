@@ -34,7 +34,7 @@ const PasswordField = ({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className="w-full text-[#212121] outline-none bg-transparent"
+          className="w-full text-gray-700 outline-none bg-transparent font-normal"
         />
 
         <button type="button" onClick={() => setShowPass((prev) => !prev)}>

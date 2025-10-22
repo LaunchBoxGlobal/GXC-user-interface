@@ -35,13 +35,13 @@ const OrderSummary = () => {
         <div className="w-full mt-5 grid grid-cols-2 gap-2">
           <button
             type="button"
-            className="w-full bg-[#DEDEDE] rounded-[12px] h-[48px] text-center font-medium"
+            className="w-full bg-[#DEDEDE] rounded-[12px] h-[48px] text-center font-medium text-sm"
           >
             Cancel Order
           </button>
           <button
             type="button"
-            className="w-full bg-[var(--button-bg)] text-white rounded-[12px] h-[48px] text-center font-medium"
+            className="w-full bg-[var(--button-bg)] text-white rounded-[12px] h-[48px] text-center text-sm font-medium"
           >
             Mark As Received
           </button>

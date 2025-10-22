@@ -19,7 +19,6 @@ const SearchFilterBox = ({
   const [maxPrice, setMaxPrice] = useState(initialMax);
   const [errors, setErrors] = useState({ min: "", max: "" });
 
-  // ✅ Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -49,7 +48,6 @@ const SearchFilterBox = ({
     navigate(`/?${params.toString()}`, { replace: true });
   };
 
-  // ✅ Validation logic
   const validatePrices = () => {
     let valid = true;
     const newErrors = { min: "", max: "" };

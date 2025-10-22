@@ -158,7 +158,7 @@ const SettingsLayout = ({ page }) => {
       </div>
 
       <div className="w-full mt-5 min-h-[50vh] flex flex-col lg:flex-row items-start lg:justify-between bg-white rounded-[12px] custom-shadow">
-        <div className="w-full lg:w-[25%] lg:min-h-[70vh] border-r px-8 pt-5 overflow-hidden">
+        <div className="w-full lg:w-[25%] lg:min-h-[90vh] border-r px-8 pt-5 overflow-hidden">
           <h2 className="text-[28px] font-semibold">Settings</h2>
           <ul className="w-full flex lg:flex-col mt-5 overflow-auto">
             {settingPages?.map((link, index) => {

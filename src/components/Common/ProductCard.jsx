@@ -5,10 +5,7 @@ const ProductCard = ({ product, index }) => {
   return (
     <>
       {product?.status === "active" && (
-        <Link
-          to={`/products/${product?.title}?productId=${product?.id}`}
-          key={index}
-        >
+        <Link to={`/products/${product?.title}?productId=${product?.id}`}>
           <div className="w-full md:max-w-[290px] h-[410px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
             <div className="w-full relative">
               <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">

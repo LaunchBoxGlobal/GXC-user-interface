@@ -1,5 +1,4 @@
 import axios from "axios";
-import React from "react";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { enqueueSnackbar } from "notistack";
@@ -111,7 +110,7 @@ const CartProductCard = ({
         </div>
       </div>
 
-      {product?.product?.deliveryMethod === "pickup" && (
+      {product?.product?.deliveryMethod === "pickup" || product?.product?.deliveryMethod === "both" ? (
         <div className="flex flex-col items-start justify-start gap-1 mt-3">
           <p className="text-sm font-semibold">Pickup Address: </p>
           <div className="flex items-center gap-2">
@@ -123,7 +122,7 @@ const CartProductCard = ({
             </p>
           </div>
         </div>
-      )}
+      ): null}
     </div>
   );
 };

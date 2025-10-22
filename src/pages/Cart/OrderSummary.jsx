@@ -1,12 +1,14 @@
 import { useLocation } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
+import Loader from "../../components/Common/Loader";
 
 const OrderSummary = ({
   cartProducts,
   handleNavigate,
   handlePlaceOrder,
   isLoading,
+  removingItems,
 }) => {
   const location = useLocation();
   const { selectedCommunity } = useUser();
@@ -57,15 +59,26 @@ const OrderSummary = ({
           </div>
 
           <div className="w-full mt-5">
-            <button
-              type="button"
-              className="button"
-              onClick={() => handleClick()}
-            >
-              {location?.pathname === `/cart/${selectedCommunity?.id}/checkout`
-                ? "Place Order"
-                : "Proceed To Checkout"}
-            </button>
+            {location?.pathname ===
+            `/cart/${selectedCommunity?.id}/checkout` ? (
+              <button
+                type="button"
+                className="button"
+                disabled={removingItems}
+                onClick={() => handleClick()}
+              >
+                {removingItems ? <Loader /> : "Place Order"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="button"
+                onClick={() => handleClick()}
+              >
+                {" "}
+                Proceed To Checkout
+              </button>
+            )}
           </div>
         </div>
       ) : (

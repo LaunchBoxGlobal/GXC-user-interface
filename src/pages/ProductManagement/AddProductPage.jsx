@@ -20,6 +20,17 @@ const AddProductPage = () => {
   const { selectedCommunity } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
 
+  const userAddress =
+    user?.address +
+    " " +
+    user?.city +
+    " " +
+    user?.state +
+    " " +
+    user?.zipcode +
+    " " +
+    user?.country;
+
   const formik = useFormik({
     initialValues: {
       productName: "",
@@ -307,7 +318,7 @@ const AddProductPage = () => {
                     {/* Editable pre-filled address field */}
                     <textarea
                       placeholder="Enter pickup address"
-                      value={customPickupAddress || user?.address || ""}
+                      value={customPickupAddress || userAddress || ""}
                       onChange={(e) => setCustomPickupAddress(e.target.value)}
                       className="w-full bg-[var(--secondary-bg)] px-[15px] py-[10px] rounded-[8px] outline-none h-[49px] resize-none"
                     />

@@ -7,7 +7,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import OrderSummary from "./OrderSummary";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import AddAddressModal from "./AddAddressModal";
 import Cookies from "js-cookie";
@@ -20,10 +20,8 @@ import EditAddressModal from "./EditAddressModal";
 const CartSummary = () => {
   const {
     fetchCartCount,
-    selectedCommunity,
     loading,
     setLoading,
-    setError,
     error,
     fetchCartProducts,
     cartProducts,
@@ -78,6 +76,7 @@ const CartSummary = () => {
           }
         );
         Cookies.remove("newDeliveryAddress");
+        Cookies.remove("userSelectedDeliveryAddress");
         fetchCartProducts();
         fetchCartCount();
       }
@@ -95,12 +94,15 @@ const CartSummary = () => {
         variant: "error",
       });
     }
+
+    const community = JSON.parse(Cookies.get("selected-community"));
+
     if (!selectedPaymentMethod) {
       return enqueueSnackbar("Please select a payment method!", {
         variant: "error",
       });
     }
-    navigate(`/cart/${selectedCommunity?.id}/checkout`);
+    navigate(`/cart/${community?.id}/checkout`);
   };
 
   // 🌀 Loader
@@ -151,9 +153,9 @@ const CartSummary = () => {
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-5">
         <div className="w-full rounded-[18px]">
           {cartProducts?.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               {/* 🛒 Cart Section */}
-              <div className="col-span-3 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
+              <div className="col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="flex items-center justify-between">
                   <h1 className="text-[24px] font-semibold">Cart</h1>
                   <button

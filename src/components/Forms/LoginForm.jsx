@@ -18,6 +18,8 @@ const LoginForm = () => {
 
   const redirect = searchParams?.get("redirect");
 
+  console.log("redirect >>", redirect);
+
   useEffect(() => {
     document.title = `Login - GiveXChange`;
   }, []);

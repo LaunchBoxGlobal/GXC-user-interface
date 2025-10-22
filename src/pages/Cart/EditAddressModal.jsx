@@ -201,7 +201,7 @@ const EditAddressModal = ({
               Cancel
             </button>
             <button type="submit" className="button">
-              Add
+              Save
             </button>
           </div>
         </form>

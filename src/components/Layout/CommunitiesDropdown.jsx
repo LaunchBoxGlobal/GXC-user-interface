@@ -12,10 +12,14 @@ import SearchFilterBox from "./SearchFilterBox";
 import { useUser } from "../../context/userContext";
 
 const CommunitiesDropdown = () => {
-  const { communities, setCommunities, setProductSearchValue } =
-    useAppContext();
+  const { setProductSearchValue } = useAppContext();
 
-  const { setSelectedCommunity, selectedCommunity } = useUser();
+  const {
+    setSelectedCommunity,
+    selectedCommunity,
+    communities,
+    setCommunities,
+  } = useUser();
 
   const { fetchCartCount } = useCart();
   const navigate = useNavigate();
@@ -34,8 +38,7 @@ const CommunitiesDropdown = () => {
   const [openPriceFilter, setOpenPriceFilter] = useState(false);
   const handleTogglePriceFilter = () => setOpenPriceFilter((prev) => !prev);
 
-  setProductSearchValue(searchFromQuery);
-
+  // 1️⃣ Keep fetchCommunities focused only on data fetching
   const fetchCommunities = async () => {
     try {
       const res = await axios.get(
@@ -51,56 +54,58 @@ const CommunitiesDropdown = () => {
       setCommunities(list);
       setFilteredCommunities(list);
       fetchCartCount();
-
-      if (list.length > 0) {
-        // Keep previous selection from state or cookie
-        const cookieCommunity = Cookies.get("selected-community")
-          ? JSON.parse(Cookies.get("selected-community"))
-          : null;
-
-        // Match from query param
-        const matched =
-          communityFromQuery &&
-          list.find(
-            (c) =>
-              c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
-              c.name?.toLowerCase() === communityFromQuery.toLowerCase()
-          );
-
-        // ✅ Keep the current selection if it still exists
-        let selectedCommunity =
-          matched ||
-          (selected && list.find((c) => c.id === selected.id)) ||
-          cookieCommunity ||
-          list[0];
-
-        // If selected community no longer exists
-        if (
-          selectedCommunity &&
-          !list.find((c) => c.id === selectedCommunity.id)
-        ) {
-          selectedCommunity = list[0];
-        }
-
-        setSelected(selectedCommunity);
-        setSelectedCommunity(selectedCommunity);
-        Cookies.set("selected-community", JSON.stringify(selectedCommunity));
-
-        // Only update URL if no community in query
-        if (!communityFromQuery) {
-          navigate(`/?community=${selectedCommunity.slug}`, { replace: true });
-        }
-      } else {
-        setSelected(null);
-      }
     } catch (error) {
       handleApiError(error, navigate);
     }
   };
 
+  // 2️⃣ Separate effect to handle selection logic
+  useEffect(() => {
+    if (!communities.length) return;
+
+    const cookieCommunity = Cookies.get("selected-community")
+      ? JSON.parse(Cookies.get("selected-community"))
+      : null;
+
+    const matched =
+      communityFromQuery &&
+      communities.find(
+        (c) =>
+          c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
+          c.name?.toLowerCase() === communityFromQuery.toLowerCase()
+      );
+
+    let selectedC =
+      matched ||
+      (selected && communities.find((c) => c.id === selected.id)) ||
+      cookieCommunity ||
+      communities[0];
+
+    // Ensure selected community still exists
+    if (selectedC && !communities.find((c) => c.id === selectedC.id)) {
+      selectedC = communities[0];
+    }
+
+    setSelected(selectedC);
+    setSelectedCommunity(selectedC);
+    Cookies.set("selected-community", JSON.stringify(selectedC));
+
+    if (selectedC?.slug) {
+      navigate(`/?community=${selectedC.slug}`, { replace: true });
+    }
+  }, [communities, communityFromQuery]); // <— now depends on both
+
   useEffect(() => {
     fetchCommunities();
   }, [communityFromQuery, searchCommunityValue]);
+
+  useEffect(() => {
+    setProductSearchValue(searchFromQuery);
+  }, [searchFromQuery]);
+
+  useEffect(() => {
+    if (selectedCommunity) setSelected(selectedCommunity);
+  }, [selectedCommunity]);
 
   const handleCommunitySearch = (e) => {
     const value = e.target.value.toLowerCase();
@@ -146,10 +151,13 @@ const CommunitiesDropdown = () => {
       <div className="relative w-full max-w-[471px]" ref={dropdownRef}>
         <button
           type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
+          onClick={() => {
+            // e.stopPropagation();
+            setIsOpen((prev) => !prev);
+          }}
           className="flex items-center gap-4 bg-transparent text-white font-semibold text-[24px] lg:text-[32px] leading-none outline-none"
         >
-          {selectedCommunity && selectedCommunity.name}
+          {selectedCommunity ? selectedCommunity.name : "Select Community"}
           <TiArrowSortedDown
             className={`transition-transform leading-none ${
               isOpen ? "rotate-180" : ""

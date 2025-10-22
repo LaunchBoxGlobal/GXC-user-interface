@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
           <CommunitiesDropdown />
         )}
 
-        {pathname?.pathname == "/product-management" && selectedCommunity && (
+        {/* {pathname?.pathname == "/product-management" && selectedCommunity && (
           <div className="w-full flex justify-end">
             <Link
               to={`/products/add-product`}
@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
               Add New Product
             </Link>
           </div>
-        )}
+        )} */}
       </div>
 
       {children}

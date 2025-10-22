@@ -2,11 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../data/baseUrl";
-import { enqueueSnackbar } from "notistack";
 import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "./userContext";
 
 const CartContext = createContext();
 

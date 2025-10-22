@@ -9,7 +9,6 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import TextField from "../../components/Common/TextField";
 import Cookies from "js-cookie";
-import { useState } from "react";
 
 const AddAddressModal = ({
   openAddAddressModal,
@@ -95,7 +94,7 @@ const AddAddressModal = ({
                 placeHolder="Select Country"
                 onChange={(val) => {
                   formik.setFieldValue("country", val.name);
-                  formik.setFieldValue("countryId", val.id);
+                  formik.setFieldValue("countryId", Number(val.id));
                   formik.setFieldValue("state", "");
                   formik.setFieldValue("stateId", "");
                   formik.setFieldValue("city", "");
@@ -126,7 +125,7 @@ const AddAddressModal = ({
                 }
                 onChange={(val) => {
                   formik.setFieldValue("state", val.name);
-                  formik.setFieldValue("stateId", val.id);
+                  formik.setFieldValue("stateId", Number(val.id));
                   formik.setFieldValue("city", "");
                 }}
               />

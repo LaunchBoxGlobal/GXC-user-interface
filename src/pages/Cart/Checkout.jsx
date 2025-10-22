@@ -24,24 +24,20 @@ const Checkout = () => {
   const [error, setError] = useState(null);
   const [cartDetails, setCartDetails] = useState(null);
   const navigate = useNavigate();
-  const { user } = useAppContext();
   const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
-  const userDeliveryAddress = Cookies.get("newDeliveryAddress")
-    ? JSON.parse(Cookies.get("newDeliveryAddress"))
-    : null;
-  const [userNewDeliveryAddress, setUserNewDeliveryAddress] =
-    useState(userDeliveryAddress);
+
+  const [removingItems, setRemovingItems] = useState(false);
+
+  const isAnyDeliveryTypeProduct = cartProducts?.some(
+    (p) =>
+      p?.product?.deliveryMethod === "delivery" ||
+      p?.product?.deliveryMethod === "both"
+  );
 
   const ids = cartProducts?.map((p) => p?.product?.id);
 
-  const [productIds, setProductIds] = useState();
-
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-
-  const toggleAddAddressModal = () => {
-    setOpenAddAddressModal((prev) => !prev);
-  };
 
   const savedAddress = Cookies.get("userSelectedDeliveryAddress")
     ? JSON.parse(Cookies.get("userSelectedDeliveryAddress"))
@@ -93,7 +89,7 @@ const Checkout = () => {
   }, []);
 
   const handleNavigate = () => {
-    if (!selectedAddress) {
+    if (isAnyDeliveryTypeProduct || !selectedAddress) {
       enqueueSnackbar("Please select a delivery address!", {
         variant: "error",
       });
@@ -110,42 +106,39 @@ const Checkout = () => {
 
   // 🧹 Remove all cart items
   const removeAllItemsFromCart = async () => {
-    if (!ids) {
+    if (!ids || ids?.length <= 0) {
       enqueueSnackbar("Something went wrong. Try again!");
       return;
     }
-    setLoading(true);
+
+    setRemovingItems(true);
     try {
-      const response = await axios.delete(
-        `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
+      const response = await axios.post(
+        `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
+        {
+          productIds: ids,
+          deliveryAddress: savedAddress?.location || "",
+          deliveryCity: savedAddress?.city || "",
+          deliveryState: savedAddress?.state || "",
+          deliveryZipcode: savedAddress?.zipcode || "",
+          deliveryCountry: savedAddress?.country || "",
+        },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
       if (response?.data?.success) {
-        setShowOrderPlacePopup(true);
+        fetchCartCount();
         Cookies.remove("newDeliveryAddress");
         Cookies.remove("userSelectedDeliveryAddress");
         Cookies.remove("userSelectedPaymentMethod");
-        fetchCartProducts();
-        fetchCartCount();
+        // fetchCartProducts();
+        setCartProducts(null);
+        setShowOrderPlacePopup(true);
       }
     } catch (error) {
       handleApiError(error, navigate);
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePlaceOrder = async () => {
-    try {
-      if (!ids) {
-        enqueueSnackbar("Something went wrong. Try again!");
-        return;
-      }
-
-      setShowOrderPlacePopup(true);
-    } catch (error) {
-      setShowOrderPlacePopup(false);
+      setRemovingItems(false);
     }
   };
 
@@ -198,8 +191,8 @@ const Checkout = () => {
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
         <div className="w-full rounded-[18px] relative">
           {cartProducts && cartProducts?.length > 0 ? (
-            <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
-              <div className="w-full col-span-3 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
+            <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <div className="w-full col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="w-full flex items-center justify-between">
                   <h1 className="text-[24px] font-semibold leading-none">
                     Checkout
@@ -208,23 +201,28 @@ const Checkout = () => {
                 <div className="w-full border my-5" />
 
                 <div className="w-full mb-5">
-                  <div className="w-full">
-                    <p className="font-semibold leading-none">
-                      Delivery Address
-                    </p>
-                    <div
-                      className={`w-full flex items-center justify-between h-[46px] bg-[var(--secondary-bg)] mt-2 rounded-[12px] px-3`}
-                    >
-                      <div className="w-full max-w-[90%]">
-                        <p className="text-sm">
-                          {savedAddress?.address} {savedAddress?.city}{" "}
-                          {savedAddress?.state} {savedAddress?.zipcode}{" "}
-                          {savedAddress?.country}
+                  {isAnyDeliveryTypeProduct && savedAddress && (
+                    <>
+                      <div className="w-full">
+                        <p className="font-semibold leading-none">
+                          Delivery Address
                         </p>
+                        <div
+                          className={`w-full flex items-center justify-between h-[46px] bg-[var(--secondary-bg)] mt-2 rounded-[12px] px-3`}
+                        >
+                          <div className="w-full max-w-[90%]">
+                            <p className="text-sm">
+                              {savedAddress?.address} {savedAddress?.city}{" "}
+                              {savedAddress?.state} {savedAddress?.zipcode}{" "}
+                              {savedAddress?.country}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="w-full border my-5" />
+                      <div className="w-full border my-5" />
+                    </>
+                  )}
+
                   <div className="w-full">
                     <p className="font-semibold leading-none">Payment Method</p>
                     <div
@@ -338,6 +336,7 @@ const Checkout = () => {
                   navigate={navigate}
                   handleNavigate={handleNavigate}
                   handlePlaceOrder={removeAllItemsFromCart}
+                  removingItems={removingItems}
                 />
               </div>
             </div>
@@ -348,12 +347,6 @@ const Checkout = () => {
           )}
         </div>
       </div>
-
-      <AddAddressModal
-        openAddAddressModal={openAddAddressModal}
-        toggleAddAddressModal={toggleAddAddressModal}
-        setUserNewDeliveryAddress={setUserNewDeliveryAddress}
-      />
 
       <OrderSuccessPopup
         handleCloseSuccessPopup={handleCloseSuccessPopup}

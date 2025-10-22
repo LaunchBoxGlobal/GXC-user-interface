@@ -27,6 +27,8 @@ export const UserProvider = ({ children }) => {
 
   /** 🧩 Fetch user’s joined communities */
   const fetchCommunities = async () => {
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+    if (!user) return;
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
         headers: { Authorization: `Bearer ${getToken()}` },
@@ -36,7 +38,6 @@ export const UserProvider = ({ children }) => {
       setCommunities(list);
 
       if (list.length === 0) {
-        // 👇 No communities left
         Cookies.remove("selected-community");
         setSelected(null);
         navigate("/", { replace: true });
@@ -69,12 +70,7 @@ export const UserProvider = ({ children }) => {
       setSelected(selectedCommunity);
       Cookies.set("selected-community", JSON.stringify(selectedCommunity));
 
-      // ✅ Navigate only if no query param
-      if (!communityFromQuery) {
-        setTimeout(() => {
-          navigate(`/?community=${selectedCommunity.slug}`, { replace: true });
-        }, 50);
-      }
+      setSelectedCommunity(selectedCommunity);
     } catch (error) {
       console.error("Error fetching communities:", error);
       handleApiError(error, navigate);
@@ -119,7 +115,7 @@ export const UserProvider = ({ children }) => {
         // 👇 Smoothly refetch available communities
         setTimeout(() => {
           fetchCommunities();
-        }, 1200);
+        }, 1500);
       } else if (!isBanned && isBlocked) {
         // 👇 If user was blocked/removed but now rejoined
         setIsBlocked(false);
@@ -132,6 +128,7 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    fetchCommunities();
     const init = async () => {
       await fetchCommunities();
       await checkIamAlreadyMember();
@@ -153,6 +150,7 @@ export const UserProvider = ({ children }) => {
         checkIamAlreadyMember,
         selectedCommunity,
         setSelectedCommunity,
+        setCommunities,
       }}
     >
       {children}

@@ -10,9 +10,10 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
+import { useUser } from "../../context/userContext";
 
 const HomePage = () => {
-  const { communities, productSearchValue } = useAppContext();
+  const { productSearchValue } = useAppContext();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,7 @@ const HomePage = () => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null
   );
+  const { selectedCommunity, communities } = useUser();
   const [searchParams] = useSearchParams();
   const minPrice = searchParams.get("min");
   const maxPrice = searchParams.get("max");
@@ -33,27 +35,13 @@ const HomePage = () => {
   if (maxPrice) params.set("maxPrice", maxPrice);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newCommunity = Cookies.get("selected-community");
-      if (newCommunity) {
-        const parsed = JSON.parse(newCommunity);
-        setCommunity((prev) => {
-          if (parsed?.id !== prev?.id) {
-            return parsed;
-          }
-          return prev;
-        });
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [community]);
+    if (selectedCommunity) setCommunity(selectedCommunity);
+  }, [selectedCommunity]);
 
   const fetchCommunityProducts = async () => {
-    if (!community) return;
+    if (!selectedCommunity) return;
     try {
-      setLoading(true);
-      const url = `${BASE_URL}/communities/${community.id}/products${
+      const url = `${BASE_URL}/communities/${selectedCommunity.id}/products${
         params.toString() ? `?${params.toString()}` : ""
       }`;
       const res = await axios.get(url, {
@@ -65,58 +53,52 @@ const HomePage = () => {
     } catch (error) {
       handleApiError(error, navigate);
     } finally {
-      setLoading(false);
     }
   };
 
-  const checkJoinStatus = async () => {
-    if (!community) {
-      return;
-    }
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/communities/${community?.slug}/my-membership`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
+  // const checkJoinStatus = async () => {
+  //   if (!community) {
+  //     return;
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     const res = await axios.get(
+  //       `${BASE_URL}/communities/${community?.slug}/my-membership`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${getToken()}`,
+  //         },
+  //       }
+  //     );
 
-      // console.log("join status from home page >> ", res?.data);
-      if (res?.data?.data?.isMember) {
-        fetchCommunityProducts();
-        return;
-      } else if (res?.data?.data?.membership?.status == "removed") {
-        enqueueSnackbar("You been removed from the community!", {
-          variant: "error",
-        });
-        navigate("/");
-        return;
-      } else if (res?.data?.data?.membership?.status == "banned") {
-        enqueueSnackbar("You been banned from the community!", {
-          variant: "error",
-        });
-        navigate("/");
-        return;
-      }
-    } catch (error) {
-      console.log("err while join status from home page >>> ", error);
-      handleApiError(error, navigate);
-    }
-  };
+  //     // console.log("join status from home page >> ", res?.data);
+  //     if (res?.data?.data?.isMember) {
+  //       fetchCommunityProducts();
+  //       return;
+  //     } else if (res?.data?.data?.membership?.status == "removed") {
+  //       enqueueSnackbar("You been removed from the community!", {
+  //         variant: "error",
+  //       });
+  //       navigate("/");
+  //       return;
+  //     } else if (res?.data?.data?.membership?.status == "banned") {
+  //       enqueueSnackbar("You been banned from the community!", {
+  //         variant: "error",
+  //       });
+  //       navigate("/");
+  //       return;
+  //     }
+  //   } catch (error) {
+  //     console.log("err while join status from home page >>> ", error);
+  //     handleApiError(error, navigate);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
-    const run = async () => {
-      if (!community) return;
-
-      const isMember = await checkJoinStatus();
-      if (isMember) {
-        fetchCommunityProducts();
-      }
-    };
-    run();
-  }, [community, productSearchValue, minPrice, maxPrice]);
+    fetchCommunityProducts();
+  }, [selectedCommunity, productSearchValue, minPrice, maxPrice]);
 
   useEffect(() => {
     document.title = "Home - GiveXChange";
