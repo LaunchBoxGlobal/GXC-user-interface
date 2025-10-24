@@ -77,7 +77,7 @@ const CommunityPage = () => {
       setAlreadyMember(isMember);
 
       // membership may be null — guard it
-      if (data?.membership?.status === "blocked") {
+      if (data?.membership?.status === "banned") {
         setBlocked(data.membership.status);
       } else if (data?.membership?.status === "removed") {
         setBlocked(data.membership.status);
@@ -161,8 +161,7 @@ const CommunityPage = () => {
       if (!membership) {
         throw new Error("Failed to get joined community data");
       }
-      console.log("membership >>> ", membership);
-      // ✅ Fetch all joined communities
+
       const communitiesRes = await axios.get(
         `${BASE_URL}/communities/my-joined`,
         {
@@ -176,8 +175,6 @@ const CommunityPage = () => {
       const joinedCommunity = allCommunities.find(
         (c) => c.id === membership.communityId
       );
-
-      console.log("joinedCommunity >>>", joinedCommunity);
 
       if (joinedCommunity) {
         // ✅ Save selected community in cookie
@@ -285,13 +282,7 @@ const CommunityPage = () => {
       </div>
     );
   }
-  if (blocked && blocked === "removed") {
-    return (
-      <div className="w-full text-center h-screen py-80">
-        <p>You’ve been removed from this community.</p>
-      </div>
-    );
-  }
+
   return (
     <div className="p-5 min-h-screen">
       {showPopup && canJoin && (

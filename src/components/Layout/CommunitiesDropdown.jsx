@@ -61,7 +61,6 @@ const CommunitiesDropdown = () => {
 
   // 2️⃣ Separate effect to handle selection logic
   useEffect(() => {
-    // Don't auto-select while user is typing a search
     if (!communities.length || searchCommunityValue) return;
 
     const cookieCommunity = Cookies.get("selected-community")
@@ -76,30 +75,40 @@ const CommunitiesDropdown = () => {
           c.name?.toLowerCase() === communityFromQuery.toLowerCase()
       );
 
-    let selectedC =
-      matched ||
-      (selected && communities.find((c) => c.id === selected.id)) ||
-      cookieCommunity ||
-      communities[0];
+    let selectedC = null;
 
-    if (selectedC && !communities.find((c) => c.id === selectedC.id)) {
+    // 🥇 Priority: query param
+    if (matched) {
+      selectedC = matched;
+    }
+    // 🥈 Then cookie (if still valid)
+    else if (
+      cookieCommunity &&
+      communities.some((c) => c.id === cookieCommunity.id)
+    ) {
+      selectedC = cookieCommunity;
+    }
+    // 🥉 Then previous selected (if still valid)
+    else if (selected && communities.some((c) => c.id === selected.id)) {
+      selectedC = selected;
+    }
+    // 🏁 Fallback
+    else {
       selectedC = communities[0];
     }
 
-    // Only update if selection actually changed
+    // ✅ Only update if actually changed
     if (!selectedCommunity || selectedCommunity.id !== selectedC.id) {
       setSelected(selectedC);
       setSelectedCommunity(selectedC);
       Cookies.set("selected-community", JSON.stringify(selectedC));
 
-      if (selectedC?.slug) {
-        const params = new URLSearchParams(window.location.search);
-        params.set("community", selectedC.slug);
-        navigate({
-          pathname: "/",
-          search: `?${params.toString()}`,
-        });
-      }
+      const params = new URLSearchParams(window.location.search);
+      params.set("community", selectedC.slug);
+      navigate({
+        pathname: "/",
+        search: `?${params.toString()}`,
+      });
     }
   }, [communities, communityFromQuery, searchCommunityValue]);
 
