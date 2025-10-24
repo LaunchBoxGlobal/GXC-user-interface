@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiArrowLeft } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -17,7 +17,7 @@ const AddProductPage = () => {
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const { user } = useAppContext();
-  const { selectedCommunity } = useUser();
+  const { selectedCommunity, checkIamAlreadyMember } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
 
   const userAddress =
@@ -43,6 +43,7 @@ const AddProductPage = () => {
 
     validationSchema: Yup.object({
       productName: Yup.string()
+        .trim("Product name cannot start or end with spaces")
         .min(3, "Product name must contain at least 3 characters")
         .max(30, "Product name must be 30 characters or less")
         .required("Product name is required"),
@@ -52,10 +53,16 @@ const AddProductPage = () => {
         .positive("Price must be greater than 0")
         .min(1, "Product price can not be less than 1")
         .max(999999, "Product price must be less than 999999")
+        .test(
+          "max-decimals",
+          "Price can have up to 2 decimal places only",
+          (value) =>
+            value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
+        )
         .required("Price is required"),
 
       description: Yup.string()
-        .min(10, "Description must be at least 10 characters")
+        .trim("Description cannot start or end with spaces")
         .max(500, "Description must be 500 characters or less")
         .required("Product description is required"),
 
@@ -67,15 +74,18 @@ const AddProductPage = () => {
         .min(1, "Please upload at least 1 image")
         .max(5, "You can upload up to 5 images only")
         .required("Product image is required"),
-      customPickupAddress: Yup.string().when("deliveryType", {
-        is: (types) => Array.isArray(types) && types.includes("pickup"),
-        then: (schema) =>
-          schema
-            .min(10, "Pickup address must be at least 10 characters long")
-            .max(200, "Pickup address cannot exceed 200 characters")
-            .required("Pickup address is required when pickup is selected"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
+
+      customPickupAddress: Yup.string()
+        .trim("Pickup address cannot start or end with spaces")
+        .when("deliveryType", {
+          is: (types) => Array.isArray(types) && types.includes("pickup"),
+          then: (schema) =>
+            schema
+              .min(10, "Pickup address must be at least 10 characters long")
+              .max(100, "Pickup address cannot exceed 100 characters")
+              .required("Pickup address is required"),
+          otherwise: (schema) => schema.notRequired(),
+        }),
     }),
 
     onSubmit: async (values, { resetForm }) => {
@@ -88,6 +98,7 @@ const AddProductPage = () => {
           return;
         }
         setLoading(true);
+        checkIamAlreadyMember();
 
         const formData = new FormData();
         const deliveryTypes = Array.isArray(values.deliveryType)
@@ -96,9 +107,9 @@ const AddProductPage = () => {
 
         const deliveryMethod =
           deliveryTypes.length === 2 ? "both" : deliveryTypes[0];
-        formData.append("title", values.productName);
+        formData.append("title", values.productName.trim());
         formData.append("price", values.price);
-        formData.append("description", values.description);
+        formData.append("description", values.description.trim());
 
         formData.append("deliveryMethod", deliveryMethod);
         values.productImages.forEach((file) =>
@@ -107,10 +118,10 @@ const AddProductPage = () => {
         if (values.deliveryType.includes("pickup")) {
           formData.append(
             "pickupAddress",
-            values.customPickupAddress || user?.address || ""
+            values.customPickupAddress.trim() || user?.address.trim() || ""
           );
-          formData.append("pickupCity", user?.city || "");
-          formData.append("pickupState", user?.state || "");
+          formData.append("pickupCity", user?.city.trim() || "");
+          formData.append("pickupState", user?.state.trim() || "");
         }
 
         // Send JSON request
@@ -253,6 +264,17 @@ const AddProductPage = () => {
     setPreviewImages(updatedPreviews);
   };
 
+  useEffect(() => {
+    // Prefill only if pickup is selected and no custom address entered yet
+    if (
+      formik.values.deliveryType.includes("pickup") &&
+      !formik.values.customPickupAddress &&
+      userAddress
+    ) {
+      formik.setFieldValue("customPickupAddress", userAddress);
+    }
+  }, [formik.values.deliveryType, userAddress]);
+
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
       <button
@@ -343,12 +365,10 @@ const AddProductPage = () => {
                     <textarea
                       name="customPickupAddress"
                       placeholder="Enter pickup address"
-                      value={
-                        formik.values.customPickupAddress || userAddress || ""
-                      }
+                      value={formik.values.customPickupAddress}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className={`w-full bg-[var(--secondary-bg)] px-[15px] py-[10px] rounded-[8px] outline-none h-[49px] resize-none ${
+                      className={`w-full bg-[var(--secondary-bg)] text-[#6D6D6D] px-[15px] py-[10px] rounded-[8px] outline-none h-[49px] resize-none ${
                         formik.touched.customPickupAddress &&
                         formik.errors.customPickupAddress
                           ? "border border-red-500"
@@ -376,7 +396,7 @@ const AddProductPage = () => {
                     value={formik.values.description}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    className={`w-full border h-[159px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none resize-none ${
+                    className={`w-full border text-[#6D6D6D] h-[159px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none resize-none ${
                       formik.touched.description && formik.errors.description
                         ? "border-red-500"
                         : "border-[var(--secondary-bg)]"
@@ -402,7 +422,7 @@ const AddProductPage = () => {
 
             {/* RIGHT SECTION - IMAGE UPLOAD */}
             <div className="w-full col-span-1 bg-white rounded-[18px] relative p-5 lg:p-7">
-              <h1 className="font-semibold text-[20px] leading-none tracking-tight">
+              <h1 className="font-medium text-[20px] leading-none tracking-tight">
                 Product Images
               </h1>
 
@@ -418,9 +438,7 @@ const AddProductPage = () => {
                       className="w-[30px] h-[30px]"
                     />
                     <p className="mb-0.5 mt-2 text-base text-[var(--button-bg)]">
-                      <span className="font-semibold">
-                        Click to upload Image
-                      </span>
+                      <span className="font-medium">Click to upload Image</span>
                     </p>
                     <p className="text-sm font-medium text-[#959393]">
                       Or Drag & Drop
@@ -455,8 +473,9 @@ const AddProductPage = () => {
                       />
                       <button
                         type="button"
+                        disabled={loading}
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center"
+                        className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center disabled:cursor-not-allowed"
                       >
                         ✕
                       </button>

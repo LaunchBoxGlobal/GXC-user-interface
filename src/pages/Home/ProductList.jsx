@@ -11,7 +11,7 @@ const ProductList = ({ products }) => {
           })}
         </div>
       ) : (
-        <div className="w-full min-h-screen">
+        <div className="w-full text-center h-[70vh] flex flex-col items-center justify-center">
           No products found in this community!
         </div>
       )}

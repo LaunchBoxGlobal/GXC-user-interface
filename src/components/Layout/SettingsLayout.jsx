@@ -111,6 +111,7 @@ const SettingsLayout = ({ page }) => {
       Cookies.remove("page");
       Cookies.remove("userEmail");
       Cookies.remove("isUserEmailVerified");
+      Cookies.remove("userSelectedPaymentMethod");
 
       navigate("/login");
     }

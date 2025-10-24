@@ -46,7 +46,7 @@ const ChangeEmailForm = () => {
       try {
         const res = await axios.post(
           `${BASE_URL}/auth/resend-verification`,
-          { newEmail: values.email },
+          { newEmail: values.email.trim() },
           {
             headers: {
               "Content-Type": "application/json",

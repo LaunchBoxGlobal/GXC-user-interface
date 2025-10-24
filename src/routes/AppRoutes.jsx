@@ -41,6 +41,9 @@ import CartSummary from "../pages/Cart/CartSummary";
 import Checkout from "../pages/Cart/Checkout";
 import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 
+// Settings
+import SettingsPage from "../pages/Settings/SettingsPage";
+
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
 
@@ -405,7 +408,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/products/add-product"
+        path="/product-management/add-product"
         element={
           <PrivateRoute
             element={
@@ -462,6 +465,19 @@ const AppRoutes = () => {
             element={
               <Layout key="order-details">
                 <OrderDetailsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute
+            element={
+              <Layout key="settings-page">
+                <SettingsPage />
               </Layout>
             }
           />

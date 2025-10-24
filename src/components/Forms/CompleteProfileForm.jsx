@@ -82,8 +82,8 @@ const CompleteProfileForm = () => {
           return phone ? phone.isValid() : false;
         }),
       location: Yup.string()
-        .min(11, `Address cannot be less than 11 characters`)
-        .max(150, `Address can not be more than 150 characters`)
+        .min(1, `Address cannot be less than 1 characters`)
+        .max(30, `Address can not be more than 30 characters`)
         .required("Please enter your location"),
       zipcode: Yup.string()
         .matches(/^[A-Za-z0-9\- ]{4,10}$/, "Please enter a valid zip code")
@@ -101,15 +101,15 @@ const CompleteProfileForm = () => {
         const profileRes = await axios.put(
           `${BASE_URL}/auth/profile`,
           {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            address: values.location,
+            firstName: values.firstName.trim(),
+            lastName: values.lastName.trim(),
+            email: values.email.trim(),
+            address: values.location.trim(),
             phone: values.phoneNumber,
-            zipcode: values.zipcode,
-            city: values.city,
-            state: values.state,
-            country: values.country,
+            zipcode: values.zipcode.trim(),
+            city: values.city.trim(),
+            state: values.state.trim(),
+            country: values.country.trim(),
           },
           {
             headers: { Authorization: `Bearer ${getToken()}` },

@@ -17,64 +17,23 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import Loader from "../../components/Common/Loader";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
-import AuthImageUpload from "../../components/Common/AuthImageUpload";
+import { useUser } from "../../context/userContext";
+import { handleApiError } from "../../utils/handleApiError";
+import EditProfilePicture from "./EditProfilePicture";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
-  const { user, setUser } = useAppContext();
+  const { user, fetchUserProfile } = useAppContext();
+  const { checkIamAlreadyMember } = useUser();
   const [loading, setLoading] = useState(false);
 
   const parsedPhone = parsePhoneNumberFromString(user?.phone || "");
   const defaultCountry = parsedPhone ? parsedPhone.country : "US";
-  const defaultPhoneNumber = parsedPhone ? parsedPhone.nationalNumber : "";
-
-  const fetchUserProfile = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/auth/profile`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
-
-      setUser(res?.data?.data?.user);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const status = error.response?.status;
-
-        switch (status) {
-          case 401:
-            console.error("Unauthorized: Token expired or invalid.");
-            localStorage.removeItem("token");
-            navigate("/login");
-            break;
-
-          case 403:
-            console.error("Forbidden: You do not have access.");
-            break;
-
-          case 404:
-            console.error("Profile not found.");
-            break;
-
-          case 500:
-            console.error("Server error. Please try again later.");
-            break;
-
-          default:
-            console.error(
-              `Unexpected error: ${status} - ${
-                error.response?.data?.message || error.message
-              }`
-            );
-        }
-      } else {
-        console.error("Network or unexpected error:", error);
-      }
-    }
-  };
+  const defaultPhoneNumber = parsedPhone ? parsedPhone.number : "";
 
   useEffect(() => {
+    checkIamAlreadyMember();
     fetchUserProfile();
   }, []);
 
@@ -84,15 +43,6 @@ const EditProfile = () => {
     }
   }, [user]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      formik.setFieldValue("profileImage", file);
-    }
-  };
-
-  console.log(user?.phone);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -104,7 +54,7 @@ const EditProfile = () => {
       city: user?.city || "",
       zipcode: user?.zipcode || "",
       state: user?.state || "",
-      country: user?.country || "",
+      country: user?.country || defaultCountry || "US",
       profileImage: null,
       countryId: "",
       stateId: "",
@@ -127,17 +77,23 @@ const EditProfile = () => {
         )
         .required("Last name is required"),
       address: Yup.string()
-        .min(11, `Address cannot be less than 11 characters`)
-        .max(150, `Address can not be more than 150 characters`)
+        .min(1, `Address cannot be less than 1 characters`)
+        .max(30, `Address can not be more than 150 characters`)
         .required("Please enter your location"),
       phoneNumber: Yup.string()
         .required("Phone number is required")
-        .test("is-valid-phone", "Invalid phone number", (value) => {
+        .test("is-valid-phone", "Invalid phone number", function (value) {
+          const { parent } = this;
+          const country = parent.country || defaultCountry || "US";
+
           if (!value) return false;
 
-          const phone = parsePhoneNumberFromString(value);
-
-          return phone ? phone.isValid() : false;
+          try {
+            const phone = parsePhoneNumberFromString(value, country);
+            return phone && phone.isValid();
+          } catch {
+            return false;
+          }
         }),
       email: Yup.string()
         .email("Invalid email address")
@@ -152,19 +108,20 @@ const EditProfile = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        checkIamAlreadyMember();
         setLoading(true);
         const profileRes = await axios.put(
           `${BASE_URL}/auth/profile`,
           {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
+            firstName: values.firstName.trim(),
+            lastName: values.lastName.trim(),
+            email: values.email.trim(),
             phone: values.phoneNumber,
-            address: values.address,
-            city: values.city,
-            zipcode: values.zipcode,
-            state: values.state,
-            country: values.country,
+            address: values.address.trim(),
+            city: values.city.trim(),
+            zipcode: values.zipcode.trim(),
+            state: values.state.trim(),
+            country: values.country.trim(),
           },
           {
             headers: {
@@ -188,7 +145,6 @@ const EditProfile = () => {
               },
             }
           );
-          console.log("Image uploaded:", imageRes.data);
         }
 
         if (profileRes?.data?.success) {
@@ -203,16 +159,7 @@ const EditProfile = () => {
           navigate(-1 || "/profile");
         }
       } catch (error) {
-        console.error("Update profile error:", error.response?.data);
-        if (error?.response?.status === 401) {
-          enqueueSnackbar(error?.response?.data?.message || error?.message, {
-            variant: "error",
-          });
-        } else {
-          enqueueSnackbar(error?.response?.data?.message || error?.message, {
-            variant: "error",
-          });
-        }
+        handleApiError(error, navigate);
       } finally {
         setLoading(false);
       }
@@ -230,44 +177,12 @@ const EditProfile = () => {
       </p>
 
       <div className="w-full max-w-[500px] my-6">
-        <AuthImageUpload
+        <EditProfilePicture
           name="profileImage"
           setFieldValue={formik.setFieldValue}
+          imagePreview={preview}
           error={formik.touched.profileImage && formik.errors.profileImage}
         />
-        {/* <div className="w-full flex items-center justify-start gap-4">
-          <label
-            htmlFor="profileImage"
-            className="bg-[var(--secondary-bg)] text-slate-500 font-semibold text-base w-[100px] h-[100px] rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-300 border-dashed overflow-hidden"
-          >
-            {preview ? (
-              <img
-                src={preview}
-                alt="Profile Preview"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <FiPlus className="text-3xl" />
-            )}
-            <input
-              type="file"
-              id="profileImage"
-              name="profileImage"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
-
-          <div className="">
-            <label
-              htmlFor="profileImage"
-              className={`underline text-[15px] font-medium cursor-pointer text-[var(--primary-blue)]`}
-            >
-              Change Profile
-            </label>
-          </div>
-        </div> */}
       </div>
 
       <div className="w-full max-w-[500px] flex flex-col items-center gap-4">
@@ -428,7 +343,11 @@ const EditProfile = () => {
         </div>
 
         <div className="w-full">
-          <button type="submit" className="button">
+          <button
+            type="submit"
+            disabled={loading}
+            className="button disabled:cursor-not-allowed"
+          >
             {loading ? <Loader /> : "Save"}
           </button>
         </div>

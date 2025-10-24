@@ -111,12 +111,13 @@ const CartProductCard = ({
       </div>
 
       {(product?.product?.selectedDeliveryMethod &&
+        product?.product?.pickupAddress &&
         product?.product?.selectedDeliveryMethod === "pickup") ||
       product?.product?.selectedDeliveryMethod === "both" ? (
         <div className="flex flex-col items-start justify-start gap-1 mt-3">
           <p className="text-sm font-semibold">Pickup Address: </p>
           <div className="flex items-center gap-2">
-            <FaLocationDot className="text-base text-[var(--button-bg)]" />
+            <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
             <p className="text-sm">
               {product?.product?.pickupAddress} {product?.product?.pickupCity}{" "}
               {product?.product?.pickupState} {product?.product?.zipcode}{" "}

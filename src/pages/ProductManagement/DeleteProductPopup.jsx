@@ -6,10 +6,12 @@ import { getToken } from "../../utils/getToken";
 import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/userContext";
 
 const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { checkIamAlreadyMember } = useUser();
 
   const handleDeleteProduct = async () => {
     if (!productId) {
@@ -18,6 +20,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
       });
       return;
     }
+    checkIamAlreadyMember();
     setLoading(true);
     try {
       const res = await axios.post(
@@ -30,7 +33,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
         }
       );
       if (res?.data?.success) {
-        enqueueSnackbar(res?.data?.message || "Product delete sucessfully!", {
+        enqueueSnackbar("Product delete sucessfully!", {
           variant: "success",
         });
         navigate(`/product-management`);
@@ -56,7 +59,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
           <h2 className="text-lg lg:text-[32px] font-semibold mt-3 mb-1 leading-[1.2]">
             Delete Product
           </h2>
-          <p className="mb-4">Are you sure you want to delist this product?</p>
+          <p className="mb-4">Are you sure you want to delete this product?</p>
           <div className="w-full grid grid-cols-2 gap-3 mt-1">
             <button
               onClick={() => setShowDeletePopup(false)}

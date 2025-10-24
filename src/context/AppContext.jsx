@@ -4,8 +4,6 @@ import axios from "axios";
 import { BASE_URL } from "../data/baseUrl";
 import { getToken } from "../utils/getToken";
 import { useNavigate } from "react-router-dom";
-import { enqueueSnackbar } from "notistack";
-import { handleApiError } from "../utils/handleApiError";
 
 const AppContext = createContext();
 
@@ -15,13 +13,10 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [communities, setCommunities] = useState([]);
-  // const [selectedCommunity, setSelectedCommunity] = useState(
-  //   Cookies.get("selected-community")
-  //     ? JSON.parse(Cookies.get("selected-community"))
-  //     : null
-  // );
 
   const [productSearchValue, setProductSearchValue] = useState(null);
+  const [productMinValue, setProductMinValue] = useState(null);
+  const [productMaxValue, setProductMaxValue] = useState(null);
 
   const [showEmailVerificationPopup, setShowEmailVerificationPopup] =
     useState(false);
@@ -106,6 +101,10 @@ export const AppProvider = ({ children }) => {
         // setSelectedCommunity,
         productSearchValue,
         setProductSearchValue,
+        productMinValue,
+        setProductMinValue,
+        productMaxValue,
+        setProductMaxValue,
       }}
     >
       {children}

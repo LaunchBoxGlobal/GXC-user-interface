@@ -6,10 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import SettingsLayout from "../../components/Layout/SettingsLayout";
 import ChangePasswordPage from "./ChangePasswordPage";
+import { useUser } from "../../context/userContext";
 
 const ProfilePage = () => {
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
+  const {checkIamAlreadyMember} = useUser();
 
   const fetchUserProfile = async () => {
     try {
@@ -58,6 +60,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!user) return;
+    checkIamAlreadyMember()
     fetchUserProfile();
   }, []);
 

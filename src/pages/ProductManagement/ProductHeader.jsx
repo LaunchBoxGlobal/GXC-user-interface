@@ -32,7 +32,7 @@ const ProductHeader = ({
     <div className="w-full flex items-start justify-between gap-4 relative">
       <div className="space-y-2 max-w-[70%]">
         {productDetails?.title && (
-          <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
+          <p className="font-semibold text-[24px] leading-none tracking-tight break-words">
             {productDetails?.title}
           </p>
         )}
@@ -42,7 +42,7 @@ const ProductHeader = ({
               ? "Pickup"
               : productDetails?.deliveryMethod === "delivery"
               ? "Delivery"
-              : "Pickup/Delivery"}
+              : "Pickup / Delivery"}
           </p>
         )}
       </div>

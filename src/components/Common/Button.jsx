@@ -5,7 +5,7 @@ const Button = ({ type, title, isLoading }) => {
     <button
       type={type ? type : "button"}
       disabled={isLoading}
-      className="button relative flex items-center justify-center disabled:cursor-progress"
+      className="button relative flex items-center justify-center disabled:cursor-not-allowed"
     >
       {isLoading ? <Loader /> : title}
     </button>

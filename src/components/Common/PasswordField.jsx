@@ -13,6 +13,7 @@ const PasswordField = ({
   label,
 }) => {
   const [showPass, setShowPass] = useState(false);
+  const showError = touched && error;
   return (
     <div className="w-full">
       {label && (
@@ -22,9 +23,7 @@ const PasswordField = ({
       )}
       <div
         className={`w-full bg-[var(--secondary-bg)] border h-[49px] px-[15px] py-[14px] rounded-[8px] flex items-center justify-between  ${
-          (error || touched) && error
-            ? "border-red-500"
-            : "border-[var(--secondary-bg)]"
+          showError ? "border-red-500" : "border-[var(--secondary-bg)]"
         }`}
       >
         <input
@@ -34,7 +33,7 @@ const PasswordField = ({
           value={value}
           onChange={onChange}
           onBlur={onBlur}
-          className="w-full text-gray-700 outline-none bg-transparent font-normal"
+          className="w-full text-[#6D6D6D] outline-none bg-transparent font-normal"
         />
 
         <button type="button" onClick={() => setShowPass((prev) => !prev)}>
@@ -45,9 +44,7 @@ const PasswordField = ({
           )}
         </button>
       </div>
-      {(touched || error) && error && (
-        <p className="text-red-500 text-xs">{error}</p>
-      )}
+      {showError && <p className="text-red-500 text-xs">{error}</p>}
     </div>
   );
 };

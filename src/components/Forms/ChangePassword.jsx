@@ -49,12 +49,10 @@ const ChangePassword = () => {
         setLoading(true);
 
         const res = await axios.post(`${BASE_URL}/auth/reset-password`, {
-          email: verificationEmail,
-          code: otp,
-          password: values?.password,
+          email: verificationEmail.trim(),
+          code: otp.trim(),
+          password: values?.password.trim(),
         });
-
-        console.log("reset password response >>> ", res?.data);
 
         if (res?.data?.success) {
           resetForm();

@@ -28,7 +28,9 @@ export const UserProvider = ({ children }) => {
   /** 🧩 Fetch user’s joined communities */
   const fetchCommunities = async () => {
     const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+    const token = getToken();
     if (!user) return;
+    if (!token) return;
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
         headers: { Authorization: `Bearer ${getToken()}` },
@@ -40,7 +42,10 @@ export const UserProvider = ({ children }) => {
       if (list.length === 0) {
         Cookies.remove("selected-community");
         setSelected(null);
-        navigate("/", { replace: true });
+        navigate({
+          pathname: "/",
+          search: window?.location?.search || "",
+        });
         return;
       }
 
@@ -82,8 +87,10 @@ export const UserProvider = ({ children }) => {
     const community = Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
       : null;
+    const token = getToken();
 
     if (!community) return;
+    if (!token) return;
 
     try {
       setChecking(true);
@@ -94,49 +101,47 @@ export const UserProvider = ({ children }) => {
         }
       );
 
-      const status = res?.data?.data?.membership?.status;
-      const isBanned = status === "banned" || status === "removed";
+      const membership = res?.data?.data?.membership;
+      const status = membership?.status;
 
-      if (isBanned && !isBlocked) {
-        // Determine correct message
-        const message =
-          status === "banned"
-            ? "You’ve been blocked from this community."
-            : "You’ve been removed from this community.";
-
-        // 👇 Show only once when the block/removal happens
-        enqueueSnackbar(message, {
+      if (status === "removed") {
+        enqueueSnackbar("You’ve been removed from this community.", {
           variant: "error",
           autoHideDuration: 3000,
         });
 
-        setIsBlocked(true);
+        fetchCommunities();
+        navigate(`/`);
+      } else if (status === "banned") {
+        enqueueSnackbar("You've been blocked from this community.", {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
 
-        // 👇 Smoothly refetch available communities
-        setTimeout(() => {
-          fetchCommunities();
-        }, 1500);
-      } else if (!isBanned && isBlocked) {
-        // 👇 If user was blocked/removed but now rejoined
+        fetchCommunities();
+        navigate(`/`);
+      } else {
         setIsBlocked(false);
       }
+      setIsBlocked(false);
     } catch (error) {
-      handleApiError(error, navigate);
+      console.log("checkIamAlreadyMember error >>> ", error);
+      // handleApiError(error, navigate);
     } finally {
       setChecking(false);
     }
   };
 
   useEffect(() => {
-    fetchCommunities();
+    // fetchCommunities();
     const init = async () => {
       await fetchCommunities();
       await checkIamAlreadyMember();
     };
     init();
 
-    const interval = setInterval(checkIamAlreadyMember, 30000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(checkIamAlreadyMember, 30000);
+    // return () => clearInterval(interval);
   }, []);
 
   return (

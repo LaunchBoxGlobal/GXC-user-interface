@@ -1,96 +1,112 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppContext } from "../../context/AppContext";
+
+const MAX_PRICE_LIMIT = 999999;
 
 const SearchFilterBox = ({
   handleTogglePriceFilter,
   openPriceFilter,
   setOpenPriceFilter,
 }) => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const initialSearch = searchParams.get("search") || "";
-  const initialMin = searchParams.get("min") || "";
-  const initialMax = searchParams.get("max") || "";
-
-  const [searchValue, setSearchValue] = useState(initialSearch);
-  const [minPrice, setMinPrice] = useState(initialMin);
-  const [maxPrice, setMaxPrice] = useState(initialMax);
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("search") || ""
+  );
+  const [minPrice, setMinPrice] = useState(searchParams.get("min") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("max") || "");
   const [errors, setErrors] = useState({ min: "", max: "" });
-
+  // Close filter dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpenPriceFilter(false);
       }
     };
-
-    if (openPriceFilter) {
+    if (openPriceFilter)
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [openPriceFilter, setOpenPriceFilter]);
 
+  useEffect(() => {
+    setSearchValue(searchParams.get("search") || "");
+    setMinPrice(searchParams.get("min") || "");
+    setMaxPrice(searchParams.get("max") || "");
+  }, [searchParams]);
+
+  // Handle search typing and query update
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setSearchValue(value);
-
-    const params = new URLSearchParams(window.location.search);
-    if (value) params.set("search", value);
-    else params.delete("search");
-
-    navigate(`/?${params.toString()}`, { replace: true });
+    if (value) searchParams.set("search", value);
+    else searchParams.delete("search");
+    setSearchParams(searchParams);
   };
 
-  const validatePrices = () => {
-    let valid = true;
+  // Common number validation helper
+  const isValidPrice = (value) => /^\d+(\.\d{0,2})?$/.test(value);
+
+  const validatePrices = (min, max) => {
     const newErrors = { min: "", max: "" };
+    let valid = true;
 
-    if (minPrice && Number(minPrice) < 1) {
-      newErrors.min = "Min price must be at least 1.";
-      valid = false;
+    if (min) {
+      if (!isValidPrice(min))
+        newErrors.min = "Invalid format (max 2 decimals).";
+      else if (Number(min) < 1) newErrors.min = "Min price must be at least 1.";
+      else if (Number(min) > MAX_PRICE_LIMIT)
+        newErrors.min = `Less than ${MAX_PRICE_LIMIT}.`;
     }
 
-    if (maxPrice && minPrice && Number(maxPrice) < Number(minPrice)) {
-      newErrors.max = "Max price must be greater than or equal to min price.";
-      valid = false;
+    if (max) {
+      if (!isValidPrice(max))
+        newErrors.max = "Invalid format (max 2 decimals).";
+      else if (Number(max) < 1) newErrors.max = "Max price must be at least 1.";
+      else if (Number(max) > MAX_PRICE_LIMIT)
+        newErrors.max = `Less than ${MAX_PRICE_LIMIT}.`;
     }
+
+    if (min && max && Number(max) < Number(min))
+      newErrors.max = "Max must be >= Min.";
 
     setErrors(newErrors);
     return valid;
   };
 
-  const handleApplyPriceFilter = () => {
-    if (!validatePrices()) return;
-
-    const params = new URLSearchParams(window.location.search);
-
-    if (minPrice) params.set("min", minPrice);
-    else params.delete("min");
-
-    if (maxPrice) params.set("max", maxPrice);
-    else params.delete("max");
-
-    navigate(`/?${params.toString()}`, { replace: true });
-    handleTogglePriceFilter();
+  // Update min & validate live
+  const handleMinChange = (e) => {
+    const value = e.target.value.replace(/^0+(?!\.)/, "");
+    setMinPrice(value);
+    validatePrices(value, maxPrice);
   };
 
+  // Update max & validate live
+  const handleMaxChange = (e) => {
+    const value = e.target.value.replace(/^0+(?!\.)/, "");
+    setMaxPrice(value);
+    validatePrices(minPrice, value);
+  };
+
+  // Apply price filter
+  const handleApplyPriceFilter = () => {
+    if (errors.min || errors.max) return;
+    if (minPrice) searchParams.set("min", minPrice);
+    else searchParams.delete("min");
+    if (maxPrice) searchParams.set("max", maxPrice);
+    else searchParams.delete("max");
+    setSearchParams(searchParams);
+    setOpenPriceFilter(false)
+  };
+
+  // Reset price filter
   const handleResetPriceFilter = () => {
     setMinPrice("");
     setMaxPrice("");
     setErrors({ min: "", max: "" });
-
-    const params = new URLSearchParams(window.location.search);
-    params.delete("min");
-    params.delete("max");
-
-    navigate(`/?${params.toString()}`, { replace: true });
+    searchParams.delete("min");
+    searchParams.delete("max");
+    setSearchParams(searchParams);
     handleTogglePriceFilter();
   };
 
@@ -146,6 +162,7 @@ const SearchFilterBox = ({
 
             <div className="w-full relative mt-2">
               <div className="grid grid-cols-2 gap-4">
+                {/* Min Price */}
                 <div>
                   <label
                     htmlFor="min"
@@ -157,7 +174,14 @@ const SearchFilterBox = ({
                     type="number"
                     id="min"
                     value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
+                    onChange={handleMinChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key))
+                        e.preventDefault();
+                    }}
+                    min="1"
+                    max={MAX_PRICE_LIMIT}
+                    step="0.01"
                     className={`bg-[#F5F5F5] h-[49px] w-full px-4 rounded-[12px] outline-none ${
                       errors.min ? "border border-red-500" : ""
                     }`}
@@ -167,6 +191,7 @@ const SearchFilterBox = ({
                   )}
                 </div>
 
+                {/* Max Price */}
                 <div>
                   <label
                     htmlFor="max"
@@ -178,7 +203,14 @@ const SearchFilterBox = ({
                     type="number"
                     id="max"
                     value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
+                    onChange={handleMaxChange}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key))
+                        e.preventDefault();
+                    }}
+                    min="1"
+                    max={MAX_PRICE_LIMIT}
+                    step="0.01"
                     className={`bg-[#F5F5F5] h-[49px] w-full px-4 rounded-[12px] outline-none ${
                       errors.max ? "border border-red-500" : ""
                     }`}

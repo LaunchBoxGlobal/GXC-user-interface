@@ -21,7 +21,7 @@ export default function Gallery({ images }) {
         navigation={true}
         thumbs={{ swiper: thumbsSwiper }}
         modules={[FreeMode, Navigation, Thumbs]}
-        className="mySwiper2 lg:min-h-[385px] rounded-[20px]"
+        className="mySwiper2 lg:min-h-[385px] lg:max-h-[400px] rounded-[20px]"
       >
         {images && images?.length > 0 ? (
           <>
@@ -30,7 +30,7 @@ export default function Gallery({ images }) {
                 <SwiperSlide key={index} className="w-full h-full">
                   <img
                     src={image?.imageUrl}
-                    className="rounded-[20px] w-full lg:min-h-[385px] object-contain"
+                    className="rounded-[20px] w-full lg:min-h-[385px] lg:max-h-[400px] object-contain"
                   />
                 </SwiperSlide>
               );
@@ -56,7 +56,7 @@ export default function Gallery({ images }) {
                 <SwiperSlide key={index}>
                   <img
                     src={image?.imageUrl}
-                    className="rounded-lg lg:rounded-[20px] min-h-[50px]  lg:min-w-[71px] max-w-[95px] lg:min-h-[81px] max-h-[95px] object-cover"
+                    className="rounded-lg lg:rounded-[20px] min-h-[50px] lg:min-w-[71px] lg:min-h-[71px] max-h-[71px] object-cover"
                   />
                 </SwiperSlide>
               );

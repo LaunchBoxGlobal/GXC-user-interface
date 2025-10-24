@@ -1,15 +1,13 @@
-import { IoIosStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-const ProductCard = ({ product, index }) => {
+const ProductCard = ({ product }) => {
   return (
     <>
       {product?.status === "active" && (
-        // <Link to={`/products/${product?.title}?productId=${product?.id}`}>
-        <div className="w-full md:max-w-[290px] h-[410px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
+        <div className="w-full md:max-w-[290px] min-h-[410px] max-h-[430px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
           <div className="w-full relative">
             <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
-              {product?.images[0]?.imageUrl ? (
+              {product?.images?.length > 0 && product?.images[0]?.imageUrl ? (
                 <img
                   src={product?.images[0]?.imageUrl}
                   alt="image placeholder"
@@ -27,8 +25,8 @@ const ProductCard = ({ product, index }) => {
 
           <div className="w-full mt-4">
             <h3 className="text-[20px] font-semibold leading-none tracking-tight text-start break-words">
-              {product?.title?.length > 40
-                ? `${product?.title?.slice(0, 30)}`
+              {product?.title?.length > 20
+                ? `${product?.title?.slice(0, 20)}...`
                 : product?.title}
             </h3>
 
@@ -43,11 +41,6 @@ const ProductCard = ({ product, index }) => {
             </p>
 
             <div className="flex items-center justify-between gap-2">
-              {/* <div className="flex items-center gap-1.5">
-                  <IoIosStar className="text-[#FFD700] text-lg" />
-                  <p className="font-medium">4.5</p>
-                </div> */}
-
               <p className="text-[18px] font-semibold leading-none tracking-tight">
                 ${product?.price}
               </p>
@@ -63,7 +56,6 @@ const ProductCard = ({ product, index }) => {
             </div>
           </div>
         </div>
-        // </Link>
       )}
     </>
   );

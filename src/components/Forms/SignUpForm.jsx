@@ -88,10 +88,10 @@ const SignUpForm = () => {
       try {
         setLoading(true);
         const formData = new FormData();
-        formData.append("firstName", values.firstName);
-        formData.append("lastName", values.lastName);
-        formData.append("email", values.email);
-        formData.append("password", values.password);
+        formData.append("firstName", values.firstName.trim());
+        formData.append("lastName", values.lastName.trim());
+        formData.append("email", values.email.trim());
+        formData.append("password", values.password.trim());
         formData.append("userType", "regular_user");
 
         if (values.profileImage) {
@@ -104,7 +104,7 @@ const SignUpForm = () => {
           },
         });
         if (res?.data?.success) {
-          Cookies.set("userEmail", values.email);
+          Cookies.set("userEmail", values.email.trim());
           Cookies.set("isUserEmailVerified", false);
           Cookies.set("page", "/signup");
           Cookies.set("userToken", res?.data?.data?.token);

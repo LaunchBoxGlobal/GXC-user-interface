@@ -61,7 +61,8 @@ const CommunitiesDropdown = () => {
 
   // 2️⃣ Separate effect to handle selection logic
   useEffect(() => {
-    if (!communities.length) return;
+    // Don't auto-select while user is typing a search
+    if (!communities.length || searchCommunityValue) return;
 
     const cookieCommunity = Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
@@ -81,19 +82,26 @@ const CommunitiesDropdown = () => {
       cookieCommunity ||
       communities[0];
 
-    // Ensure selected community still exists
     if (selectedC && !communities.find((c) => c.id === selectedC.id)) {
       selectedC = communities[0];
     }
 
-    setSelected(selectedC);
-    setSelectedCommunity(selectedC);
-    Cookies.set("selected-community", JSON.stringify(selectedC));
+    // Only update if selection actually changed
+    if (!selectedCommunity || selectedCommunity.id !== selectedC.id) {
+      setSelected(selectedC);
+      setSelectedCommunity(selectedC);
+      Cookies.set("selected-community", JSON.stringify(selectedC));
 
-    if (selectedC?.slug) {
-      navigate(`/?community=${selectedC.slug}`, { replace: true });
+      if (selectedC?.slug) {
+        const params = new URLSearchParams(window.location.search);
+        params.set("community", selectedC.slug);
+        navigate({
+          pathname: "/",
+          search: `?${params.toString()}`,
+        });
+      }
     }
-  }, [communities, communityFromQuery]); // <— now depends on both
+  }, [communities, communityFromQuery, searchCommunityValue]);
 
   useEffect(() => {
     fetchCommunities();

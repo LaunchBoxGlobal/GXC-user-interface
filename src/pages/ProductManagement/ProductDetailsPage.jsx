@@ -22,7 +22,7 @@ const ProductDetailsPage = () => {
   const productId = searchParams.get("productId");
   const { user } = useAppContext();
   const { fetchCartCount } = useCart();
-  const { selectedCommunity } = useUser();
+  const { selectedCommunity, checkIamAlreadyMember } = useUser();
 
   const [productDetails, setProductDetails] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +48,7 @@ const ProductDetailsPage = () => {
     document.title = productDetails
       ? productDetails?.title
       : "Product Details - GiveXChange";
+    checkIamAlreadyMember();
     fetchProductDetails();
   }, []);
 

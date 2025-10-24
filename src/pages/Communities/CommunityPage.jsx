@@ -27,7 +27,6 @@ const CommunityPage = () => {
   const { fetchCommunities } = useUser();
   const [initialized, setInitialized] = useState(false);
 
-  // Fetch community details
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
     try {
@@ -72,14 +71,15 @@ const CommunityPage = () => {
         }
       );
 
-      console.log("my-membership res >>>", res?.data);
       const data = res?.data?.data || {};
       // Coerce to boolean
       const isMember = !!data?.isMember;
       setAlreadyMember(isMember);
 
       // membership may be null — guard it
-      if (data?.membership?.status) {
+      if (data?.membership?.status === "blocked") {
+        setBlocked(data.membership.status);
+      } else if (data?.membership?.status === "removed") {
         setBlocked(data.membership.status);
       } else {
         setBlocked(false);
@@ -120,7 +120,6 @@ const CommunityPage = () => {
         }
       );
 
-      console.log("check join status >>> ", res?.data);
       const data = res?.data?.data || {};
       const canJoinStatus = !!data?.canJoin;
       setCanJoin(canJoinStatus);
@@ -150,7 +149,7 @@ const CommunityPage = () => {
 
     setLoading(true);
     try {
-      await axios.post(
+      const res = await axios.post(
         `${BASE_URL}/communities/${communityTitle}/join`,
         { slug: communityTitle },
         {
@@ -158,16 +157,46 @@ const CommunityPage = () => {
         }
       );
 
-      enqueueSnackbar("Welcome! You’ve joined the community 🎉", {
-        variant: "success",
-        autoHideDuration: 2000,
-      });
-      fetchCommunities();
+      const membership = res?.data?.data?.membership;
+      if (!membership) {
+        throw new Error("Failed to get joined community data");
+      }
+      console.log("membership >>> ", membership);
+      // ✅ Fetch all joined communities
+      const communitiesRes = await axios.get(
+        `${BASE_URL}/communities/my-joined`,
+        {
+          headers: { Authorization: `Bearer ${getToken()}` },
+        }
+      );
 
-      // console.log("handleAcceptInvite response >>> ", res?.data);
+      const allCommunities = communitiesRes?.data?.data?.communities || [];
+
+      // ✅ Find the exact joined community by ID
+      const joinedCommunity = allCommunities.find(
+        (c) => c.id === membership.communityId
+      );
+
+      console.log("joinedCommunity >>>", joinedCommunity);
+
+      if (joinedCommunity) {
+        // ✅ Save selected community in cookie
+        Cookies.set("selected-community", JSON.stringify(joinedCommunity));
+
+        enqueueSnackbar(
+          `Welcome! You’ve joined the community "${joinedCommunity.name}" 🎉`,
+          { variant: "success", autoHideDuration: 2000 }
+        );
+
+        // ✅ Navigate to home with community param
+        navigate(`/?community=${joinedCommunity.slug}`, { replace: true });
+      } else {
+        enqueueSnackbar("Joined community not found in your list!", {
+          variant: "warning",
+        });
+      }
+
       setShowPopup(false);
-      // After joining, navigate to community (replace to avoid history flood)
-      navigate(`/?community=${communityTitle}`, { replace: true });
     } catch (error) {
       console.error(
         "accept invitation error >>>>> ",
@@ -251,8 +280,15 @@ const CommunityPage = () => {
 
   if (blocked && blocked === "banned") {
     return (
-      <div className="w-full text-center h-screen py-40">
+      <div className="w-full text-center h-screen py-80">
         <p>You’ve been blocked from this community.</p>
+      </div>
+    );
+  }
+  if (blocked && blocked === "removed") {
+    return (
+      <div className="w-full text-center h-screen py-80">
+        <p>You’ve been removed from this community.</p>
       </div>
     );
   }

@@ -10,11 +10,13 @@ import { BASE_URL } from "../../data/baseUrl";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
+import { useAppContext } from "../../context/AppContext";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const { setUser } = useAppContext();
 
   const redirect = searchParams?.get("redirect");
 
@@ -40,8 +42,8 @@ const LoginForm = () => {
         const res = await axios.post(
           `${BASE_URL}/auth/login`,
           {
-            email: values?.email,
-            password: values?.password,
+            email: values?.email.trim(),
+            password: values?.password.trim(),
             userType: "regular_user",
           },
           {
@@ -54,6 +56,7 @@ const LoginForm = () => {
         if (res?.data?.success) {
           Cookies.set("userToken", res?.data?.data?.token);
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
+          setUser(res?.data?.data?.user);
           resetForm();
           if (redirect) {
             navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
@@ -140,9 +143,6 @@ const LoginForm = () => {
 
       <div className="w-full flex flex-col items-start gap-4 mt-3">
         <div className="w-full space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email Address
-          </label>
           <TextField
             type="text"
             name="email"
@@ -152,13 +152,11 @@ const LoginForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
+            label={"Email Address"}
           />
         </div>
 
         <div className="w-full space-y-1">
-          <label htmlFor="password" className="text-sm font-medium">
-            Password
-          </label>
           <PasswordField
             name={`password`}
             placeholder={`Password`}
@@ -167,6 +165,7 @@ const LoginForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
+            label={"Password"}
           />
         </div>
 

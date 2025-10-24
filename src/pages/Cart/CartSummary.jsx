@@ -7,8 +7,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import OrderSummary from "./OrderSummary";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
 import AddAddressModal from "./AddAddressModal";
 import Cookies from "js-cookie";
 import CartProductCard from "./CartProductCard";
@@ -16,6 +15,7 @@ import UserDeliveryAddress from "./UserDeliveryAddress";
 import UserPaymentMethod from "./UserPaymentMethod";
 import { FiArrowLeft } from "react-icons/fi";
 import EditAddressModal from "./EditAddressModal";
+import { useUser } from "../../context/userContext";
 
 const CartSummary = () => {
   const {
@@ -28,12 +28,21 @@ const CartSummary = () => {
     cartDetails,
   } = useCart();
 
+  const { checkIamAlreadyMember } = useUser();
+
   const navigate = useNavigate();
   const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
   const [openEditAddressModal, setOpenEditAddressModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [userNewDeliveryAddress, setUserNewDeliveryAddress] = useState(null);
+
+  const pickupItems = cartProducts?.filter(
+    (pr) => pr?.product?.selectedDeliveryMethod === "pickup"
+  );
+  const deliveryItems = cartProducts?.filter(
+    (pr) => pr?.product?.selectedDeliveryMethod === "delivery"
+  );
 
   // 🔁 Load user’s saved delivery address (from cookies)
   useEffect(() => {
@@ -45,6 +54,7 @@ const CartSummary = () => {
 
   // 🔁 Fetch cart data on mount
   useEffect(() => {
+    checkIamAlreadyMember();
     fetchCartCount();
     fetchCartProducts();
   }, []);
@@ -54,13 +64,12 @@ const CartSummary = () => {
 
   // ✅ Check if any product requires delivery
   const isAnyDeliveryTypeProduct = cartProducts?.some(
-    (p) =>
-      p?.product?.deliveryMethod === "delivery" ||
-      p?.product?.deliveryMethod === "both"
+    (p) => p?.product?.selectedDeliveryMethod === "delivery"
   );
 
   // 🧹 Remove all cart items
   const removeAllItemsFromCart = async () => {
+    checkIamAlreadyMember();
     setLoading(true);
     try {
       const response = await axios.delete(
@@ -192,16 +201,43 @@ const CartSummary = () => {
                 </div>
 
                 <div className="border my-5" />
-                {cartProducts.map((product, index) => (
-                  <CartProductCard
-                    key={index}
-                    product={product}
-                    index={index}
-                    setLoading={setLoading}
-                    cartDetails={cartDetails}
-                    fetchCartProducts={fetchCartProducts}
-                  />
-                ))}
+                {pickupItems && pickupItems?.length > 0 && (
+                  <div className="w-full">
+                    <p className="text-[20px] font-semibold">Pickup Items</p>
+                    <div className="border my-5" />
+                    <div className="w-full">
+                      {pickupItems?.map((product, index) => (
+                        <CartProductCard
+                          key={index}
+                          product={product}
+                          index={index}
+                          setLoading={setLoading}
+                          cartDetails={cartDetails}
+                          fetchCartProducts={fetchCartProducts}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {deliveryItems && deliveryItems?.length > 0 && (
+                  <div className="w-full mt-5">
+                    <p className="text-[20px] font-semibold">Delivery Items</p>
+                    <div className="border my-5" />
+                    <div className="w-full">
+                      {deliveryItems?.map((product, index) => (
+                        <CartProductCard
+                          key={index}
+                          product={product}
+                          index={index}
+                          setLoading={setLoading}
+                          cartDetails={cartDetails}
+                          fetchCartProducts={fetchCartProducts}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* 📦 Order Summary */}

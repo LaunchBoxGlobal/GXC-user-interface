@@ -37,7 +37,7 @@ const VerifyEmail = () => {
       try {
         const res = await axios.post(
           `${BASE_URL}/auth/forgot-password`,
-          values,
+          { email: values.email.trim() },
           {
             headers: {
               "Content-Type": "application/json",

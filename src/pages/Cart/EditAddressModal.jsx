@@ -46,11 +46,11 @@ const EditAddressModal = ({
     validateOnBlur: true,
     onSubmit: async (values, { resetForm }) => {
       const userAddress = {
-        country: values.country,
-        state: values.state,
-        city: values.city,
-        zipcode: values.zipcode,
-        location: values.location,
+        country: values.country.trim(),
+        state: values.state.trim(),
+        city: values.city.trim(),
+        zipcode: values.zipcode.trim(),
+        location: values.location.trim(),
         countryId: values.countryId,
         stateId: values.stateId,
       };

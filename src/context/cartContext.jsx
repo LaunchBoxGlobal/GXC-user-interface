@@ -89,7 +89,7 @@ export const CartProvider = ({ children }) => {
         cartCount,
         setCartCount,
         fetchCartCount,
-        // selectedCommunity,
+        setCartProducts,
         loading,
         setLoading,
         setError,

@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
               Product Management
             </h1>
             <Link
-              to={`/products/add-product`}
+              to={`/product-management/add-product`}
               className="button max-w-[214px] h-[58px] flex items-center justify-center"
             >
               Add New Product

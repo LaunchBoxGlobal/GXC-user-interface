@@ -7,9 +7,11 @@ import { getToken } from "../../utils/getToken";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { useUser } from "../../context/userContext";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
+  const {checkIamAlreadyMember} = useUser()
 
   const formik = useFormik({
     initialValues: {
@@ -34,9 +36,10 @@ const ChangePasswordPage = () => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
+        checkIamAlreadyMember();
         const res = await axios.post(
           `${BASE_URL}/auth/change-password`,
-          { password: values?.password },
+          { password: values?.password.trim() },
           {
             headers: {
               "Content-Type": "application/json",

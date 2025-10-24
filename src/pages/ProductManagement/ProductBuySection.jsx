@@ -8,6 +8,7 @@ import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
 import { FaLocationDot } from "react-icons/fa6";
+import { useUser } from "../../context/userContext";
 
 const ProductBuySection = ({
   productDetails,
@@ -20,12 +21,12 @@ const ProductBuySection = ({
   navigate,
 }) => {
   const { cartProducts, fetchCartProducts } = useCart();
+  const { checkIamAlreadyMember } = useUser();
 
   const isProductInCart = cartProducts?.find(
     (product) => product?.product?.id === productDetails?.id
   );
 
-  // ✅ Auto-select delivery type if only one delivery method is available
   useEffect(() => {
     if (productDetails?.deliveryMethod === "pickup") {
       setDeliveryType("pickup");
@@ -51,7 +52,7 @@ const ProductBuySection = ({
       enqueueSnackbar("Product ID not found!", { variant: "error" });
       return;
     }
-
+    checkIamAlreadyMember();
     setAddProductInCart(true);
     try {
       const res = await axios.post(
@@ -142,12 +143,10 @@ const ProductBuySection = ({
       </div>
 
       {/* ✅ Pickup Address (conditional display) */}
-      {productDetails?.pickupAddress?.address &&
-        // Show if: deliveryMethod === "pickup"
-        // OR deliveryMethod === "both" AND user selected pickup
-        (productDetails?.deliveryMethod === "pickup" ||
-          (productDetails?.deliveryMethod === "both" &&
-            deliveryType === "pickup")) && (
+      {(productDetails?.deliveryMethod === "pickup" ||
+        (productDetails?.deliveryMethod === "both" &&
+          deliveryType === "pickup")) &&
+        productDetails?.pickupAddress?.address && (
           <>
             <div className="w-full border my-5" />
             <p className="text-sm font-semibold">Pickup Address</p>

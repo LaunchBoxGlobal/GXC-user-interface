@@ -13,6 +13,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { IoClose } from "react-icons/io5";
 import Loader from "../../components/Common/Loader";
+import { useUser } from "../../context/userContext";
 
 const EditProductPage = () => {
   const navigate = useNavigate();
@@ -23,14 +24,12 @@ const EditProductPage = () => {
   const productId = searchParams.get("productId");
   const [pickupAddress, setPickupAddress] = useState("");
   const { user } = useAppContext();
-
-  // ✅ Separate states for existing and new images
+  const { checkIamAlreadyMember } = useUser();
   const [existingImages, setExistingImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
 
-  // ✅ Fetch product details
   const fetchProductDetails = async () => {
     setFetchingProduct(true);
     try {
@@ -41,17 +40,16 @@ const EditProductPage = () => {
       const productData = res?.data?.data?.product;
       setProduct(productData);
 
-      // ✅ Set existing images first
+      // ✅ Set existing images
       const images = productData?.images || [];
       setExistingImages(images);
 
-      // ✅ Then set preview images
+      // ✅ Set preview images
       const previews = images.map((img) => ({
-        id: img.id,
-        url: img.imageUrl,
+        id: img?.id,
+        url: img?.imageUrl,
         isNew: false,
       }));
-
       setPreviewImages(previews);
     } catch (error) {
       handleApiError(error, navigate);
@@ -59,9 +57,15 @@ const EditProductPage = () => {
       setFetchingProduct(false);
     }
   };
+
   useEffect(() => {
     fetchProductDetails();
+    checkIamAlreadyMember();
   }, []);
+
+  useEffect(() => {
+    formik.setFieldValue("pickupAddress", pickupAddress);
+  }, [pickupAddress]);
 
   useEffect(() => {
     if (product?.pickupAddress?.address) {
@@ -70,48 +74,6 @@ const EditProductPage = () => {
       setPickupAddress(user.address);
     }
   }, [product, user]);
-
-  const handleAddNewImage = async (file) => {
-    const formData = new FormData();
-    formData.append("image", file); // ✅ append single image file
-
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/products/${product?.id}/images`,
-        formData, // ✅ send as FormData (not wrapped)
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (res?.data?.success) {
-        enqueueSnackbar("Image uploaded successfully!", {
-          variant: "success",
-        });
-
-        // ✅ Append new uploaded image to existing list (from backend response)
-        const uploadedImage = res?.data?.data?.image; // assuming backend returns uploaded image info
-
-        if (uploadedImage) {
-          setExistingImages((prev) => [...prev, uploadedImage]);
-          setPreviewImages((prev) => [
-            ...prev,
-            { id: uploadedImage.id, url: uploadedImage.imageUrl, isNew: false },
-          ]);
-        }
-      }
-    } catch (error) {
-      console.error("Image upload error >>>", error);
-      enqueueSnackbar(
-        error.response?.data?.message || "Failed to upload image",
-        { variant: "error" }
-      );
-      handleApiError(error, navigate);
-    }
-  };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -124,34 +86,67 @@ const EditProductPage = () => {
           ? ["pickup", "delivery"]
           : [product.deliveryMethod]
         : [],
-
       pickupAddress: product?.pickupAddress?.address || user?.address || "",
       city: product?.pickupAddress?.city || "",
       state: product?.pickupAddress?.state || "",
+      productImages: product?.images || [],
     },
 
     validationSchema: Yup.object({
       productName: Yup.string()
+        .trim()
         .min(3, "Product name must contain at least 3 characters")
-        .max(50, "Product name must be 50 characters or less")
+        .max(30, "Product name must be 30 characters or less")
         .required("Product name is required"),
       price: Yup.number()
+        .transform((value, originalValue) =>
+          String(originalValue).trim() === "" ? undefined : value
+        )
         .typeError("Price must be a number")
         .positive("Price must be greater than 0")
         .min(1, "Product price can not be less than 1")
         .max(999999, "Product price must be less than 999999")
+        .test(
+          "max-decimals",
+          "Price can have up to 2 decimal places only",
+          (value) =>
+            value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
+        )
         .required("Price is required"),
       description: Yup.string()
-        .min(10, "Description must be at least 10 characters")
+        .trim()
         .max(500, "Description must be 500 characters or less")
         .required("Product description is required"),
       deliveryType: Yup.array()
         .min(1, "Please select at least one delivery type")
         .required("Please select a delivery type"),
+      productImages: Yup.array()
+        .min(1, "Please upload at least 1 image")
+        .max(5, "You can upload a maximum of 5 images")
+        .required("Product image is required"),
+      pickupAddress: Yup.string()
+        .trim("Pickup address cannot start or end with spaces")
+        .when("deliveryType", {
+          is: (types) => Array.isArray(types) && types.includes("pickup"),
+          then: (schema) =>
+            schema
+              .min(10, "Pickup address must be at least 10 characters long")
+              .max(100, "Pickup address cannot exceed 100 characters")
+              .required("Pickup address is required"),
+          otherwise: (schema) => schema.notRequired(),
+        }),
     }),
 
     onSubmit: async (values) => {
       try {
+        if (formik.values.productImages.length < 1) {
+          enqueueSnackbar("Please upload at least one product image", {
+            variant: "warning",
+          });
+          setLoading(false);
+          return;
+        }
+        checkIamAlreadyMember();
         setLoading(true);
 
         const deliveryTypes = Array.isArray(values.deliveryType)
@@ -163,12 +158,12 @@ const EditProductPage = () => {
         const res = await axios.put(
           `${BASE_URL}/products/${productId}`,
           {
-            title: values.productName,
+            title: values.productName.trim(),
             price: values.price,
-            description: values.description,
+            description: values.description.trim(),
             deliveryMethod,
             pickupAddress: formik.values.deliveryType.includes("pickup")
-              ? pickupAddress
+              ? pickupAddress.trim()
               : null,
           },
           {
@@ -177,25 +172,6 @@ const EditProductPage = () => {
         );
 
         if (res?.data?.success) {
-          // ✅ Upload new images only after successful product update
-          if (newImages.length > 0) {
-            for (const file of newImages) {
-              const formData = new FormData();
-              formData.append("productImages", file);
-
-              await axios.post(
-                `${BASE_URL}/products/${productId}/images`,
-                formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                    "Content-Type": "multipart/form-data",
-                  },
-                }
-              );
-            }
-          }
-
           enqueueSnackbar("Product updated successfully!", {
             variant: "success",
           });
@@ -204,7 +180,6 @@ const EditProductPage = () => {
           );
         }
       } catch (error) {
-        console.error("Update product error:", error.response?.data);
         enqueueSnackbar(error.response?.data?.message || error.message, {
           variant: "error",
         });
@@ -214,7 +189,6 @@ const EditProductPage = () => {
     },
   });
 
-  // ✅ Delivery type toggle
   const handleDeliveryTypeChange = (type) => {
     const { deliveryType } = formik.values;
     if (deliveryType.includes(type)) {
@@ -228,104 +202,108 @@ const EditProductPage = () => {
   };
 
   // ✅ Handle image upload (validation + preview)
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
-
-    // Allowed formats and size
     const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     const validFiles = files.filter((file) => {
-      const fileExt = file.name.split(".").pop().toLowerCase();
-      const isValidType = allowedTypes.includes(file.type);
-      const isValidExt = ["png", "jpg", "jpeg"].includes(fileExt);
-      const isValidSize = file.size <= maxSize;
+      const ext = file.name.split(".").pop().toLowerCase();
+      const validType = allowedTypes.includes(file.type);
+      const validExt = ["png", "jpg", "jpeg"].includes(ext);
+      const validSize = file.size <= maxSize;
 
-      if (!isValidType || !isValidExt) {
-        enqueueSnackbar(`${file.name} must be a PNG, JPG, or JPEG image`, {
+      if (!validType || !validExt) {
+        enqueueSnackbar(`${file.name} must be PNG, JPG, or JPEG`, {
           variant: "warning",
         });
       }
-      if (!isValidSize) {
-        enqueueSnackbar(`${file.name} exceeds 5MB size limit`, {
+      if (!validSize) {
+        enqueueSnackbar(`${file.name} exceeds 5MB limit`, {
           variant: "warning",
         });
       }
 
-      return isValidType && isValidExt && isValidSize;
+      return validType && validExt && validSize;
     });
 
-    const totalCount =
-      existingImages.length + newImages.length + validFiles.length;
-    if (totalCount > 5) {
+    const total = existingImages.length + newImages.length + validFiles.length;
+    if (total > 5) {
       enqueueSnackbar("You can upload a maximum of 5 images total", {
-        variant: "warning",
+        variant: "error",
       });
       return;
     }
 
-    // ✅ Just preview locally (do NOT upload yet)
-    const localPreviews = validFiles.map((file) => ({
+    // Temporary local preview
+    const newPreviews = validFiles.map((file) => ({
       id: null,
       url: URL.createObjectURL(file),
       isNew: true,
+      file,
     }));
 
-    setPreviewImages((prev) => [...prev, ...localPreviews]);
+    setPreviewImages((prev) => [...prev, ...newPreviews]);
     setNewImages((prev) => [...prev, ...validFiles]);
-  };
+    formik.setFieldValue("productImages", [
+      ...existingImages,
+      ...newImages,
+      ...validFiles,
+    ]);
 
-  const handleRemoveImage = async (index) => {
-    const totalImages = existingImages.length + newImages.length;
+    // Upload each file sequentially
+    for (const file of validFiles) {
+      const formData = new FormData();
+      formData.append("productImages", file);
 
-    if (totalImages <= 1) {
-      enqueueSnackbar("You must have at least one image", {
-        variant: "warning",
-      });
-      return;
+      try {
+        const res = await axios.post(
+          `${BASE_URL}/products/${productId}/images`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const uploaded = res?.data?.data?.image;
+        if (uploaded) {
+          enqueueSnackbar(`${file.name} uploaded successfully!`, {
+            variant: "success",
+          });
+
+          // Replace the local preview entry with actual uploaded image
+          setPreviewImages((prev) =>
+            prev.map((img) =>
+              img.file === file
+                ? {
+                    id: uploaded.id,
+                    url: uploaded.imageUrl,
+                    isNew: false,
+                  }
+                : img
+            )
+          );
+
+          setExistingImages((prev) => [...prev, uploaded]);
+          setNewImages((prev) => prev.filter((f) => f !== file));
+
+          formik.setFieldValue("productImages", (prevVal) => [
+            ...prevVal.filter((img) => img.id !== uploaded.id),
+            uploaded,
+          ]);
+        }
+      } catch (error) {
+        enqueueSnackbar(`Failed to upload ${file.name}`, { variant: "error" });
+        handleApiError(error, navigate);
+      }
     }
-
-    const image = previewImages[index];
-
-    if (!image) return;
-
-    if (image.isNew) {
-      // 🧹 Remove new (not uploaded yet)
-      const updatedNew = newImages.filter(
-        (_, i) => URL.createObjectURL(newImages[i]) !== image.url
-      );
-      setNewImages(updatedNew);
-    } else if (image.id) {
-      // 🧹 Delete existing from backend
-      await handleDeleteProductImage(image.id);
-      const updatedExisting = existingImages.filter(
-        (img) => img.id !== image.id
-      );
-      setExistingImages(updatedExisting);
-    }
-
-    // ✅ Rebuild preview list after removal
-    const updatedPreviews = [
-      ...existingImages
-        .filter((img) => !image.id || img.id !== image.id)
-        .map((img) => ({
-          id: img.id,
-          url: img.imageUrl,
-          isNew: false,
-        })),
-      ...newImages.map((file) => ({
-        id: null,
-        url: URL.createObjectURL(file),
-        isNew: true,
-      })),
-    ];
-
-    setPreviewImages(updatedPreviews);
   };
 
   // ✅ Delete product image (API call)
   const handleDeleteProductImage = async (imageId) => {
-    console.log(imageId);
     if (!imageId) {
       enqueueSnackbar("Invalid image selected for deletion", {
         variant: "error",
@@ -353,12 +331,68 @@ const EditProductPage = () => {
     }
   };
 
-  if (isImageDeleted) {
-    <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.4)] flex items-center justify-center px-4">
-      <Loader />
-    </div>;
+  // ✅ Handle image removal (fixed version)
+  const handleRemoveImage = async (index) => {
+    // Block deletion if only 1 image left (preview or existing)
+    if (previewImages.length === 1) {
+      enqueueSnackbar(
+        "You must have at least one image. Please upload another before deleting this one.",
+        {
+          variant: "warning",
+        }
+      );
+      return;
+    }
 
-    return;
+    const image = previewImages[index];
+    if (!image) return;
+
+    let updatedExisting = [...existingImages];
+    let updatedNew = [...newImages];
+
+    if (image.isNew) {
+      updatedNew = updatedNew.filter((f) => f !== image.file);
+      URL.revokeObjectURL(image.url);
+    } else if (image.id) {
+      try {
+        await handleDeleteProductImage(image.id);
+        updatedExisting = updatedExisting.filter((img) => img.id !== image.id);
+      } catch (error) {
+        enqueueSnackbar("Failed to delete image from server.", {
+          variant: "error",
+        });
+        handleApiError(error, navigate);
+        return;
+      }
+    }
+
+    const updatedPreviews = [
+      ...updatedExisting.map((img) => ({
+        id: img.id,
+        url: img.imageUrl,
+        isNew: false,
+      })),
+      ...updatedNew.map((file) => ({
+        id: null,
+        url: URL.createObjectURL(file),
+        isNew: true,
+        file,
+      })),
+    ];
+
+    setExistingImages(updatedExisting);
+    setNewImages(updatedNew);
+    setPreviewImages(updatedPreviews);
+
+    formik.setFieldValue("productImages", [...updatedExisting, ...updatedNew]);
+  };
+
+  if (isImageDeleted) {
+    return (
+      <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.4)] flex items-center justify-center px-4">
+        <Loader />
+      </div>
+    );
   }
 
   return (
@@ -374,10 +408,8 @@ const EditProductPage = () => {
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
         {fetchingProduct ? (
-          <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-            <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[60vh] pt-32">
-              <Loader />
-            </div>
+          <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[60vh] pt-32">
+            <Loader />
           </div>
         ) : (
           <form
@@ -399,7 +431,7 @@ const EditProductPage = () => {
                   onBlur={formik.handleBlur}
                   error={formik.errors.productName}
                   touched={formik.touched.productName}
-                  label={"Product Name"}
+                  label="Product Name"
                 />
 
                 <TextField
@@ -411,7 +443,7 @@ const EditProductPage = () => {
                   onBlur={formik.handleBlur}
                   error={formik.errors.price}
                   touched={formik.touched.price}
-                  label={"Price"}
+                  label="Price"
                 />
               </div>
 
@@ -432,7 +464,7 @@ const EditProductPage = () => {
                           : "bg-[var(--secondary-bg)] text-gray-700"
                       }`}
                     >
-                      {type}
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
                     </button>
                   ))}
                 </div>
@@ -443,7 +475,6 @@ const EditProductPage = () => {
                 )}
               </div>
 
-              {/* Pickup Address (only show if "pickup" is selected) */}
               {formik.values.deliveryType.includes("pickup") && (
                 <div className="mt-4">
                   <label className="font-medium text-sm mb-2 block">
@@ -456,6 +487,12 @@ const EditProductPage = () => {
                     placeholder="Enter pickup address"
                     className="w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none"
                   />
+                  {formik.touched.pickupAddress &&
+                    formik.errors.pickupAddress && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {formik.errors.pickupAddress}
+                      </p>
+                    )}
                 </div>
               )}
 
@@ -492,7 +529,7 @@ const EditProductPage = () => {
             <div className="bg-white rounded-[18px] p-5 lg:p-7">
               <h1 className="font-semibold text-[20px]">Product Images</h1>
 
-              <div className="flex items-center justify-center w-full mt-4">
+              <div className="flex flex-col items-start justify-center w-full mt-4">
                 <label
                   htmlFor="dropzone-file"
                   className="flex flex-col items-center justify-center w-full h-[319px] border-2 border-[var(--button-bg)] border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all"
@@ -522,9 +559,15 @@ const EditProductPage = () => {
                     className="hidden"
                   />
                 </label>
+
+                {formik.touched.productImages &&
+                  formik.errors.productImages && (
+                    <p className="text-red-500 text-xs mt-2">
+                      {formik.errors.productImages}
+                    </p>
+                  )}
               </div>
 
-              {/* ✅ Image Preview Grid */}
               {previewImages.length > 0 && (
                 <div className="grid grid-cols-5 gap-2 mt-5">
                   {previewImages.map((src, index) => (
@@ -535,14 +578,19 @@ const EditProductPage = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="w-[14px] h-[14px] bg-[#DA1313] rounded flex items-center justify-center absolute top-0 right-0 z-10"
+                        disabled={previewImages.length === 1}
+                        className={`absolute top-0 right-0 rounded w-[14px] h-[14px] flex items-center justify-center z-10 ${
+                          previewImages.length === 1
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-[#DA1313] hover:bg-red-700"
+                        }`}
                       >
                         <IoClose className="text-white" />
                       </button>
                       <img
                         src={src.url}
                         alt={`preview-${index}`}
-                        className="w-[53px] h-[53px] object-cover rounded"
+                        className="w-[53px] h-[53px] object-cover rounded-xl"
                       />
                     </div>
                   ))}
