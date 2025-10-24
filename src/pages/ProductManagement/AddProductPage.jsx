@@ -63,6 +63,7 @@ const AddProductPage = () => {
 
       description: Yup.string()
         .trim("Description cannot start or end with spaces")
+        .min(10, "Description must be 10 characters or more")
         .max(500, "Description must be 500 characters or less")
         .required("Product description is required"),
 
