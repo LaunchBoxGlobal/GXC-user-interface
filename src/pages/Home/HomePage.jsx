@@ -11,7 +11,12 @@ import { useUser } from "../../context/userContext";
 
 const HomePage = () => {
   const { productSearchValue } = useAppContext();
-  const { selectedCommunity, communities, checkIamAlreadyMember } = useUser();
+  const {
+    selectedCommunity,
+    communities,
+    checkIamAlreadyMember,
+    fetchCommunities,
+  } = useUser();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -60,6 +65,7 @@ const HomePage = () => {
   useEffect(() => {
     document.title = "Home - GiveXChange";
     window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchCommunities();
   }, []);
 
   // Handle pagination click

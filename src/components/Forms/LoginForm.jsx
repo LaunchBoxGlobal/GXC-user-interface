@@ -11,12 +11,14 @@ const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { useAppContext } from "../../context/AppContext";
+import { useUser } from "../../context/userContext";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const { setUser } = useAppContext();
+  const { fetchCommunities } = useUser();
 
   const redirect = searchParams?.get("redirect");
 
@@ -58,6 +60,7 @@ const LoginForm = () => {
           Cookies.set("user", JSON.stringify(res?.data?.data?.user));
           setUser(res?.data?.data?.user);
           resetForm();
+          fetchCommunities();
           if (redirect) {
             navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
           } else {
