@@ -2,7 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import CommunityDetails from "./CommunityDetails";
@@ -26,6 +26,10 @@ const CommunityPage = () => {
   const navigate = useNavigate();
   const { fetchCommunities } = useUser();
   const [initialized, setInitialized] = useState(false);
+  const [searchParams] = useSearchParams();
+  console.log(searchParams.get("redirect"));
+
+  console.log("communityTitle >> ", communityTitle);
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);

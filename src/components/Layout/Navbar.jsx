@@ -72,14 +72,24 @@ const Navbar = () => {
                 className={`font-medium text-sm xl:text-base whitespace-nowrap transition-all ${
                   active
                     ? isScrolled
-                      ? "text-[var(--button-bg)] border-b-2 border-[var(--button-bg)] pb-1"
-                      : "text-white border-b-2 border-white pb-1"
+                      ? "text-[var(--button-bg)]"
+                      : "text-white"
                     : isScrolled
                     ? "text-gray-900 hover:text-[var(--button-bg)]"
-                    : "text-gray-200 hover:text-white"
+                    : "text-gray-100 hover:text-white"
                 }`}
               >
-                {page.title}
+                <span
+                  className={`inline-block relative pb-1 after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[2px] after:rounded-full after:transition-all ${
+                    active
+                      ? isScrolled
+                        ? "after:bg-[var(--button-bg)] after:w-[80%]"
+                        : "after:bg-white after:w-[80%]"
+                      : "after:w-0 after:bg-transparent"
+                  }`}
+                >
+                  {page.title}
+                </span>
               </Link>
             </li>
           );

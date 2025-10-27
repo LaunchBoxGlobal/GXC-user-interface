@@ -153,8 +153,9 @@ const ProductManagementPage = () => {
           {error ? (
             <p>{errorMessage}</p>
           ) : (
-            <div className="w-full text-center h-[70vh] flex flex-col items-center justify-center">
-              <p>You have not added any products yet.</p>
+            <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
+              <img src="/product-icon.png" alt="product icon" className="max-w-7"/>
+              <p className="text-sm font-medium text-gray-500">You have not added any products yet.</p>
             </div>
           )}
         </div>

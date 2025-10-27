@@ -159,8 +159,12 @@ const HomePage = () => {
           )}
         </>
       ) : (
-        <div className="w-full text-center h-[70vh] flex flex-col items-center justify-center">
-          You have not joined any community yet.
+        <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
+          {/* public/community-icon.png */}
+          <img src="/community-icon.png" alt="community-icon" className="max-w-7" />
+          <p className="text-sm text-gray-500 font-medium">
+            You have not joined any community yet.
+          </p>
         </div>
       )}
     </main>

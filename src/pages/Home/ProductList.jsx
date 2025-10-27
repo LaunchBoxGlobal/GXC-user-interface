@@ -11,8 +11,11 @@ const ProductList = ({ products }) => {
           })}
         </div>
       ) : (
-        <div className="w-full text-center h-[70vh] flex flex-col items-center justify-center">
-          No products found in this community!
+        <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
+          <img src="/product-icon.png" alt="product icon" className="max-w-7" />
+          <p className="text-sm font-medium text-gray-500">
+            No products found in this community!
+          </p>
         </div>
       )}
     </div>

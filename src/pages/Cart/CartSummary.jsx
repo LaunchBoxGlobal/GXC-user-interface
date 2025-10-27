@@ -249,8 +249,9 @@ const CartSummary = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-[18px]">
-              <p className="text-base font-medium">Your cart is empty.</p>
+            <div className="flex gap-2 items-center justify-center min-h-[70vh] text-gray-500 bg-white rounded-[18px]">
+              <img src="/cart-icon-gray.png" alt="cart-icon-gray" className="max-w-7" />
+              <p className="text-base font-medium text-gray-500">Your cart is empty.</p>
             </div>
           )}
         </div>
