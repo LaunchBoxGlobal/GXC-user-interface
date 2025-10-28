@@ -5,6 +5,7 @@ import { useAppContext } from "../../context/AppContext";
 import CommunitiesDropdown from "./CommunitiesDropdown";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "../../context/userContext";
+import OrderManagementHeader from "./OrderManagementHeader";
 
 const Layout = ({ children }) => {
   const { user, fetchUserProfile } = useAppContext();
@@ -39,6 +40,10 @@ const Layout = ({ children }) => {
               Add New Product
             </Link>
           </div>
+        )}
+
+        {pathname?.pathname == "/orders" && selectedCommunity && (
+          <OrderManagementHeader />
         )}
       </div>
 

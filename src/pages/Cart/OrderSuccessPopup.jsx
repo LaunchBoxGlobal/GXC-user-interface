@@ -8,7 +8,7 @@ const OrderSuccessPpup = ({ handleCloseSuccessPopup, ShowOrderPlacePopup }) => {
     if (ShowOrderPlacePopup) {
       const timer = setTimeout(() => {
         handleCloseSuccessPopup();
-        navigate(`/order/order-details/5t58t494985`);
+        navigate(`/orders/details/5t58t494985`);
       }, 2000);
 
       return () => clearTimeout(timer);

@@ -459,7 +459,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/order/order-details/:orderId"
+        path="/orders/details/:orderId"
         element={
           <PrivateRoute
             element={

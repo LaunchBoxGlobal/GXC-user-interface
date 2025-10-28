@@ -1,11 +1,53 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { HiArrowLeft } from "react-icons/hi";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import OrderSummary from "./OrderSummary";
 import { FaLocationDot } from "react-icons/fa6";
+import axios from "axios";
+import { BASE_URL } from "../../data/baseUrl";
+import { getToken } from "../../utils/getToken";
+import { handleApiError } from "../../utils/handleApiError";
+import { formatDate } from "../../utils/formatDate";
+import PickupItemsList from "./PickupItemsList";
+import DeliveryItemsList from "./DeliveryItemsList";
 
 const OrderDetailsPage = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams();
+  const [details, setDetails] = useState(null);
+  const [pickupItems, setPickupItems] = useState(null);
+  const [deliveryItems, setDeliveryItems] = useState(null);
+
+  const fetchOrderDetails = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+
+      const order = response?.data?.data?.order;
+      // console.log("order details >>>> ", order);
+
+      setDetails(order);
+
+      if (order?.items) {
+        setPickupItems(
+          order.items.filter((item) => item.deliveryMethod === "pickup")
+        );
+        setDeliveryItems(
+          order.items.filter((item) => item.deliveryMethod === "delivery")
+        );
+      }
+    } catch (error) {
+      console.error("order details error >>> ", error);
+      handleApiError(error, navigate);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrderDetails();
+  }, []);
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
       <button
@@ -28,95 +70,36 @@ const OrderDetailsPage = () => {
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-base text-gray-600">Order ID</p>
-              <p className="text-base text-gray-600">AB26413</p>
+              <p className="text-base text-gray-600">{details?.orderNumber}</p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-base text-gray-600">Order Placed</p>
-              <p className="text-base text-gray-600">21 Jan, 2024</p>
+              <p className="text-base text-gray-600">
+                {formatDate(details?.createdAt)}
+              </p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-base text-gray-600">Order Status</p>
-              <p className="text-base text-[#FF7700]">In Progress</p>
-            </div>
-            <div className="w-full border my-4" />
-            <div className="w-full flex items-center justify-between">
-              <p className="text-base text-gray-600">Delivery Type</p>
-              <p className="text-base text-gray-600">Deliver At Home</p>
-            </div>
-            <div className="w-full border my-4" />
-            <div className="w-full space-y-2">
-              <p className="text-base text-gray-800 font-semibold">
-                Delivery Address
+              <p className="text-base text-[#FF7700]">
+                {details?.paymentStatus}
               </p>
-              <div className="w-full flex items-center gap-2">
-                <FaLocationDot className="text-lg text-[var(--button-bg)]" />
-                <p className="text-base text-gray-600">
-                  Unit 500, Montford Court, Montford Street, Salford, M50 2QP -
-                  123456
-                </p>
-              </div>
             </div>
+
             <div className="w-full border my-4" />
-            <div className="w-full flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="">
-                  <img
-                    src="/denim-jacket-image.png"
-                    alt="denim jacket"
-                    className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px]"
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-1 justify-center">
-                  <p className="font-semibold leading-none">Product Name</p>
-                  <p className="text-gray-600">Delivery</p>
-                </div>
-              </div>
-              <div className="max-w-[50px] flex flex-col items-start gap-1 justify-center">
-                <Link to={`/`}>
-                  <div className="w-[49px] h-[49px] rounded-[12px] flex items-center justify-center bg-[var(--button-bg)]">
-                    <img
-                      src="/right-arrow-icon.png"
-                      alt="right-arrow-icon"
-                      className="w-[7px] h-[14px]"
-                    />
-                  </div>
-                </Link>
-              </div>
-            </div>
-            <div className="w-full border my-4" />
-            <div className="w-full flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="">
-                  <img
-                    src="/denim-jacket-image.png"
-                    alt="denim jacket"
-                    className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px]"
-                  />
-                </div>
-                <div className="flex flex-col items-start gap-1 justify-center">
-                  <p className="font-semibold leading-none">Product Name</p>
-                  <p className="text-gray-600">Delivery</p>
-                </div>
-              </div>
-              <div className="max-w-[50px] flex flex-col items-start gap-1 justify-center">
-                <Link to={`/`}>
-                  <div className="w-[49px] h-[49px] rounded-[12px] flex items-center justify-center bg-[var(--button-bg)]">
-                    <img
-                      src="/right-arrow-icon.png"
-                      alt="right-arrow-icon"
-                      className="w-[7px] h-[14px]"
-                    />
-                  </div>
-                </Link>
-              </div>
-            </div>
+            <DeliveryItemsList deliveryItems={deliveryItems} />
+
+            {pickupItems && (
+              <div className="border border-gray-300 w-full my-4" />
+            )}
+
+            <PickupItemsList pickupItems={pickupItems} />
           </div>
         </div>
 
         <div className="w-full col-span-1">
-          <OrderSummary />
+          <OrderSummary orderSummary={details} />
         </div>
       </div>
     </div>
