@@ -28,7 +28,7 @@ const CancelConfirmationPopup = ({
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
             <button
               type="button"
-              onClick={() => handleClosePopup(false)}
+              onClick={() => setShowOrderCancelPopup(false)}
               className="bg-[#EBEBEB] font-medium w-full h-[48px] rounded-[12px] text-center text-black"
             >
               No
