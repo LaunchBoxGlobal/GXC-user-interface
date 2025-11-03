@@ -95,31 +95,25 @@ const SellerDeliveryItemsList = ({
                         {item?.productTitle}
                       </p>
                       <div>
-                        {item?.sellerStatus == "cancelled" ? (
-                          <p className={`text-xs font-medium text-red-500`}>
-                            Cancelled by Seller
-                          </p>
-                        ) : product?.buyerStatus == "cancelled" ? (
-                          <p className={`text-xs font-medium text-red-500`}>
-                            Cancelled by Buyer
-                          </p>
-                        ) : (
-                          <p
-                            className={`text-xs font-medium ${
-                              item?.overallStatus == "cancelled"
-                                ? "text-red-500"
-                                : item?.overallStatus === "pending"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "in_progress"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "completed"
-                                ? "text-green-500"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {toTitleCase(item?.overallStatus)}
-                          </p>
-                        )}
+                        <p
+                          className={`text-xs font-medium ${
+                            item?.overallStatus == "cancelled"
+                              ? "text-red-500"
+                              : item?.overallStatus === "pending"
+                              ? "text-[#FF7700]"
+                              : item?.overallStatus === "in_progress"
+                              ? "text-[#FF7700]"
+                              : item?.overallStatus === "completed"
+                              ? "text-green-500"
+                              : item?.overallStatus === "ready" ||
+                                item?.overallStatus === "ready_for_pickup" ||
+                                item?.overallStatus === "out_for_delivery"
+                              ? "text-green-500"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {toTitleCase(item?.overallStatus)}
+                        </p>
                       </div>
                     </div>
                   </div>

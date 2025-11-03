@@ -28,6 +28,8 @@ const CommunityPage = () => {
   const [initialized, setInitialized] = useState(false);
   const [searchParams] = useSearchParams();
 
+  console.log("community >> ", community);
+
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
     try {
@@ -295,13 +297,14 @@ const CommunityPage = () => {
               className="w-[107px] h-[107px] mx-auto"
             />
             <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
-              You’ve Been Invited to Join a Community!
+              You’ve been invited to join {community?.community?.name}{" "}
+              community!
             </h2>
             {community?.owner?.fullName && (
               <p className="mb-4">
                 <span className="font-medium">{community.owner.fullName}</span>{" "}
-                has invited you to join this community. Would you like to
-                accept?
+                has invited you to join their private community. Accept to
+                become a member.
               </p>
             )}
             <div className="w-full grid grid-cols-2 gap-3">

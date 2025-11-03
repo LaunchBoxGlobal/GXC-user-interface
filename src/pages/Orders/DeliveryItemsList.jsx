@@ -12,6 +12,7 @@ import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
 import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
+import { toTitleCase } from "../../utils/toTitleCase";
 
 const DeliveryItemsList = ({
   deliveryItems,
@@ -124,21 +125,23 @@ const DeliveryItemsList = ({
                         {item?.productTitle}
                       </p>
                       <div>
-                        {item?.buyerStatus === "in_progress" ? (
-                          <p className="text-[#FF7700] font-medium text-sm">
-                            In Progress
-                          </p>
-                        ) : item?.buyerStatus === "delivered" ? (
-                          <p className="text-[#4E9D4B] font-medium text-sm">
-                            Delivered
-                          </p>
-                        ) : item?.buyerStatus === "cancelled" ? (
-                          <p className="text-red-500 font-medium text-sm">
-                            Cancelled
-                          </p>
-                        ) : (
-                          ""
-                        )}
+                        <p
+                          className={`text-sm font-medium mt-1 ${
+                            item?.overallStatus === "completed"
+                              ? "text-green-500"
+                              : item?.overallStatus === "cancelled"
+                              ? "text-red-500"
+                              : item?.overallStatus === "in_progress"
+                              ? "text-[#FF7700]"
+                              : item?.overallStatus === "pending"
+                              ? "text-[#FF7700]"
+                              : item?.overallStatus === "delivered"
+                              ? "text-green-500"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {toTitleCase(item?.overallStatus)}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -167,6 +170,15 @@ const DeliveryItemsList = ({
                             setProduct(item);
                             setShowOrderCancelPopup(true);
                           }}
+                          disabled={
+                            item?.buyerStatus === "picked_up" ||
+                            item?.buyerStatus === "delivered" ||
+                            item?.buyerStatus === "cancelled" ||
+                            item?.sellerStatus === "cancelled" ||
+                            item?.sellerStatus === "out_for_delivery" ||
+                            item?.sellerStatus === "ready_for_pickup" ||
+                            item?.sellerStatus === "ready"
+                          }
                           className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                         >
                           Cancel Order
@@ -238,6 +250,18 @@ const DeliveryItemsList = ({
                     </Link>
                   </div>
                 </div>
+
+                {item?.cancellation_reason && (
+                  <div className="w-full">
+                    <div className="w-full border border-gray-300 my-4" />
+                    <h3 className="font-semibold leading-none">
+                      Cancellation Reason
+                    </h3>
+                    <p className="font-normal leading-[1.2] mt-1 break-words">
+                      {item?.cancellation_reason}
+                    </p>
+                  </div>
+                )}
               </div>
             );
           })}

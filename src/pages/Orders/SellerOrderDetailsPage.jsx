@@ -38,6 +38,8 @@ const SellerOrderDetailsPage = () => {
   const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false);
   const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
 
+  console.log("details as a seller >>>> ", details);
+
   const getOrderStatus = (items = []) => {
     if (!items || items.length === 0) {
       return { label: "Pending", color: "#888888" };
@@ -247,23 +249,23 @@ const SellerOrderDetailsPage = () => {
                   ${details?.totalAmount.toFixed(2)}
                 </p>
               </div>
+              {!details?.items[0]?.cancellation_reason && (
+                <div className="w-full grid grid-cols-2 gap-2 mt-3">
+                  <button
+                    type="button"
+                    disabled={
+                      details?.items[0]?.buyerStatus == "cancelled" ||
+                      details?.items[0]?.sellerStatus === "cancelled" ||
+                      details?.items[0]?.buyerStatus === "delivered" ||
+                      details?.items[0]?.buyerStatus === "picked_up"
+                    }
+                    onClick={() => setShowCancellationConfirmationModal(true)}
+                    className="w-full h-[48px] rounded-[12px] text-center bg-[#dedede] font-medium disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
+                  >
+                    Cancel Order
+                  </button>
 
-              <div className="w-full grid grid-cols-2 gap-2 mt-3">
-                <button
-                  type="button"
-                  disabled={
-                    details?.items[0]?.buyerStatus == "cancelled" ||
-                    details?.items[0]?.sellerStatus === "cancelled" ||
-                    details?.items[0]?.buyerStatus === "delivered" ||
-                    details?.items[0]?.buyerStatus === "picked_up"
-                  }
-                  onClick={() => setShowCancellationConfirmationModal(true)}
-                  className="w-full h-[48px] rounded-[12px] text-center bg-[#dedede] font-medium disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
-                >
-                  Cancel Order
-                </button>
-
-                {/* <button
+                  {/* <button
                   type="button"
                   disabled={
                     details?.items[0]?.buyerStatus === "delivered" ||
@@ -281,43 +283,62 @@ const SellerOrderDetailsPage = () => {
                     : `Ready To Pickup`}
                 </button> */}
 
-                <button
-                  type="button"
-                  disabled={
-                    details?.items[0]?.buyerStatus == "cancelled" ||
-                    details?.items[0]?.buyerStatus == "picked_up" ||
-                    details?.items[0]?.sellerStatus === "out_for_delivery" ||
-                    details?.items[0]?.sellerStatus === "cancelled" ||
-                    details?.items[0]?.sellerStatus === "ready_for_pickup" ||
-                    details?.items[0]?.buyerStatus === "delivered"
-                  }
-                  onClick={() =>
-                    details?.items?.[0]?.deliveryMethod === "delivery"
-                      ? handleMarkOutForDelivery()
-                      : handleMarkReadyToPickup()
-                  }
-                  className={`w-full h-[48px] rounded-[12px] text-center font-medium bg-[var(--button-bg)] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed`}
-                >
-                  {details?.items[0]?.buyerStatus === "cancelled"
-                    ? "Cancelled by Buyer"
-                    : details?.items[0]?.buyerStatus === "delivered"
-                    ? "Delivered"
-                    : details?.items[0]?.buyerStatus === "picked_up"
-                    ? "Picked Up"
-                    : details?.items[0]?.sellerStatus === "out_for_delivery"
-                    ? "Out For Delivery"
-                    : details?.items[0]?.sellerStatus === "cancelled"
-                    ? "Cancelled by Seller"
-                    : details &&
+                  <button
+                    type="button"
+                    disabled={
+                      details?.items[0]?.buyerStatus == "cancelled" ||
+                      details?.items[0]?.buyerStatus == "picked_up" ||
+                      details?.items[0]?.sellerStatus === "out_for_delivery" ||
+                      details?.items[0]?.sellerStatus === "cancelled" ||
+                      details?.items[0]?.sellerStatus === "ready_for_pickup" ||
+                      details?.items[0]?.buyerStatus === "delivered"
+                    }
+                    onClick={() =>
                       details?.items?.[0]?.deliveryMethod === "delivery"
-                    ? "Out For Delivery"
-                    : "Ready To Pickup"}
-                </button>
-              </div>
+                        ? handleMarkOutForDelivery()
+                        : handleMarkReadyToPickup()
+                    }
+                    className={`w-full h-[48px] rounded-[12px] text-center font-medium bg-[var(--button-bg)] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed`}
+                  >
+                    {details?.items[0]?.buyerStatus === "cancelled"
+                      ? "Cancelled by Buyer"
+                      : details?.items[0]?.buyerStatus === "delivered"
+                      ? "Delivered"
+                      : details?.items[0]?.buyerStatus === "picked_up"
+                      ? "Picked Up"
+                      : details?.items[0]?.sellerStatus === "out_for_delivery"
+                      ? "Out For Delivery"
+                      : details?.items[0]?.sellerStatus === "cancelled"
+                      ? "Cancelled by Seller"
+                      : details &&
+                        details?.items?.[0]?.deliveryMethod === "delivery"
+                      ? "Out For Delivery"
+                      : "Ready To Pickup"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
+
+          {details?.items[0]?.cancellation_reason && (
+            <div className="w-full bg-white rounded-[18px] mt-5">
+              <div className="w-full p-5">
+                <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
+                  Cancellation Reason
+                </p>
+              </div>
+              <div className="w-full border" />
+              <div className="w-full flex items-center justify-between px-5 pt-4 pb-5">
+                <p className="text-base text-gray-600">
+                  {" "}
+                  {details?.items[0]?.cancellation_reason}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
       {/* Mark item ready for pickup confirmation modal */}
       <SellerConfirmationMarkItemReadForPickup
         showMarkItemReasyForPickupConfirmationModal={

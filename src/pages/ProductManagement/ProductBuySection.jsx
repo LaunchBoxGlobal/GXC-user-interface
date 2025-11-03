@@ -27,8 +27,6 @@ const ProductBuySection = ({
     (product) => product?.product?.id === productDetails?.id
   );
 
-  console.log(productDetails?.pickupAddress);
-
   useEffect(() => {
     if (productDetails?.deliveryMethod === "pickup") {
       setDeliveryType("pickup");
@@ -167,7 +165,7 @@ const ProductBuySection = ({
         )}
 
       {/* ✅ Action Button */}
-      {productDetails?.status !== "sold" && (
+      {productDetails?.status === "active" && (
         <>
           {isProductInCart ? (
             <button

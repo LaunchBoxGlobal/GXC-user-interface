@@ -54,41 +54,6 @@ const OrderCard = ({ product }) => {
         >
           Order ID #{product?.orderNumber}
         </Link>
-
-        <div>
-          {/* <Link
-            to={
-              tab === "seller"
-                ? `/orders/seller/details/${product?.orderNumber}`
-                : `/orders/details/${product?.orderNumber}`
-            }
-            className="max-w-[28px]"
-          >
-            <div className="w-[28px] max-w-[28px] h-[28px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-              <img
-                src="/right-arrow-icon.png"
-                alt=""
-                className="w-[5px] h-[10px]"
-              />
-            </div>
-          </Link> */}
-          <p
-            className={`text-sm font-medium ${
-              overallStatus === "Completed"
-                ? "text-green-500"
-                : overallStatus === "Cancelled by Buyer" ||
-                  overallStatus === "Cancelled by Seller"
-                ? "text-red-500"
-                : overallStatus === "In Progress"
-                ? "text-yellow-500"
-                : overallStatus === "delivered"
-                ? "text-green-500"
-                : "text-gray-500"
-            }`}
-          >
-            {overallStatus}
-          </p>
-        </div>
       </div>
 
       <div className="w-full border border-gray-300 my-4" />
@@ -117,22 +82,25 @@ const OrderCard = ({ product }) => {
                       : item?.productTitle}
                   </p>
 
-                  {/* <p
-                    className={`text-sm font-medium mt-1 ${
-                      overallStatus === "Completed"
-                        ? "text-green-500"
-                        : overallStatus === "Cancelled by Buyer" ||
-                          overallStatus === "Cancelled by Seller"
+                  <p
+                    className={`text-xs mt-1.5 font-medium ${
+                      item?.overallStatus == "cancelled"
                         ? "text-red-500"
-                        : overallStatus === "In Progress"
-                        ? "text-yellow-500"
-                        : overallStatus === "delivered"
+                        : item?.overallStatus === "pending"
+                        ? "text-[#FF7700]"
+                        : item?.overallStatus === "in_progress"
+                        ? "text-[#FF7700]"
+                        : item?.overallStatus === "completed"
+                        ? "text-green-500"
+                        : item?.overallStatus === "ready" ||
+                          item?.overallStatus === "ready_for_pickup" ||
+                          item?.overallStatus === "out_for_delivery"
                         ? "text-green-500"
                         : "text-gray-500"
                     }`}
                   >
-                    {overallStatus}
-                  </p> */}
+                    {toTitleCase(item?.overallStatus)}
+                  </p>
                 </div>
               </div>
 

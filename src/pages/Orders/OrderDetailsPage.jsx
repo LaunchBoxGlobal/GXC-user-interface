@@ -21,8 +21,6 @@ const OrderDetailsPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  console.log(details);
-
   // const computeOverallStatus = (items) => {
   //   if (!items || items.length === 0) return "Pending";
 
