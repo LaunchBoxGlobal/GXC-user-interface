@@ -34,8 +34,8 @@ const DeliveryItemsList = ({
 
   const navigate = useNavigate();
 
-  const markItemAsDelivered = async (productId) => {
-    if (!productId) {
+  const markItemAsDelivered = async (product) => {
+    if (!product) {
       enqueueSnackbar("Something went wrong! Try again.", {
         variant: "error",
       });
@@ -66,7 +66,7 @@ const DeliveryItemsList = ({
     setDeliveryLoadingState(true);
     try {
       const response = await axios.put(
-        `${BASE_URL}/order-items/${productId}/delivered`,
+        `${BASE_URL}/order-items/${product?.id}/delivered`,
         { status: "delivered" },
         {
           headers: {
@@ -77,7 +77,7 @@ const DeliveryItemsList = ({
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
-        fetchOrderDetails();
+        // fetchOrderDetails();
       }
     } catch (error) {
       console.error("markItemAsDelivered error >>> ", error);
@@ -86,8 +86,6 @@ const DeliveryItemsList = ({
       setDeliveryLoadingState(false);
     }
   };
-
-  console.log("orderDetails >>> ", orderDetails);
 
   return (
     <div className="w-full">
@@ -146,7 +144,9 @@ const DeliveryItemsList = ({
                   </div>
 
                   <div className="w-full max-w-[370px] flex items-center justify-end">
-                    {item?.buyerStatus === "delivered" ? (
+                    {item?.buyerStatus === "delivered" ||
+                    item?.buyerStatus === "cancelled" ||
+                    item?.sellerStatus === "cancelled" ? (
                       <Link
                         to={`/products/${item?.productTitle}?productId=${item?.productId}`}
                         className="max-w-[38px]"
@@ -163,7 +163,10 @@ const DeliveryItemsList = ({
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
                         <button
                           type="button"
-                          onClick={() => setShowOrderCancelPopup(true)}
+                          onClick={() => {
+                            setProduct(item);
+                            setShowOrderCancelPopup(true);
+                          }}
                           className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                         >
                           Cancel Order
@@ -172,7 +175,7 @@ const DeliveryItemsList = ({
                           type="button"
                           onClick={() => {
                             setProduct(item);
-                            markItemAsDelivered(item?.id);
+                            markItemAsDelivered(item);
                           }}
                           // disabled={item?.sellerStatus !== "out_for_delivery"}
                           disabled={deliveryLoadingState}
@@ -246,16 +249,19 @@ const DeliveryItemsList = ({
         setOpenFeedbackModal={setOpenFeedbackModal}
         title={"delivered"}
         type={"delivery"}
+        fetchOrderDetails={fetchOrderDetails}
       />
       <DeliveryProductReviewPopup
         openFeedbackModal={openFeedbackModal}
         setOpenFeedbackModal={setOpenFeedbackModal}
         setShowFeedbackSuccessPopup={setShowFeedbackSuccessPopup}
         product={product}
+        fetchOrderDetails={fetchOrderDetails}
       />
       <FeedbackSuccessPopup
         showFeedbackSuccessPopup={showFeedbackSuccessPopup}
         setShowFeedbackSuccessPopup={setShowFeedbackSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
       />
 
       <CancelConfirmationPopup
@@ -269,10 +275,13 @@ const DeliveryItemsList = ({
         showCancellationReasonPopup={showCancellationReasonPopup}
         setShowCancellationReasonPopup={setShowCancellationReasonPopup}
         setShowCancellationSuccessPopup={setShowCancellationSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
+        product={product}
       />
       <CancelOrderSuccessPopup
         showCancellationSuccessPopup={showCancellationSuccessPopup}
         setShowCancellationSuccessPopup={setShowCancellationSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
       />
     </div>
   );

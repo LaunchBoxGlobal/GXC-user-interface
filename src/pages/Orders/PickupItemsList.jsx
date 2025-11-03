@@ -12,6 +12,9 @@ import Loader from "../../components/Common/Loader";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
+import CancelConfirmationPopup from "./CancelConfirmationPopup";
+import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
+import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 
 const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
   const [showDeliveryConfirmationPopup, setShowDeliveryConfirmationPopup] =
@@ -24,10 +27,9 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
   const [loading, setLoading] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
-  console.log("product >> ", product);
 
-  const markItemAsPickupedUp = async (productId) => {
-    if (!productId) {
+  const markItemAsPickupedUp = async (item) => {
+    if (!item?.id) {
       enqueueSnackbar("Something went wrong! Try again.", {
         variant: "error",
       });
@@ -36,7 +38,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       return;
     }
 
-    if (product?.sellerStatus === "cancelled") {
+    if (item?.sellerStatus === "cancelled") {
       enqueueSnackbar("This product has been cancelled by the seller.", {
         variant: "error",
         autoHideDuration: 3000,
@@ -45,9 +47,9 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       return;
     }
 
-    if (product?.sellerStatus !== "ready_for_pickup") {
+    if (item?.sellerStatus !== "ready_for_pickup") {
       enqueueSnackbar(
-        "You can mark this item as picked up once the seller marks it as ready.",
+        "This item can only be marked as picked up after the seller updates its status to 'Ready for Pickup'.",
         {
           variant: "error",
           autoHideDuration: 3500,
@@ -58,10 +60,10 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
     }
 
     setLoading(true);
-    setLoadingItemId(productId);
+    setLoadingItemId(item?.id);
     try {
       const response = await axios.put(
-        `${BASE_URL}/order-items/${productId}/delivered`,
+        `${BASE_URL}/order-items/${item?.id}/delivered`,
         { status: "picked_up" },
         {
           headers: {
@@ -72,7 +74,11 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
-        fetchOrderDetails();
+
+        // Delay refetching so the popup remains visible
+        // setTimeout(() => {
+        //   fetchOrderDetails();
+        // }, 2000);
       }
     } catch (error) {
       console.error("markItemAsDelivered error >>> ", error);
@@ -90,6 +96,13 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       setLoadingItemId(null);
     }
   };
+
+  const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false);
+  const [showCancellationSuccessPopup, setShowCancellationSuccessPopup] =
+    useState(false);
+  const [showCancellationReasonPopup, setShowCancellationReasonPopup] =
+    useState(false);
+  // const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false)
 
   return (
     <div className="w-full">
@@ -158,7 +171,9 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                       </div>
                     ) : (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
-                        {item?.buyerStatus === "picked_up" ? (
+                        {item?.buyerStatus === "picked_up" ||
+                        item?.buyerStatus === "cancelled" ||
+                        item?.sellerStatus === "cancelled" ? (
                           <Link
                             to={`/products/${item?.productTitle}?productId=${item?.productId}`}
                             className="max-w-[38px]"
@@ -175,6 +190,10 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                           <>
                             <button
                               type="button"
+                              onClick={() => {
+                                setProduct(item);
+                                setShowOrderCancelPopup(true);
+                              }}
                               className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                             >
                               Cancel Order
@@ -183,7 +202,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                               type="button"
                               onClick={() => {
                                 setProduct(item);
-                                markItemAsPickupedUp(item?.id);
+                                markItemAsPickupedUp(item);
                                 // setLoadingItemId(item?.id);
                               }}
                               disabled={loadingItemId === item?.id}
@@ -283,16 +302,40 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
         setOpenFeedbackModal={setOpenFeedbackModal}
         title={"pickup"}
         type={"pickup"}
+        fetchOrderDetails={fetchOrderDetails}
       />
       <DeliveryProductReviewPopup
         openFeedbackModal={openFeedbackModal}
         setOpenFeedbackModal={setOpenFeedbackModal}
         setShowFeedbackSuccessPopup={setShowFeedbackSuccessPopup}
         product={product}
+        fetchOrderDetails={fetchOrderDetails}
       />
       <FeedbackSuccessPopup
         showFeedbackSuccessPopup={showFeedbackSuccessPopup}
         setShowFeedbackSuccessPopup={setShowFeedbackSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
+      />
+
+      {/* cancellation modals */}
+      <CancelConfirmationPopup
+        showOrderCancelPopup={showOrderCancelPopup}
+        setShowOrderCancelPopup={setShowOrderCancelPopup}
+        setShowCancellationSuccessPopup={setShowCancellationSuccessPopup}
+        setShowCancellationReasonPopup={setShowCancellationReasonPopup}
+      />
+
+      <OrderCancellationReasonModal
+        showCancellationReasonPopup={showCancellationReasonPopup}
+        setShowCancellationReasonPopup={setShowCancellationReasonPopup}
+        setShowCancellationSuccessPopup={setShowCancellationSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
+        product={product}
+      />
+      <CancelOrderSuccessPopup
+        showCancellationSuccessPopup={showCancellationSuccessPopup}
+        setShowCancellationSuccessPopup={setShowCancellationSuccessPopup}
+        fetchOrderDetails={fetchOrderDetails}
       />
     </div>
   );

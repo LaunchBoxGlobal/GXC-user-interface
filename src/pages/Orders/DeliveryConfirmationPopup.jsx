@@ -2,8 +2,8 @@ const DeliveryConfirmationPopup = ({
   showDeliveryConfirmationPopup,
   setShowDeliveryConfirmationPopup,
   setOpenFeedbackModal,
-  title,
   type,
+  fetchOrderDetails,
 }) => {
   return (
     showDeliveryConfirmationPopup && (
@@ -17,7 +17,8 @@ const DeliveryConfirmationPopup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Product successfully {type == "delivery" ? "delivered" : "pickup"}
+            Product successfully{" "}
+            {type == "delivery" ? "delivered" : "picked up"}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             Your product has been successfully delivered. If you have any
@@ -27,7 +28,10 @@ const DeliveryConfirmationPopup = ({
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
             <button
               type="button"
-              onClick={() => setShowDeliveryConfirmationPopup(false)}
+              onClick={async () => {
+                await fetchOrderDetails();
+                setShowDeliveryConfirmationPopup(false);
+              }}
               className="bg-[#EBEBEB] font-medium w-full h-[48px] rounded-[12px] text-center text-black"
             >
               Not Now

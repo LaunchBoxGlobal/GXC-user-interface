@@ -27,6 +27,8 @@ const ProductBuySection = ({
     (product) => product?.product?.id === productDetails?.id
   );
 
+  console.log(productDetails?.pickupAddress);
+
   useEffect(() => {
     if (productDetails?.deliveryMethod === "pickup") {
       setDeliveryType("pickup");
@@ -153,11 +155,12 @@ const ProductBuySection = ({
             <div className="w-full mt-2 flex items-center gap-2">
               <FaLocationDot className="text-base" />
               <div className="text-sm font-normal flex flex-wrap gap-1 break-words">
-                {Object.entries(productDetails.pickupAddress)
+                {/* {Object.entries(productDetails.pickupAddress)
                   .filter(([_, value]) => value)
                   .map(([key, value]) => (
                     <span key={key}>{value}</span>
-                  ))}
+                  ))} */}
+                {productDetails?.pickupAddress?.address}
               </div>
             </div>
           </>
@@ -172,7 +175,7 @@ const ProductBuySection = ({
               className="button mt-5"
               onClick={() => navigate(`/cart/${selectedCommunity?.id}`)}
             >
-              Go to Cart
+              Go to cart
             </button>
           ) : (
             <button
@@ -181,7 +184,7 @@ const ProductBuySection = ({
               className="button mt-5"
               onClick={handleAddToCartProduct}
             >
-              {addProductInCart ? <Loader /> : "Add To Cart"}
+              {addProductInCart ? <Loader /> : "Add to cart"}
             </button>
           )}
         </>

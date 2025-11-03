@@ -1,11 +1,15 @@
 const FeedbackSuccessPopup = ({
   showFeedbackSuccessPopup,
   setShowFeedbackSuccessPopup,
+  fetchOrderDetails,
 }) => {
   return (
     showFeedbackSuccessPopup && (
       <div
-        onClick={() => setShowFeedbackSuccessPopup(false)}
+        onClick={() => {
+          setShowFeedbackSuccessPopup(false);
+          fetchOrderDetails();
+        }}
         className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center padding-x"
       >
         <div className="w-full bg-white max-w-[471px] rounded-[32px] p-7 lg:py-10 text-center space-y-3">

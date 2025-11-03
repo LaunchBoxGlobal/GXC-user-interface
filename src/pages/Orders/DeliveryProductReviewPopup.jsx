@@ -12,6 +12,7 @@ const DeliveryProductReviewPopup = ({
   setOpenFeedbackModal,
   product,
   setShowFeedbackSuccessPopup,
+  fetchOrderDetails,
 }) => {
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
@@ -28,11 +29,6 @@ const DeliveryProductReviewPopup = ({
       });
       return;
     }
-
-    // if (!comment.trim()) {
-    //   alert("Please enter your review.");
-    //   return;
-    // }
 
     setIsSubmitting(true);
 
@@ -55,7 +51,7 @@ const DeliveryProductReviewPopup = ({
         setOpenFeedbackModal(false);
       }
     } catch (error) {
-      console.error("Error submitting review >>>", error);
+      // console.error("Error submitting review >>>", error);
       handleApiError(error, navigate);
     } finally {
       setIsSubmitting(false);
@@ -134,7 +130,10 @@ const DeliveryProductReviewPopup = ({
         <div className="w-full flex items-center gap-3 pt-4">
           <button
             type="button"
-            onClick={() => setOpenFeedbackModal(false)}
+            onClick={() => {
+              setOpenFeedbackModal(false);
+              fetchOrderDetails();
+            }}
             className="w-1/2 h-[48px] rounded-[12px] border border-gray-300 font-medium text-gray-700 hover:bg-gray-100 transition-all"
           >
             Cancel

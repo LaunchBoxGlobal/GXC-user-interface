@@ -21,44 +21,32 @@ const OrderDetailsPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const getOrderStatus = (items = []) => {
-    if (!items || items.length === 0) {
-      return { label: "Pending", color: "#888888" };
-    }
+  console.log(details);
 
-    // If any item is still in progress
-    if (items.some((item) => item?.buyerStatus === "in_progress")) {
-      return { label: "In Progress", color: "#FF7700" };
-    }
+  // const computeOverallStatus = (items) => {
+  //   if (!items || items.length === 0) return "Pending";
 
-    // If all items are completed
-    const allCompleted = items.every(
-      (item) =>
-        (item?.deliveryMethod === "pickup" &&
-          item?.buyerStatus === "picked_up") ||
-        (item?.deliveryMethod === "delivery" &&
-          item?.buyerStatus === "delivered")
-    );
+  //   const buyerStatuses = items.map((i) => i?.buyerStatus);
+  //   const sellerStatuses = items.map((i) => i?.sellerStatus);
 
-    if (allCompleted) {
-      return { label: "Completed", color: "#28A745" };
-    }
+  //   // Priority order (you can adjust this based on your business rules)
+  //   if (
+  //     buyerStatuses.includes("cancelled") ||
+  //     sellerStatuses.includes("cancelled")
+  //   )
+  //     return "Cancelled";
+  //   if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
+  //   if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
+  //   if (
+  //     buyerStatuses.includes("in_progress") ||
+  //     sellerStatuses.includes("in_progress")
+  //   )
+  //     return "In Progress";
+  //   if (buyerStatuses.every((s) => s === "delivered" || s === "picked_up"))
+  //     return "Completed";
 
-    // If some are delivered/picked but not all
-    const partiallyCompleted = items.some(
-      (item) =>
-        item?.buyerStatus === "delivered" || item?.buyerStatus === "picked_up"
-    );
-
-    if (partiallyCompleted) {
-      return { label: "Partially Completed", color: "#007BFF" };
-    }
-
-    // Default
-    return { label: "Pending", color: "#888888" };
-  };
-
-  const orderStatus = getOrderStatus(details?.items);
+  //   return "Pending";
+  // };
 
   const computeOverallStatus = (items) => {
     if (!items || items.length === 0) return "Pending";
@@ -66,22 +54,53 @@ const OrderDetailsPage = () => {
     const buyerStatuses = items.map((i) => i?.buyerStatus);
     const sellerStatuses = items.map((i) => i?.sellerStatus);
 
-    // Priority order (you can adjust this based on your business rules)
-    if (
+    const allCancelled =
+      buyerStatuses.every((s) => s === "cancelled") ||
+      sellerStatuses.every((s) => s === "cancelled");
+
+    const anyCancelled =
       buyerStatuses.includes("cancelled") ||
-      sellerStatuses.includes("cancelled")
+      sellerStatuses.includes("cancelled");
+
+    const allCompleted = buyerStatuses.every(
+      (s) => s === "delivered" || s === "picked_up"
+    );
+
+    const anyDelivered = buyerStatuses.some(
+      (s) => s === "delivered" || s === "picked_up"
+    );
+
+    // 🟥 1. All items cancelled
+    if (allCancelled) return "Cancelled";
+
+    // 🟢 2. Some cancelled but others delivered → still Completed
+    if (anyCancelled && anyDelivered) return "Completed";
+
+    // 🟠 3. Some cancelled but others still active → In Progress
+    if (
+      anyCancelled &&
+      (buyerStatuses.includes("in_progress") ||
+        buyerStatuses.includes("pending") ||
+        sellerStatuses.includes("in_progress") ||
+        sellerStatuses.includes("pending"))
     )
-      return "Cancelled";
-    if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
-    if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
+      return "In Progress";
+
+    // 🟠 4. Any still in progress
     if (
       buyerStatuses.includes("in_progress") ||
       sellerStatuses.includes("in_progress")
     )
       return "In Progress";
-    if (buyerStatuses.every((s) => s === "delivered" || s === "picked_up"))
-      return "Completed";
 
+    // 🟢 5. Ready for pickup / out for delivery
+    if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
+    if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
+
+    // ✅ 6. All delivered or picked up
+    if (allCompleted) return "Completed";
+
+    // ⚪ 7. Default fallback
     return "Pending";
   };
 
@@ -174,12 +193,6 @@ const OrderDetailsPage = () => {
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-base text-gray-600">Order Status</p>
-              {/* <p
-                className="text-base font-medium"
-                style={{ color: orderStatus.color }}
-              >
-                {orderStatus.label}
-              </p> */}
 
               <p
                 className={`text-base font-medium ${
@@ -188,7 +201,7 @@ const OrderDetailsPage = () => {
                     : overallStatus === "Cancelled"
                     ? "text-red-500"
                     : overallStatus === "In Progress"
-                    ? "text-yellow-500"
+                    ? "text-[#FF7700]"
                     : "text-gray-500"
                 }`}
               >

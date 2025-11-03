@@ -30,7 +30,6 @@ const SellerPickupItemsList = ({
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
 
-  console.log(orderDetails?.items[0]);
   const markItemAsPickupedUp = async (productId) => {
     if (!productId) {
       enqueueSnackbar("Something went wrong! Try again.", {
@@ -118,9 +117,9 @@ const SellerPickupItemsList = ({
                                 item?.overallStatus == "cancelled"
                                   ? "text-red-500"
                                   : item?.overallStatus === "pending"
-                                  ? "text-yellow-500"
+                                  ? "text-[#FF7700]"
                                   : item?.overallStatus === "in_progress"
-                                  ? "text-yellow-500"
+                                  ? "text-[#FF7700]"
                                   : item?.overallStatus === "completed"
                                   ? "text-green-500"
                                   : item?.overallStatus === "ready"

@@ -76,7 +76,7 @@ const OrderSummary = ({
                 onClick={() => handleClick()}
               >
                 {" "}
-                Proceed To Checkout
+                Proceed to checkout
               </button>
             )}
           </div>

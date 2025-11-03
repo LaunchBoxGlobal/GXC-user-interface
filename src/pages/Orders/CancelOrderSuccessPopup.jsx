@@ -1,9 +1,11 @@
 const CancelOrderSuccessPopup = ({
   showCancellationSuccessPopup,
   setShowCancellationSuccessPopup,
+  fetchOrderDetails,
 }) => {
-  const handleClosePopup = () => {
+  const handleClosePopup = async () => {
     setShowCancellationSuccessPopup(false);
+    await fetchOrderDetails();
   };
   return (
     showCancellationSuccessPopup && (
