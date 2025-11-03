@@ -15,6 +15,10 @@ const ReportingPage = () => {
   const [isReportSubmitted, setIsReportSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    document.title = "Reporting - GiveXChange";
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       description: "",

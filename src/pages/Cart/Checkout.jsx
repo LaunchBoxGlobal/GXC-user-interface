@@ -54,6 +54,7 @@ const Checkout = () => {
   };
 
   useEffect(() => {
+    document.title = "Checkout - GiveXChange";
     checkIamAlreadyMember();
     fetchCartCount();
     fetchCartProducts();

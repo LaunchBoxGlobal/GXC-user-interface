@@ -11,7 +11,7 @@ import { useUser } from "../../context/userContext";
 const ProfilePage = () => {
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
-  const {checkIamAlreadyMember} = useUser();
+  const { checkIamAlreadyMember } = useUser();
 
   const fetchUserProfile = async () => {
     try {
@@ -59,8 +59,9 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
+    document.title = "Profile - GiveXChange";
     if (!user) return;
-    checkIamAlreadyMember()
+    checkIamAlreadyMember();
     fetchUserProfile();
   }, []);
 

@@ -54,6 +54,7 @@ const CartSummary = () => {
 
   // 🔁 Fetch cart data on mount
   useEffect(() => {
+    document.title = "Cart - GiveXChange";
     checkIamAlreadyMember();
     fetchCartCount();
     fetchCartProducts();
@@ -250,8 +251,14 @@ const CartSummary = () => {
             </div>
           ) : (
             <div className="flex gap-2 items-center justify-center min-h-[70vh] text-gray-500 bg-white rounded-[18px]">
-              <img src="/cart-icon-gray.png" alt="cart-icon-gray" className="max-w-7" />
-              <p className="text-base font-medium text-gray-500">Your cart is empty.</p>
+              <img
+                src="/cart-icon-gray.png"
+                alt="cart-icon-gray"
+                className="max-w-7"
+              />
+              <p className="text-base font-medium text-gray-500">
+                Your cart is empty.
+              </p>
             </div>
           )}
         </div>

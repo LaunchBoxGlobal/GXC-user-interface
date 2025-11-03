@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
-// import { BASE_URL } from "../../data/baseUrl";
 
 const OrderCancellationReasonModal = ({
   showCancellationReasonPopup,
@@ -12,57 +13,64 @@ const OrderCancellationReasonModal = ({
   product,
   fetchOrderDetails,
 }) => {
-  const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleCancelOrder = async (providedReason) => {
-    if (!product?.id) {
-      enqueueSnackbar("Invalid product information.", { variant: "error" });
-      return;
-    }
+  // ✅ Validation schema
+  const validationSchema = Yup.object({
+    reason: Yup.string()
+      .trim()
+      .required("Cancellation reason is required.")
+      .min(10, "Reason must be at least 10 characters.")
+      .max(200, "Reason must not exceed 200 characters."),
+  });
 
-    try {
-      setLoading(true);
-      const payload = {
-        // productId: product.id,
-        reason: providedReason || "",
-      };
-
-      const response = await axios.put(
-        `${BASE_URL}/order-items/${product?.id}/cancel`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
-
-      if (response?.data?.success) {
-        enqueueSnackbar("Order has been cancelled successfully.", {
-          variant: "success",
-        });
-        setShowCancellationReasonPopup(false);
-        setShowCancellationSuccessPopup(true);
-        // fetchOrderDetails && fetchOrderDetails();
-      } else {
-        enqueueSnackbar(
-          response?.data?.message || "Failed to cancel the order.",
-          { variant: "error" }
-        );
+  const formik = useFormik({
+    initialValues: { reason: "" },
+    validationSchema,
+    onSubmit: async (values, { resetForm }) => {
+      if (!product?.id) {
+        enqueueSnackbar("Invalid product information.", { variant: "error" });
+        return;
       }
-    } catch (error) {
-      console.error("Cancel order error:", error);
-      enqueueSnackbar("Something went wrong while cancelling the order.", {
-        variant: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleSubmitReason = () => handleCancelOrder(reason);
-  const handleCancelWithoutReason = () => handleCancelOrder("");
+      try {
+        setLoading(true);
+        const payload = { reason: values.reason.trim() };
+
+        const response = await axios.put(
+          `${BASE_URL}/order-items/${product?.id}/cancel`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          }
+        );
+
+        if (response?.data?.success) {
+          enqueueSnackbar("Order has been cancelled successfully.", {
+            variant: "success",
+          });
+          resetForm();
+          setShowCancellationReasonPopup(false);
+          setShowCancellationSuccessPopup(true);
+          fetchOrderDetails?.();
+        } else {
+          enqueueSnackbar(
+            response?.data?.message || "Failed to cancel the order.",
+            { variant: "error" }
+          );
+        }
+      } catch (error) {
+        console.error("Cancel order error:", error);
+        enqueueSnackbar("Something went wrong while cancelling the order.", {
+          variant: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
   if (!showCancellationReasonPopup) return null;
 
@@ -73,37 +81,46 @@ const OrderCancellationReasonModal = ({
           Cancel Reason
         </h3>
 
-        <div className="w-full my-4">
-          <textarea
-            name="cancellationReason"
-            id="cancellationReason"
-            placeholder="Write a reason (optional)"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="w-full h-[129px] resize-none border border-[#C6C6C6] rounded-[12px] outline-none px-3 py-3 text-gray-700"
-          />
-        </div>
+        <form onSubmit={formik.handleSubmit} className="mt-4 space-y-4">
+          <div>
+            <textarea
+              name="reason"
+              id="reason"
+              placeholder="Write your reason for cancellation"
+              value={formik.values.reason}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className={`w-full h-[129px] resize-none border rounded-[12px] outline-none px-3 py-3 text-gray-700 ${
+                formik.touched.reason && formik.errors.reason
+                  ? "border-red-500"
+                  : "border-[#C6C6C6]"
+              }`}
+            />
+            {formik.touched.reason && formik.errors.reason && (
+              <p className="text-red-500 text-sm mt-1">
+                {formik.errors.reason}
+              </p>
+            )}
+          </div>
 
-        <div className="w-full grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            disabled={loading}
-            onClick={handleCancelWithoutReason}
-            className="w-full bg-[#EBEBEB] h-[48px] rounded-[12px] text-center font-medium hover:bg-[#dcdcdc] transition-all disabled:opacity-70"
-          >
-            {loading ? "Cancelling..." : "Not Now"}
-          </button>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={handleSubmitReason}
-            className="w-full bg-[var(--button-bg)] text-white h-[48px] rounded-[12px] text-center font-medium hover:opacity-90 transition-all disabled:opacity-70"
-          >
-            {loading ? "Cancelling..." : "Submit"}
-          </button>
-        </div>
-
-        {/* {loading && <Loader />} */}
+          <div className="w-full grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => setShowCancellationReasonPopup(false)}
+              className="w-full bg-[#EBEBEB] h-[48px] rounded-[12px] text-center font-medium hover:bg-[#dcdcdc] transition-all disabled:opacity-70"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[var(--button-bg)] text-white h-[48px] rounded-[12px] text-center font-medium hover:opacity-90 transition-all disabled:opacity-70"
+            >
+              {loading ? "Cancelling..." : "Submit"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -135,6 +135,7 @@ const OrderDetailsPage = () => {
   };
 
   useEffect(() => {
+    document.title = "Order Management - GiveXChange";
     fetchOrderDetails();
   }, []);
 

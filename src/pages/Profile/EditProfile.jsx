@@ -33,6 +33,7 @@ const EditProfile = () => {
   const defaultPhoneNumber = parsedPhone ? parsedPhone.number : "";
 
   useEffect(() => {
+    document.title = "Edit Profile - GiveXChange";
     checkIamAlreadyMember();
     fetchUserProfile();
   }, []);

@@ -21,7 +21,8 @@ const OrdersPage = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const statusKey = activeTab === "seller" ? "overallStatus" : "buyerStatus";
+      const statusKey =
+        activeTab === "seller" ? "overallStatus" : "buyerStatus";
 
       const url = `${BASE_URL}/my-orders?limit=10${
         activeOrderType !== "all" ? `&${statusKey}=${activeOrderType}` : ""
@@ -43,6 +44,7 @@ const OrdersPage = () => {
   };
 
   useEffect(() => {
+    document.title = "Order Management - GiveXChange";
     fetchOrders();
   }, [activeTab, activeOrderType]);
 

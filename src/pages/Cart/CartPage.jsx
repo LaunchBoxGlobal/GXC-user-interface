@@ -20,6 +20,10 @@ const CartPage = () => {
   const [cartDetails, setCartDetails] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = "Cart - GiveXChange";
+  }, []);
+
   // const fetchCartProducts = async () => {
   //   if (!selectedCommunity) {
   //     enqueueSnackbar(`Community ID not found!`, { variant: "error" });
