@@ -103,7 +103,7 @@ const ProductBuySection = ({
             <button
               type="button"
               onClick={() => setDeliveryType("delivery")}
-              disabled={isProductInCart}
+              disabled={isProductInCart || productDetails?.status !== "active"}
               className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                 deliveryType === "delivery"
                   ? "bg-[var(--button-bg)] text-white"
@@ -124,7 +124,7 @@ const ProductBuySection = ({
             <button
               type="button"
               onClick={() => setDeliveryType("pickup")}
-              disabled={isProductInCart}
+              disabled={isProductInCart || productDetails?.status !== "active"}
               className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                 deliveryType === "pickup"
                   ? "bg-[var(--button-bg)] text-white"
@@ -164,23 +164,27 @@ const ProductBuySection = ({
         )}
 
       {/* ✅ Action Button */}
-      {isProductInCart ? (
-        <button
-          type="button"
-          className="button mt-5"
-          onClick={() => navigate(`/cart/${selectedCommunity?.id}`)}
-        >
-          Go to Cart
-        </button>
-      ) : (
-        <button
-          type="button"
-          disabled={addProductInCart}
-          className="button mt-5"
-          onClick={handleAddToCartProduct}
-        >
-          {addProductInCart ? <Loader /> : "Add To Cart"}
-        </button>
+      {productDetails?.status !== "sold" && (
+        <>
+          {isProductInCart ? (
+            <button
+              type="button"
+              className="button mt-5"
+              onClick={() => navigate(`/cart/${selectedCommunity?.id}`)}
+            >
+              Go to Cart
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={addProductInCart}
+              className="button mt-5"
+              onClick={handleAddToCartProduct}
+            >
+              {addProductInCart ? <Loader /> : "Add To Cart"}
+            </button>
+          )}
+        </>
       )}
     </div>
   );

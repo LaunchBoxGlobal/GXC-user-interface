@@ -47,6 +47,7 @@ const Checkout = () => {
     ? JSON.parse(Cookies.get("userSelectedPaymentMethod"))
     : null;
   const [ShowOrderPlacePopup, setShowOrderPlacePopup] = useState(false);
+  const [orderId, setOrderId] = useState(null);
 
   const handleCloseSuccessPopup = () => {
     setShowOrderPlacePopup((prev) => !prev);
@@ -110,6 +111,9 @@ const Checkout = () => {
       );
 
       if (response?.data?.success) {
+        // console.log("place order response >>> ", response?.data);
+        setOrderId(response?.data?.data?.orderNumber);
+
         await axios.delete(
           `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
           {
@@ -124,6 +128,7 @@ const Checkout = () => {
         Cookies.remove("userSelectedPaymentMethod");
         // fetchCartProducts();
         setCartProducts(null);
+        // return;
         setShowOrderPlacePopup(true);
       }
     } catch (error) {
@@ -440,6 +445,7 @@ const Checkout = () => {
       <OrderSuccessPopup
         handleCloseSuccessPopup={handleCloseSuccessPopup}
         ShowOrderPlacePopup={ShowOrderPlacePopup}
+        orderId={orderId}
       />
     </div>
   );

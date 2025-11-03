@@ -43,6 +43,8 @@ import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 
 // Settings
 import SettingsPage from "../pages/Settings/SettingsPage";
+import MemberDetailsPage from "../pages/Member/MemberDetailsPage";
+import SellerOrderDetailsPage from "../pages/Orders/SellerOrderDetailsPage";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -342,6 +344,19 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/orders/details/seller/:communityId/:userId"
+        element={
+          <PrivateRoute
+            element={
+              <Layout>
+                <MemberDetailsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
         path="/wallet"
         element={
           <PrivateRoute
@@ -465,6 +480,18 @@ const AppRoutes = () => {
             element={
               <Layout key="order-details">
                 <OrderDetailsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+      <Route
+        path="/orders/seller/details/:orderId"
+        element={
+          <PrivateRoute
+            element={
+              <Layout key="order-details">
+                <SellerOrderDetailsPage />
               </Layout>
             }
           />

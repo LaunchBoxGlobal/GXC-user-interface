@@ -12,8 +12,13 @@ import Loader from "../../components/Common/Loader";
 import { Link } from "react-router-dom";
 import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
+import { toTitleCase } from "../../utils/toTitleCase";
 
-const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
+const SellerPickupItemsList = ({
+  pickupItems,
+  fetchOrderDetails,
+  orderDetails,
+}) => {
   const [showDeliveryConfirmationPopup, setShowDeliveryConfirmationPopup] =
     useState(false);
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
@@ -24,41 +29,17 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
   const [loading, setLoading] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
-  console.log("product >> ", product);
 
+  console.log(orderDetails?.items[0]);
   const markItemAsPickupedUp = async (productId) => {
     if (!productId) {
       enqueueSnackbar("Something went wrong! Try again.", {
         variant: "error",
       });
-
-      setLoadingItemId(null);
-      return;
-    }
-
-    if (product?.sellerStatus === "cancelled") {
-      enqueueSnackbar("This product has been cancelled by the seller.", {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-      setLoadingItemId(null);
-      return;
-    }
-
-    if (product?.sellerStatus !== "ready_for_pickup") {
-      enqueueSnackbar(
-        "You can mark this item as picked up once the seller marks it as ready.",
-        {
-          variant: "error",
-          autoHideDuration: 3500,
-        }
-      );
-      setLoadingItemId(null);
       return;
     }
 
     setLoading(true);
-    setLoadingItemId(productId);
     try {
       const response = await axios.put(
         `${BASE_URL}/order-items/${productId}/delivered`,
@@ -71,8 +52,8 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       );
 
       if (response?.data?.success) {
-        setShowDeliveryConfirmationPopup(true);
         fetchOrderDetails();
+        setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
       console.error("markItemAsDelivered error >>> ", error);
@@ -123,20 +104,32 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                             : item?.productTitle}
                         </p>
                         <div>
-                          {item?.buyerStatus === "in_progress" ? (
-                            <p className="text-[#FF7700] font-medium text-sm">
-                              In Progress
+                          {item?.sellerStatus == "cancelled" ? (
+                            <p className={`text-xs font-medium text-red-500`}>
+                              Cancelled by Seller
                             </p>
-                          ) : item?.buyerStatus === "picked_up" ? (
-                            <p className="text-[#4E9D4B] font-medium text-sm">
-                              Completed
-                            </p>
-                          ) : item?.buyerStatus === "cancelled" ? (
-                            <p className="text-red-500 font-medium text-sm">
-                              Cancelled
+                          ) : product?.buyerStatus == "cancelled" ? (
+                            <p className={`text-xs font-medium text-red-500`}>
+                              Cancelled by Buyer
                             </p>
                           ) : (
-                            ""
+                            <p
+                              className={`text-xs font-medium ${
+                                item?.overallStatus == "cancelled"
+                                  ? "text-red-500"
+                                  : item?.overallStatus === "pending"
+                                  ? "text-yellow-500"
+                                  : item?.overallStatus === "in_progress"
+                                  ? "text-yellow-500"
+                                  : item?.overallStatus === "completed"
+                                  ? "text-green-500"
+                                  : item?.overallStatus === "ready"
+                                  ? "text-gray-500"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {toTitleCase(item?.overallStatus)}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -183,11 +176,11 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                               type="button"
                               onClick={() => {
                                 setProduct(item);
+                                setLoadingItemId(item?.id);
                                 markItemAsPickupedUp(item?.id);
-                                // setLoadingItemId(item?.id);
                               }}
                               disabled={loadingItemId === item?.id}
-                              className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:bg-opacity-70 disabled:cursor-not-allowed"
+                              className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium"
                             >
                               {loadingItemId === item?.id ? (
                                 <Loader />
@@ -200,78 +193,76 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                       </div>
                     )}
                   </div>
-                  {item?.deliveryMethod === "pickup" &&
-                    user &&
-                    user?.id !== item?.seller?.id && (
-                      <div className="w-full mt-4">
-                        <h3 className="text-sm font-semibold leading-none">
-                          Pickup Address
-                        </h3>
-                        <div className="w-full flex items-center gap-2 mt-1">
-                          <div className="min-w-4">
-                            <FaLocationDot className="text-lg text-[var(--button-bg)]" />
-                          </div>
-                          <p>
-                            {[
-                              item?.pickupAddress?.address,
-                              item?.pickupAddress?.city,
-                              item?.pickupAddress?.state,
-                              item?.pickupAddress?.zipcode,
-                            ]
-                              .filter(Boolean)
-                              .join(", ")}
+                  {item?.deliveryMethod === "pickup" && (
+                    <div className="w-full mt-4">
+                      <h3 className="text-base font-semibold leading-none">
+                        Pickup Address
+                      </h3>
+                      <div className="w-full flex items-center gap-2 mt-1">
+                        <div className="min-w-4">
+                          <FaLocationDot className="text-lg text-[var(--button-bg)]" />
+                        </div>
+                        <p>
+                          {[
+                            item?.pickupAddress?.address,
+                            item?.pickupAddress?.city,
+                            item?.pickupAddress?.state,
+                            item?.pickupAddress?.zipcode,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* {user && user?.id !== item?.seller?.id && ( */}
+                <>
+                  <div className="w-full border border-gray-300 my-4" />
+                  <div className="w-full">
+                    <h3 className="font-semibold leading-none">
+                      Vendor Details
+                    </h3>
+                    <div className="w-full flex items-center justify-between">
+                      <div className="w-full flex items-center gap-3 mt-3">
+                        <div className="">
+                          <img
+                            src={
+                              orderDetails?.buyer?.profilePictureUrl
+                                ? orderDetails?.buyer?.profilePictureUrl
+                                : "/profile-icon.png"
+                            }
+                            alt=""
+                            className="w-[80px] h-[80px] rounded-full"
+                          />
+                        </div>
+                        <div className="flex flex-col items-start justify-center gap-2">
+                          <p className="text-lg font-semibold leading-none">
+                            {orderDetails?.buyer?.name}
+                          </p>
+                          <p className="text-[15px] font-normal text-[#18181899] leading-none">
+                            {orderDetails?.buyer?.email}
                           </p>
                         </div>
                       </div>
-                    )}
-                </div>
 
-                {user && user?.id !== item?.seller?.id && (
-                  <>
-                    <div className="w-full border border-gray-300 my-4" />
-                    <div className="w-full">
-                      <h3 className="font-semibold leading-none">
-                        Vendor Details
-                      </h3>
-                      <div className="w-full flex items-center justify-between">
-                        <div className="w-full flex items-center gap-3 mt-3">
-                          <div className="">
-                            <img
-                              src={
-                                item?.seller?.profilePictureUrl
-                                  ? item?.seller?.profilePictureUrl
-                                  : "/profile-icon.png"
-                              }
-                              alt=""
-                              className="w-[80px] h-[80px] rounded-full"
-                            />
-                          </div>
-                          <div className="flex flex-col items-start justify-center gap-2">
-                            <p className="text-lg font-semibold leading-none">
-                              {item?.seller?.name}
-                            </p>
-                            <p className="text-[15px] font-normal text-[#18181899] leading-none">
-                              {item?.seller?.email}
-                            </p>
-                          </div>
+                      <Link
+                        to={`/orders/details/seller/${orderDetails?.communityId}/${orderDetails?.buyer?.id}`}
+                        className="max-w-[38px]"
+                      >
+                        <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                          <img
+                            src="/right-arrow-icon.png"
+                            alt=""
+                            className="w-[7px] h-[14px]"
+                          />
                         </div>
-
-                        <Link
-                          to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}`}
-                          className="max-w-[38px]"
-                        >
-                          <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-                            <img
-                              src="/right-arrow-icon.png"
-                              alt=""
-                              className="w-[7px] h-[14px]"
-                            />
-                          </div>
-                        </Link>
-                      </div>
+                      </Link>
                     </div>
-                  </>
-                )}
+                  </div>
+                </>
+                {/* )} */}
               </div>
             );
           })}
@@ -298,4 +289,4 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
   );
 };
 
-export default PickupItemsList;
+export default SellerPickupItemsList;

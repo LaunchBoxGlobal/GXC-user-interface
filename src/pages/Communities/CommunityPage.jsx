@@ -27,9 +27,6 @@ const CommunityPage = () => {
   const { fetchCommunities } = useUser();
   const [initialized, setInitialized] = useState(false);
   const [searchParams] = useSearchParams();
-  console.log(searchParams.get("redirect"));
-
-  console.log("communityTitle >> ", communityTitle);
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);

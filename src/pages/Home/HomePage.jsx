@@ -110,7 +110,7 @@ const HomePage = () => {
   }
 
   return (
-    <main className="w-full py-20 text-center padding-x">
+    <main className="w-full py-16 min-h-screen text-center padding-x">
       {communities?.length > 0 ? (
         <>
           <ProductList products={products} pagination={pagination} />
@@ -161,7 +161,11 @@ const HomePage = () => {
       ) : (
         <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
           {/* public/community-icon.png */}
-          <img src="/community-icon.png" alt="community-icon" className="max-w-7" />
+          <img
+            src="/community-icon.png"
+            alt="community-icon"
+            className="max-w-7"
+          />
           <p className="text-sm text-gray-500 font-medium">
             You have not joined any community yet.
           </p>

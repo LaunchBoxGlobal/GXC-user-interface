@@ -12,8 +12,10 @@ import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
 import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
+import { FaLocationDot } from "react-icons/fa6";
+import { toTitleCase } from "../../utils/toTitleCase";
 
-const DeliveryItemsList = ({
+const SellerDeliveryItemsList = ({
   deliveryItems,
   fetchOrderDetails,
   orderDetails,
@@ -42,27 +44,6 @@ const DeliveryItemsList = ({
       return;
     }
 
-    if (product?.sellerStatus === "cancelled") {
-      enqueueSnackbar("This product has been cancelled by the seller.", {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-
-      return;
-    }
-
-    if (product?.sellerStatus !== "out_for_delivery") {
-      enqueueSnackbar(
-        "You can mark this item as received once the seller marks it out for delivery.",
-        {
-          variant: "error",
-          autoHideDuration: 3500,
-        }
-      );
-
-      return;
-    }
-
     setDeliveryLoadingState(true);
     try {
       const response = await axios.put(
@@ -87,125 +68,111 @@ const DeliveryItemsList = ({
     }
   };
 
-  console.log("orderDetails >>> ", orderDetails);
-
   return (
     <div className="w-full">
       <h2 className="font-semibold mb-4">Delivery Items</h2>
       <div className="w-full">
         {deliveryItems &&
-          deliveryItems?.map((item, index) => {
+          deliveryItems?.map((item) => {
             return (
               <div key={item?.id} className="w-full">
                 <div
                   className={`w-full flex items-center justify-between gap-3 ${
                     deliveryItems?.length !== 1 &&
-                    index > 0 &&
-                    `mt-4 pt-4 border-t-2 border-gray-300`
+                    `border-b-2 border-gray-300 pb-4`
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="">
-                      {/* public/image-placeholder.png */}
-                      {item?.productImage ? (
-                        <img
-                          src={item?.productImage}
-                          alt="denim jacket"
-                          className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] rounded-[16px]"
-                        />
-                      ) : (
-                        <img
-                          src={`/image-placeholder.png`}
-                          alt="denim jacket"
-                          className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] rounded-[16px]"
-                        />
-                      )}
+                      <img
+                        src={item?.productImage}
+                        alt="denim jacket"
+                        className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] rounded-[16px]"
+                      />
                     </div>
                     <div className="flex flex-col items-start gap-1 justify-center">
                       <p className="font-semibold leading-none">
                         {item?.productTitle}
                       </p>
                       <div>
-                        {item?.buyerStatus === "in_progress" ? (
-                          <p className="text-[#FF7700] font-medium text-sm">
-                            In Progress
+                        {item?.sellerStatus == "cancelled" ? (
+                          <p className={`text-xs font-medium text-red-500`}>
+                            Cancelled by Seller
                           </p>
-                        ) : item?.buyerStatus === "delivered" ? (
-                          <p className="text-[#4E9D4B] font-medium text-sm">
-                            Delivered
-                          </p>
-                        ) : item?.buyerStatus === "cancelled" ? (
-                          <p className="text-red-500 font-medium text-sm">
-                            Cancelled
+                        ) : product?.buyerStatus == "cancelled" ? (
+                          <p className={`text-xs font-medium text-red-500`}>
+                            Cancelled by Buyer
                           </p>
                         ) : (
-                          ""
+                          <p
+                            className={`text-xs font-medium ${
+                              item?.overallStatus == "cancelled"
+                                ? "text-red-500"
+                                : item?.overallStatus === "pending"
+                                ? "text-yellow-500"
+                                : item?.overallStatus === "in_progress"
+                                ? "text-yellow-500"
+                                : item?.overallStatus === "completed"
+                                ? "text-green-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            {toTitleCase(item?.overallStatus)}
+                          </p>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="w-full max-w-[370px] flex items-center justify-end">
-                    {item?.buyerStatus === "delivered" ? (
-                      <Link
-                        to={`/products/${item?.productTitle}?productId=${item?.productId}`}
-                        className="max-w-[38px]"
-                      >
-                        <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-                          <img
-                            src="/right-arrow-icon.png"
-                            alt=""
-                            className="w-[7px] h-[14px]"
-                          />
-                        </div>
-                      </Link>
-                    ) : (
-                      <div className="max-w-[370px] flex items-center gap-2 justify-end">
-                        <button
-                          type="button"
-                          onClick={() => setShowOrderCancelPopup(true)}
-                          className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
-                        >
-                          Cancel Order
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setProduct(item);
-                            markItemAsDelivered(item?.id);
-                          }}
-                          // disabled={item?.sellerStatus !== "out_for_delivery"}
-                          disabled={deliveryLoadingState}
-                          className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
-                        >
-                          {deliveryLoadingState ? (
-                            <Loader />
-                          ) : (
-                            "Mark As Received"
-                          )}
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <Link
+                    to={`/products/${item?.productTitle}?productId=${item?.productId}`}
+                    className="max-w-[38px]"
+                  >
+                    <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                      <img
+                        src="/right-arrow-icon.png"
+                        alt=""
+                        className="w-[7px] h-[14px]"
+                      />
+                    </div>
+                  </Link>
                 </div>
 
-                <div className="w-full border border-gray-300 my-4" />
-                {item?.deliveryAddress && (
-                  <div className="w-full mt-3">
-                    <h3 className="text-sm font-semibold leading-none">
+                {orderDetails?.deliveryAddress?.address && (
+                  <div className="w-full mt-4">
+                    <h3 className="font-semibold leading-none">
                       Delivery Address
                     </h3>
+                    <div className="w-full flex items-center gap-1 mt-2">
+                      <FaLocationDot className="min-w-3 text-lg text-[var(--button-bg)]" />
+                      <p className="text-base text-[#181818] font-normal">
+                        {[
+                          orderDetails?.deliveryAddress?.address,
+                          orderDetails?.deliveryAddress?.city,
+                          orderDetails?.deliveryAddress?.state,
+                          orderDetails?.deliveryAddress?.zipcode,
+                          orderDetails?.deliveryAddress?.country,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    </div>
                   </div>
                 )}
+
+                <div className="w-full border border-gray-300 my-4" />
+
                 <div className="w-full">
-                  <h3 className="font-semibold leading-none">Vendor Details</h3>
+                  <h3 className="font-semibold leading-none">
+                    Customer Details
+                  </h3>
                   <div className="w-full flex items-center justify-between">
                     <div className="w-full flex items-center gap-3 mt-3">
                       <div className="">
                         <img
                           src={
-                            item?.seller?.profilePictureUrl
-                              ? item?.seller?.profilePictureUrl
+                            orderDetails?.buyer?.profilePictureUrl
+                              ? orderDetails?.buyer?.profilePictureUrl
                               : "/profile-icon.png"
                           }
                           alt=""
@@ -214,15 +181,15 @@ const DeliveryItemsList = ({
                       </div>
                       <div className="flex flex-col items-start justify-center gap-2">
                         <p className="text-lg font-semibold leading-none">
-                          {item?.seller?.name}
+                          {orderDetails?.buyer?.name}
                         </p>
                         <p className="text-[15px] font-normal text-[#18181899] leading-none">
-                          {item?.seller?.email}
+                          {orderDetails?.buyer?.email}
                         </p>
                       </div>
                     </div>
                     <Link
-                      to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}`}
+                      to={`/orders/details/seller/${orderDetails?.communityId}/${orderDetails?.buyer?.id}`}
                       className="max-w-[38px]"
                     >
                       <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
@@ -278,4 +245,4 @@ const DeliveryItemsList = ({
   );
 };
 
-export default DeliveryItemsList;
+export default SellerDeliveryItemsList;

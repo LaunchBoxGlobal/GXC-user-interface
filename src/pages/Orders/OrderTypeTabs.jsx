@@ -4,19 +4,31 @@ import { useSearchParams } from "react-router-dom";
 export const tabs = [
   { title: "All", tab: "all" },
   { title: "In Progress", tab: "in_progress" },
+  { title: "Completed", tab: "delivered" },
+  { title: "Cancelled", tab: "cancelled" },
+];
+
+export const sellerTabs = [
+  { title: "All", tab: "pending,in_progress,ready,completed,cancelled" },
+  { title: "In Progress", tab: "pending,in_progress" },
   { title: "Completed", tab: "completed" },
   { title: "Cancelled", tab: "cancelled" },
 ];
 
 const OrderTypeTabs = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialTab = searchParams.get("orderType") || "all";
+  const activeTab = searchParams.get("tab");
+
+  const initialTab =
+    searchParams.get("orderType") ||
+    (activeTab === "seller"
+      ? "pending,in_progress,ready,completed,cancelled"
+      : "all");
+
   const [activeHistoryTab, setActiveHistoryTab] = useState(initialTab);
 
   const handleTabChange = (tab) => {
     setActiveHistoryTab(tab);
-
-    // ✅ Clone existing params and update only `orderType`
     const newParams = new URLSearchParams(searchParams);
     newParams.set("orderType", tab);
     setSearchParams(newParams);
@@ -24,14 +36,26 @@ const OrderTypeTabs = () => {
 
   useEffect(() => {
     const urlTab = searchParams.get("orderType");
-    if (urlTab && urlTab !== activeHistoryTab) {
+    if (!urlTab) {
+      // if no orderType in URL, set default based on user type
+      const defaultTab =
+        activeTab === "seller"
+          ? "pending,in_progress,ready,completed,cancelled"
+          : "all";
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("orderType", defaultTab);
+      setSearchParams(newParams);
+      setActiveHistoryTab(defaultTab);
+    } else if (urlTab !== activeHistoryTab) {
       setActiveHistoryTab(urlTab);
     }
-  }, [searchParams]);
+  }, [searchParams, activeTab]);
+
+  const currentTabs = activeTab === "seller" ? sellerTabs : tabs;
 
   return (
     <div className="w-full flex items-center gap-3">
-      {tabs.map((btn) => (
+      {currentTabs.map((btn) => (
         <button
           key={btn.tab}
           type="button"

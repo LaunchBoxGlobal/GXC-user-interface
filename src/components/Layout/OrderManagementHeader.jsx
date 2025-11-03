@@ -26,7 +26,7 @@ const OrderManagementHeader = () => {
         </h1>
       </div>
       <div>
-        {/* <div className="w-[290px] max-w-[310px] h-[49px] rounded-[19px] px-1.5 py-1 productSearchInput grid grid-cols-2 gap-1">
+        <div className="w-[290px] max-w-[310px] h-[49px] rounded-[19px] px-1.5 py-1 productSearchInput grid grid-cols-2 gap-1">
           <button
             type="button"
             onClick={() => handleTabChange("seller")}
@@ -34,7 +34,7 @@ const OrderManagementHeader = () => {
               activeHistoryTab === "seller"
                 ? "bg-white rounded-l-[10px]"
                 : "text-[var(--button-bg)]"
-            } w-full text-center h-full`}
+            } w-full text-center h-full font-medium text-sm`}
           >
             Seller History
           </button>
@@ -45,11 +45,11 @@ const OrderManagementHeader = () => {
               activeHistoryTab === "buyer"
                 ? "bg-white rounded-r-[10px]"
                 : "text-[var(--button-bg)]"
-            } w-full text-center h-full`}
+            } w-full text-center h-full font-medium text-sm`}
           >
             Buyer History
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   );

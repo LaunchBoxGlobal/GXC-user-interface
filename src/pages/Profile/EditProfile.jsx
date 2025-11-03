@@ -135,7 +135,7 @@ const EditProfile = () => {
           const formData = new FormData();
           formData.append("profilePicture", values.profileImage);
 
-          const imageRes = await axios.post(
+          await axios.post(
             `${BASE_URL}/auth/upload-profile-picture`,
             formData,
             {
@@ -156,7 +156,7 @@ const EditProfile = () => {
               variant: "success",
             }
           );
-          navigate(-1 || "/profile");
+          // navigate(-1 || "/profile");
         }
       } catch (error) {
         handleApiError(error, navigate);

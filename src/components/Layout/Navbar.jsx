@@ -6,6 +6,9 @@ import { useAppContext } from "../../context/AppContext";
 import { PAGE_LINKS } from "../../data/pageLinks";
 import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
+// import { HiOutlineUser } from "react-icons/hi2";
+import { HiOutlineUser } from "react-icons/hi";
+import { FaRegUser } from "react-icons/fa6";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -49,7 +52,7 @@ const Navbar = () => {
             <img
               src="/logo.svg"
               alt="logo"
-              className="w-[70px] lg:w-[100px] xl:w-[120px]"
+              className="w-[70px] lg:w-[100px] xl:w-[140px]"
             />
           ) : (
             <img
@@ -62,7 +65,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Nav */}
-      <ul className="w-full max-w-[80%] hidden lg:flex items-center justify-between gap-5">
+      <ul className="w-full max-w-[80%] hidden lg:flex items-center justify-end gap-x-14">
         {PAGE_LINKS?.map((page) => {
           const active = isActive(page.url);
           return (
@@ -139,7 +142,9 @@ const Navbar = () => {
           {/* Profile */}
           {user && (
             <Link to={"/profile"}>
-              <div className="w-[57px] h-[57px] rounded-full bg-white flex items-center justify-center">
+              <div
+                className={`w-[57px] h-[57px] rounded-full flex items-center justify-center`}
+              >
                 {user?.profilePicture ? (
                   <img
                     src={user?.profilePictureUrl}
@@ -147,10 +152,15 @@ const Navbar = () => {
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (
+                  // <FaRegUser
+                  //   className={`text-lg ${
+                  //     isScrolled ? "text-white" : "text-black"
+                  //   }`}
+                  // />
                   <img
-                    src="/user-profile-icon.png"
+                    src="/profile-icon.png"
                     alt="profile icon"
-                    className="w-[14px] h-[19px]"
+                    className="w-full h-full"
                   />
                 )}
               </div>

@@ -55,16 +55,11 @@ const ProductDetailsPage = () => {
   if (loading) {
     return (
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-        <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[60vh] pt-32">
+        <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
           <Loader />
         </div>
       </div>
     );
-  }
-
-  if (productDetails?.status !== "active") {
-    navigate(-1);
-    return;
   }
 
   return (

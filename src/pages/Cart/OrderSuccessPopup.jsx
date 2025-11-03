@@ -1,14 +1,23 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const OrderSuccessPpup = ({ handleCloseSuccessPopup, ShowOrderPlacePopup }) => {
+const OrderSuccessPpup = ({
+  handleCloseSuccessPopup,
+  ShowOrderPlacePopup,
+  orderId,
+}) => {
+  // console.log("orderId from popup >>>> ", orderId);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (ShowOrderPlacePopup) {
       const timer = setTimeout(() => {
         handleCloseSuccessPopup();
-        navigate(`/orders/details/5t58t494985`);
+        if (!orderId) {
+          navigate("/");
+          return;
+        }
+        navigate(`/orders/details/${orderId}`);
       }, 2000);
 
       return () => clearTimeout(timer);

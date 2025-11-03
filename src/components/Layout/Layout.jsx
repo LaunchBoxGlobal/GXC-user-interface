@@ -3,14 +3,16 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useAppContext } from "../../context/AppContext";
 import CommunitiesDropdown from "./CommunitiesDropdown";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
 import OrderManagementHeader from "./OrderManagementHeader";
+import { HiArrowLeft } from "react-icons/hi";
 
 const Layout = ({ children }) => {
   const { user, fetchUserProfile } = useAppContext();
   const pathname = useLocation();
   const { selectedCommunity } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -44,6 +46,22 @@ const Layout = ({ children }) => {
 
         {pathname?.pathname == "/orders" && selectedCommunity && (
           <OrderManagementHeader />
+        )}
+
+        {pathname?.pathname == "/reporting" && selectedCommunity && (
+          <div className="w-full flex flex-col items-start gap-8">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-1 text-white"
+            >
+              <HiArrowLeft />
+              <span className="text-sm">Back</span>
+            </button>
+            <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
+              Create Request
+            </h1>
+          </div>
         )}
       </div>
 

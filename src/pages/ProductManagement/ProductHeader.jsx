@@ -47,7 +47,8 @@ const ProductHeader = ({
         )}
       </div>
 
-      {productDetails?.seller?.id === user?.id ? (
+      {productDetails?.seller?.id === user?.id &&
+      productDetails?.status === "active" ? (
         <div className="relative" ref={dropdownRef}>
           <button type="button" onClick={toggleDropdown}>
             <HiOutlineDotsVertical className="text-xl" />

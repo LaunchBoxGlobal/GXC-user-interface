@@ -43,12 +43,7 @@ const UserDeliveryAddress = ({
       {/* ✅ Default user address */}
       {user && user?.address && (
         <div
-          className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border 
-            ${
-              selectedAddress?.type === "default"
-                ? "border-[var(--button-bg)]"
-                : "border-transparent"
-            }`}
+          className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border border-[var(--button-bg)]`}
         >
           <div className="w-full max-w-[90%]">
             <p>
@@ -92,7 +87,7 @@ const UserDeliveryAddress = ({
           </div>
 
           <div
-            className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border 
+            className={`w-full flex items-center justify-between min-h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] p-3 border 
             ${
               selectedAddress?.type === "new"
                 ? "border-[var(--button-bg)]"
