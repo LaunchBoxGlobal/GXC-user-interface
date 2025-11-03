@@ -163,8 +163,8 @@ const DeliveryItemsList = ({
                         </div>
                       </Link>
                     ) : (
-                      <div className="max-w-[370px] flex items-center gap-2 justify-end">
-                        <button
+                      <div className="max-w-[370px] flex items-center justify-end gap-2 justify-end">
+                        {/* <button
                           type="button"
                           onClick={() => {
                             setProduct(item);
@@ -182,7 +182,7 @@ const DeliveryItemsList = ({
                           className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                         >
                           Cancel Order
-                        </button>
+                        </button> */}
                         <button
                           type="button"
                           onClick={() => {

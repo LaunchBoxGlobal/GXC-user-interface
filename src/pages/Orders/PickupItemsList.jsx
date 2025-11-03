@@ -191,7 +191,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                           </Link>
                         ) : (
                           <>
-                            <button
+                            {/* <button
                               type="button"
                               onClick={() => {
                                 setProduct(item);
@@ -208,7 +208,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                               className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                             >
                               Cancel Order
-                            </button>
+                            </button> */}
                             <button
                               type="button"
                               onClick={() => {

@@ -251,7 +251,7 @@ const SellerOrderDetailsPage = () => {
               </div>
               {!details?.items[0]?.cancellation_reason && (
                 <div className="w-full grid grid-cols-2 gap-2 mt-3">
-                  <button
+                  {/* <button
                     type="button"
                     disabled={
                       details?.items[0]?.buyerStatus == "cancelled" ||
@@ -263,7 +263,7 @@ const SellerOrderDetailsPage = () => {
                     className="w-full h-[48px] rounded-[12px] text-center bg-[#dedede] font-medium disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                   >
                     Cancel Order
-                  </button>
+                  </button> */}
 
                   {/* <button
                   type="button"
