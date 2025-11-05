@@ -19,12 +19,22 @@ const ProductManagementHeader = () => {
           Authorization: `Bearer ${getToken()}`,
         },
       });
+
+      // console.log("stripe status >>> ", res?.data);
+      // return;
       if (res?.data?.success) {
         navigate("/product-management/add-product");
       } else {
         handleCreateStripeAccount();
       }
     } catch (error) {
+      if (error?.status === 404) {
+        enqueueSnackbar("Please create your stripe account!", {
+          variant: "error",
+        });
+        handleCreateStripeAccount();
+        return;
+      }
       console.log("handleCheckStripeAccountStatus error >>> ", error);
       handleApiError(error, navigate);
     } finally {
