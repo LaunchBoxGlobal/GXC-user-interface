@@ -103,7 +103,7 @@ const CommunitiesDropdown = () => {
       selectedC = communities[0];
     }
 
-    // ✅ Only update if actually changed
+    // ✅ Only update if actually change
     if (!selectedCommunity || selectedCommunity.id !== selectedC.id) {
       setSelected(selectedC);
       setSelectedCommunity(selectedC);
