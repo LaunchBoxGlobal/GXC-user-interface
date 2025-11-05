@@ -26,8 +26,6 @@ const UserPaymentMethod = ({
   const [loadingCards, setLoadingCards] = useState(false);
   const [deleteCard, setDeleteCard] = useState(false);
 
-  console.log("selectedPaymentMethod >> ", selectedPaymentMethod);
-
   // Fetch saved cards
   const fetchSavedCards = async () => {
     if (!user?.id) return;
@@ -37,7 +35,7 @@ const UserPaymentMethod = ({
         headers: { Authorization: `Bearer ${getToken()}` },
       });
 
-      console.log("user cards >>> ", res?.data);
+      // console.log("user cards >>> ", res?.data);
       setSavedCards(res.data?.data?.paymentMethods || []);
     } catch (err) {
       console.error("Error fetching cards:", err);
@@ -212,49 +210,126 @@ const AddCardForm = ({ user, onCardAdded }) => {
 
   const handleAddCard = async (e) => {
     e.preventDefault();
-    if (!stripe || !elements || !clientSecret) return;
+    if (!stripe || !elements) return;
 
     setLoading(true);
-    try {
-      const cardElement = elements.getElement(CardElement);
 
-      const { setupIntent, error } = await stripe.confirmCardSetup(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: user?.name || "Unknown User",
-              email: user?.email || "",
-            },
+    const cardElement = elements.getElement(CardElement);
+
+    async function confirmWithClientSecret(secret) {
+      return await stripe.confirmCardSetup(secret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: user?.name || "Unknown User",
+            email: user?.email || "",
           },
-        }
-      );
+        },
+      });
+    }
 
+    try {
+      // 1️⃣ Try with the existing client secret
+      let { setupIntent, error } = await confirmWithClientSecret(clientSecret);
+
+      // 2️⃣ Handle the canceled SetupIntent case
+      if (
+        error?.code === "setup_intent_unexpected_state" ||
+        setupIntent?.status === "canceled"
+      ) {
+        console.warn("SetupIntent was canceled. Creating a new one...");
+
+        // Create a new SetupIntent
+        const res = await axios.post(
+          `${BASE_URL}/payments/setup-intent`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${getToken()}` },
+          }
+        );
+
+        const newClientSecret = res?.data?.data?.clientSecret;
+        if (!newClientSecret) {
+          throw new Error("Failed to get new client secret from backend.");
+        }
+
+        setClientSecret(newClientSecret);
+
+        // Retry confirming with the new client secret
+        ({ setupIntent, error } = await confirmWithClientSecret(
+          newClientSecret
+        ));
+      }
+
+      // 3️⃣ Handle any final Stripe error
       if (error) {
-        console.error(error);
-        enqueueSnackbar(error.message || error?.response?.data?.message, {
+        enqueueSnackbar(error.message || "Failed to save card.", {
           variant: "error",
         });
-        setLoading(false);
+        console.error("Stripe error:", error);
         return;
       }
 
+      // 4️⃣ Success!
       if (setupIntent.status === "succeeded") {
-        enqueueSnackbar("Card successfully added!", {
-          variant: "success",
-        });
-        onCardAdded(); // Refresh saved cards
+        enqueueSnackbar("Card successfully added!", { variant: "success" });
+        onCardAdded();
       }
     } catch (err) {
       console.error("Error confirming setup intent:", err);
-      enqueueSnackbar("Failed to save card. Try again.", {
+      enqueueSnackbar("Failed to save card. Please try again.", {
         variant: "error",
       });
     } finally {
       setLoading(false);
     }
   };
+
+  // const handleAddCard = async (e) => {
+  //   e.preventDefault();
+  //   if (!stripe || !elements || !clientSecret) return;
+
+  //   setLoading(true);
+  //   try {
+  //     const cardElement = elements.getElement(CardElement);
+
+  //     const { setupIntent, error } = await stripe.confirmCardSetup(
+  //       clientSecret,
+  //       {
+  //         payment_method: {
+  //           card: cardElement,
+  //           billing_details: {
+  //             name: user?.name || "Unknown User",
+  //             email: user?.email || "",
+  //           },
+  //         },
+  //       }
+  //     );
+
+  //     if (error) {
+  //       console.error(error);
+  //       enqueueSnackbar(error.message || error?.response?.data?.message, {
+  //         variant: "error",
+  //       });
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     if (setupIntent.status === "succeeded") {
+  //       enqueueSnackbar("Card successfully added!", {
+  //         variant: "success",
+  //       });
+  //       onCardAdded(); // Refresh saved cards
+  //     }
+  //   } catch (err) {
+  //     console.error("Error confirming setup intent:", err);
+  //     enqueueSnackbar("Failed to save card. Try again.", {
+  //       variant: "error",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <form onSubmit={handleAddCard} className="w-full mt-4">

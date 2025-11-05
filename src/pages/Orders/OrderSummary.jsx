@@ -21,7 +21,7 @@ const OrderSummary = ({ orderSummary }) => {
             {orderSummary?.items?.length}
           </p>
         </div>
-        <div className="w-full border my-3" />
+        {/* <div className="w-full border my-3" />
         <div className="w-full flex items-center justify-between">
           <p className="text-base text-gray-600">Platform Fee (2%)</p>
           <p className="text-base text-gray-600">
@@ -30,7 +30,7 @@ const OrderSummary = ({ orderSummary }) => {
               ? orderSummary?.platformFeetoFixed(2)
               : orderSummary?.platformFee}
           </p>
-        </div>
+        </div> */}
         <div className="w-full border my-3" />
         <div className="w-full flex items-center justify-between">
           <p className="text-base text-[var(--button-bg)] font-semibold">

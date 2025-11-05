@@ -92,6 +92,10 @@ const Checkout = () => {
     const savedAddress = Cookies.get("userSelectedDeliveryAddress")
       ? JSON.parse(Cookies.get("userSelectedDeliveryAddress"))
       : null;
+    if (!savedPaymentMethod) {
+      enqueueSnackbar("Something went wrong. Try again!");
+      return;
+    }
 
     checkIamAlreadyMember();
 

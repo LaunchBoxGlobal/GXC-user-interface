@@ -34,7 +34,11 @@ const CartSummary = () => {
   const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
   const [openEditAddressModal, setOpenEditAddressModal] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
+    Cookies.get("userSelectedPaymentMethod")
+      ? JSON.parse(Cookies.get("userSelectedPaymentMethod"))
+      : null
+  );
   const [userNewDeliveryAddress, setUserNewDeliveryAddress] = useState(null);
 
   const pickupItems = cartProducts?.filter(
