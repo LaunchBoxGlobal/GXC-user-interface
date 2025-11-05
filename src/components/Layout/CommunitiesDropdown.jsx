@@ -50,6 +50,12 @@ const CommunitiesDropdown = () => {
         }
       );
 
+      // if (
+      //   res?.data?.data?.communities?.length == 0 ||
+      //   res?.data?.data?.communities == null
+      // ) {
+      //   Cookies.remove("selected-community");
+      // }
       const list = res?.data?.data?.communities || [];
       setCommunities(list);
       setFilteredCommunities(list);

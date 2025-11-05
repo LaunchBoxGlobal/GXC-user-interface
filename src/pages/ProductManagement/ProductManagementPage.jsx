@@ -95,11 +95,11 @@ const ProductManagementPage = () => {
   }
 
   return (
-    <div className="w-full min-h-[80vh] padding-x py-16">
+    <div className="w-full min-h-screen padding-x py-16">
       {products && products.length > 0 ? (
         <>
           {/* Product Grid */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 max-w-[1280px] mx-auto">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 min-h-screen max-w-[1280px] mx-auto">
             {products.map((product, index) => (
               <ProductCard product={product} index={index} key={index} />
             ))}
@@ -154,8 +154,14 @@ const ProductManagementPage = () => {
             <p>{errorMessage}</p>
           ) : (
             <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
-              <img src="/product-icon.png" alt="product icon" className="max-w-7"/>
-              <p className="text-sm font-medium text-gray-500">You have not added any products yet.</p>
+              <img
+                src="/product-icon.png"
+                alt="product icon"
+                className="max-w-7"
+              />
+              <p className="text-sm font-medium text-gray-500">
+                You have not added any products yet.
+              </p>
             </div>
           )}
         </div>

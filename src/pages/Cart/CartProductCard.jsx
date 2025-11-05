@@ -50,7 +50,11 @@ const CartProductCard = ({
       <div className={`w-full grid grid-cols-4`}>
         <div className="flex items-center gap-3 col-span-4 lg:col-span-2">
           <img
-            src={product?.product?.images[0]?.imageUrl}
+            src={
+              product?.product?.images?.length > 0
+                ? product?.product?.images[0]?.imageUrl
+                : "/stats-card-icon-placeholder.png"
+            }
             alt=""
             className="min-w-[80px] max-w-[80px] h-[80px] max-h-[80px] object-cover rounded-xl"
           />

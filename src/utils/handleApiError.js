@@ -28,7 +28,9 @@ export const handleApiError = (error, navigate) => {
     } else if (status >= 500) {
       console.error("Server error:", error?.response?.data?.message);
       enqueueSnackbar(
-        "Something went wrong on our end. Please try again later.",
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong on our end. Please try again later.",
         {
           variant: "error",
         }

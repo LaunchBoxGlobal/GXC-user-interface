@@ -8,6 +8,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
+import { enqueueSnackbar } from "notistack";
 
 const HomePage = () => {
   const { productSearchValue } = useAppContext();
@@ -52,7 +53,8 @@ const HomePage = () => {
       setProducts(res?.data?.data?.products || []);
       setPagination(res?.data?.data?.pagination || null);
     } catch (error) {
-      handleApiError(error, navigate);
+      // enqueueSnackbar()
+      // handleApiError(error, navigate);
     } finally {
       setLoading(false);
     }

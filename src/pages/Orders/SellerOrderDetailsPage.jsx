@@ -38,8 +38,6 @@ const SellerOrderDetailsPage = () => {
   const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false);
   const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
 
-  console.log("details as a seller >>>> ", details);
-
   const getOrderStatus = (items = []) => {
     if (!items || items.length === 0) {
       return { label: "Pending", color: "#888888" };

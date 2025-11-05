@@ -144,6 +144,30 @@ export const UserProvider = ({ children }) => {
     // return () => clearInterval(interval);
   }, []);
 
+  const handleCheckStripeAccountStatus = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/seller/stripe/return`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      if (res?.data?.success) {
+        navigate("/product-management/add-product");
+        enqueueSnackbar("Your account has been created!", {
+          variant: "success",
+        });
+      } else {
+        enqueueSnackbar("Your account could not be created!", {
+          variant: "error",
+        });
+        navigate("/product-management");
+      }
+    } catch (error) {
+      console.log("handleCheckStripeAccountStatus error >>> ", error);
+      handleApiError(error, navigate);
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -156,6 +180,7 @@ export const UserProvider = ({ children }) => {
         selectedCommunity,
         setSelectedCommunity,
         setCommunities,
+        handleCheckStripeAccountStatus,
       }}
     >
       {children}

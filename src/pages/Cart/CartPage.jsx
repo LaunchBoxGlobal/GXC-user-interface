@@ -24,38 +24,6 @@ const CartPage = () => {
     document.title = "Cart - GiveXChange";
   }, []);
 
-  // const fetchCartProducts = async () => {
-  //   if (!selectedCommunity) {
-  //     enqueueSnackbar(`Community ID not found!`, { variant: "error" });
-  //     return;
-  //   }
-  //   setLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const res = await axios.get(
-  //       `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${getToken()}`,
-  //         },
-  //       }
-  //     );
-
-  //     setCartProducts(res?.data?.data?.items);
-  //     setCartDetails(res?.data?.data);
-  //   } catch (error) {
-  //     console.error("Error fetching cart:", error);
-  //     const message =
-  //       error?.response?.data?.message ||
-  //       "Failed to load cart items. Please try again later.";
-  //     setError(message);
-  //     handleApiError(error, navigate);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   useEffect(() => {
     fetchCartCount();
     fetchCartProducts();

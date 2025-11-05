@@ -101,6 +101,7 @@ const Checkout = () => {
         `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
         {
           productIds: ids,
+          paymentMethodId: savedPaymentMethod?.id,
           deliveryAddress:
             savedAddress?.location || savedAddress?.address || "",
           deliveryCity: savedAddress?.city || "",

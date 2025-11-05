@@ -12,6 +12,7 @@ import { useAppContext } from "../../context/AppContext";
 import { getToken } from "../../utils/getToken";
 import { useUser } from "../../context/userContext";
 import { productSchema } from "../../validation/productSchema";
+import { handleApiError } from "../../utils/handleApiError";
 
 const AddProductPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,26 @@ const AddProductPage = () => {
   const { user } = useAppContext();
   const { selectedCommunity, checkIamAlreadyMember } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
+  const [categories, setCategories] = useState(null);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/categories`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+
+      console.log("categories >>> ", res?.data?.data?.categories);
+      setCategories(res?.data?.data?.categories);
+    } catch (error) {
+      handleApiError(error, navigate);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const userAddress =
     user?.address +
@@ -40,6 +61,7 @@ const AddProductPage = () => {
       deliveryType: [],
       productImages: [],
       customPickupAddress: "",
+      category: "",
     },
     validationSchema: productSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -64,6 +86,7 @@ const AddProductPage = () => {
         formData.append("title", values.productName.trim());
         formData.append("price", values.price);
         formData.append("description", values.description.trim());
+        formData.append("categoryId", values.category);
 
         formData.append("deliveryMethod", deliveryMethod);
         values.productImages.forEach((file) =>
@@ -78,7 +101,6 @@ const AddProductPage = () => {
           formData.append("pickupState", user?.state.trim() || "");
         }
 
-        // Send JSON request
         const res = await axios.post(
           `${BASE_URL}/communities/${selectedCommunity?.id}/products`,
           formData,
@@ -285,31 +307,61 @@ const AddProductPage = () => {
                 </div>
 
                 {/* Delivery Type */}
-                <div className="w-full">
-                  <label className="font-medium text-sm mb-2 block">
-                    Delivery Type
-                  </label>
-                  <div className="w-full max-w-[388px] grid grid-cols-2 gap-3">
-                    {["pickup", "delivery"].map((type) => (
-                      <button
-                        type="button"
-                        key={type}
-                        onClick={() => handleDeliveryTypeChange(type)}
-                        className={`py-3 px-4 border rounded-[8px] text-sm font-medium transition-all h-[49px] ${
-                          formik.values.deliveryType.includes(type)
-                            ? "bg-[var(--button-bg)] text-white border-[var(--secondary-bg)]"
-                            : "bg-[var(--secondary-bg)] text-gray-700 border-[var(--secondary-bg)]"
-                        }`}
-                      >
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </button>
-                    ))}
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="w-full flex flex-col gap-2">
+                    <label className="font-medium text-sm">Delivery Type</label>
+                    <div className="w-full max-w-[388px] grid grid-cols-2 gap-3">
+                      {["pickup", "delivery"].map((type) => (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => handleDeliveryTypeChange(type)}
+                          className={`px-4 border rounded-[8px] text-sm font-medium transition-all h-[49px] ${
+                            formik.values.deliveryType.includes(type)
+                              ? "bg-[var(--button-bg)] text-white border-[var(--secondary-bg)]"
+                              : "bg-[var(--secondary-bg)] text-gray-700 border-[var(--secondary-bg)]"
+                          }`}
+                        >
+                          {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                    {formik.touched.deliveryType &&
+                      formik.errors.deliveryType && (
+                        <p className="text-red-500 text-xs">
+                          {formik.errors.deliveryType}
+                        </p>
+                      )}
                   </div>
-                  {formik.touched.deliveryType && formik.errors.deliveryType ? (
-                    <p className="text-red-500 text-xs mt-1">
-                      {formik.errors.deliveryType}
-                    </p>
-                  ) : null}
+
+                  <div className="w-full flex flex-col gap-2">
+                    <label htmlFor="category" className="text-sm font-medium">
+                      Category
+                    </label>
+                    <select
+                      name="category"
+                      id="category"
+                      value={formik.values.category}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
+                        formik.touched.category && formik.errors.category
+                          ? "border-red-500"
+                          : "border-[var(--secondary-bg)]"
+                      }`}
+                    >
+                      {categories?.map((c) => (
+                        <option value={c?.id} key={c?.id}>
+                          {c?.name}
+                        </option>
+                      ))}
+                    </select>
+                    {formik.touched.category && formik.errors.category && (
+                      <p className="text-red-500 text-xs">
+                        {formik.errors.category}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {/* pickup address */}
                 {formik.values.deliveryType.includes("pickup") && (

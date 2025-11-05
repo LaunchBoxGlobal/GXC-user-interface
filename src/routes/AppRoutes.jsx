@@ -45,6 +45,7 @@ import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 import SettingsPage from "../pages/Settings/SettingsPage";
 import MemberDetailsPage from "../pages/Member/MemberDetailsPage";
 import SellerOrderDetailsPage from "../pages/Orders/SellerOrderDetailsPage";
+import SellerStripeSuccess from "../pages/Auth/SellerStripeSuccess";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -505,6 +506,19 @@ const AppRoutes = () => {
             element={
               <Layout key="settings-page">
                 <SettingsPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/seller/stripe/onboarding"
+        element={
+          <PrivateRoute
+            element={
+              <Layout key="seller-stripe-success">
+                <SellerStripeSuccess />
               </Layout>
             }
           />
