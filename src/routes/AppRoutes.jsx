@@ -513,7 +513,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/seller/stripe/onboarding"
+        path="/seller/stripe/success"
         element={
           <PrivateRoute
             element={
