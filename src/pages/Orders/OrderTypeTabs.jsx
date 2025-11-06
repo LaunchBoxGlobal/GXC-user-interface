@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export const tabs = [
   { title: "All", tab: "all" },
   { title: "In Progress", tab: "in_progress" },
   { title: "Completed", tab: "delivered" },
-  { title: "Cancelled", tab: "cancelled" },
+  // { title: "Cancelled", tab: "cancelled" },
 ];
 
 export const sellerTabs = [
   { title: "All", tab: "pending,in_progress,ready,completed,cancelled" },
   { title: "In Progress", tab: "pending,in_progress" },
   { title: "Completed", tab: "completed" },
-  { title: "Cancelled", tab: "cancelled" },
+  // { title: "Cancelled", tab: "cancelled" },
 ];
 
 const OrderTypeTabs = () => {
@@ -37,7 +37,6 @@ const OrderTypeTabs = () => {
   useEffect(() => {
     const urlTab = searchParams.get("orderType");
     if (!urlTab) {
-      // if no orderType in URL, set default based on user type
       const defaultTab =
         activeTab === "seller"
           ? "pending,in_progress,ready,completed,cancelled"

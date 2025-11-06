@@ -17,7 +17,7 @@ const SellerDeliveryOrderCancellationSuccessPopup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Order Cancelled
+            Order cancelled
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             Your order successfully cancelled.

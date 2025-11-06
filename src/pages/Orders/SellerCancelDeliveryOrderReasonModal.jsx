@@ -72,7 +72,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center padding-x">
         <div className="w-full bg-white max-w-[471px] rounded-[32px] p-7 text-start flex flex-col items-start gap-3">
           <h4 className="text-[24px] font-semibold leading-none">
-            Cancel Reason
+            Cancel reason
           </h4>
 
           <form onSubmit={formik.handleSubmit} className="w-full">

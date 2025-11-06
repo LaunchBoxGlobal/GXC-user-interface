@@ -45,6 +45,19 @@ const ProductHeader = ({
               : "Pickup / Delivery"}
           </p>
         )}
+        {/* {productDetails?.community && (
+          <p className="font-medium text-[#6D6D6D] text-xs">
+            {productDetails?.community?.name}
+          </p>
+        )} */}
+        {productDetails?.category && (
+          <div className="flex items-center gap-1">
+            <p className="text-sm font-semibold">Category:</p>
+            <p className="font-medium text-[#6D6D6D] text-sm">
+              {productDetails?.category?.name}
+            </p>
+          </div>
+        )}
       </div>
 
       {productDetails?.seller?.id === user?.id &&

@@ -49,7 +49,7 @@ const MarkItemOutForDeliveryModal = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Out For Delivery
+            Mark out for delivery
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             Are your sure you want to mark this item as out for delivery?

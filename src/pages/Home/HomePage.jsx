@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
 import { enqueueSnackbar } from "notistack";
+import Categories from "./Categories";
 
 const HomePage = () => {
   const { productSearchValue } = useAppContext();
@@ -23,11 +24,27 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
   const [pagination, setPagination] = useState(null);
+  const [categories, setCategories] = useState(null);
 
   const [searchParams] = useSearchParams();
   const min = searchParams.get("min") || "";
   const max = searchParams.get("max") || "";
+  const categoryId = searchParams.get("categoryId") || "";
   const page = Number(searchParams.get("page")) || 1;
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/categories`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      // console.log("res >> ", res?.data?.data?.categories);
+      setCategories(res?.data?.data?.categories);
+    } catch (error) {
+      console.log("err while fetching categories >>> ", error);
+    }
+  };
 
   // Fetch community products
   const fetchCommunityProducts = useCallback(async () => {
@@ -38,6 +55,7 @@ const HomePage = () => {
     if (productSearchValue) params.set("search", productSearchValue);
     if (min) params.set("minPrice", min);
     if (max) params.set("maxPrice", max);
+    if (categoryId) params.set("categoryId", categoryId);
     params.set("page", page);
     params.set("limit", 12);
 
@@ -58,7 +76,7 @@ const HomePage = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCommunity?.id, productSearchValue, min, max, page]);
+  }, [selectedCommunity?.id, productSearchValue, min, max, page, categoryId]);
 
   useEffect(() => {
     fetchCommunityProducts();
@@ -67,6 +85,7 @@ const HomePage = () => {
   useEffect(() => {
     document.title = "Home - GiveXChange";
     window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchCategories();
     fetchCommunities();
   }, []);
 
@@ -113,6 +132,7 @@ const HomePage = () => {
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
+      {products?.length > 0 && <Categories categories={categories} />}
       {communities?.length > 0 ? (
         <>
           <ProductList products={products} pagination={pagination} />

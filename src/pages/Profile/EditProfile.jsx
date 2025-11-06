@@ -157,7 +157,7 @@ const EditProfile = () => {
               variant: "success",
             }
           );
-          // navigate(-1 || "/profile");
+          navigate(-1 || "/profile");
         }
       } catch (error) {
         handleApiError(error, navigate);

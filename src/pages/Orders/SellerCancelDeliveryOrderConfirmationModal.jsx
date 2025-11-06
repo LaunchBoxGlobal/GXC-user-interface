@@ -15,7 +15,7 @@ const SellerCancelDeliveryOrderConfirmationModal = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Cancel Order
+            Cancel order
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             Are your sure you want to cancel this order?

@@ -248,7 +248,7 @@ const SellerOrderDetailsPage = () => {
                 </p>
               </div>
               {!details?.items[0]?.cancellation_reason && (
-                <div className="w-full grid grid-cols-2 gap-2 mt-3">
+                <div className="w-full mt-3">
                   {/* <button
                     type="button"
                     disabled={

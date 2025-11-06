@@ -157,13 +157,13 @@ const SellerPickupItemsList = ({
                           </Link>
                         ) : (
                           <>
-                            <button
+                            {/* <button
                               type="button"
                               disabled={item?.buyerStatus === "cancelled"}
                               className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
                             >
                               Cancel Order
-                            </button>
+                            </button> */}
                             <button
                               type="button"
                               onClick={() => {
@@ -214,7 +214,7 @@ const SellerPickupItemsList = ({
                   <div className="w-full border border-gray-300 my-4" />
                   <div className="w-full">
                     <h3 className="font-semibold leading-none">
-                      Vendor Details
+                      Customer Details
                     </h3>
                     <div className="w-full flex items-center justify-between">
                       <div className="w-full flex items-center gap-3 mt-3">

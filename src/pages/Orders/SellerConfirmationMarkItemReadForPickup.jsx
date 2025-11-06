@@ -53,7 +53,7 @@ const SellerConfirmationMarkItemReadForPickup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            {isMarked ? "Marked As Ready For Pickup" : "Ready For Pickup"}
+            {isMarked ? "marked as ready for pickup" : "Mark ready for pickup"}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             {isMarked

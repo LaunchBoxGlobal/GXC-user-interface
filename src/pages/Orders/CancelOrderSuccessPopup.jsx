@@ -22,7 +22,7 @@ const CancelOrderSuccessPopup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center mt-4">
-            Order Cancelled
+            Order cancelled
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2] mt-3">
             Your order successfully cancelled

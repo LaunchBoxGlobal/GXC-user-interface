@@ -123,9 +123,8 @@ const CartProductCard = ({
           <div className="flex items-center gap-2">
             <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
             <p className="text-sm">
-              {product?.product?.pickupAddress} {product?.product?.pickupCity}{" "}
-              {product?.product?.pickupState} {product?.product?.zipcode}{" "}
-              {product?.product?.pickupCountry}
+              {product?.product?.pickupAddress}{" "}
+              {/* {product?.product?.zipcode} {product?.product?.pickupCountry} */}
             </p>
           </div>
         </div>

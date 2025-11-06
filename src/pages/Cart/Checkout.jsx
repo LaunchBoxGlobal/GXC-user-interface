@@ -138,6 +138,26 @@ const Checkout = () => {
         setShowOrderPlacePopup(true);
       }
     } catch (error) {
+      console.log("error on checkout >>> ", error);
+      if (
+        error?.status === 400 &&
+        error.response.data?.message == "Some products are not in your cart"
+      ) {
+        enqueueSnackbar(
+          `Some products are not available and removed from your cart`,
+          {
+            variant: "error",
+          }
+        );
+        checkIamAlreadyMember();
+        fetchCartCount();
+        fetchCartProducts();
+        Cookies.remove("newDeliveryAddress");
+        Cookies.remove("userSelectedDeliveryAddress");
+        Cookies.remove("userSelectedPaymentMethod");
+        // navigate(`/`);
+        return;
+      }
       handleApiError(error, navigate);
     } finally {
       setRemovingItems(false);
@@ -323,11 +343,12 @@ const Checkout = () => {
                               <div className="flex items-center gap-2">
                                 <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
                                 <p className="text-sm">
-                                  {product?.product?.pickupAddress}{" "}
+                                  {product?.product?.pickupAddress}
+                                  {/* {" "}
                                   {product?.product?.pickupCity}{" "}
                                   {product?.product?.pickupState}{" "}
                                   {product?.product?.zipcode}{" "}
-                                  {product?.product?.pickupCountry}
+                                  {product?.product?.pickupCountry} */}
                                 </p>
                               </div>
                             </div>

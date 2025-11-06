@@ -129,10 +129,10 @@ const OrderCard = ({ product }) => {
               </div>
 
               {/* Arrow (for seller tab only) */}
-              {tab === "seller" && (
+              {tab === "buyer" && (
                 <div className="flex flex-col items-end justify-center gap-2">
                   <Link
-                    to={`/orders/seller/details/${product?.orderNumber}?itemId=${item?.id}`}
+                    to={`/orders/details/${product?.orderNumber}?itemId=${item?.id}`}
                   >
                     <div className="w-[49px] h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
                       <img

@@ -112,6 +112,9 @@ const SettingsLayout = ({ page }) => {
       Cookies.remove("userEmail");
       Cookies.remove("isUserEmailVerified");
       Cookies.remove("userSelectedPaymentMethod");
+      Cookies.remove("userSelectedDeliveryMethod");
+      Cookies.remove("userSelectedDeliveryAddress");
+      Cookies.remove("newDeliveryAddress");
 
       navigate("/login");
     }

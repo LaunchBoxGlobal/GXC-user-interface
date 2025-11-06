@@ -21,7 +21,8 @@ const DeliveryConfirmationPopup = ({
             {type == "delivery" ? "delivered" : "picked up"}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
-            Your product has been successfully delivered. If you have any
+            Your product has been successfully{" "}
+            {type == "delivery" ? "delivered" : "picked up"}. If you have any
             questions, please contact our support team.
           </p>
 
