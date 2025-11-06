@@ -14,6 +14,7 @@ const DeliveryProductReviewPopup = ({
   setShowFeedbackSuccessPopup,
   fetchOrderDetails,
 }) => {
+  console.log(product);
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(null);
@@ -70,25 +71,28 @@ const DeliveryProductReviewPopup = ({
         <h4 className="text-[24px] font-semibold leading-none">Write Review</h4>
 
         {/* Product Info */}
-        {product && (
+        {product && product?.seller && (
           <div className="w-full flex items-center gap-3 my-5">
-            <img
-              src={product?.productImage}
-              alt={product?.productTitle}
-              className="w-[72px] h-[72px] object-cover rounded-[16px]"
-            />
+            {product?.seller?.profilePictureUrl ? (
+              <img
+                src={product?.seller?.profilePictureUrl}
+                alt={product?.productTitle}
+                className="w-[72px] h-[72px] object-cover rounded-[16px]"
+              />
+            ) : (
+              <img
+                src="/profile-icon.png"
+                alt="profile picture placeholder"
+                className="w-[72px] h-[72px] object-cover rounded-[16px]"
+              />
+            )}
+
             <div className="flex flex-col items-start justify-center">
               <p className="text-lg font-semibold leading-none">
-                {product?.productTitle?.length > 30
-                  ? `${product?.productTitle.slice(0, 20)}...`
-                  : product?.productTitle}
+                {product?.seller?.name}
               </p>
               <p className="text-sm text-[#18181899] capitalize">
-                {product?.deliveryMethod === "delivery"
-                  ? "Delivery"
-                  : product?.deliveryMethod === "pickup"
-                  ? "Pickup"
-                  : "Pickup / Delivery"}
+                {product?.seller?.email}
               </p>
             </div>
           </div>
