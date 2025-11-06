@@ -132,7 +132,7 @@ const HomePage = () => {
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
-      {products?.length > 0 && <Categories categories={categories} />}
+      {categories?.length > 0 && <Categories categories={categories} />}
       {communities?.length > 0 ? (
         <>
           <ProductList products={products} pagination={pagination} />

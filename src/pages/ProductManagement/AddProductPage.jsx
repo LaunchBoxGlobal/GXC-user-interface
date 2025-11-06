@@ -344,12 +344,13 @@ const AddProductPage = () => {
                       value={formik.values.category}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
+                      className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
                         formik.touched.category && formik.errors.category
                           ? "border-red-500"
                           : "border-[var(--secondary-bg)]"
                       }`}
                     >
+                      <option value="">Choose a category</option>
                       {categories?.map((c) => (
                         <option value={c?.id} key={c?.id}>
                           {c?.name}

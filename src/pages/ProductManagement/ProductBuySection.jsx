@@ -70,7 +70,7 @@ const ProductBuySection = ({
         fetchCartProducts();
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       if (
         error?.status == 400 &&
         error?.response?.data?.message == "Product is not available"

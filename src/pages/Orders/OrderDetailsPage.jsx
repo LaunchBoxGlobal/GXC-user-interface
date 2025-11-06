@@ -162,7 +162,7 @@ const OrderDetailsPage = () => {
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
       <button
         type="button"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />

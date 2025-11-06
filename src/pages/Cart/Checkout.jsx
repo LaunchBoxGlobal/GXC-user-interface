@@ -26,7 +26,6 @@ const Checkout = () => {
   const { selectedCommunity, checkIamAlreadyMember } = useUser();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const [cartDetails, setCartDetails] = useState(null);
   const navigate = useNavigate();
 
   const [removingItems, setRemovingItems] = useState(false);
@@ -59,6 +58,18 @@ const Checkout = () => {
     fetchCartCount();
     fetchCartProducts();
   }, []);
+
+  useEffect(() => {
+    if (cartProducts?.length <= 0) {
+      navigate("/");
+      enqueueSnackbar(
+        "No items in your cart! Product is no longer available.",
+        {
+          variant: "error",
+        }
+      );
+    }
+  }, [cartProducts, navigate]);
 
   const pickupItems = cartProducts?.filter(
     (pr) => pr?.product?.selectedDeliveryMethod === "pickup"
@@ -198,12 +209,20 @@ const Checkout = () => {
     );
   }
 
+  const handleNavigateBack = () => {
+    if (cartProducts) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
       <div className="w-full">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => handleNavigateBack()}
           className="text-sm text-white flex items-center gap-2"
         >
           <FiArrowLeft className="text-base" /> Back

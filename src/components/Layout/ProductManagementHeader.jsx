@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "../Common/Loader";
-import { RiSecurePaymentLine } from "react-icons/ri";
 import { MdPayments } from "react-icons/md";
 
 const ProductManagementHeader = () => {
@@ -30,12 +29,10 @@ const ProductManagementHeader = () => {
         navigate("/product-management/add-product");
       } else {
         setShowConfirmationModal((prev) => !prev);
-        // handleCreateStripeAccount();
       }
     } catch (error) {
       if (error?.status === 404) {
         setShowConfirmationModal((prev) => !prev);
-        // handleCreateStripeAccount();
         return;
       }
       console.log("handleCheckStripeAccountStatus error >>> ", error);
