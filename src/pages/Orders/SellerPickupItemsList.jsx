@@ -240,7 +240,7 @@ const SellerPickupItemsList = ({
                       </div>
 
                       <Link
-                        to={`/orders/details/seller/${orderDetails?.communityId}/${orderDetails?.buyer?.id}`}
+                        to={`/orders/details/seller/${orderDetails?.communityId}/${orderDetails?.buyer?.id}?isBuyer=true`}
                         className="max-w-[38px]"
                       >
                         <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">

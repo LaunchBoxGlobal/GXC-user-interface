@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
