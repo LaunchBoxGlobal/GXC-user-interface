@@ -58,17 +58,23 @@ const OrderSummary = ({
             </p>
           </div>
 
-          <div className="w-full mt-5">
+          <div className="w-full mt-4">
             {location?.pathname ===
             `/cart/${selectedCommunity?.id}/checkout` ? (
-              <button
-                type="button"
-                className="button"
-                disabled={removingItems}
-                onClick={() => handleClick()}
-              >
-                {removingItems ? <Loader /> : "Place Order"}
-              </button>
+              <div>
+                <p className="text-sm">
+                  <span className="font-medium">Note:</span> No cancellations
+                  after purchase. Please review your order before confirming.
+                </p>
+                <button
+                  type="button"
+                  className="button mt-2"
+                  disabled={removingItems}
+                  onClick={() => handleClick()}
+                >
+                  {removingItems ? <Loader /> : "Place Order"}
+                </button>
+              </div>
             ) : (
               <button
                 type="button"
