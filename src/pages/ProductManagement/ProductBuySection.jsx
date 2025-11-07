@@ -75,13 +75,10 @@ const ProductBuySection = ({
         error?.status == 400 &&
         error?.response?.data?.message == "Product is not available"
       ) {
-        enqueueSnackbar(
-          "Unfortunately, this product is no longer available as it has just been purchased by another user.",
-          {
-            variant: "error",
-            autoHideDuration: 3000,
-          }
-        );
+        enqueueSnackbar("Unfortunately, this product is no longer available.", {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
         navigate("/");
         return;
       }

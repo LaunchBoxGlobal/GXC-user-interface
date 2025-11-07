@@ -5,6 +5,7 @@
   --secondary-bg: #f5f5f5;
   --primary-blue: #2f88ff;
   --light-bg: #f7f7f7;
+  --green-bg: #4e9d4b;
 }
 
 .button {
@@ -25,9 +26,10 @@
 .hero {
   width: 100%;
   height: 340px;
-  background-image: url("/header-background-image.png");
+  /* background-image: url("/header-background-image.png");
   background-position: center;
-  background-size: cover;
+  background-size: cover; */
+  background-color: var(--green-bg);
 }
 
 .productSearchInput {
