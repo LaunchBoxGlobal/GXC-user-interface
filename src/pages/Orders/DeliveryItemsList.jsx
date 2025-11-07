@@ -150,29 +150,29 @@ const DeliveryItemsList = ({
                     {item?.buyerStatus === "delivered" ||
                     item?.buyerStatus === "cancelled" ||
                     item?.sellerStatus === "cancelled" ? (
-                      // <Link
-                      //   to={`/products/${item?.productTitle}?productId=${item?.productId}`}
-                      //   className="max-w-[38px]"
-                      // >
-                      //   <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-                      //     <img
-                      //       src="/right-arrow-icon.png"
-                      //       alt=""
-                      //       className="w-[7px] h-[14px]"
-                      //     />
-                      //   </div>
-                      // </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setProduct(item);
-                          setOpenFeedbackModal(true);
-                        }}
-                        className="button max-w-[140px]"
+                      <Link
+                        to={`/products/${item?.productTitle}?productId=${item?.productId}`}
+                        className="max-w-[38px]"
                       >
-                        Write a review
-                      </button>
+                        <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                          <img
+                            src="/right-arrow-icon.png"
+                            alt=""
+                            className="w-[7px] h-[14px]"
+                          />
+                        </div>
+                      </Link>
                     ) : (
+                      // <button
+                      //   type="button"
+                      //   onClick={() => {
+                      //     setProduct(item);
+                      //     setOpenFeedbackModal(true);
+                      //   }}
+                      //   className="button max-w-[140px]"
+                      // >
+                      //   Write a review
+                      // </button>
                       <div className="max-w-[370px] flex items-center justify-end gap-2">
                         <button
                           type="button"
