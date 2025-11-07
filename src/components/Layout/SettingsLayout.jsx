@@ -127,13 +127,13 @@ const SettingsLayout = ({ page }) => {
           <div className="">
             {user?.profilePictureUrl ? (
               <img
-                class="lg:h-[116px] min-w-[54px] h-[54px] lg:max-w-[116px] rounded-full object-cover object-center"
+                className="lg:max-h-[116px] lg:h-[116px] min-w-[54px] min-h-[54px] lg:w-[116px] lg:max-w-[116px] rounded-full object-cover object-center"
                 src={user?.profilePictureUrl}
                 alt="user profile picture"
               />
             ) : (
               <img
-                class="lg:h-[116px] min-w-[54px] h-[54px] lg:max-w-[116px] rounded-full object-cover object-center"
+                className="lg:h-[116px] min-w-[54px] h-[54px] lg:max-w-[116px] rounded-full object-cover object-center"
                 src={"/profile-icon.png"}
                 alt="user profile picture"
               />
