@@ -25,6 +25,7 @@ const DeliveryItemsList = ({
   const [showFeedbackSuccessPopup, setShowFeedbackSuccessPopup] =
     useState(false);
   const [product, setProduct] = useState(null);
+
   // cancel order states
   const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false);
   const [showCancellationReasonPopup, setShowCancellationReasonPopup] =
@@ -52,17 +53,17 @@ const DeliveryItemsList = ({
       return;
     }
 
-    if (product?.sellerStatus !== "out_for_delivery") {
-      enqueueSnackbar(
-        "You can mark this item as received once the seller marks it out for delivery.",
-        {
-          variant: "error",
-          autoHideDuration: 3500,
-        }
-      );
+    // if (product?.sellerStatus !== "out_for_delivery") {
+    //   enqueueSnackbar(
+    //     "You can mark this item as received once the seller marks it out for delivery.",
+    //     {
+    //       variant: "error",
+    //       autoHideDuration: 3500,
+    //     }
+    //   );
 
-      return;
-    }
+    //   return;
+    // }
 
     setDeliveryLoadingState(true);
     try {
@@ -81,7 +82,7 @@ const DeliveryItemsList = ({
         // fetchOrderDetails();
       }
     } catch (error) {
-      console.error("markItemAsDelivered error >>> ", error);
+      // console.error("markItemAsDelivered error >>> ", error);
       handleApiError(error, navigate);
     } finally {
       setDeliveryLoadingState(false);
@@ -105,7 +106,6 @@ const DeliveryItemsList = ({
                 >
                   <div className="flex items-center gap-3">
                     <div className="">
-                      {/* public/image-placeholder.png */}
                       {item?.productImage ? (
                         <img
                           src={item?.productImage}
@@ -150,46 +150,36 @@ const DeliveryItemsList = ({
                     {item?.buyerStatus === "delivered" ||
                     item?.buyerStatus === "cancelled" ||
                     item?.sellerStatus === "cancelled" ? (
-                      <Link
-                        to={`/products/${item?.productTitle}?productId=${item?.productId}`}
-                        className="max-w-[38px]"
+                      // <Link
+                      //   to={`/products/${item?.productTitle}?productId=${item?.productId}`}
+                      //   className="max-w-[38px]"
+                      // >
+                      //   <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                      //     <img
+                      //       src="/right-arrow-icon.png"
+                      //       alt=""
+                      //       className="w-[7px] h-[14px]"
+                      //     />
+                      //   </div>
+                      // </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProduct(item);
+                          setOpenFeedbackModal(true);
+                        }}
+                        className="button max-w-[140px]"
                       >
-                        <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-                          <img
-                            src="/right-arrow-icon.png"
-                            alt=""
-                            className="w-[7px] h-[14px]"
-                          />
-                        </div>
-                      </Link>
+                        Write a review
+                      </button>
                     ) : (
-                      <div className="max-w-[370px] flex items-center justify-end gap-2 justify-end">
-                        {/* <button
-                          type="button"
-                          onClick={() => {
-                            setProduct(item);
-                            setShowOrderCancelPopup(true);
-                          }}
-                          disabled={
-                            item?.buyerStatus === "picked_up" ||
-                            item?.buyerStatus === "delivered" ||
-                            item?.buyerStatus === "cancelled" ||
-                            item?.sellerStatus === "cancelled" ||
-                            item?.sellerStatus === "out_for_delivery" ||
-                            item?.sellerStatus === "ready_for_pickup" ||
-                            item?.sellerStatus === "ready"
-                          }
-                          className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
-                        >
-                          Cancel Order
-                        </button> */}
+                      <div className="max-w-[370px] flex items-center justify-end gap-2">
                         <button
                           type="button"
                           onClick={() => {
                             setProduct(item);
                             markItemAsDelivered(item);
                           }}
-                          // disabled={item?.sellerStatus !== "out_for_delivery"}
                           disabled={deliveryLoadingState}
                           className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
                         >

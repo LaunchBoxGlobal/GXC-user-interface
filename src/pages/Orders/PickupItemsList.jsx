@@ -48,17 +48,17 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       return;
     }
 
-    if (item?.sellerStatus !== "ready_for_pickup") {
-      enqueueSnackbar(
-        "This item can only be marked as picked up after the seller updates its status to 'Ready for Pickup'.",
-        {
-          variant: "error",
-          autoHideDuration: 3500,
-        }
-      );
-      setLoadingItemId(null);
-      return;
-    }
+    // if (item?.sellerStatus !== "ready_for_pickup") {
+    //   enqueueSnackbar(
+    //     "This item can only be marked as picked up after the seller updates its status to 'Ready for Pickup'.",
+    //     {
+    //       variant: "error",
+    //       autoHideDuration: 3500,
+    //     }
+    //   );
+    //   setLoadingItemId(null);
+    //   return;
+    // }
 
     setLoading(true);
     setLoadingItemId(item?.id);
@@ -174,21 +174,29 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                       </div>
                     ) : (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
-                        {item?.buyerStatus === "picked_up" ||
-                        item?.buyerStatus === "cancelled" ||
-                        item?.sellerStatus === "cancelled" ? (
-                          <Link
-                            to={`/products/${item?.productTitle}?productId=${item?.productId}`}
-                            className="max-w-[38px]"
+                        {item?.buyerStatus === "picked_up" ? (
+                          // <Link
+                          //   to={`/products/${item?.productTitle}?productId=${item?.productId}`}
+                          //   className="max-w-[38px]"
+                          // >
+                          //   <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                          //     <img
+                          //       src="/right-arrow-icon.png"
+                          //       alt=""
+                          //       className="w-[7px] h-[14px]"
+                          //     />
+                          //   </div>
+                          // </Link>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProduct(item);
+                              setOpenFeedbackModal(true);
+                            }}
+                            className="button max-w-[140px]"
                           >
-                            <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
-                              <img
-                                src="/right-arrow-icon.png"
-                                alt=""
-                                className="w-[7px] h-[14px]"
-                              />
-                            </div>
-                          </Link>
+                            Write a review
+                          </button>
                         ) : (
                           <>
                             {/* <button
