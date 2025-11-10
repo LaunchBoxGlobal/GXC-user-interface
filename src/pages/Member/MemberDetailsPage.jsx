@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
@@ -18,8 +18,12 @@ const MemberDetailsPage = () => {
   const navigate = useNavigate();
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null); // ✅ new state for UI errors
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("details");
+  const [searchParams] = useSearchParams();
+  const isOrderPlaced = searchParams.get("isOrderPlaced");
+
+  console.log("isOrderPlaced >> ", isOrderPlaced);
 
   const [
     showMemberReportConfimationPopup,
@@ -49,15 +53,6 @@ const MemberDetailsPage = () => {
           error?.message ||
           "Failed to load member details. Please try again."
       );
-
-      // ✅ set user-friendly error message
-      // if (error.response?.status === 404) {
-      //   setError("Member not found.");
-      // } else if (error.response?.status === 500) {
-      //   setError("Something went wrong on the server. Please try again later.");
-      // } else {
-      //   setError("Failed to load member details. Please try again.");
-      // }
     } finally {
       setLoading(false);
     }
@@ -92,13 +87,7 @@ const MemberDetailsPage = () => {
         </button>
         <div className="w-full bg-[var(--light-bg)] p-5 rounded-[30px] mt-5">
           <div className="w-full rounded-[20px] p-5 bg-white text-center min-h-[100vh] flex items-center justify-center">
-            <p className="text-gray-600 font-medium text-sm">{error}.</p>
-            {/* <button
-          onClick={fetchUserProfile}
-          className="bg-[var(--button-bg)] text-white px-4 py-2 rounded-lg hover:opacity-90"
-          >
-          Retry
-          </button> */}
+            <p className="text-gray-600 font-medium text-sm">{error}</p>
           </div>
         </div>
       </div>
@@ -125,30 +114,43 @@ const MemberDetailsPage = () => {
           }
         />
 
-        <div className="w-full max-w-[422px] h-[60px] bg-white custom-shadow rounded-[8px] grid grid-cols-2 gap-1 p-1.5">
-          <button
-            type="button"
-            onClick={() => setActiveTab("details")}
-            className={`${
-              activeTab === "details" ? "bg-[var(--button-bg)] text-white" : ""
-            } font-medium rounded-[8px]`}
-          >
-            Member Details
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("reviews")}
-            className={`${
-              activeTab === "reviews" ? "bg-[var(--button-bg)] text-white" : ""
-            } font-medium rounded-[8px]`}
-          >
-            Reviews
-          </button>
-        </div>
+        {isOrderPlaced === "true" ? (
+          <>
+            {/* Tabs (only if order is placed) */}
+            <div className="w-full max-w-[422px] h-[60px] bg-white custom-shadow rounded-[8px] grid grid-cols-2 gap-1 p-1.5">
+              <button
+                type="button"
+                onClick={() => setActiveTab("details")}
+                className={`${
+                  activeTab === "details"
+                    ? "bg-[var(--button-bg)] text-white"
+                    : ""
+                } font-medium rounded-[8px]`}
+              >
+                Member Details
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("reviews")}
+                className={`${
+                  activeTab === "reviews"
+                    ? "bg-[var(--button-bg)] text-white"
+                    : ""
+                } font-medium rounded-[8px]`}
+              >
+                Reviews
+              </button>
+            </div>
 
-        {activeTab === "details" ? (
-          <MemberInfo member={member} />
+            {/* Conditional content */}
+            {activeTab === "details" ? (
+              <MemberInfo member={member} />
+            ) : (
+              <MemberReviews member={member} />
+            )}
+          </>
         ) : (
+          // If no order placed → only show reviews
           <MemberReviews member={member} />
         )}
       </div>

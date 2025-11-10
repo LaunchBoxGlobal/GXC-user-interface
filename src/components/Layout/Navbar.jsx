@@ -9,6 +9,7 @@ import { useUser } from "../../context/userContext";
 // import { HiOutlineUser } from "react-icons/hi2";
 import { HiOutlineUser } from "react-icons/hi";
 import { FaRegUser } from "react-icons/fa6";
+import ProfilerDropdown from "./ProfilerDropdown";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -41,9 +42,10 @@ const Navbar = () => {
 
   return (
     <header
-      className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-hidden transition-colors duration-300 ${
+      className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-visible transition-colors duration-300 ${
         isScrolled ? "bg-white shadow-md" : "bg-transparent"
       }`}
+      // style={{ overflowY: "visible" }}
     >
       {/* Logo */}
       <div className="block">
@@ -140,32 +142,7 @@ const Navbar = () => {
           </button>
 
           {/* Profile */}
-          {user && (
-            <Link to={"/profile"}>
-              <div
-                className={`w-[57px] h-[57px] rounded-full flex items-center justify-center`}
-              >
-                {user?.profilePicture ? (
-                  <img
-                    src={user?.profilePictureUrl}
-                    alt="profile"
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  // <FaRegUser
-                  //   className={`text-lg ${
-                  //     isScrolled ? "text-white" : "text-black"
-                  //   }`}
-                  // />
-                  <img
-                    src="/profile-icon.png"
-                    alt="profile icon"
-                    className="w-full h-full"
-                  />
-                )}
-              </div>
-            </Link>
-          )}
+          {user && <ProfilerDropdown user={user} />}
         </div>
       </ul>
 

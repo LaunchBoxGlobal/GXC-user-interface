@@ -2,16 +2,39 @@ import axios from "axios";
 import { useEffect } from "react";
 import { BASE_URL } from "../../data/baseUrl";
 import { useAppContext } from "../../context/AppContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import SettingsLayout from "../../components/Layout/SettingsLayout";
 import ChangePasswordPage from "./ChangePasswordPage";
 import { useUser } from "../../context/userContext";
+import NotificationsPage from "./NotificationsPage";
+import PaymentMethods from "./PaymentMethods";
+import DeleteAccount from "./DeleteAccount";
+import TermsAndConditions from "./TermsAndConditions";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 const ProfilePage = () => {
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
   const { checkIamAlreadyMember } = useUser();
+  const { settingsTab } = useParams();
+
+  const ActivePage =
+    settingsTab === "notifications" ? (
+      <NotificationsPage />
+    ) : settingsTab === "payment-methods" ? (
+      <PaymentMethods />
+    ) : settingsTab === "change-password" ? (
+      <ChangePasswordPage />
+    ) : settingsTab === "delete-account" ? (
+      <DeleteAccount />
+    ) : settingsTab === "terms-and-conditions" ? (
+      <TermsAndConditions />
+    ) : settingsTab === "privacy-policy" ? (
+      <PrivacyPolicy />
+    ) : (
+      ""
+    );
 
   const fetchUserProfile = async () => {
     try {
@@ -68,7 +91,7 @@ const ProfilePage = () => {
   return (
     <div className="w-full relative padding-x ">
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4">
-        <SettingsLayout page={<ChangePasswordPage />} />
+        <SettingsLayout page={ActivePage} />
       </div>
     </div>
   );

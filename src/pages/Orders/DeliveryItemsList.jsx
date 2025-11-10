@@ -227,7 +227,7 @@ const DeliveryItemsList = ({
                       </div>
                     </div>
                     <Link
-                      to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}`}
+                      to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                       className="max-w-[38px]"
                     >
                       <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">

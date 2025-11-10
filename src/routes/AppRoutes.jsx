@@ -267,7 +267,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/profile"
+        path="/profile/:settingsTab"
         element={
           <PrivateRoute
             element={
@@ -292,7 +292,7 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
+      {/* <Route
         path="/profile/change-password"
         element={
           <PrivateRoute
@@ -303,7 +303,7 @@ const AppRoutes = () => {
             }
           />
         }
-      />
+      /> */}
 
       <Route
         path="/communities"

@@ -11,7 +11,7 @@ import { useUser } from "../../context/userContext";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
-  const {checkIamAlreadyMember} = useUser()
+  const { checkIamAlreadyMember } = useUser();
 
   const formik = useFormik({
     initialValues: {
@@ -71,8 +71,9 @@ const ChangePasswordPage = () => {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full pt-2">
       <h1 className="font-semibold text-[24px]">Change Password</h1>
+      <div className="w-full border my-5" />
 
       <form onSubmit={formik.handleSubmit} className="w-full space-y-5 mt-5">
         {/* <PasswordField

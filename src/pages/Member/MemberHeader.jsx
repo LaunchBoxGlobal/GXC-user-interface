@@ -1,10 +1,8 @@
-import React from "react";
 import { useSearchParams } from "react-router-dom";
 
 const MemberHeader = ({ member, setShowMemberReportConfimationPopup }) => {
   const [searchParams] = useSearchParams();
   const isBuyer = searchParams.get("isBuyer");
-  console.log("isBuyer >> ", isBuyer);
   return (
     <div className="w-full bg-white rounded-[18px] relative p-5">
       <div className="w-full flex items-center justify-between flex-wrap gap-y-7">

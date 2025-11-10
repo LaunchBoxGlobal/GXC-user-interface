@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -9,27 +9,27 @@ import Cookies from "js-cookie";
 const settingPages = [
   {
     title: "Notification",
-    url: "/profile",
+    url: "notifications",
   },
   {
     title: "Pyament Method",
-    url: "/profile",
+    url: "payment-methods",
   },
   {
     title: "Change Password",
-    url: "/profile",
+    url: "change-password",
   },
   {
     title: "Delete Account",
-    url: "/profile",
+    url: "delete-account",
   },
   {
     title: "Terms & Conditions",
-    url: "/profile",
+    url: "terms-and-conditions",
   },
   {
     title: "Privacy Policy",
-    url: "/profile",
+    url: "privacy-policy",
   },
 ];
 
@@ -37,6 +37,7 @@ const SettingsLayout = ({ page }) => {
   const location = useLocation();
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
+  const { settingsTab } = useParams();
 
   const fetchUserProfile = async () => {
     try {
@@ -171,14 +172,15 @@ const SettingsLayout = ({ page }) => {
                   className={`w-full text-black h-[50px] border-b`}
                   key={index}
                 >
-                  <Link
-                    to={link?.url}
+                  <button
+                    // to={link?.url}
+                    onClick={() => navigate(`/profile/${link?.url}`)}
                     className={`text-sm flex items-center gap-x-2.5 px-4 font-medium w-full h-[49px] outline-none ${
-                      link?.title === "Change Password" && "bg-gray-100"
+                      link?.url === settingsTab && "bg-gray-100"
                     } whitespace-nowrap`}
                   >
                     <span className="">{link?.title}</span>
-                  </Link>
+                  </button>
                 </li>
               );
             })}

@@ -30,6 +30,8 @@ const ProductDetailsPage = () => {
   const [addProductInCart, setAddProductInCart] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
 
+  console.log("productDetails >>> ", productDetails);
+
   const fetchProductDetails = async () => {
     setLoading(true);
     try {

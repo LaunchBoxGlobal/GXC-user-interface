@@ -9,6 +9,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
 import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
+import { Link } from "react-router-dom";
 
 const ProductBuySection = ({
   productDetails,
@@ -175,6 +176,37 @@ const ProductBuySection = ({
             </div>
           </>
         )}
+
+      {productDetails?.seller && (
+        <>
+          <div className="w-full border my-5" />
+
+          <Link
+            to={`/orders/details/seller/${productDetails?.community?.id}/${productDetails?.seller?.id}?isOrderPlaced=false`}
+            className="w-full flex items-center gap-2"
+          >
+            <div className="">
+              <img
+                src={
+                  productDetails?.seller?.profilePictureUrl
+                    ? productDetails?.seller?.profilePictureUrl
+                    : `/profile-icon.png`
+                }
+                alt="seller profile picture"
+                className="w-[48px] h-[48px] rounded-full object-cover"
+              />
+            </div>
+            <div className="">
+              <p className="font-medium tracking-tight leading-none">
+                {productDetails?.seller?.name}
+              </p>
+              <p className="text-sm text-gray-500">
+                {productDetails?.seller?.email}
+              </p>
+            </div>
+          </Link>
+        </>
+      )}
 
       {/* ✅ Action Button */}
       {productDetails?.status === "active" && (
