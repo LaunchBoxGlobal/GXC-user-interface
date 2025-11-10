@@ -89,7 +89,6 @@ const HomePage = () => {
     fetchCommunities();
   }, []);
 
-  // Handle pagination click
   const handlePageChange = (newPage) => {
     if (!pagination || newPage < 1 || newPage > pagination.totalPages) return;
     const params = new URLSearchParams(searchParams);

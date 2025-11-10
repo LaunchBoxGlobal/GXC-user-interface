@@ -132,7 +132,7 @@ const ReportMemberModal = ({
         className="w-full max-w-[471px] bg-white rounded-[16px] lg:rounded-[32px] p-7 lg:p-9 flex flex-col gap-2 shadow-xl"
       >
         <h2 className="text-[22px] font-semibold leading-tight">
-          Why do you want to report?
+          Reason for reporting
         </h2>
         <p className="text-[#202020] text-base">
           To help improve your experience, please let us know why you are

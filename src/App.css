@@ -50,3 +50,7 @@
   border: none !important;
   background-color: transparent !important;
 }
+
+.categories-container::-webkit-scrollbar {
+  display: none;
+}
