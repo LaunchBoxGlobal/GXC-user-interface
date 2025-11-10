@@ -2,14 +2,12 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
-import CommunityDetails from "./CommunityDetails";
 import { useAppContext } from "../../context/AppContext";
 import { handleApiError } from "../../utils/handleApiError";
 import Cookies from "js-cookie";
-import { useUser } from "../../context/userContext";
 
 const CommunityPage = () => {
   const { communityTitle } = useParams();
@@ -17,18 +15,16 @@ const CommunityPage = () => {
   const [canJoin, setCanJoin] = useState(null);
   const [fetchingCommunity, setFetchingCommunity] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [alreadyMember, setAlreadyMember] = useState(false);
   const [community, setCommunity] = useState(null);
   const [initializing, setInitializing] = useState(true);
   const { user } = useAppContext();
   const [notFound, setNotFound] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const navigate = useNavigate();
-  const { fetchCommunities } = useUser();
   const [initialized, setInitialized] = useState(false);
-  const [searchParams] = useSearchParams();
 
-  console.log("community >> ", community);
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
@@ -40,7 +36,6 @@ const CommunityPage = () => {
         }
       );
 
-      // console.log("communityDetails >>> ", res?.data);
       setCommunity(res?.data?.data || null);
     } catch (error) {
       console.error(
@@ -64,6 +59,9 @@ const CommunityPage = () => {
     }
   };
 
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
+
   // Check current membership (defensive)
   const checkIamAlreadyMember = async () => {
     try {
@@ -77,7 +75,6 @@ const CommunityPage = () => {
       const data = res?.data?.data || {};
       // Coerce to boolean
       const isMember = !!data?.isMember;
-      setAlreadyMember(isMember);
 
       // membership may be null — guard it
       if (data?.membership?.status === "banned") {
@@ -103,15 +100,16 @@ const CommunityPage = () => {
         return false;
       }
 
-      // If 404 or other, treat as "not member" (do NOT redirect)
       if (error?.response?.status === 404) {
         return false;
       }
 
-      // For other errors, log and treat as not member
       return false;
     }
   };
+
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
 
   // Check if community allows joining
   const checkJoinStatus = async () => {
@@ -125,6 +123,7 @@ const CommunityPage = () => {
 
       const data = res?.data?.data || {};
       const canJoinStatus = !!data?.canJoin;
+      console.log("canJoinStatus from checkJoinStatus >>>> ", canJoinStatus);
       setCanJoin(canJoinStatus);
 
       return canJoinStatus;
@@ -139,6 +138,9 @@ const CommunityPage = () => {
       return false;
     }
   };
+
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
 
   // Accept invite
   const handleAcceptInvite = async () => {
@@ -218,6 +220,9 @@ const CommunityPage = () => {
     }
   };
 
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
+
   useEffect(() => {
     if (!user || initialized) return;
     setInitialized(true);
@@ -226,7 +231,6 @@ const CommunityPage = () => {
       await fetchCommunityDetails();
 
       const isMember = await checkIamAlreadyMember();
-
       if (isMember) {
         navigate(`/?community=${communityTitle}`);
         setInitializing(false);
@@ -234,13 +238,9 @@ const CommunityPage = () => {
       }
 
       const canJoinStatus = await checkJoinStatus();
-
-      if (!isMember && canJoinStatus) {
+      if (canJoinStatus && !isMember) {
         setShowPopup(true);
-      } else if (isMember) {
-        navigate(`/?community=${communityTitle}`);
       }
-      setShowPopup(canJoinStatus);
 
       setInitializing(false);
     };
@@ -253,6 +253,9 @@ const CommunityPage = () => {
     navigate("/");
   };
 
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
+
   // Render states
   if (initializing || fetchingCommunity) {
     return (
@@ -261,6 +264,47 @@ const CommunityPage = () => {
       </div>
     );
   }
+
+  if (showPopup && canJoin) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-[#fff] p-8 rounded-[32px] shadow-lg max-w-[471px] w-full text-center">
+          <img
+            src="/invitation-popup-icon.png"
+            alt="invitation-popup-icon"
+            className="w-[107px] h-[107px] mx-auto"
+          />
+          <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
+            You’ve been invited to join {community?.community?.name} community!
+          </h2>
+          {community?.owner?.fullName && (
+            <p className="mb-4">
+              <span className="font-medium">{community.owner.fullName}</span>{" "}
+              has invited you to join their private community. Accept to become
+              a member.
+            </p>
+          )}
+          <div className="w-full grid grid-cols-2 gap-3">
+            <button
+              onClick={handleCancelInvitation}
+              className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleAcceptInvite}
+              className="w-full px-4 py-3 rounded-lg bg-[#4E9D4B] text-white"
+            >
+              {loading ? <Loader /> : "Accept"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
 
   if (notFound && !fetchingCommunity) {
     return (
@@ -280,14 +324,19 @@ const CommunityPage = () => {
 
   if (blocked && blocked === "banned") {
     return (
-      <div className="w-full text-center h-screen py-80">
-        <p>You’ve been blocked from this community.</p>
+      <div className="w-full text-center h-screen flex items-center justify-center padding-x">
+        <p className="text-sm text-gray-500">
+          You’ve been blocked from this community.
+        </p>
       </div>
     );
   }
 
+  console.log("showPopup >>> ", showPopup);
+  console.log("canJoin >>> ", canJoin);
+
   return (
-    <div className="p-5 min-h-screen">
+    <div className="p-5 min-h-screen relative">
       {showPopup && canJoin && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-[#fff] p-8 rounded-[32px] shadow-lg max-w-[471px] w-full text-center">
@@ -323,16 +372,6 @@ const CommunityPage = () => {
             </div>
           </div>
         </div>
-      )}
-
-      {!showPopup && (
-        <CommunityDetails
-          community={community}
-          canJoin={canJoin}
-          loading={loading}
-          setLoading={setLoading}
-          communityTitle={communityTitle}
-        />
       )}
     </div>
   );

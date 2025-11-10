@@ -71,6 +71,18 @@ const HomePage = () => {
       setProducts(res?.data?.data?.products || []);
       setPagination(res?.data?.data?.pagination || null);
     } catch (error) {
+      if (error?.status === 403) {
+        enqueueSnackbar(
+          error?.response?.data?.message ||
+            error?.message ||
+            "Something went wrong.",
+          {
+            variant: `error`,
+          }
+        );
+        navigate(`/`);
+        return;
+      }
       // enqueueSnackbar()
       // handleApiError(error, navigate);
     } finally {

@@ -31,12 +31,14 @@ const Categories = memo(({ categories }) => {
   return (
     <div className="relative w-full flex items-center">
       {/* Left Button */}
-      <button
-        onClick={() => scroll("left")}
-        className="absolute left-0 lg:-top-0.5 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
-      >
-        <IoChevronBack className="text-[var(--button-bg)]" size={16} />
-      </button>
+      <div className="bg-white z-20 absolute left-0 lg:-top-0.5">
+        <button
+          onClick={() => scroll("left")}
+          className=" z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
+        >
+          <IoChevronBack className="text-[var(--button-bg)]" size={16} />
+        </button>
+      </div>
 
       <div
         ref={scrollRef}
@@ -76,12 +78,14 @@ const Categories = memo(({ categories }) => {
       </div>
 
       {/* Right Button */}
-      <button
-        onClick={() => scroll("right")}
-        className="absolute right-0 lg:-top-0.5 z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
-      >
-        <IoChevronForward className="text-[var(--button-bg)]" size={16} />
-      </button>
+      <div className="bg-white absolute right-0 lg:-top-0.5 z-20">
+        <button
+          onClick={() => scroll("right")}
+          className=" z-10 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition"
+        >
+          <IoChevronForward className="text-[var(--button-bg)]" size={16} />
+        </button>
+      </div>
     </div>
   );
 });

@@ -35,16 +35,18 @@ const CommunityDetails = ({
         }
       );
 
-      console.log("accept invitation res >>>>> ", res?.data);
+      if (res?.data?.success) {
+        // console.log("accept invitation res >>>>> ", res?.data);
 
-      localStorage.setItem(`invite-${communityTitle}`, "accepted");
-      // Cookies.set('selected-community', JSON.stringify())
+        localStorage.setItem(`invite-${communityTitle}`, "accepted");
+        // Cookies.set('selected-community', JSON.stringify())
 
-      enqueueSnackbar("Welcome! You’ve joined the community 🎉", {
-        variant: "success",
-        autoHideDuration: 2000,
-      });
-      navigate(`/?community=${communityTitle}`);
+        enqueueSnackbar("Welcome! You’ve joined the community 🎉", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        navigate(`/?community=${communityTitle}`);
+      }
     } catch (error) {
       console.log("accept invitation error >>>>> ", error);
       enqueueSnackbar(error?.response?.data?.message || error?.message, {

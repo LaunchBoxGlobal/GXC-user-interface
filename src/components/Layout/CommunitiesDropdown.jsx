@@ -39,27 +39,50 @@ const CommunitiesDropdown = () => {
   const handleTogglePriceFilter = () => setOpenPriceFilter((prev) => !prev);
 
   // 1️⃣ Keep fetchCommunities focused only on data fetching
+  // const fetchCommunities = async () => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${BASE_URL}/communities/my-joined${
+  //         searchCommunityValue ? `?search=${searchCommunityValue}` : ""
+  //       }`,
+  //       {
+  //         headers: { Authorization: `Bearer ${getToken()}` },
+  //       }
+  //     );
+
+  //     if (
+  //       res?.data?.data?.communities?.length == 0 ||
+  //       res?.data?.data?.communities == null
+  //     ) {
+  //       Cookies.remove("selected-community");
+  //     }
+  //     const list = res?.data?.data?.communities || [];
+  //     setCommunities(list);
+  //     setFilteredCommunities(list);
+  //     fetchCartCount();
+  //   } catch (error) {
+  //     handleApiError(error, navigate);
+  //   }
+  // };
   const fetchCommunities = async () => {
     try {
       const res = await axios.get(
         `${BASE_URL}/communities/my-joined${
           searchCommunityValue ? `?search=${searchCommunityValue}` : ""
         }`,
-        {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
-      // if (
-      //   res?.data?.data?.communities?.length == 0 ||
-      //   res?.data?.data?.communities == null
-      // ) {
-      //   Cookies.remove("selected-community");
-      // }
       const list = res?.data?.data?.communities || [];
+
+      if (!list.length) {
+        Cookies.remove("selected-community");
+      }
+
       setCommunities(list);
       setFilteredCommunities(list);
-      fetchCartCount();
+
+      fetchCartCount?.(); // optional, safe call if function exists
     } catch (error) {
       handleApiError(error, navigate);
     }

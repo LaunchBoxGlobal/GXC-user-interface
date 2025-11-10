@@ -42,10 +42,24 @@ export const UserProvider = ({ children }) => {
       if (list.length === 0) {
         Cookies.remove("selected-community");
         setSelected(null);
-        navigate({
-          pathname: "/",
-          search: window?.location?.search || "",
-        });
+        // navigate({
+        //   pathname: "/",
+        //   search: window?.location?.search || "",
+        // });
+        // return;
+      }
+
+      const currentPath = window.location.pathname;
+
+      if (list.length === 0) {
+        if (!currentPath.startsWith("/community")) {
+          Cookies.remove("selected-community");
+          setSelected(null);
+          navigate({
+            pathname: "/",
+            search: window?.location?.search || "",
+          });
+        }
         return;
       }
 
@@ -104,25 +118,41 @@ export const UserProvider = ({ children }) => {
       const membership = res?.data?.data?.membership;
       const status = membership?.status;
 
-      if (status === "removed") {
-        enqueueSnackbar("You’ve been removed from this community.", {
-          variant: "error",
-          autoHideDuration: 3000,
-        });
-
+      if (status === "removed" || status === "banned") {
+        enqueueSnackbar(
+          status === "removed"
+            ? `You’ve been removed from this community.`
+            : status === "banned"
+            ? `You've been blocked from this community.`
+            : `Something went wrong.`
+        );
+        Cookies.remove("selected-community");
+        setSelectedCommunity(null);
         fetchCommunities();
-        navigate(`/`);
-      } else if (status === "banned") {
-        enqueueSnackbar("You've been blocked from this community.", {
-          variant: "error",
-          autoHideDuration: 3000,
-        });
-
-        fetchCommunities();
-        navigate(`/`);
-      } else {
-        setIsBlocked(false);
+        if (!window.location.pathname.startsWith("/community")) {
+          navigate(`/`);
+        }
       }
+
+      // if (status === "removed") {
+      //   enqueueSnackbar("You’ve been removed from this community.", {
+      //     variant: "error",
+      //     autoHideDuration: 3000,
+      //   });
+
+      //   fetchCommunities();
+      //   navigate(`/`);
+      // } else if (status === "banned") {
+      //   enqueueSnackbar("You've been blocked from this community.", {
+      //     variant: "error",
+      //     autoHideDuration: 3000,
+      //   });
+
+      //   fetchCommunities();
+      //   navigate(`/`);
+      // } else {
+      //   setIsBlocked(false);
+      // }
       setIsBlocked(false);
     } catch (error) {
       console.log("checkIamAlreadyMember error >>> ", error);
