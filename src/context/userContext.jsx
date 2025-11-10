@@ -119,13 +119,16 @@ export const UserProvider = ({ children }) => {
       const status = membership?.status;
 
       if (status === "removed" || status === "banned") {
-        enqueueSnackbar(
-          status === "removed"
-            ? `You’ve been removed from this community.`
-            : status === "banned"
-            ? `You've been blocked from this community.`
-            : `Something went wrong.`
-        );
+        // enqueueSnackbar(
+        //   status === "removed"
+        //     ? `You’ve been removed from this community.`
+        //     : status === "banned"
+        //     ? `You've been blocked from this community.`
+        //     : `Something went wrong.`,
+        //   {
+        //     variant: "error",
+        //   }
+        // );
         Cookies.remove("selected-community");
         setSelectedCommunity(null);
         fetchCommunities();
