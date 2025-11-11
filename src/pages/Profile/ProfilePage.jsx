@@ -82,7 +82,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    document.title = "Profile - GiveXChange";
+    document.title = "Profile - giveXchange";
     if (!user) return;
     checkIamAlreadyMember();
     fetchUserProfile();

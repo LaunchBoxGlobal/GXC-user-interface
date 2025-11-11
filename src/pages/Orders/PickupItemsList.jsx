@@ -178,7 +178,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                         item?.buyerStatus === "cancelled" ||
                         item?.sellerStatus === "cancelled" ? (
                           <Link
-                            to={`/products/${item?.productTitle}?productId=${item?.productId}`}
+                            to={`/products/${item?.productTitle}?productId=${item?.productId}&?isOrderPlaced=true`}
                             className="max-w-[38px]"
                           >
                             <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
@@ -287,7 +287,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                         </div>
 
                         <Link
-                          to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}/isOrderPlaced=true`}
+                          to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                           className="max-w-[38px]"
                         >
                           <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">

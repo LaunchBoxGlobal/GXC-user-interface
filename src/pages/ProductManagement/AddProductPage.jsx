@@ -22,6 +22,7 @@ const AddProductPage = () => {
   const { selectedCommunity, checkIamAlreadyMember } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
   const [categories, setCategories] = useState(null);
+  console.log(user);
 
   const fetchCategories = async () => {
     try {
@@ -31,7 +32,7 @@ const AddProductPage = () => {
         },
       });
 
-      console.log("categories >>> ", res?.data?.data?.categories);
+      // console.log("categories >>> ", res?.data?.data?.categories);
       setCategories(res?.data?.data?.categories);
     } catch (error) {
       handleApiError(error, navigate);

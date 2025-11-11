@@ -9,7 +9,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
 import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 const ProductBuySection = ({
   productDetails,
@@ -23,6 +23,8 @@ const ProductBuySection = ({
 }) => {
   const { cartProducts, fetchCartProducts } = useCart();
   const { checkIamAlreadyMember } = useUser();
+  const [searchParams] = useSearchParams();
+  const isOrderPlaced = searchParams.get("isOrderPlaced");
 
   const isProductInCart = cartProducts?.find(
     (product) => product?.product?.id === productDetails?.id
@@ -182,7 +184,7 @@ const ProductBuySection = ({
           <div className="w-full border my-5" />
 
           <Link
-            to={`/orders/details/seller/${productDetails?.community?.id}/${productDetails?.seller?.id}?isOrderPlaced=false`}
+            to={`/orders/details/seller/${productDetails?.community?.id}/${productDetails?.seller?.id}?isOrderPlaced=${isOrderPlaced}`}
             className="w-full flex items-center gap-2"
           >
             <div className="">
