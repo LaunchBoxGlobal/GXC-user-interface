@@ -29,6 +29,22 @@ const EditProductPage = () => {
   const [newImages, setNewImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
+  const [categories, setCategories] = useState(null);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/categories`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+
+      // console.log("categories >>> ", res?.data?.data?.categories);
+      setCategories(res?.data?.data?.categories);
+    } catch (error) {
+      handleApiError(error, navigate);
+    }
+  };
 
   const fetchProductDetails = async () => {
     setFetchingProduct(true);
@@ -59,8 +75,9 @@ const EditProductPage = () => {
   };
 
   useEffect(() => {
-    fetchProductDetails();
     checkIamAlreadyMember();
+    fetchProductDetails();
+    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -90,6 +107,7 @@ const EditProductPage = () => {
       city: product?.pickupAddress?.city || "",
       state: product?.pickupAddress?.state || "",
       productImages: product?.images || [],
+      category: product?.category?.id || "",
     },
 
     validationSchema: Yup.object({
@@ -113,6 +131,7 @@ const EditProductPage = () => {
             value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
         )
         .required("Price is required"),
+      category: Yup.string().required("Please select a category"),
       description: Yup.string()
         .trim()
         .max(500, "Description must be 500 characters or less")
@@ -162,6 +181,7 @@ const EditProductPage = () => {
             price: values.price,
             description: values.description.trim(),
             deliveryMethod,
+            categoryId: values.category,
             pickupAddress: formik.values.deliveryType.includes("pickup")
               ? pickupAddress.trim()
               : null,
@@ -448,31 +468,65 @@ const EditProductPage = () => {
               </div>
 
               {/* Delivery Type */}
-              <div className="mt-4">
-                <label className="font-medium text-sm mb-2 block">
-                  Delivery Type
-                </label>
-                <div className="grid grid-cols-2 gap-3 max-w-[388px]">
-                  {["pickup", "delivery"].map((type) => (
-                    <button
-                      type="button"
-                      key={type}
-                      onClick={() => handleDeliveryTypeChange(type)}
-                      className={`py-3 px-4 border rounded-[8px] text-sm font-medium transition-all h-[49px] ${
-                        formik.values.deliveryType.includes(type)
-                          ? "bg-[var(--button-bg)] text-white"
-                          : "bg-[var(--secondary-bg)] text-gray-700"
-                      }`}
-                    >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                  ))}
+              <div className="w-full mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="">
+                  <label className="font-medium text-sm mb-2 block">
+                    Delivery Type
+                  </label>
+                  <div className="grid grid-cols-2 gap-3 max-w-[388px]">
+                    {["pickup", "delivery"].map((type) => (
+                      <button
+                        type="button"
+                        key={type}
+                        onClick={() => handleDeliveryTypeChange(type)}
+                        className={`py-3 px-4 border rounded-[8px] text-sm font-medium transition-all h-[49px] ${
+                          formik.values.deliveryType.includes(type)
+                            ? "bg-[var(--button-bg)] text-white"
+                            : "bg-[var(--secondary-bg)] text-gray-700"
+                        }`}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                  {formik.touched.deliveryType &&
+                    formik.errors.deliveryType && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors.deliveryType}
+                      </p>
+                    )}
                 </div>
-                {formik.touched.deliveryType && formik.errors.deliveryType && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {formik.errors.deliveryType}
-                  </p>
-                )}
+                <div className="w-full flex flex-col gap-2">
+                  <label htmlFor="category" className="text-sm font-medium">
+                    Category
+                  </label>
+                  <select
+                    name="category"
+                    id="category"
+                    value={formik.values.category}
+                    onChange={(e) =>
+                      formik.setFieldValue("category", e.target.value)
+                    }
+                    onBlur={formik.handleBlur}
+                    className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
+                      formik.touched.category && formik.errors.category
+                        ? "border-red-500"
+                        : "border-[var(--secondary-bg)]"
+                    }`}
+                  >
+                    <option value="">Choose a category</option>
+                    {categories?.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.category && formik.errors.category && (
+                    <p className="text-red-500 text-xs">
+                      {formik.errors.category}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {formik.values.deliveryType.includes("pickup") && (

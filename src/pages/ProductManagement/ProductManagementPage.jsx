@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductCard from "../../components/Common/ProductCard";
 import { useUser } from "../../context/userContext";
 import Loader from "../../components/Common/Loader";
+import Categories from "../Home/Categories";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -16,8 +17,9 @@ const ProductManagementPage = () => {
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { selectedCommunity, checkIamAlreadyMember } = useUser();
-
   const [searchParams] = useSearchParams();
+  const categoryId = searchParams.get("categoryId") || "";
+
   const page = Number(searchParams.get("page")) || 1;
   const limit = 12;
 
@@ -27,7 +29,11 @@ const ProductManagementPage = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${BASE_URL}/my-products?status=active&communityId=${selectedCommunity?.id}&page=${page}&limit=${limit}`,
+        `${BASE_URL}/my-products?status=active&communityId=${
+          selectedCommunity?.id
+        }&page=${page}&limit=${limit}${
+          categoryId ? `&categoryId=${categoryId}` : ""
+        }`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
         }
@@ -46,11 +52,11 @@ const ProductManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCommunity?.id, page]);
+  }, [selectedCommunity?.id, page, categoryId]);
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchProducts, categoryId]);
 
   // Handle pagination click
   const handlePageChange = (newPage) => {
@@ -96,10 +102,11 @@ const ProductManagementPage = () => {
 
   return (
     <div className="w-full min-h-screen padding-x py-16">
+      <Categories />
       {products && products.length > 0 ? (
         <>
           {/* Product Grid */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 min-h-screen max-w-[1280px] mx-auto">
+          <div className="w-full mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 min-h-screen max-w-[1280px] mx-auto">
             {products.map((product, index) => (
               <ProductCard product={product} index={index} key={index} />
             ))}

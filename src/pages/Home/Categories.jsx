@@ -1,12 +1,34 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useRef, memo } from "react";
+import { useRef, memo, useState, useEffect } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import axios from "axios";
+import { BASE_URL } from "../../data/baseUrl";
+import { getToken } from "../../utils/getToken";
 
-const Categories = memo(({ categories }) => {
+const Categories = memo(() => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentCategoryId = searchParams.get("categoryId");
   const scrollRef = useRef(null);
+  const [categories, setCategories] = useState(null);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/categories`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      // console.log("res >> ", res?.data?.data?.categories);
+      setCategories(res?.data?.data?.categories);
+    } catch (error) {
+      console.log("err while fetching categories >>> ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const handleCategoryClick = (c) => {
     const params = new URLSearchParams(searchParams);

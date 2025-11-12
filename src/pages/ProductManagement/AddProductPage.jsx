@@ -22,7 +22,6 @@ const AddProductPage = () => {
   const { selectedCommunity, checkIamAlreadyMember } = useUser();
   const [customPickupAddress, setCustomPickupAddress] = useState("");
   const [categories, setCategories] = useState(null);
-  console.log(user);
 
   const fetchCategories = async () => {
     try {
