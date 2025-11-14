@@ -38,8 +38,6 @@ const EditProductPage = () => {
           Authorization: `Bearer ${getToken()}`,
         },
       });
-
-      // console.log("categories >>> ", res?.data?.data?.categories);
       setCategories(res?.data?.data?.categories);
     } catch (error) {
       handleApiError(error, navigate);
@@ -56,11 +54,9 @@ const EditProductPage = () => {
       const productData = res?.data?.data?.product;
       setProduct(productData);
 
-      // ✅ Set existing images
       const images = productData?.images || [];
       setExistingImages(images);
 
-      // ✅ Set preview images
       const previews = images.map((img) => ({
         id: img?.id,
         url: img?.imageUrl,
@@ -98,11 +94,6 @@ const EditProductPage = () => {
       productName: product?.title || "",
       price: product?.price || "",
       description: product?.description || "",
-      deliveryType: product
-        ? product.deliveryMethod === "both"
-          ? ["pickup", "delivery"]
-          : [product.deliveryMethod]
-        : [],
       pickupAddress: product?.pickupAddress?.address || user?.address || "",
       city: product?.pickupAddress?.city || "",
       state: product?.pickupAddress?.state || "",
@@ -136,24 +127,15 @@ const EditProductPage = () => {
         .trim()
         .max(500, "Description must be 500 characters or less")
         .required("Product description is required"),
-      deliveryType: Yup.array()
-        .min(1, "Please select at least one delivery type")
-        .required("Please select a delivery type"),
       productImages: Yup.array()
         .min(1, "Please upload at least 1 image")
         .max(5, "You can upload a maximum of 5 images")
         .required("Product image is required"),
       pickupAddress: Yup.string()
         .trim("Pickup address cannot start or end with spaces")
-        .when("deliveryType", {
-          is: (types) => Array.isArray(types) && types.includes("pickup"),
-          then: (schema) =>
-            schema
-              .min(10, "Pickup address must be at least 10 characters long")
-              .max(100, "Pickup address cannot exceed 100 characters")
-              .required("Pickup address is required"),
-          otherwise: (schema) => schema.notRequired(),
-        }),
+        .min(10, "Pickup address must be at least 10 characters long")
+        .max(100, "Pickup address cannot exceed 100 characters")
+        .required("Pickup address is required"),
     }),
 
     onSubmit: async (values) => {
@@ -168,23 +150,15 @@ const EditProductPage = () => {
         checkIamAlreadyMember();
         setLoading(true);
 
-        const deliveryTypes = Array.isArray(values.deliveryType)
-          ? values.deliveryType
-          : values.deliveryType.split(",");
-        const deliveryMethod =
-          deliveryTypes.length === 2 ? "both" : deliveryTypes[0];
-
         const res = await axios.put(
           `${BASE_URL}/products/${productId}`,
           {
             title: values.productName.trim(),
             price: values.price,
             description: values.description.trim(),
-            deliveryMethod,
+            deliveryMethod: "pickup",
             categoryId: values.category,
-            pickupAddress: formik.values.deliveryType.includes("pickup")
-              ? pickupAddress.trim()
-              : null,
+            pickupAddress: pickupAddress.trim(),
           },
           {
             headers: { Authorization: `Bearer ${getToken()}` },
@@ -209,19 +183,7 @@ const EditProductPage = () => {
     },
   });
 
-  const handleDeliveryTypeChange = (type) => {
-    const { deliveryType } = formik.values;
-    if (deliveryType.includes(type)) {
-      formik.setFieldValue(
-        "deliveryType",
-        deliveryType.filter((t) => t !== type)
-      );
-    } else {
-      formik.setFieldValue("deliveryType", [...deliveryType, type]);
-    }
-  };
-
-  // ✅ Handle image upload (validation + preview)
+  // ✅ Handle image upload and removal remain unchanged
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
     const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
@@ -255,7 +217,6 @@ const EditProductPage = () => {
       return;
     }
 
-    // Temporary local preview
     const newPreviews = validFiles.map((file) => ({
       id: null,
       url: URL.createObjectURL(file),
@@ -271,7 +232,6 @@ const EditProductPage = () => {
       ...validFiles,
     ]);
 
-    // Upload each file sequentially
     for (const file of validFiles) {
       const formData = new FormData();
       formData.append("productImages", file);
@@ -294,15 +254,10 @@ const EditProductPage = () => {
             variant: "success",
           });
 
-          // Replace the local preview entry with actual uploaded image
           setPreviewImages((prev) =>
             prev.map((img) =>
               img.file === file
-                ? {
-                    id: uploaded.id,
-                    url: uploaded.imageUrl,
-                    isNew: false,
-                  }
+                ? { id: uploaded.id, url: uploaded.imageUrl, isNew: false }
                 : img
             )
           );
@@ -322,7 +277,6 @@ const EditProductPage = () => {
     }
   };
 
-  // ✅ Delete product image (API call)
   const handleDeleteProductImage = async (imageId) => {
     if (!imageId) {
       enqueueSnackbar("Invalid image selected for deletion", {
@@ -335,9 +289,7 @@ const EditProductPage = () => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${product?.id}/images/${imageId}`,
-        {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
       if (res?.data?.success) {
@@ -351,15 +303,11 @@ const EditProductPage = () => {
     }
   };
 
-  // ✅ Handle image removal (fixed version)
   const handleRemoveImage = async (index) => {
-    // Block deletion if only 1 image left (preview or existing)
     if (previewImages.length === 1) {
       enqueueSnackbar(
         "You must have at least one image. Please upload another before deleting this one.",
-        {
-          variant: "warning",
-        }
+        { variant: "warning" }
       );
       return;
     }
@@ -403,7 +351,6 @@ const EditProductPage = () => {
     setExistingImages(updatedExisting);
     setNewImages(updatedNew);
     setPreviewImages(updatedPreviews);
-
     formik.setFieldValue("productImages", [...updatedExisting, ...updatedNew]);
   };
 
@@ -467,88 +414,58 @@ const EditProductPage = () => {
                 />
               </div>
 
-              {/* Delivery Type */}
-              <div className="w-full mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="">
-                  <label className="font-medium text-sm mb-2 block">
-                    Delivery Type
-                  </label>
-                  <div className="grid grid-cols-2 gap-3 max-w-[388px]">
-                    {["pickup", "delivery"].map((type) => (
-                      <button
-                        type="button"
-                        key={type}
-                        onClick={() => handleDeliveryTypeChange(type)}
-                        className={`py-3 px-4 border rounded-[8px] text-sm font-medium transition-all h-[49px] ${
-                          formik.values.deliveryType.includes(type)
-                            ? "bg-[var(--button-bg)] text-white"
-                            : "bg-[var(--secondary-bg)] text-gray-700"
-                        }`}
-                      >
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                  {formik.touched.deliveryType &&
-                    formik.errors.deliveryType && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {formik.errors.deliveryType}
-                      </p>
-                    )}
-                </div>
-                <div className="w-full flex flex-col gap-2">
-                  <label htmlFor="category" className="text-sm font-medium">
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    id="category"
-                    value={formik.values.category}
-                    onChange={(e) =>
-                      formik.setFieldValue("category", e.target.value)
-                    }
-                    onBlur={formik.handleBlur}
-                    className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
-                      formik.touched.category && formik.errors.category
-                        ? "border-red-500"
-                        : "border-[var(--secondary-bg)]"
-                    }`}
-                  >
-                    <option value="">Choose a category</option>
-                    {categories?.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                  {formik.touched.category && formik.errors.category && (
-                    <p className="text-red-500 text-xs">
-                      {formik.errors.category}
+              {/* Pickup Address */}
+              <div className="mt-4">
+                <label className="font-medium text-sm mb-2 block">
+                  Pickup Address
+                </label>
+                <input
+                  type="text"
+                  value={pickupAddress}
+                  onChange={(e) => setPickupAddress(e.target.value)}
+                  placeholder="Enter pickup address"
+                  className="w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none"
+                />
+                {formik.touched.pickupAddress &&
+                  formik.errors.pickupAddress && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {formik.errors.pickupAddress}
                     </p>
                   )}
-                </div>
               </div>
 
-              {formik.values.deliveryType.includes("pickup") && (
-                <div className="mt-4">
-                  <label className="font-medium text-sm mb-2 block">
-                    Pickup Address
-                  </label>
-                  <input
-                    type="text"
-                    value={pickupAddress}
-                    onChange={(e) => setPickupAddress(e.target.value)}
-                    placeholder="Enter pickup address"
-                    className="w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none"
-                  />
-                  {formik.touched.pickupAddress &&
-                    formik.errors.pickupAddress && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {formik.errors.pickupAddress}
-                      </p>
-                    )}
-                </div>
-              )}
+              {/* Category */}
+              <div className="w-full mt-4">
+                <label htmlFor="category" className="text-sm font-medium">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  id="category"
+                  value={formik.values.category}
+                  onChange={(e) =>
+                    formik.setFieldValue("category", e.target.value)
+                  }
+                  onBlur={formik.handleBlur}
+                  className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
+                    formik.touched.category && formik.errors.category
+                      ? "border-red-500"
+                      : "border-[var(--secondary-bg)]"
+                  }`}
+                >
+                  <option value="">Choose a category</option>
+                  {categories?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.category && formik.errors.category && (
+                  <p className="text-red-500 text-xs">
+                    {formik.errors.category}
+                  </p>
+                )}
+              </div>
 
               {/* Description */}
               <div className="mt-4">

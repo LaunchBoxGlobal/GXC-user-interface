@@ -30,8 +30,6 @@ const ProductDetailsPage = () => {
   const [addProductInCart, setAddProductInCart] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
 
-  console.log("productDetails >>> ", productDetails);
-
   const fetchProductDetails = async () => {
     setLoading(true);
     try {
@@ -56,9 +54,20 @@ const ProductDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-        <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
-          <Loader />
+      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
+        >
+          <HiArrowLeft />
+          Back
+        </button>
+
+        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
+          <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
+            <Loader />
+          </div>
         </div>
       </div>
     );

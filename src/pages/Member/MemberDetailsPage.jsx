@@ -22,8 +22,8 @@ const MemberDetailsPage = () => {
   const [activeTab, setActiveTab] = useState("details");
   const [searchParams] = useSearchParams();
   const isOrderPlaced = searchParams.get("isOrderPlaced");
-
-  console.log("isOrderPlaced >> ", isOrderPlaced);
+  const isBuyer = searchParams.get("isBuyer");
+  console.log("isBuyer", isBuyer);
 
   const [
     showMemberReportConfimationPopup,
@@ -150,8 +150,7 @@ const MemberDetailsPage = () => {
             )}
           </>
         ) : (
-          // If no order placed → only show reviews
-          <MemberReviews member={member} />
+          <>{isBuyer && !isBuyer && <MemberReviews member={member} />}</>
         )}
       </div>
 
