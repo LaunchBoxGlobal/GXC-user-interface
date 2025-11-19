@@ -24,7 +24,7 @@ const ProductBuySection = ({
   const { cartProducts, fetchCartProducts } = useCart();
   const { checkIamAlreadyMember } = useUser();
   const [searchParams] = useSearchParams();
-  const isOrderPlaced = searchParams.get("isOrderPlaced");
+  const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
 
   const isProductInCart = cartProducts?.find(
     (product) => product?.product?.id === productDetails?.id
