@@ -13,17 +13,15 @@ import AddProductPickupAddressField from "./AddProductPickupAddressField";
 import AddProductSelectCategory from "./AddProductSelectCategory";
 import { useUser } from "../../context/userContext";
 import { RxCross2 } from "react-icons/rx";
+import { useAppContext } from "../../context/AppContext";
 
-const AddProductForm = ({ categories, user, selectedCommunity }) => {
+const AddProductForm = ({ categories, selectedCommunity }) => {
   const { checkIamAlreadyMember } = useUser();
+  const { user } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(null);
   const [revenueConfig, setRevenueConfig] = useState(null);
-
-  // const userAddress = `${user?.address || ""} + ${user?.city || ""} ${
-  //   user?.state || ""
-  // } ${user?.zipcode || ""} ${user?.country || ""}`.trim();
 
   const userAddress = [
     user?.address,
@@ -168,14 +166,14 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
   };
 
   useEffect(() => {
-    if (
-      formik.values.deliveryType.includes("pickup") &&
-      !formik.values.customPickupAddress &&
-      userAddress
-    ) {
-      formik.setFieldValue("customPickupAddress", userAddress);
-    }
-  }, [formik.values.deliveryType, userAddress]);
+    // if (
+    //   formik.values.deliveryType.includes("pickup") &&
+    //   !formik.values.customPickupAddress &&
+    //   userAddress
+    // ) {
+    // }
+    formik.setFieldValue("customPickupAddress", userAddress);
+  }, [formik.values.deliveryType, userAddress, user]);
 
   const price = parseFloat(formik.values.price) || 0;
   const estimatedEarnings = (
