@@ -38,32 +38,6 @@ const CommunitiesDropdown = () => {
   const [openPriceFilter, setOpenPriceFilter] = useState(false);
   const handleTogglePriceFilter = () => setOpenPriceFilter((prev) => !prev);
 
-  // 1️⃣ Keep fetchCommunities focused only on data fetching
-  // const fetchCommunities = async () => {
-  //   try {
-  //     const res = await axios.get(
-  //       `${BASE_URL}/communities/my-joined${
-  //         searchCommunityValue ? `?search=${searchCommunityValue}` : ""
-  //       }`,
-  //       {
-  //         headers: { Authorization: `Bearer ${getToken()}` },
-  //       }
-  //     );
-
-  //     if (
-  //       res?.data?.data?.communities?.length == 0 ||
-  //       res?.data?.data?.communities == null
-  //     ) {
-  //       Cookies.remove("selected-community");
-  //     }
-  //     const list = res?.data?.data?.communities || [];
-  //     setCommunities(list);
-  //     setFilteredCommunities(list);
-  //     fetchCartCount();
-  //   } catch (error) {
-  //     handleApiError(error, navigate);
-  //   }
-  // };
   const fetchCommunities = async () => {
     try {
       const res = await axios.get(
@@ -88,7 +62,6 @@ const CommunitiesDropdown = () => {
     }
   };
 
-  // 2️⃣ Separate effect to handle selection logic
   useEffect(() => {
     if (!communities.length || searchCommunityValue) return;
 

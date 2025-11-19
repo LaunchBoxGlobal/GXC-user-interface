@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import Loader from "../../components/Common/Loader";
 
 const DeliveryProductReviewPopup = ({
   openFeedbackModal,
@@ -138,7 +139,7 @@ const DeliveryProductReviewPopup = ({
               setOpenFeedbackModal(false);
               fetchOrderDetails();
             }}
-            className="w-1/2 h-[48px] rounded-[12px] border border-gray-300 font-medium text-gray-700 hover:bg-gray-100 transition-all"
+            className="w-1/2 h-[48px] rounded-[12px] font-medium text-gray-700 bg-gray-100 transition-all"
           >
             Cancel
           </button>
@@ -151,7 +152,7 @@ const DeliveryProductReviewPopup = ({
                 : "bg-[var(--button-bg)] hover:opacity-90"
             }`}
           >
-            {isSubmitting ? "Sending..." : "Send"}
+            {isSubmitting ? <Loader /> : "Send"}
           </button>
         </div>
       </form>

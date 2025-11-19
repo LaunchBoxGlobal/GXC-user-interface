@@ -13,6 +13,7 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [communities, setCommunities] = useState([]);
+  const [productType, setProductType] = useState("active");
 
   const [productSearchValue, setProductSearchValue] = useState(null);
   const [productMinValue, setProductMinValue] = useState(null);
@@ -105,6 +106,8 @@ export const AppProvider = ({ children }) => {
         setProductMinValue,
         productMaxValue,
         setProductMaxValue,
+        productType,
+        setProductType,
       }}
     >
       {children}

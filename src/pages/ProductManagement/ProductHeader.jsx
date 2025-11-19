@@ -58,6 +58,23 @@ const ProductHeader = ({
             </p>
           </div>
         )}
+
+        {productDetails?.seller?.id === user?.id && (
+          <p
+            className={`text-sm font-medium ${
+              productDetails?.status === "sold"
+                ? "text-red-500"
+                : productDetails?.status === " delisted"
+                ? "text-[var(--rating-yellow)]"
+                : productDetails?.status === "active"
+                ? "text-[var(--text-success)]"
+                : "text-gray-500"
+            }`}
+          >
+            {productDetails?.status.charAt(0).toUpperCase() +
+              productDetails?.status.slice(1)}
+          </p>
+        )}
       </div>
 
       {productDetails?.seller?.id === user?.id &&
@@ -96,12 +113,16 @@ const ProductHeader = ({
           )}
         </div>
       ) : (
-        <div>
-          <p className="text-sm font-medium text-[#6D6D6D]">Price</p>
-          <p className="text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
-            ${productDetails?.price}
-          </p>
-        </div>
+        <>
+          {productDetails?.status === "active" && (
+            <div>
+              <p className="text-sm font-medium text-[#6D6D6D]">Price</p>
+              <p className="text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
+                ${productDetails?.price}
+              </p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

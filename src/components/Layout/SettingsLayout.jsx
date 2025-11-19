@@ -163,7 +163,7 @@ const SettingsLayout = ({ page }) => {
       </div>
 
       <div className="w-full mt-5 min-h-[50vh] flex flex-col lg:flex-row items-start lg:justify-between bg-white rounded-[12px] custom-shadow">
-        <div className="w-full lg:w-[25%] lg:min-h-[90vh] border-r px-8 pt-5 overflow-hidden">
+        <div className="w-full lg:w-[25%] lg:min-h-[90vh] border-r px-8 pt-5 overflow-hidden relative">
           <h2 className="text-[28px] font-semibold">Settings</h2>
           <ul className="w-full flex lg:flex-col mt-5 overflow-auto">
             {settingPages?.map((link, index) => {
@@ -184,15 +184,15 @@ const SettingsLayout = ({ page }) => {
                 </li>
               );
             })}
-
-            <button
-              type="button"
-              onClick={() => handleLogout()}
-              className={`text-sm flex items-center gap-x-2.5 px-4 font-medium w-full h-[49px] outline-none hover:bg-gray-100 transition-all duration-300`}
-            >
-              Logout
-            </button>
           </ul>
+
+          <button
+            type="button"
+            onClick={() => handleLogout()}
+            className={`text-sm font-medium w-full h-[49px] outline-none absolute bottom-5 left-8 bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
+          >
+            Logout
+          </button>
         </div>
         <div className="w-full lg:w-[72%] pt-5 pr-5 pb-5 pl-5 lg:pl-0">
           {page}

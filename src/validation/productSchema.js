@@ -19,7 +19,11 @@ export const productSchema = Yup.object().shape({
         value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
     )
     .required("Price is required"),
-  category: Yup.string().required("Please select a category"),
+  // category: Yup.string().required("Please select a category"),
+  category: Yup.array()
+    .min(1, "Please select at least one category")
+    .max(5, "You can select up to 5 categories")
+    .required("Please select at least one category"),
   description: Yup.string()
     .trim("Description cannot start or end with spaces")
     .min(10, "Description must be 10 characters or more")

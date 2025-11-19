@@ -15,10 +15,12 @@ const ChangePasswordPage = () => {
 
   const formik = useFormik({
     initialValues: {
+      currentPassword: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
+      currentPassword: Yup.string().required("Enter your current password"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
         .max(25, "Password cannot be more than 25 characters")
@@ -29,7 +31,7 @@ const ChangePasswordPage = () => {
           /[@$!%*?&^#_.-]/,
           "Password must contain at least one special character"
         )
-        .required("Password is required"),
+        .required("Enter your new password"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords do not match")
         .required("Confirm password is required"),
@@ -39,7 +41,10 @@ const ChangePasswordPage = () => {
         checkIamAlreadyMember();
         const res = await axios.post(
           `${BASE_URL}/auth/change-password`,
-          { password: values?.password.trim() },
+          {
+            password: values?.password.trim(),
+            oldPassword: values.currentPassword,
+          },
           {
             headers: {
               "Content-Type": "application/json",
@@ -58,7 +63,7 @@ const ChangePasswordPage = () => {
         }
       } catch (error) {
         console.error("change password error:", error.response?.data);
-        enqueueSnackbar(error?.message || error?.response?.data?.message, {
+        enqueueSnackbar(error?.response?.data?.message || error?.message, {
           variant: "error",
         });
         if (error?.response?.status === 401) {
@@ -76,7 +81,7 @@ const ChangePasswordPage = () => {
       <div className="w-full border my-5" />
 
       <form onSubmit={formik.handleSubmit} className="w-full space-y-5 mt-5">
-        {/* <PasswordField
+        <PasswordField
           name="currentPassword"
           placeholder="Current Password"
           value={formik.values.currentPassword}
@@ -84,10 +89,10 @@ const ChangePasswordPage = () => {
           onBlur={formik.handleBlur}
           error={formik.errors.currentPassword}
           touched={formik.touched.currentPassword}
-        /> */}
+        />
         <PasswordField
           name="password"
-          placeholder="Password"
+          placeholder="New Password"
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}

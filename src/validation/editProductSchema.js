@@ -21,27 +21,22 @@ export const editProductSchema = Yup.object({
         value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
     )
     .required("Price is required"),
-  category: Yup.string().required("Please select a category"),
+  category: Yup.array()
+    .of(Yup.string())
+    .min(1, "Please select at least 1 category")
+    .max(5, "You can select up to 5 categories")
+    .required("Category is required"),
   description: Yup.string()
     .trim()
     .max(500, "Description must be 500 characters or less")
     .required("Product description is required"),
-  deliveryType: Yup.array()
-    .min(1, "Please select at least one delivery type")
-    .required("Please select a delivery type"),
   productImages: Yup.array()
     .min(1, "Please upload at least 1 image")
     .max(5, "You can upload a maximum of 5 images")
     .required("Product image is required"),
   pickupAddress: Yup.string()
     .trim("Pickup address cannot start or end with spaces")
-    .when("deliveryType", {
-      is: (types) => Array.isArray(types) && types.includes("pickup"),
-      then: (schema) =>
-        schema
-          .min(10, "Pickup address must be at least 10 characters long")
-          .max(100, "Pickup address cannot exceed 100 characters")
-          .required("Pickup address is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    .min(10, "Pickup address must be at least 10 characters long")
+    .max(100, "Pickup address cannot exceed 100 characters")
+    .required("Pickup address is required"),
 });

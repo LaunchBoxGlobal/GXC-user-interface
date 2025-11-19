@@ -21,31 +21,6 @@ const OrderDetailsPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // const computeOverallStatus = (items) => {
-  //   if (!items || items.length === 0) return "Pending";
-
-  //   const buyerStatuses = items.map((i) => i?.buyerStatus);
-  //   const sellerStatuses = items.map((i) => i?.sellerStatus);
-
-  //   // Priority order (you can adjust this based on your business rules)
-  //   if (
-  //     buyerStatuses.includes("cancelled") ||
-  //     sellerStatuses.includes("cancelled")
-  //   )
-  //     return "Cancelled";
-  //   if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
-  //   if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
-  //   if (
-  //     buyerStatuses.includes("in_progress") ||
-  //     sellerStatuses.includes("in_progress")
-  //   )
-  //     return "In Progress";
-  //   if (buyerStatuses.every((s) => s === "delivered" || s === "picked_up"))
-  //     return "Completed";
-
-  //   return "Pending";
-  // };
-
   const computeOverallStatus = (items) => {
     if (!items || items.length === 0) return "Pending";
 

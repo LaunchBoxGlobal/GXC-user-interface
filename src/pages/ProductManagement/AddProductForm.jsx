@@ -12,15 +12,38 @@ import AddProductImagesUploader from "./AddProductImagesUploader";
 import AddProductPickupAddressField from "./AddProductPickupAddressField";
 import AddProductSelectCategory from "./AddProductSelectCategory";
 import { useUser } from "../../context/userContext";
+import { RxCross2 } from "react-icons/rx";
 
 const AddProductForm = ({ categories, user, selectedCommunity }) => {
   const { checkIamAlreadyMember } = useUser();
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(null);
+  const [revenueConfig, setRevenueConfig] = useState(null);
 
   const userAddress = `${user?.address || ""} ${user?.city || ""} ${
     user?.state || ""
   } ${user?.zipcode || ""} ${user?.country || ""}`.trim();
+  const ESTIMATED_EARNING_PERCENTAGE = 40;
+
+  const fetchRevenueSplitConfig = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/user/get-revenue-config`, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+
+      console.log("fetchRevenueSplitConfig >>> ", res?.data);
+      setRevenueConfig(res?.data?.data);
+    } catch (error) {
+      console.log("fetchRevenueSplitConfig error >>> ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRevenueSplitConfig();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -30,7 +53,7 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
       deliveryType: [],
       productImages: [],
       customPickupAddress: "",
-      category: "",
+      category: [],
     },
     validationSchema: productSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -58,7 +81,9 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
         formData.append("title", values.productName.trim());
         formData.append("price", values.price);
         formData.append("description", values.description.trim());
-        formData.append("categoryId", values.category);
+        // formData.append("categoryId", values.category);
+        // formData.append("categoryId", JSON.stringify(values.category));
+        formData.append("categoryId", values.category[0]);
         formData.append("deliveryMethod", deliveryMethod);
 
         values.productImages.forEach((file) =>
@@ -100,6 +125,14 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
           }
         }
       } catch (error) {
+        console.log("error >> ", error);
+        if (error?.response?.data?.message === "Validation failed") {
+          enqueueSnackbar("Something went wrong. Please Try again.", {
+            variant: "error",
+          });
+
+          return;
+        }
         enqueueSnackbar(
           error.response?.data?.message ||
             error.message ||
@@ -113,6 +146,18 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
   });
 
   useEffect(() => {
+    const selected = categories.filter((c) =>
+      formik.values.category.includes(c.id)
+    );
+    setSelectedCategories(selected);
+  }, [formik.values.category, categories]);
+
+  const removeCategory = (id) => {
+    const updated = formik.values.category.filter((cat) => cat !== id);
+    formik.setFieldValue("category", updated);
+  };
+
+  useEffect(() => {
     if (
       formik.values.deliveryType.includes("pickup") &&
       !formik.values.customPickupAddress &&
@@ -121,6 +166,12 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
       formik.setFieldValue("customPickupAddress", userAddress);
     }
   }, [formik.values.deliveryType, userAddress]);
+
+  const price = parseFloat(formik.values.price) || 0;
+  const estimatedEarnings = (
+    price *
+    (revenueConfig?.seller_percentage / 100)
+  ).toFixed(2);
 
   return (
     <form
@@ -148,23 +199,56 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
               touched={formik.touched.productName}
               label={"Product Name"}
             />
-            <TextField
-              type="number"
-              name="price"
-              placeholder="Enter product price"
-              value={formik.values.price}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.errors.price}
-              touched={formik.touched.price}
-              label={"Price"}
-            />
+            <div className="w-full">
+              <TextField
+                type="number"
+                name="price"
+                placeholder="Enter product price"
+                value={formik.values.price}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.errors.price}
+                touched={formik.touched.price}
+                label={"Price"}
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Your estimated earnings:{" "}
+                <span className="text-black font-medium">
+                  ${estimatedEarnings}
+                </span>
+              </p>
+            </div>
           </div>
 
           <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
             <AddProductDeliveryTypeSelector formik={formik} />
-            <AddProductSelectCategory formik={formik} categories={categories} />
+            <AddProductSelectCategory
+              formik={formik}
+              categories={categories}
+              setSelectedCategories={setSelectedCategories}
+            />
           </div>
+
+          {selectedCategories && selectedCategories?.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {selectedCategories?.map((cat) => (
+                <div
+                  key={cat.id}
+                  className="flex items-center gap-1.5 bg-gray-200 px-3 py-1 rounded-full text-sm font-medium"
+                >
+                  {cat.name}
+
+                  <button
+                    type="button"
+                    onClick={() => removeCategory(cat.id)}
+                    className="text-gray-700 hover:text-black"
+                  >
+                    <RxCross2 size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Pickup Address */}
           {formik.values.deliveryType.includes("pickup") && (

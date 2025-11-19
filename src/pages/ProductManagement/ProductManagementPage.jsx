@@ -4,10 +4,12 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import ProductCard from "../../components/Common/ProductCard";
+import ProductCard from "./ProductCard";
 import { useUser } from "../../context/userContext";
 import Loader from "../../components/Common/Loader";
 import Categories from "../Home/Categories";
+import ProductTypeTabs from "./ProductTypeTabs";
+import { useAppContext } from "../../context/AppContext";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -22,6 +24,9 @@ const ProductManagementPage = () => {
 
   const page = Number(searchParams.get("page")) || 1;
   const limit = 12;
+  const PRODUCT_STATUS = "active";
+  // const [productType, setProductType] = useState("active");
+  const { productType } = useAppContext();
 
   const fetchProducts = useCallback(async () => {
     if (!selectedCommunity) return;
@@ -29,7 +34,7 @@ const ProductManagementPage = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${BASE_URL}/my-products?status=active&communityId=${
+        `${BASE_URL}/my-products?status=${productType}&communityId=${
           selectedCommunity?.id
         }&page=${page}&limit=${limit}${
           categoryId ? `&categoryId=${categoryId}` : ""
@@ -52,9 +57,10 @@ const ProductManagementPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCommunity?.id, page, categoryId]);
+  }, [selectedCommunity?.id, page, categoryId, productType]);
 
   useEffect(() => {
+    document.title = "Product Management - giveXchange";
     fetchProducts();
   }, [fetchProducts, categoryId]);
 
@@ -92,86 +98,87 @@ const ProductManagementPage = () => {
     return pages;
   };
 
-  if (loading) {
-    return (
-      <div className="w-full flex justify-center pt-80 min-h-[100vh]">
-        <Loader />
-      </div>
-    );
-  }
-
   return (
     <div className="w-full min-h-screen padding-x py-16">
       <Categories />
-      {products && products.length > 0 ? (
-        <>
-          {/* Product Grid */}
-          <div className="w-full mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 min-h-screen max-w-[1280px] mx-auto">
-            {products.map((product, index) => (
-              <ProductCard product={product} index={index} key={index} />
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <nav
-              aria-label="Page navigation"
-              className="flex justify-end w-full mt-10"
-            >
-              <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
-                {/* Previous Button */}
-                <li>
-                  <button
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page <= 1}
-                    className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
-                      page <= 1
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                    }`}
-                  >
-                    Previous
-                  </button>
-                </li>
-
-                {/* Page Numbers */}
-                {renderPageNumbers()}
-
-                {/* Next Button */}
-                <li>
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page >= pagination.totalPages}
-                    className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-                      page >= pagination.totalPages
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                    }`}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          )}
-        </>
+      {/* <ProductTypeTabs /> */}
+      {loading ? (
+        <div className="w-full flex justify-center pt-48 min-h-[100vh]">
+          <Loader />
+        </div>
       ) : (
-        <div className="w-full text-center">
-          {error ? (
-            <p>{errorMessage}</p>
+        <>
+          {products && products.length > 0 ? (
+            <>
+              {/* Product Grid */}
+              <div className="w-full mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-10 min-h-screen max-w-[1280px] mx-auto">
+                {products.map((product, index) => (
+                  <ProductCard product={product} index={index} key={index} />
+                ))}
+              </div>
+
+              {/* Pagination */}
+              {pagination && pagination.totalPages > 1 && (
+                <nav
+                  aria-label="Page navigation"
+                  className="flex justify-end w-full mt-10"
+                >
+                  <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
+                    {/* Previous Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page <= 1}
+                        className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
+                          page <= 1
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
+                        }`}
+                      >
+                        Previous
+                      </button>
+                    </li>
+
+                    {/* Page Numbers */}
+                    {renderPageNumbers()}
+
+                    {/* Next Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page >= pagination.totalPages}
+                        className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
+                          page >= pagination.totalPages
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
+                        }`}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              )}
+            </>
           ) : (
-            <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
-              <img
-                src="/product-icon.png"
-                alt="product icon"
-                className="max-w-7"
-              />
-              <p className="text-sm font-medium text-gray-500">
-                You have not added any products yet.
-              </p>
+            <div className="w-full text-center">
+              {error ? (
+                <p>{errorMessage}</p>
+              ) : (
+                <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
+                  <img
+                    src="/product-icon.png"
+                    alt="product icon"
+                    className="max-w-7"
+                  />
+                  <p className="text-sm font-medium text-gray-500">
+                    You have not added any products yet.
+                  </p>
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

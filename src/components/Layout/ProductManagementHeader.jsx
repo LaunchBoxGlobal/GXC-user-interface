@@ -7,6 +7,7 @@ import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "../Common/Loader";
 import { MdPayments } from "react-icons/md";
+import ProductTypeTabs from "../../pages/ProductManagement/ProductTypeTabs";
 
 const ProductManagementHeader = () => {
   const navigate = useNavigate();
@@ -100,13 +101,16 @@ const ProductManagementHeader = () => {
       <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
         Product Management
       </h1>
-      <button
-        type="button"
-        onClick={handleCheckStripeAccountStatus}
-        className="button max-w-[214px] h-[58px] flex items-center justify-center"
-      >
-        {checkStripe ? <Loader /> : "Add New Product"}
-      </button>
+      <div className="w-full lg:w-1/2 flex items-center justify-end gap-3">
+        <ProductTypeTabs />
+        <button
+          type="button"
+          onClick={handleCheckStripeAccountStatus}
+          className="button max-w-[204px] h-[58px] flex items-center justify-center"
+        >
+          {checkStripe ? <Loader /> : "Add New Product"}
+        </button>
+      </div>
 
       <PermissionModal
         handleCreateStripeAccount={handleCreateStripeAccount}

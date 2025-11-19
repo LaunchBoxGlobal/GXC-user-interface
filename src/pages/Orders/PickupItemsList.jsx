@@ -174,14 +174,27 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                       </div>
                     ) : (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
+                        {item?.reviewSubmitted == false &&
+                          item?.sellerStatus === "completed" && (
+                            <button
+                              type="button"
+                              className="bg-[var(--button-bg)] text-white h-[48px] rounded-[11px] text-sm font-medium px-6"
+                              onClick={() => {
+                                setProduct(item);
+                                setOpenFeedbackModal(true);
+                              }}
+                            >
+                              Write a review
+                            </button>
+                          )}
                         {item?.buyerStatus === "picked_up" ||
                         item?.buyerStatus === "cancelled" ||
                         item?.sellerStatus === "cancelled" ? (
                           <Link
                             to={`/products/${item?.productTitle}?productId=${item?.productId}&?isOrderPlaced=true`}
-                            className="max-w-[38px]"
+                            className="max-w-[48px]"
                           >
-                            <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                            <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                               <img
                                 src="/right-arrow-icon.png"
                                 alt=""
@@ -288,9 +301,9 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
 
                         <Link
                           to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
-                          className="max-w-[38px]"
+                          className="max-w-[48px]"
                         >
-                          <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                          <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                             <img
                               src="/right-arrow-icon.png"
                               alt=""

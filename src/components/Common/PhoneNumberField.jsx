@@ -1,11 +1,5 @@
-import React, { useState } from "react";
-import {
-  parsePhoneNumberFromString,
-  getCountries,
-  getCountryCallingCode,
-} from "libphonenumber-js";
-
-const countries = getCountries();
+import { useState } from "react";
+import { getCountryCallingCode } from "libphonenumber-js";
 
 const PhoneNumberField = ({
   name,
@@ -16,33 +10,12 @@ const PhoneNumberField = ({
   error,
   touched,
   label,
-  defaultCountry,
 }) => {
-  const [selectedCountry, setSelectedCountry] = useState(
-    defaultCountry || "US"
-  );
-
-  const handleCountryChange = (e) => {
-    const newCountry = e.target.value;
-    setSelectedCountry(newCountry);
-
-    const callingCode = getCountryCallingCode(newCountry);
-    const formatted = value.startsWith("+")
-      ? value
-      : `+${callingCode}${value.replace(/\D/g, "")}`;
-
-    // Update parent (Formik)
-    onChange({
-      target: {
-        name,
-        value: formatted,
-      },
-    });
-  };
+  const selectedCountry = "US"; // 🔒 LOCKED to United States
+  const callingCode = getCountryCallingCode(selectedCountry);
 
   const handleNumberChange = (e) => {
-    const number = e.target.value.replace(/\D/g, ""); // keep digits only
-    const callingCode = getCountryCallingCode(selectedCountry);
+    const number = e.target.value.replace(/\D/g, ""); // digits only
     const fullNumber = `+${callingCode}${number}`;
 
     onChange({
@@ -53,10 +26,9 @@ const PhoneNumberField = ({
     });
   };
 
-  const displayedNumber = (() => {
-    const code = getCountryCallingCode(selectedCountry);
-    return value.replace(`+${code}`, "").replace(/\D/g, "");
-  })();
+  const displayedNumber = value
+    .replace(`+${callingCode}`, "")
+    .replace(/\D/g, "");
 
   return (
     <div className="w-full flex flex-col gap-1">
@@ -71,16 +43,13 @@ const PhoneNumberField = ({
           error && touched ? "border-red-500" : "border-[#f5f5f5]"
         }`}
       >
+        {/* Country code selector but fully disabled */}
         <select
           value={selectedCountry}
-          onChange={handleCountryChange}
-          className="bg-transparent text-sm outline-none border-none w-[60px] cursor-pointer"
+          disabled={true}
+          className="bg-transparent text-sm outline-none border-none w-[60px] cursor-not-allowed pointer-events-none"
         >
-          {countries.map((c) => (
-            <option key={c} value={c}>
-              +{getCountryCallingCode(c)}
-            </option>
-          ))}
+          <option value="US">+{callingCode}</option>
         </select>
 
         <input

@@ -146,7 +146,20 @@ const DeliveryItemsList = ({
                     </div>
                   </div>
 
-                  <div className="w-full max-w-[370px] flex items-center justify-end">
+                  <div className="w-full max-w-[370px] flex items-center justify-end gap-2">
+                    {item?.reviewSubmitted == false &&
+                      item?.sellerStatus === "completed" && (
+                        <button
+                          type="button"
+                          className="bg-[var(--button-bg)] text-white h-[48px] rounded-[11px] text-sm font-medium px-6"
+                          onClick={() => {
+                            setProduct(item);
+                            setOpenFeedbackModal(true);
+                          }}
+                        >
+                          Write a review
+                        </button>
+                      )}
                     {item?.buyerStatus === "delivered" ||
                     item?.buyerStatus === "cancelled" ||
                     item?.sellerStatus === "cancelled" ? (
@@ -154,7 +167,7 @@ const DeliveryItemsList = ({
                         to={`/products/${item?.productTitle}?productId=${item?.productId}&isOrderPlaced=true`}
                         className="max-w-[38px]"
                       >
-                        <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                        <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                           <img
                             src="/right-arrow-icon.png"
                             alt=""
@@ -228,9 +241,9 @@ const DeliveryItemsList = ({
                     </div>
                     <Link
                       to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
-                      className="max-w-[38px]"
+                      className="max-w-[48px]"
                     >
-                      <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                      <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                         <img
                           src="/right-arrow-icon.png"
                           alt=""

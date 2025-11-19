@@ -14,6 +14,8 @@ import { handleApiError } from "../../utils/handleApiError";
 import { IoClose } from "react-icons/io5";
 import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
+import { editProductSchema } from "../../validation/editProductSchema";
+import EditProductSelectCategory from "./EditProductSelectCategory";
 
 const EditProductPage = () => {
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ const EditProductPage = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
   const [categories, setCategories] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState(null);
+  const [productCategory, setProductCategory] = useState(null);
 
   const fetchCategories = async () => {
     try {
@@ -53,6 +57,7 @@ const EditProductPage = () => {
 
       const productData = res?.data?.data?.product;
       setProduct(productData);
+      setProductCategory(productData?.category);
 
       const images = productData?.images || [];
       setExistingImages(images);
@@ -88,6 +93,10 @@ const EditProductPage = () => {
     }
   }, [product, user]);
 
+  const productCategories = product?.categories?.map((c) => c.id) || [
+    product?.category,
+  ];
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -98,45 +107,14 @@ const EditProductPage = () => {
       city: product?.pickupAddress?.city || "",
       state: product?.pickupAddress?.state || "",
       productImages: product?.images || [],
-      category: product?.category?.id || "",
+      category: product?.categories?.length
+        ? product.categories.map((c) => String(c.id))
+        : product?.category?.id
+        ? [String(product.category.id)]
+        : [],
     },
 
-    validationSchema: Yup.object({
-      productName: Yup.string()
-        .trim()
-        .min(3, "Product name must contain at least 3 characters")
-        .max(30, "Product name must be 30 characters or less")
-        .required("Product name is required"),
-      price: Yup.number()
-        .transform((value, originalValue) =>
-          String(originalValue).trim() === "" ? undefined : value
-        )
-        .typeError("Price must be a number")
-        .positive("Price must be greater than 0")
-        .min(1, "Product price can not be less than 1")
-        .max(999999, "Product price must be less than 999999")
-        .test(
-          "max-decimals",
-          "Price can have up to 2 decimal places only",
-          (value) =>
-            value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
-        )
-        .required("Price is required"),
-      category: Yup.string().required("Please select a category"),
-      description: Yup.string()
-        .trim()
-        .max(500, "Description must be 500 characters or less")
-        .required("Product description is required"),
-      productImages: Yup.array()
-        .min(1, "Please upload at least 1 image")
-        .max(5, "You can upload a maximum of 5 images")
-        .required("Product image is required"),
-      pickupAddress: Yup.string()
-        .trim("Pickup address cannot start or end with spaces")
-        .min(10, "Pickup address must be at least 10 characters long")
-        .max(100, "Pickup address cannot exceed 100 characters")
-        .required("Pickup address is required"),
-    }),
+    validationSchema: editProductSchema,
 
     onSubmit: async (values) => {
       try {
@@ -157,7 +135,8 @@ const EditProductPage = () => {
             price: values.price,
             description: values.description.trim(),
             deliveryMethod: "pickup",
-            categoryId: values.category,
+            // categoryId: values.category,
+            categoryId: values.category[0],
             pickupAddress: pickupAddress.trim(),
           },
           {
@@ -169,6 +148,7 @@ const EditProductPage = () => {
           enqueueSnackbar("Product updated successfully!", {
             variant: "success",
           });
+          // return;
           navigate(
             `/products/${res?.data?.data?.product?.title}?productId=${res?.data?.data?.product?.id}`
           );
@@ -183,7 +163,6 @@ const EditProductPage = () => {
     },
   });
 
-  // ✅ Handle image upload and removal remain unchanged
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
     const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
@@ -435,8 +414,14 @@ const EditProductPage = () => {
               </div>
 
               {/* Category */}
-              <div className="w-full mt-4">
-                <label htmlFor="category" className="text-sm font-medium">
+              <EditProductSelectCategory
+                formik={formik}
+                categories={categories}
+                setSelectedCategories={setSelectedCategories}
+                productCategory={productCategory}
+              />
+              {/* <div className="w-full mt-1"> */}
+              {/* <label htmlFor="category" className="text-sm font-medium">
                   Category
                 </label>
                 <select
@@ -459,13 +444,13 @@ const EditProductPage = () => {
                       {c.name}
                     </option>
                   ))}
-                </select>
-                {formik.touched.category && formik.errors.category && (
+                </select> */}
+              {/* {formik.touched.category && formik.errors.category && (
                   <p className="text-red-500 text-xs">
                     {formik.errors.category}
                   </p>
-                )}
-              </div>
+                )} */}
+              {/* </div> */}
 
               {/* Description */}
               <div className="mt-4">

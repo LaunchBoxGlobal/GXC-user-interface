@@ -95,7 +95,7 @@ const HomePage = () => {
   }, [fetchCommunityProducts]);
 
   useEffect(() => {
-    document.title = "Home - GiveXChange";
+    document.title = "Home - giveXchange";
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCategories();
     fetchCommunities();
@@ -133,76 +133,76 @@ const HomePage = () => {
     return pages;
   };
 
-  if (loading) {
-    return (
-      <div className="w-full flex justify-center pt-40 min-h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
       <Categories />
-      {communities?.length > 0 ? (
+      {loading ? (
+        <div className="w-full flex justify-center pt-40 min-h-screen">
+          <Loader />
+        </div>
+      ) : (
         <>
-          <ProductList products={products} pagination={pagination} />
+          {communities?.length > 0 ? (
+            <>
+              <ProductList products={products} pagination={pagination} />
 
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <nav
-              aria-label="Page navigation"
-              className="flex justify-end w-full mt-10"
-            >
-              <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
-                {/* Previous Button */}
-                <li>
-                  <button
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page <= 1}
-                    className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
-                      page <= 1
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                    }`}
-                  >
-                    Previous
-                  </button>
-                </li>
+              {/* Pagination */}
+              {pagination && pagination.totalPages > 1 && (
+                <nav
+                  aria-label="Page navigation"
+                  className="flex justify-end w-full mt-10"
+                >
+                  <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
+                    {/* Previous Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(page - 1)}
+                        disabled={page <= 1}
+                        className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
+                          page <= 1
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
+                        }`}
+                      >
+                        Previous
+                      </button>
+                    </li>
 
-                {/* Page Numbers */}
-                {renderPageNumbers()}
+                    {/* Page Numbers */}
+                    {renderPageNumbers()}
 
-                {/* Next Button */}
-                <li>
-                  <button
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page >= pagination.totalPages}
-                    className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-                      page >= pagination.totalPages
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                    }`}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
+                    {/* Next Button */}
+                    <li>
+                      <button
+                        onClick={() => handlePageChange(page + 1)}
+                        disabled={page >= pagination.totalPages}
+                        className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
+                          page >= pagination.totalPages
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
+                        }`}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              )}
+            </>
+          ) : (
+            <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
+              {/* public/community-icon.png */}
+              <img
+                src="/community-icon.png"
+                alt="community-icon"
+                className="max-w-7"
+              />
+              <p className="text-sm text-gray-500 font-medium">
+                You have not joined any community yet.
+              </p>
+            </div>
           )}
         </>
-      ) : (
-        <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">
-          {/* public/community-icon.png */}
-          <img
-            src="/community-icon.png"
-            alt="community-icon"
-            className="max-w-7"
-          />
-          <p className="text-sm text-gray-500 font-medium">
-            You have not joined any community yet.
-          </p>
-        </div>
       )}
     </main>
   );

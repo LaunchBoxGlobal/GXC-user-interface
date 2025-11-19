@@ -100,17 +100,6 @@ const PaymentMethods = ({
     <div className="w-full pt-2">
       <h2 className="font-semibold text-[24px] leading-none">Payment Method</h2>
       <div className="w-full border my-5" />
-      {/* <div className="w-full flex items-center justify-between gap-3 mb-2">
-        {!showAddCard && savedCards?.length < 2 && (
-          <button
-            type="button"
-            className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
-            onClick={handleAddCardClick}
-          >
-            + Add new payment method
-          </button>
-        )}
-      </div> */}
 
       {/* Loading State */}
       {loadingCards && (
@@ -153,26 +142,34 @@ const PaymentMethods = ({
           </div>
         ))}
 
-      {!showAddCard && savedCards?.length < 2 && (
-        <div className="w-full mt-5">
-          <h3 className="font-medium mb-1">Add New Card</h3>
-          <div
-            onClick={handleAddCardClick}
-            className="w-full flex items-center justify-between h-[46px] bg-[#F5F5F5] rounded-[12px] px-3 cursor-pointer"
-          >
-            <div className="w-full max-w-[90%] flex items-center gap-3">
-              <img
-                src="/stripe-icon.png"
-                alt="stripe icon"
-                className="w-[34px] h-[24px] object-contain"
-              />
-              <p className="text-sm text-gray-600 font-medium">Add New Card</p>
+      {loadingCards ? (
+        <></>
+      ) : (
+        <>
+          {!showAddCard && savedCards?.length < 2 && (
+            <div className="w-full mt-5">
+              <h3 className="font-medium mb-1">Add New Card</h3>
+              <div
+                onClick={handleAddCardClick}
+                className="w-full flex items-center justify-between h-[46px] bg-[#F5F5F5] rounded-[12px] px-3 cursor-pointer"
+              >
+                <div className="w-full max-w-[90%] flex items-center gap-3">
+                  <img
+                    src="/stripe-icon.png"
+                    alt="stripe icon"
+                    className="w-[34px] h-[24px] object-contain"
+                  />
+                  <p className="text-sm text-gray-600 font-medium">
+                    Add New Card
+                  </p>
+                </div>
+                <div className="w-full flex justify-end">
+                  <MdKeyboardArrowRight className="text-xl text-gray-600" />
+                </div>
+              </div>
             </div>
-            <div className="w-full flex justify-end">
-              <MdKeyboardArrowRight className="text-xl text-gray-600" />
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
       {/* Add card form */}

@@ -6,17 +6,22 @@ export const handleApiError = (error, navigate) => {
     const status = error.response.status;
 
     if (status === 401) {
-      // console.warn("Unauthorized: Invalid or expired token.");
-      enqueueSnackbar("Your session has expired. Please log in again.", {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Your session has expired. Please log in again.",
+        {
+          variant: "error",
+        }
+      );
       Cookies.remove("token");
       Cookies.remove("user");
+      Cookies.remove("userToken");
       localStorage.removeItem("token");
+      localStorage.removeItem("userToken");
       navigate("/login");
-      return; // stop here since we already redirected
+      return;
     } else if (status === 403) {
-      // console.warn("Forbidden: You don’t have access.");
       enqueueSnackbar(
         error?.response?.data?.message ||
           error?.message ||
