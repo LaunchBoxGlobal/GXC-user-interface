@@ -14,14 +14,14 @@ const ProductSellerInfo = ({ productDetails }) => {
                 {productDetails?.pickupAddress?.address}
               </span>
             </p>
-            <p className="text-sm font-normal">
+            {/* <p className="text-sm font-normal">
               <span className="font-medium">City:</span>{" "}
               {productDetails?.pickupAddress?.city}
             </p>
             <p className="text-sm font-normal">
               <span className="font-medium">State:</span>{" "}
               {productDetails?.pickupAddress?.state}
-            </p>
+            </p> */}
           </div>
         </>
       )}

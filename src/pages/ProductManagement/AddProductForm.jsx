@@ -21,10 +21,20 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
   const [selectedCategories, setSelectedCategories] = useState(null);
   const [revenueConfig, setRevenueConfig] = useState(null);
 
-  const userAddress = `${user?.address || ""} ${user?.city || ""} ${
-    user?.state || ""
-  } ${user?.zipcode || ""} ${user?.country || ""}`.trim();
-  const ESTIMATED_EARNING_PERCENTAGE = 40;
+  // const userAddress = `${user?.address || ""} + ${user?.city || ""} ${
+  //   user?.state || ""
+  // } ${user?.zipcode || ""} ${user?.country || ""}`.trim();
+
+  const userAddress = [
+    user?.address,
+    user?.city,
+    user?.state,
+    user?.zipcode,
+    user?.country,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
 
   const fetchRevenueSplitConfig = async () => {
     try {
@@ -34,7 +44,7 @@ const AddProductForm = ({ categories, user, selectedCommunity }) => {
         },
       });
 
-      console.log("fetchRevenueSplitConfig >>> ", res?.data);
+      // console.log("fetchRevenueSplitConfig >>> ", res?.data);
       setRevenueConfig(res?.data?.data);
     } catch (error) {
       console.log("fetchRevenueSplitConfig error >>> ", error);

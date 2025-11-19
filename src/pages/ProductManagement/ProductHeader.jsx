@@ -45,14 +45,19 @@ const ProductHeader = ({
               : "Pickup / Delivery"}
           </p>
         )}
-        {/* {productDetails?.community && (
-          <p className="font-medium text-[#6D6D6D] text-xs">
-            {productDetails?.community?.name}
-          </p>
-        )} */}
+
+        {productDetails?.community && (
+          <div className="flex items-center gap-1">
+            <p className="text-sm font-medium">Community:</p>
+            <p className="font-medium text-[#6D6D6D] text-sm">
+              {productDetails?.community?.name}
+            </p>
+          </div>
+        )}
+
         {productDetails?.category && (
           <div className="flex items-center gap-1">
-            <p className="text-sm font-semibold">Category:</p>
+            <p className="text-sm font-medium">Category:</p>
             <p className="font-medium text-[#6D6D6D] text-sm">
               {productDetails?.category?.name}
             </p>
@@ -60,20 +65,23 @@ const ProductHeader = ({
         )}
 
         {productDetails?.seller?.id === user?.id && (
-          <p
-            className={`text-sm font-medium ${
-              productDetails?.status === "sold"
-                ? "text-red-500"
-                : productDetails?.status === " delisted"
-                ? "text-[var(--rating-yellow)]"
-                : productDetails?.status === "active"
-                ? "text-[var(--text-success)]"
-                : "text-gray-500"
-            }`}
-          >
-            {productDetails?.status.charAt(0).toUpperCase() +
-              productDetails?.status.slice(1)}
-          </p>
+          <div className="flex items-center gap-1">
+            <p className="text-sm font-medium">Product Status:</p>
+            <p
+              className={`text-sm font-medium ${
+                productDetails?.status === "sold"
+                  ? "text-red-500"
+                  : productDetails?.status === " delisted"
+                  ? "text-[var(--rating-yellow)]"
+                  : productDetails?.status === "active"
+                  ? "text-[var(--text-success)]"
+                  : "text-gray-500"
+              }`}
+            >
+              {productDetails?.status.charAt(0).toUpperCase() +
+                productDetails?.status.slice(1)}
+            </p>
+          </div>
         )}
       </div>
 

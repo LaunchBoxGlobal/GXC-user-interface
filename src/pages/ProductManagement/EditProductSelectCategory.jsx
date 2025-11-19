@@ -6,8 +6,6 @@ const EditProductSelectCategory = ({ formik, categories }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
 
-  console.log(formik.values.category);
-
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {

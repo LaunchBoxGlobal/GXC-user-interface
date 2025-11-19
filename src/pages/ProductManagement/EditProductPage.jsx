@@ -93,10 +93,6 @@ const EditProductPage = () => {
     }
   }, [product, user]);
 
-  const productCategories = product?.categories?.map((c) => c.id) || [
-    product?.category,
-  ];
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
