@@ -21,9 +21,8 @@ const MemberDetailsPage = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("details");
   const [searchParams] = useSearchParams();
-  const isOrderPlaced = searchParams.get("isOrderPlaced");
+  const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
   const isBuyer = searchParams.get("isBuyer");
-  console.log("isBuyer", isBuyer);
 
   const [
     showMemberReportConfimationPopup,
@@ -150,7 +149,12 @@ const MemberDetailsPage = () => {
             )}
           </>
         ) : (
-          <>{isBuyer && !isBuyer && <MemberReviews member={member} />}</>
+          <>
+            {isOrderPlaced && isOrderPlaced === "false" && (
+              <MemberReviews member={member} />
+            )}
+            {isBuyer && <MemberInfo member={member} />}
+          </>
         )}
       </div>
 

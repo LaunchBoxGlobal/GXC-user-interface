@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 const MemberHeader = ({ member, setShowMemberReportConfimationPopup }) => {
   const [searchParams] = useSearchParams();
   const isBuyer = searchParams.get("isBuyer");
+  const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
   return (
     <div className="w-full bg-white rounded-[18px] relative p-5">
       <div className="w-full flex items-center justify-between flex-wrap gap-y-7">
@@ -29,7 +30,7 @@ const MemberHeader = ({ member, setShowMemberReportConfimationPopup }) => {
             <p className=""></p>
           </div>
         </div>
-        {!isBuyer && (
+        {!isBuyer && isOrderPlaced === "true" && (
           <div className="flex items-center justify-end">
             <button
               type="button"
