@@ -25,77 +25,6 @@ export const UserProvider = ({ children }) => {
 
   const communityFromQuery = searchParams.get("community");
 
-  /** 🧩 Fetch user’s joined communities */
-  const fetchCommunities = async () => {
-    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
-    const token = getToken();
-    if (!user) return;
-    if (!token) return;
-    try {
-      const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
-      });
-
-      const list = res?.data?.data?.communities || [];
-      setCommunities(list);
-
-      if (list.length === 0) {
-        Cookies.remove("selected-community");
-        setSelected(null);
-        // navigate({
-        //   pathname: "/",
-        //   search: window?.location?.search || "",
-        // });
-        // return;
-      }
-
-      const currentPath = window.location.pathname;
-
-      if (list.length === 0) {
-        if (!currentPath.startsWith("/community")) {
-          Cookies.remove("selected-community");
-          setSelected(null);
-          navigate({
-            pathname: "/",
-            search: window?.location?.search || "",
-          });
-        }
-        return;
-      }
-
-      // ✅ Get selected community from cookie (if available)
-      const cookieCommunity = Cookies.get("selected-community")
-        ? JSON.parse(Cookies.get("selected-community"))
-        : null;
-
-      // ✅ Try to match query community if exists
-      const matched =
-        communityFromQuery &&
-        list.find(
-          (c) =>
-            c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
-            c.name?.toLowerCase() === communityFromQuery.toLowerCase()
-        );
-
-      // ✅ Determine final selected community
-      let selectedCommunity = matched || cookieCommunity || list[0];
-
-      // ✅ If cookie exists but user no longer in it → fallback
-      if (cookieCommunity && !list.find((c) => c.id === cookieCommunity.id)) {
-        selectedCommunity = list[0];
-      }
-
-      // ✅ Update state + cookies
-      setSelected(selectedCommunity);
-      Cookies.set("selected-community", JSON.stringify(selectedCommunity));
-
-      setSelectedCommunity(selectedCommunity);
-    } catch (error) {
-      console.error("Error fetching communities:", error);
-      handleApiError(error, navigate);
-    }
-  };
-
   /** 🧩 Check if user is still a member of selected community */
   const checkIamAlreadyMember = async () => {
     const community = Cookies.get("selected-community")
@@ -165,11 +94,83 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  /** 🧩 Fetch user’s joined communities */
+  const fetchCommunities = async () => {
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+    const token = getToken();
+    if (!user) return;
+    if (!token) return;
+    try {
+      const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+
+      const list = res?.data?.data?.communities || [];
+      setCommunities(list);
+      await checkIamAlreadyMember();
+
+      if (list.length === 0) {
+        Cookies.remove("selected-community");
+        setSelected(null);
+        // navigate({
+        //   pathname: "/",
+        //   search: window?.location?.search || "",
+        // });
+        // return;
+      }
+
+      const currentPath = window.location.pathname;
+
+      if (list.length === 0) {
+        if (!currentPath.startsWith("/community")) {
+          Cookies.remove("selected-community");
+          setSelected(null);
+          navigate({
+            pathname: "/",
+            search: window?.location?.search || "",
+          });
+        }
+        return;
+      }
+
+      // ✅ Get selected community from cookie (if available)
+      const cookieCommunity = Cookies.get("selected-community")
+        ? JSON.parse(Cookies.get("selected-community"))
+        : null;
+
+      // ✅ Try to match query community if exists
+      const matched =
+        communityFromQuery &&
+        list.find(
+          (c) =>
+            c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
+            c.name?.toLowerCase() === communityFromQuery.toLowerCase()
+        );
+
+      // ✅ Determine final selected community
+      let selectedCommunity = matched || cookieCommunity || list[0];
+
+      // ✅ If cookie exists but user no longer in it → fallback
+      if (cookieCommunity && !list.find((c) => c.id === cookieCommunity.id)) {
+        selectedCommunity = list[0];
+      }
+
+      // ✅ Update state + cookies
+      setSelected(selectedCommunity);
+      Cookies.set("selected-community", JSON.stringify(selectedCommunity));
+
+      setSelectedCommunity(selectedCommunity);
+    } catch (error) {
+      console.error("Error fetching communities:", error);
+      handleApiError(error, navigate);
+    }
+  };
+
   useEffect(() => {
     // fetchCommunities();
     const init = async () => {
       await fetchCommunities();
-      await checkIamAlreadyMember();
+      // await checkIamAlreadyMember();
     };
     init();
 

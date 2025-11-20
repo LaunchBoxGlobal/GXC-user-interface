@@ -121,14 +121,11 @@ export const PublicRoute = ({ element, redirectTo = "/" }) => {
   return element;
 };
 
-// --- Routes ---
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Not Found */}
       <Route path="*" element={<NotFound />} />
 
-      {/* ---------- AUTH FLOW ---------- */}
       <Route
         path="/signup"
         element={
@@ -252,7 +249,6 @@ const AppRoutes = () => {
         }
       />
 
-      {/* ---------- DASHBOARD ROUTES ---------- */}
       <Route
         path="/"
         element={
@@ -291,19 +287,6 @@ const AppRoutes = () => {
           />
         }
       />
-
-      {/* <Route
-        path="/profile/change-password"
-        element={
-          <PrivateRoute
-            element={
-              <Layout>
-                <ChangePasswordPage />
-              </Layout>
-            }
-          />
-        }
-      /> */}
 
       <Route
         path="/communities"
@@ -435,19 +418,6 @@ const AppRoutes = () => {
           />
         }
       />
-
-      {/* <Route
-        path="/cart"
-        element={
-          <PrivateRoute
-            element={
-              <Layout>
-                <CartPage />
-              </Layout>
-            }
-          />
-        }
-      /> */}
 
       <Route
         path="/cart/:communityId"

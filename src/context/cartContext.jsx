@@ -5,12 +5,14 @@ import { BASE_URL } from "../data/baseUrl";
 import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "./AppContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
+  const { user } = useAppContext();
   const [selectedCommunity, setSelectedCommunity] = useState(
     Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
@@ -23,6 +25,8 @@ export const CartProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   const fetchCartCount = async () => {
+    const token = getToken();
+    if (!token) return;
     const community = Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
       : null;
@@ -47,6 +51,8 @@ export const CartProvider = ({ children }) => {
   };
 
   const fetchCartProducts = async () => {
+    const token = getToken();
+    if (!token) return;
     if (!selectedCommunity) {
       // enqueueSnackbar(`Community ID not found!`, { variant: "error" });
       return;
