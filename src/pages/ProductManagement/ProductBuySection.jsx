@@ -185,7 +185,7 @@ const ProductBuySection = ({
           <p className="text-sm font-semibold mb-1">Seller:</p>
 
           <Link
-            to={`/orders/details/seller/${productDetails?.community?.id}/${productDetails?.seller?.id}?isOrderPlaced=${isOrderPlaced}`}
+            to={`/order-management/details/seller/${productDetails?.community?.id}/${productDetails?.seller?.id}?isOrderPlaced=${isOrderPlaced}`}
             className="w-full flex items-center gap-2"
           >
             <div className="">

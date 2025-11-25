@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { BASE_URL } from "../../data/baseUrl";
+import { getToken } from "../../utils/getToken";
+import { handleLogout } from "../../utils/handleLogout";
 
 const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const { user } = useAppContext();
@@ -10,6 +13,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const inputsRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     if (showModal) {
@@ -64,11 +68,35 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
     return () => clearInterval(countdown);
   }, [timer]);
 
+  const handleResendOtp = async () => {
+    setResending(true);
+    try {
+      const res = await axios.post(
+        `${BASE_URL}/auth/request-delete-account`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      if (res?.data?.success) {
+        enqueueSnackbar("OTP resent successfully", { variant: "success" });
+        setTimer(60);
+      }
+    } catch (error) {
+      handleApiError(error, navigate);
+    } finally {
+      setResending(false);
+    }
+  };
+
   // Resend OTP API
   const handleResend = async () => {
     try {
       setResending(true);
-      await axios.post("/api/auth/resend-otp", { email: user?.email });
+      await axios.post(`${BASE_URL}/auth/resend-otp`, { email: user?.email });
       enqueueSnackbar("OTP resent successfully", { variant: "success" });
       setTimer(60);
     } catch (error) {
@@ -82,20 +110,42 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const handleVerify = async () => {
     const otpCode = otp.join("");
     if (otpCode.length < 6) {
-      enqueueSnackbar("Please enter a 6-digit OTP", { variant: "warning" });
+      // setErrorMessage("Please enter a 6-digit OTP");
+      enqueueSnackbar("Please enter a 6-digit OTP", { variant: "error" });
       return;
     }
 
     try {
       setLoading(true);
-      await axios.post("/api/auth/verify-otp", {
-        email: user?.email,
-        otp: otpCode,
-      });
-      enqueueSnackbar("OTP verified successfully", { variant: "success" });
-      onClose?.(); // close modal after success
+      const res = await axios.post(
+        `${BASE_URL}/auth/delete`,
+        {
+          email: user?.email,
+          code: otpCode,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      if (res?.data?.success) {
+        enqueueSnackbar(
+          res?.data?.message || "Your account has been deleted successfully.",
+          { variant: "success" }
+        );
+        onClose?.();
+        handleLogout();
+        navigate("/login");
+      }
     } catch (error) {
-      enqueueSnackbar("Invalid OTP, please try again", { variant: "error" });
+      console.log(error);
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Invalid OTP, please try again",
+        { variant: "error" }
+      );
     } finally {
       setLoading(false);
     }
@@ -125,7 +175,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
           </p>
 
           <div
-            className="w-full flex items-center justify-center gap-2 mt-8"
+            className="w-full flex items-center justify-center gap-2 mt-4"
             onPaste={handlePaste}
           >
             {otp.map((digit, i) => (
@@ -143,7 +193,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
             ))}
           </div>
 
-          <p className="mt-3 mb-6 text-start">
+          <p className="mt-3 mb-6 text-start text-sm">
             Didn’t receive code?{" "}
             {timer > 0 ? (
               <span className="font-medium text-gray-500">
@@ -153,7 +203,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
               <button
                 type="button"
                 disabled={resending}
-                onClick={handleResend}
+                onClick={() => handleResendOtp()}
                 className="font-medium text-[var(--button-bg)] hover:underline disabled:opacity-50"
               >
                 {resending ? "Resending..." : "Resend code"}

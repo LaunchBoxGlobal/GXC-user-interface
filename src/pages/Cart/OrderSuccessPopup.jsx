@@ -17,7 +17,7 @@ const OrderSuccessPpup = ({
           navigate("/");
           return;
         }
-        navigate(`/orders/details/${orderId}`);
+        navigate(`/order-management/details/${orderId}`);
       }, 2000);
 
       return () => clearTimeout(timer);

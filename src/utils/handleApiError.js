@@ -6,6 +6,16 @@ export const handleApiError = (error, navigate) => {
   if (error?.response) {
     const status = error.response.status;
 
+    // ----------------- 400 -----------------
+    if (status === 400) {
+      enqueueSnackbar(
+        error?.message ||
+          error?.response?.data?.message ||
+          "Invalid request. Please check your input.",
+        { variant: "error" }
+      );
+      return;
+    }
     // ----------------- 401 -----------------
     if (status === 401) {
       if (shouldShowError("suspended401")) {

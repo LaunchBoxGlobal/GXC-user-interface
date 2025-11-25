@@ -89,10 +89,13 @@ const SettingsLayout = ({ page }) => {
   }, []);
 
   const handleLogout = async () => {
+    const deviceInfo = navigator.userAgent;
     try {
       const res = await axios.post(
         `${BASE_URL}/auth/logout`,
-        {},
+        {
+          deviceInfo,
+        },
         {
           headers: {
             Authorization: `Bearer ${Cookies.get("token")}`,
@@ -102,6 +105,17 @@ const SettingsLayout = ({ page }) => {
 
       if (res?.data?.success) {
         // console.log("Logout successful");
+        Cookies.remove("userToken");
+        Cookies.remove("user");
+        Cookies.remove("selected-community");
+        Cookies.remove("page");
+        Cookies.remove("userEmail");
+        Cookies.remove("isUserEmailVerified");
+        Cookies.remove("userSelectedPaymentMethod");
+        Cookies.remove("userSelectedDeliveryMethod");
+        Cookies.remove("userSelectedDeliveryAddress");
+        Cookies.remove("newDeliveryAddress");
+        navigate("/login");
       }
     } catch (error) {
       // console.log("Logout error >>>", error?.response?.data || error.message);
@@ -128,7 +142,7 @@ const SettingsLayout = ({ page }) => {
           <div className="">
             {user?.profilePictureUrl ? (
               <img
-                className="lg:max-h-[116px] lg:h-[116px] min-w-[54px] min-h-[54px] lg:w-[116px] lg:max-w-[116px] rounded-full object-cover object-center"
+                className="w-[54px] min-w-[54px] min-h-[54px] lg:w-[116px] lg:max-w-[116px] lg:max-h-[116px] lg:h-[116px] rounded-full object-cover object-center"
                 src={user?.profilePictureUrl}
                 alt="user profile picture"
               />
@@ -164,7 +178,18 @@ const SettingsLayout = ({ page }) => {
 
       <div className="w-full mt-5 min-h-[50vh] flex flex-col lg:flex-row items-start lg:justify-between bg-white rounded-[12px] custom-shadow">
         <div className="w-full lg:w-[25%] lg:min-h-[90vh] border-r px-8 pt-5 overflow-hidden relative">
-          <h2 className="text-[28px] font-semibold">Settings</h2>
+          <div className="w-full flex items-center justify-between">
+            <h2 className="text-[22px] lg:text-[28px] font-semibold">
+              Settings
+            </h2>
+            <button
+              type="button"
+              onClick={() => handleLogout()}
+              className={`text-sm font-medium px-4 h-[39px] lg:hidden outline-none bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
+            >
+              Logout
+            </button>
+          </div>
           <ul className="w-full flex lg:flex-col mt-5 overflow-auto">
             {settingPages?.map((link, index) => {
               return (
@@ -189,7 +214,7 @@ const SettingsLayout = ({ page }) => {
           <button
             type="button"
             onClick={() => handleLogout()}
-            className={`text-sm font-medium w-full h-[49px] outline-none absolute bottom-5 left-8 bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
+            className={`text-sm font-medium w-full h-[49px] outline-none hidden lg:block absolute bottom-5 left-8 bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
           >
             Logout
           </button>

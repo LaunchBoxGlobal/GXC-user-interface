@@ -19,6 +19,7 @@ import {
 } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { profileSchema } from "../../validation/profileSchema";
+import { requestNotificationPermission } from "../../notifications";
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ const CompleteProfileForm = () => {
           Cookies.remove(`userEmail`);
           Cookies.remove(`verifyEmail`);
           Cookies.remove("signupEmail");
+          requestNotificationPermission();
         }
       } catch (error) {
         console.error("complete profile error:", error);
@@ -108,7 +110,7 @@ const CompleteProfileForm = () => {
           }
         );
         if (error?.response?.status === 401) {
-          Cookies.remove("token");
+          Cookies.remove("userToken");
           Cookies.remove("user");
           navigate("/login");
         }
@@ -310,7 +312,10 @@ const CompleteProfileForm = () => {
           {/* Buttons */}
           <div className="pt-2 flex items-center justify-between">
             <Link
-              to={redirect ? redirect : `/`}
+              onClick={() => {
+                requestNotificationPermission();
+                navigate(redirect ? redirect : `/`);
+              }}
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
               Skip

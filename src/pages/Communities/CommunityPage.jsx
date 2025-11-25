@@ -23,9 +23,6 @@ const CommunityPage = () => {
   const navigate = useNavigate();
   const [initialized, setInitialized] = useState(false);
 
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
-
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
     try {
@@ -46,7 +43,6 @@ const CommunityPage = () => {
       if (error?.response?.status === 404) {
         setNotFound(true);
       } else if (error?.response?.status === 401) {
-        // token problem — optional: clear and redirect to login
         Cookies.remove("userToken");
         Cookies.remove("user");
         navigate("/login");
@@ -58,9 +54,6 @@ const CommunityPage = () => {
       setFetchingCommunity(false);
     }
   };
-
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
 
   // Check current membership (defensive)
   const checkIamAlreadyMember = async () => {
@@ -87,12 +80,6 @@ const CommunityPage = () => {
 
       return isMember;
     } catch (error) {
-      console.error(
-        "membership error >>>>> ",
-        error?.response?.status,
-        error?.message
-      );
-      // If unauthorized, force re-login
       if (error?.response?.status === 401) {
         Cookies.remove("userToken");
         Cookies.remove("user");
@@ -108,9 +95,6 @@ const CommunityPage = () => {
     }
   };
 
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
-
   // Check if community allows joining
   const checkJoinStatus = async () => {
     try {
@@ -123,7 +107,6 @@ const CommunityPage = () => {
 
       const data = res?.data?.data || {};
       const canJoinStatus = !!data?.canJoin;
-      console.log("canJoinStatus from checkJoinStatus >>>> ", canJoinStatus);
       setCanJoin(canJoinStatus);
 
       return canJoinStatus;
@@ -133,16 +116,11 @@ const CommunityPage = () => {
         error?.response?.status,
         error?.message
       );
-      // If status check fails, assume cannot join
       setCanJoin(false);
       return false;
     }
   };
 
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
-
-  // Accept invite
   const handleAcceptInvite = async () => {
     if (!canJoin) {
       enqueueSnackbar("Community is not accepting new members anymore!", {
@@ -200,28 +178,11 @@ const CommunityPage = () => {
 
       setShowPopup(false);
     } catch (error) {
-      console.error(
-        "accept invitation error >>>>> ",
-        error?.response?.status,
-        error?.message
-      );
-      if (error?.response?.status === 401) {
-        Cookies.remove("userToken");
-        Cookies.remove("user");
-        navigate("/login");
-      } else {
-        enqueueSnackbar(error?.response?.data?.message || error?.message, {
-          variant: "error",
-          autoHideDuration: 2000,
-        });
-      }
+      handleApiError(error, navigate);
     } finally {
       setLoading(false);
     }
   };
-
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
 
   useEffect(() => {
     if (!user || initialized) return;
@@ -252,9 +213,6 @@ const CommunityPage = () => {
     setShowPopup(false);
     navigate("/");
   };
-
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
 
   // Render states
   if (initializing || fetchingCommunity) {
@@ -302,9 +260,6 @@ const CommunityPage = () => {
       </div>
     );
   }
-
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
 
   if (notFound && !fetchingCommunity) {
     return (

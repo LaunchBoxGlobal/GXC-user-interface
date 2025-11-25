@@ -1,37 +1,61 @@
-// src/notifications.js
 import { messaging } from "./firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const VAPID_KEY =
-  "BM6D1oVjxWpWP9wym2P2KEc3oqRh_f540clMC9TssC2tFBN5HsVT9D1rj-vKafvhnIAT9bUsBG2-A0Z32VsVBQI"; // from Firebase Cloud Messaging → Web Push certificates
+  "BM6D1oVjxWpWP9wym2P2KEc3oqRh_f540clMC9TssC2tFBN5HsVT9D1rj-vKafvhnIAT9bUsBG2-A0Z32VsVBQI";
 
-// Ask for permission and get token
 export const requestNotificationPermission = async () => {
-  console.log("Requesting notification permission...");
-
+  // console.log("Requesting notification permission...");
   const permission = await Notification.requestPermission();
 
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
+  if (permission !== "granted") {
+    console.log("Permission not granted");
+    return;
+  }
 
-    try {
-      const currentToken = await getToken(messaging, { vapidKey: VAPID_KEY });
+  try {
+    const currentToken = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+    });
 
-      if (currentToken) {
-        console.log("FCM token:", currentToken);
-
-        // TODO: send this token to your backend
-        await axios.post(`/api/save-fcm-token`, { token: currentToken });
-        // adjust the URL according to what your backend dev gives you
-      } else {
-        console.log("No registration token available.");
-      }
-    } catch (err) {
-      console.error("An error occurred while retrieving token. ", err);
+    if (!currentToken) {
+      console.log("No registration token available.");
+      return;
     }
-  } else {
-    console.log("Notification permission not granted.");
+
+    // console.log("FCM token:", currentToken);
+
+    const storedToken = localStorage.getItem("userfcmToken");
+
+    if (storedToken !== currentToken) {
+      console.log("New token detected — sending to backend");
+
+      const deviceInfo = navigator.userAgent;
+      const userToken = Cookies.get("userToken");
+
+      if (!userToken) {
+        console.log("User is not logged in — skipping FCM update");
+        return;
+      }
+
+      await axios.post(
+        "https://dev-api.app.thegivexchange.com/api/auth/update-fcm",
+        { token: currentToken, deviceInfo },
+        {
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
+
+      localStorage.setItem("userfcmToken", currentToken);
+    } else {
+      console.log("Token already sent — no need to send again");
+    }
+  } catch (err) {
+    console.error("Error retrieving token:", err);
   }
 };
 
@@ -39,6 +63,7 @@ export const requestNotificationPermission = async () => {
 export const listenForMessages = (callback) => {
   onMessage(messaging, (payload) => {
     console.log("Message received in foreground: ", payload);
+    alert("Message received", payload);
     if (callback) callback(payload);
   });
 };

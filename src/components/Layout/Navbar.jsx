@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CgMenu } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
@@ -6,10 +6,8 @@ import { useAppContext } from "../../context/AppContext";
 import { PAGE_LINKS } from "../../data/pageLinks";
 import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
-// import { HiOutlineUser } from "react-icons/hi2";
-import { HiOutlineUser } from "react-icons/hi";
-import { FaRegUser } from "react-icons/fa6";
 import ProfilerDropdown from "./ProfilerDropdown";
+import NotificationsDropdown from "./NotificationsDropdown";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -31,13 +29,14 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const currentPath = location.pathname;
+  const isActive = (url) => {
+    const [path] = url.split("?");
 
-  const isActive = (path) => {
     if (path === "/") {
-      return currentPath === "/";
+      return location.pathname === "/";
     }
-    return currentPath.startsWith(path);
+
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -45,7 +44,6 @@ const Navbar = () => {
       className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-visible transition-colors duration-300 ${
         isScrolled ? "bg-white shadow-md" : "bg-transparent"
       }`}
-      // style={{ overflowY: "visible" }}
     >
       {/* Logo */}
       <div className="block">
@@ -128,18 +126,7 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Notification */}
-          <button type="button">
-            <img
-              src={
-                isScrolled
-                  ? "/notification-icon.png"
-                  : "/notification-white-icon.svg"
-              }
-              alt="notification icon"
-              className="min-w-[21px] h-[21px]"
-            />
-          </button>
+          <NotificationsDropdown isScrolled={isScrolled} />
 
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
@@ -147,7 +134,40 @@ const Navbar = () => {
       </ul>
 
       {/* Mobile Menu */}
-      <div className="flex items-center justify-end gap-10 lg:hidden">
+      <div className="flex items-center justify-end gap-5 lg:hidden">
+        {/* Right icons */}
+        <div className="flex items-center gap-5">
+          {/* Cart */}
+          <Link to={`/cart/${selectedCommunity?.id}`}>
+            <div className="relative">
+              <img
+                src={isScrolled ? "/cart-icon.png" : "/cart-white-icon.svg"}
+                alt="cart icon"
+                className="min-w-[22px] h-[22px]"
+              />
+              {cartCount > 0 && (
+                <div
+                  className={`w-4 h-4 rounded-full ${
+                    isScrolled ? "bg-[var(--button-bg)]" : "bg-white"
+                  } absolute -top-1 -right-2 flex items-center justify-center`}
+                >
+                  <span
+                    className={`text-xs font-medium ${
+                      isScrolled ? "text-white" : "text-black"
+                    }`}
+                  >
+                    {cartCount}
+                  </span>
+                </div>
+              )}
+            </div>
+          </Link>
+
+          <NotificationsDropdown isScrolled={isScrolled} />
+
+          {/* Profile */}
+          {/* {user && <ProfilerDropdown user={user} />} */}
+        </div>
         <button type="button" onClick={handleToggleSidebar}>
           <CgMenu
             className={`text-xl ${isScrolled ? "text-black" : "text-gray-200"}`}
@@ -165,14 +185,14 @@ const Navbar = () => {
             </button>
           </div>
 
-          <ul className="w-full flex flex-col items-start justify-start gap-5 pt-10">
+          <ul className="w-full flex flex-col items-start justify-start gap-3 pt-10">
             {PAGE_LINKS?.map((page) => {
               const active = isActive(page.url);
               return (
                 <li key={page.title}>
                   <Link
                     to={page.url}
-                    className={`font-medium text-lg ${
+                    className={`font-medium text-base ${
                       active
                         ? "text-[var(--button-bg)] font-semibold"
                         : "text-gray-800"
@@ -184,6 +204,16 @@ const Navbar = () => {
                 </li>
               );
             })}
+
+            <li>
+              <Link
+                to={`/profile/notifications`}
+                className={`font-medium text-base text-gray-800`}
+                onClick={handleToggleSidebar}
+              >
+                Profile
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

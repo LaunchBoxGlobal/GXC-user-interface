@@ -165,7 +165,7 @@ const DeliveryItemsList = ({
                     item?.sellerStatus === "cancelled" ? (
                       <Link
                         to={`/products/${item?.productTitle}?productId=${item?.productId}&isOrderPlaced=true`}
-                        className="max-w-[38px]"
+                        className="max-w-[48px]"
                       >
                         <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                           <img
@@ -240,7 +240,7 @@ const DeliveryItemsList = ({
                       </div>
                     </div>
                     <Link
-                      to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
+                      to={`/order-management/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                       className="max-w-[48px]"
                     >
                       <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">

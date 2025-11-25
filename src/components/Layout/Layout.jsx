@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { useAppContext } from "../../context/AppContext";
@@ -35,7 +35,7 @@ const Layout = ({ children }) => {
           <ProductManagementHeader />
         )}
 
-        {pathname?.pathname == "/orders" && selectedCommunity && (
+        {pathname?.pathname == "/order-management" && selectedCommunity && (
           <OrderManagementHeader />
         )}
 
@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
               <span className="text-sm">Back</span>
             </button>
             <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
-              Create Request
+              Report
             </h1>
           </div>
         )}

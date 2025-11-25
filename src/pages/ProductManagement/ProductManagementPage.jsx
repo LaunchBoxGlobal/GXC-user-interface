@@ -18,7 +18,7 @@ const ProductManagementPage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  const { selectedCommunity, checkIamAlreadyMember } = useUser();
+  const { selectedCommunity, checkIamAlreadyMember, communities } = useUser();
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("categoryId") || "";
 
@@ -100,7 +100,7 @@ const ProductManagementPage = () => {
 
   return (
     <div className="w-full min-h-screen padding-x py-16">
-      <Categories />
+      {communities && communities?.length > 0 && <Categories />}
       {/* <ProductTypeTabs /> */}
       {loading ? (
         <div className="w-full flex justify-center pt-48 min-h-[100vh]">

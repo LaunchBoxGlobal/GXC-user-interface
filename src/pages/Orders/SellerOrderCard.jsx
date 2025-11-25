@@ -39,8 +39,8 @@ const SellerOrderCard = ({ product }) => {
               <Link
                 to={
                   tab === "seller"
-                    ? `/orders/seller/details/${product?.orderNumber}?itemId=${item?.id}`
-                    : `/orders/details/${product?.orderNumber}?itemId=${item?.id}`
+                    ? `/order-management/seller/details/${product?.orderNumber}?itemId=${item?.id}`
+                    : `/order-management/details/${product?.orderNumber}?itemId=${item?.id}`
                 }
                 className="text-xs font-medium"
               >
@@ -112,8 +112,8 @@ const SellerOrderCard = ({ product }) => {
                   <Link
                     to={
                       tab === "seller"
-                        ? `/orders/seller/details/${product?.orderNumber}?itemId=${item?.id}`
-                        : `/orders/details/${product?.orderNumber}?itemId=${item?.id}`
+                        ? `/order-management/seller/details/${product?.orderNumber}?itemId=${item?.id}`
+                        : `/order-management/details/${product?.orderNumber}?itemId=${item?.id}`
                     }
                   >
                     <div className="w-[49px] h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">

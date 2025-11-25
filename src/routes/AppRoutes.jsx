@@ -46,6 +46,8 @@ import SettingsPage from "../pages/Settings/SettingsPage";
 import MemberDetailsPage from "../pages/Member/MemberDetailsPage";
 import SellerOrderDetailsPage from "../pages/Orders/SellerOrderDetailsPage";
 import SellerStripeSuccess from "../pages/Auth/SellerStripeSuccess";
+import TransactionHistoryPage from "../pages/TransactionHistory/TransactionHistoryPage";
+import UserDetailsPage from "../pages/TransactionHistory/UserDetailsPage";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -328,7 +330,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/orders/details/seller/:communityId/:userId"
+        path="/order-management/details/seller/:communityId/:userId"
         element={
           <PrivateRoute
             element={
@@ -354,7 +356,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/orders"
+        path="/order-management"
         element={
           <PrivateRoute
             element={
@@ -445,7 +447,7 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/orders/details/:orderId"
+        path="/order-management/details/:orderId"
         element={
           <PrivateRoute
             element={
@@ -457,7 +459,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/orders/seller/details/:orderId"
+        path="/order-management/seller/details/:orderId"
         element={
           <PrivateRoute
             element={
@@ -489,6 +491,32 @@ const AppRoutes = () => {
             element={
               <Layout key="seller-stripe-success">
                 <SellerStripeSuccess />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/transaction-history"
+        element={
+          <PrivateRoute
+            element={
+              <Layout key="transaction-history-page">
+                <TransactionHistoryPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/transaction-history/member/details/:userId"
+        element={
+          <PrivateRoute
+            element={
+              <Layout>
+                <UserDetailsPage />
               </Layout>
             }
           />

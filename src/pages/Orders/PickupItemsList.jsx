@@ -160,7 +160,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                     {user?.id === item?.seller?.id ? (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
                         <Link
-                          to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}`}
+                          to={`/order-management/details/seller/${orderDetails?.communityId}/${item?.seller?.id}`}
                           className="max-w-[38px]"
                         >
                           <div className="w-[38px] max-w-[38px] h-[38px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
@@ -300,7 +300,7 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                         </div>
 
                         <Link
-                          to={`/orders/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
+                          to={`/order-management/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                           className="max-w-[48px]"
                         >
                           <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">

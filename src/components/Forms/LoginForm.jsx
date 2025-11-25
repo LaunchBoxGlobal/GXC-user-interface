@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
+import { requestNotificationPermission } from "../../notifications";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ const LoginForm = () => {
           setUser(res?.data?.data?.user);
           resetForm();
           fetchCommunities();
+          requestNotificationPermission();
           if (redirect) {
             navigate(redirect.startsWith("/") ? redirect : `/${redirect}`);
           } else {

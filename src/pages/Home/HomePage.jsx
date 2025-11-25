@@ -10,6 +10,10 @@ import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
 import { enqueueSnackbar } from "notistack";
 import Categories from "./Categories";
+import {
+  listenForMessages,
+  requestNotificationPermission,
+} from "../../notifications";
 
 const HomePage = () => {
   const { productSearchValue } = useAppContext();
@@ -31,6 +35,17 @@ const HomePage = () => {
   const max = searchParams.get("max") || "";
   const categoryId = searchParams.get("categoryId") || "";
   const page = Number(searchParams.get("page")) || 1;
+
+  // useEffect(() => {
+  //   requestNotificationPermission();
+
+  //   listenForMessages((payload) => {
+  //     const title = payload.notification?.title || "New Notification";
+  //     const body = payload.notification?.body || "";
+
+  //     enqueueSnackbar(`${title}\n\n${body}`);
+  //   });
+  // }, []);
 
   const fetchCategories = async () => {
     try {
@@ -135,7 +150,7 @@ const HomePage = () => {
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
-      <Categories />
+      {communities && communities?.length > 0 && <Categories />}
       {loading ? (
         <div className="w-full flex justify-center pt-40 min-h-screen">
           <Loader />

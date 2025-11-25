@@ -47,8 +47,8 @@ const OrderCard = ({ product }) => {
         <Link
           to={
             tab === "seller"
-              ? `/orders/seller/details/${product?.orderNumber}`
-              : `/orders/details/${product?.orderNumber}`
+              ? `/order-management/seller/details/${product?.orderNumber}`
+              : `/order-management/details/${product?.orderNumber}`
           }
           className="text-xs font-medium"
         >
@@ -132,7 +132,7 @@ const OrderCard = ({ product }) => {
               {tab === "buyer" && (
                 <div className="flex flex-col items-end justify-center gap-2">
                   <Link
-                    to={`/orders/details/${product?.orderNumber}?itemId=${item?.id}`}
+                    to={`/order-management/details/${product?.orderNumber}?itemId=${item?.id}`}
                   >
                     <div className="w-[49px] h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
                       <img
