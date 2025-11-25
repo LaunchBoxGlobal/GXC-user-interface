@@ -7,6 +7,7 @@ import { useState } from "react";
 import Loader from "../Common/Loader";
 import { MdPayments } from "react-icons/md";
 import ProductTypeTabs from "../../pages/ProductManagement/ProductTypeTabs";
+import { enqueueSnackbar } from "notistack";
 
 const ProductManagementHeader = () => {
   const navigate = useNavigate();
@@ -23,18 +24,24 @@ const ProductManagementHeader = () => {
         },
       });
 
-      if (res?.data?.success) {
+      console.log(res);
+
+      // return;
+
+      if (res?.data?.data?.accountStatus === "active") {
         navigate("/product-management/add-product");
+      } else if (res?.data?.data?.accountStatus === "pending") {
+        enqueueSnackbar(`Your account is in progress.`, { variant: "error" });
       } else {
         setShowConfirmationModal((prev) => !prev);
       }
     } catch (error) {
+      // console.log("handleCheckStripeAccountStatus error >>> ", error);
       if (error?.status === 404) {
         setShowConfirmationModal((prev) => !prev);
         return;
       }
-      console.log("handleCheckStripeAccountStatus error >>> ", error);
-      handleApiError(error, navigate);
+      // handleApiError(error, navigate);
     } finally {
       setCheckStripe(false);
     }
