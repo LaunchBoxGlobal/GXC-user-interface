@@ -98,7 +98,7 @@ const SettingsLayout = ({ page }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
@@ -115,6 +115,7 @@ const SettingsLayout = ({ page }) => {
         Cookies.remove("userSelectedDeliveryMethod");
         Cookies.remove("userSelectedDeliveryAddress");
         Cookies.remove("newDeliveryAddress");
+        localStorage.removeItem("userfcmToken");
         navigate("/login");
       }
     } catch (error) {
@@ -130,6 +131,7 @@ const SettingsLayout = ({ page }) => {
       Cookies.remove("userSelectedDeliveryMethod");
       Cookies.remove("userSelectedDeliveryAddress");
       Cookies.remove("newDeliveryAddress");
+      localStorage.removeItem("userfcmToken");
 
       navigate("/login");
     }

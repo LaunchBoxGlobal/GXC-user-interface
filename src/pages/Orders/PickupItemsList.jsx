@@ -75,11 +75,6 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
-
-        // Delay refetching so the popup remains visible
-        // setTimeout(() => {
-        //   fetchOrderDetails();
-        // }, 2000);
       }
     } catch (error) {
       console.error("markItemAsDelivered error >>> ", error);

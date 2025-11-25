@@ -3,7 +3,6 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
-import { enqueueSnackbar } from "notistack";
 import { useState } from "react";
 import Loader from "../Common/Loader";
 import { MdPayments } from "react-icons/md";
@@ -24,8 +23,6 @@ const ProductManagementHeader = () => {
         },
       });
 
-      // console.log("stripe status >>> ", res?.data);
-      // return;
       if (res?.data?.success) {
         navigate("/product-management/add-product");
       } else {

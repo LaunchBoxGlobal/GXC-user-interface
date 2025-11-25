@@ -7,7 +7,6 @@ const VAPID_KEY =
   "BM6D1oVjxWpWP9wym2P2KEc3oqRh_f540clMC9TssC2tFBN5HsVT9D1rj-vKafvhnIAT9bUsBG2-A0Z32VsVBQI";
 
 export const requestNotificationPermission = async () => {
-  // console.log("Requesting notification permission...");
   const permission = await Notification.requestPermission();
 
   if (permission !== "granted") {
@@ -24,8 +23,6 @@ export const requestNotificationPermission = async () => {
       console.log("No registration token available.");
       return;
     }
-
-    // console.log("FCM token:", currentToken);
 
     const storedToken = localStorage.getItem("userfcmToken");
 
@@ -59,11 +56,9 @@ export const requestNotificationPermission = async () => {
   }
 };
 
-// Listen for messages while app is in foreground
 export const listenForMessages = (callback) => {
   onMessage(messaging, (payload) => {
     console.log("Message received in foreground: ", payload);
-    alert("Message received", payload);
     if (callback) callback(payload);
   });
 };
