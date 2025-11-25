@@ -85,7 +85,7 @@ const TransactionHistoryPage = () => {
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4 min-h-screen">
         <div className="w-full bg-white p-6 lg:p-8 rounded-[12px]">
           <h2 className="font-medium text-xl leading-none">
-            Available Balance
+            {sellerType === "seller" ? "Available Balance" : "Total Purchases"}
           </h2>
           {sellerType === "seller" ? (
             <p className="text-[var(--button-bg)] text-[45px] font-semibold">

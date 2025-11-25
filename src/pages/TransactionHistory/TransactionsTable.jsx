@@ -4,13 +4,13 @@ import { formatDate } from "../../utils/formatDate";
 import { Link } from "react-router-dom";
 
 const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
-  if (loading) {
-    return (
-      <div className="w-full mt-10 flex justify-center items-center min-h-[80vh] bg-white">
-        <Loader />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="w-full mt-10 flex justify-center items-center min-h-[80vh] bg-white">
+  //       <Loader />
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -95,7 +95,7 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
                       className="w-[43px] h-[43px] object-cover rounded-full"
                     />
                     <Link
-                      to={`/transaction-history/member/details/${transaction?.seller?.id}?isOrderPlaced=true&isBuyer=true`}
+                      to={`/transaction-history/member/details/${transaction?.buyer?.id}?isOrderPlaced=true&isBuyer=true`}
                       className="text-sm font-normal"
                     >
                       {transaction?.buyer?.name}
