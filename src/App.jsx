@@ -9,7 +9,7 @@ import {
 
 function App() {
   useEffect(() => {
-    requestNotificationPermission();
+    // requestNotificationPermission();
 
     listenForMessages((payload) => {
       const title = payload.notification?.title || "New Notification";
