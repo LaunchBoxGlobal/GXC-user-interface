@@ -9,14 +9,17 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import ReportSuccessPopup from "./ReportSuccessPopup";
 import ImageUpload from "./ImageUpload";
+import { useAppContext } from "../../context/AppContext";
 
 const ReportingPage = () => {
   const navigate = useNavigate();
   const [isReportSubmitted, setIsReportSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { fetchNotificaiontCount } = useAppContext();
 
   useEffect(() => {
     document.title = "Reporting - giveXchange";
+    fetchNotificaiontCount();
   }, []);
 
   const formik = useFormik({

@@ -26,7 +26,7 @@ const ProductManagementPage = () => {
   const limit = 12;
   const PRODUCT_STATUS = "active";
   // const [productType, setProductType] = useState("active");
-  const { productType } = useAppContext();
+  const { productType, fetchNotificaiontCount } = useAppContext();
 
   const fetchProducts = useCallback(async () => {
     if (!selectedCommunity) return;
@@ -62,6 +62,7 @@ const ProductManagementPage = () => {
   useEffect(() => {
     document.title = "Product Management - giveXchange";
     fetchProducts();
+    fetchNotificaiontCount();
   }, [fetchProducts, categoryId]);
 
   // Handle pagination click

@@ -5,6 +5,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
+import { useAppContext } from "../../context/AppContext";
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -21,6 +22,7 @@ const TransactionHistoryPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { fetchNotificaiontCount } = useAppContext();
 
   const LIMIT = 10;
   const page = searchParams.get("page") || 1;
@@ -76,6 +78,7 @@ const TransactionHistoryPage = () => {
     const debouncedFetch = debounce(() => {
       getRevenue();
       getTransactions();
+      fetchNotificaiontCount();
     }, 500);
     debouncedFetch();
   }, [sellerType, page, searchTerm]);

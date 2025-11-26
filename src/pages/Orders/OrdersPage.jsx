@@ -8,6 +8,7 @@ import Loader from "../../components/Common/Loader";
 import OrderTypeTabs from "./OrderTypeTabs";
 import OrderCard from "./OrderCard";
 import SellerOrderCard from "./SellerOrderCard";
+import { useAppContext } from "../../context/AppContext";
 
 const OrdersPage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [pagination, setPagination] = useState(null);
+  const { fetchNotificaiontCount } = useAppContext();
 
   const page = Number(searchParams.get("page")) || 1;
 
@@ -48,6 +50,7 @@ const OrdersPage = () => {
   useEffect(() => {
     document.title = "Order Management - GiveXChange";
     fetchOrders();
+    fetchNotificaiontCount();
   }, [activeTab, activeOrderType, page]);
 
   if (loading)

@@ -14,7 +14,7 @@ import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
 
 const ProfilePage = () => {
-  const { user, setUser } = useAppContext();
+  const { user, setUser, fetchNotificaiontCount } = useAppContext();
   const navigate = useNavigate();
   const { checkIamAlreadyMember } = useUser();
   const { settingsTab } = useParams();
@@ -86,6 +86,7 @@ const ProfilePage = () => {
     if (!user) return;
     checkIamAlreadyMember();
     fetchUserProfile();
+    fetchNotificaiontCount();
   }, []);
 
   return (
