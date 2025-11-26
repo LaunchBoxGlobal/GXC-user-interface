@@ -22,6 +22,8 @@ export const AppProvider = ({ children }) => {
   const [showEmailVerificationPopup, setShowEmailVerificationPopup] =
     useState(false);
 
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+
   const handleShowPaymentModal = () => {
     setShowPaymentModal((prev) => !prev);
   };
@@ -83,6 +85,24 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const fetchNotificaiontCount = async () => {
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/user/unread-notification-count`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+
+      console.log("notification count >>> ", res?.data);
+      setUnreadNotificationCount(res?.data?.data?.unreadCount);
+    } catch (error) {
+      console.log("err while fetching notification count >>> ", error);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -108,6 +128,8 @@ export const AppProvider = ({ children }) => {
         setProductMaxValue,
         productType,
         setProductType,
+        fetchNotificaiontCount,
+        unreadNotificationCount,
       }}
     >
       {children}

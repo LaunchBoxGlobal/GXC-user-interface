@@ -16,7 +16,7 @@ import {
 } from "../../notifications";
 
 const HomePage = () => {
-  const { productSearchValue } = useAppContext();
+  const { productSearchValue, fetchNotificaiontCount } = useAppContext();
   const {
     selectedCommunity,
     communities,
@@ -114,6 +114,7 @@ const HomePage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCategories();
     fetchCommunities();
+    // fetchNotificaiontCount();
   }, []);
 
   const handlePageChange = (newPage) => {
