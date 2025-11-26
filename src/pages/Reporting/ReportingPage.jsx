@@ -41,7 +41,7 @@ const ReportingPage = () => {
 
         // Append images only if available
         values.images.forEach((img) => {
-          formData.append("image", img);
+          formData.append("images", img);
         });
         // formData,
 

@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
             src={product?.images[0]?.imageUrl}
             effect="blur"
             alt="product"
-            className="w-full min-h-full object-cover rounded-[15px]"
+            className="w-full h-full object-cover rounded-[15px]"
           />
         </div>
       </div>
