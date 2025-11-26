@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const ProductCard = ({ product }) => {
   return (
@@ -6,7 +8,7 @@ const ProductCard = ({ product }) => {
       {product?.status === "active" && (
         <div className="w-full md:max-w-[290px] h-auto lg:max-h-[410px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
           <div className="w-full relative">
-            <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
+            {/* <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
               {product?.images?.length > 0 && product?.images[0]?.imageUrl ? (
                 <img
                   src={product?.images[0]?.imageUrl}
@@ -20,6 +22,14 @@ const ProductCard = ({ product }) => {
                   className="max-w-[100px]"
                 />
               )}
+            </div> */}
+            <div className="w-full h-[266px] bg-[#fff] rounded-[15px] overflow-hidden relative">
+              <LazyLoadImage
+                src={product?.images[0]?.imageUrl}
+                effect="blur"
+                alt="product"
+                className="w-full min-h-full object-cover rounded-[15px]"
+              />
             </div>
           </div>
 
