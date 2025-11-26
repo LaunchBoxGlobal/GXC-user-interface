@@ -114,7 +114,7 @@ const HomePage = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCategories();
     fetchCommunities();
-    // fetchNotificaiontCount();
+    fetchNotificaiontCount();
   }, []);
 
   const handlePageChange = (newPage) => {

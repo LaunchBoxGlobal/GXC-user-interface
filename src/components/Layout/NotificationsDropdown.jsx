@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import Loader from "../Common/Loader";
+import { useAppContext } from "../../context/AppContext";
 
 const NotificationsDropdown = ({ isScrolled }) => {
   const [open, setOpen] = useState(false);
@@ -10,6 +11,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
+  const { unreadNotificationCount } = useAppContext();
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -84,11 +86,11 @@ const NotificationsDropdown = ({ isScrolled }) => {
           className="min-w-[21px] h-[21px] relative top-1"
         />
 
-        {/* {unreadCount > 0 && (
+        {unreadNotificationCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-medium px-1.5 py-0.5 rounded-full">
-            {unreadCount}
+            {unreadNotificationCount}
           </span>
-        )} */}
+        )}
       </button>
 
       {open && (
