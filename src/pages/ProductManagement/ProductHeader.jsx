@@ -55,11 +55,17 @@ const ProductHeader = ({
           </div>
         )}
 
-        {productDetails?.category && (
+        {productDetails?.categories?.length > 0 && (
           <div className="flex items-center gap-1">
             <p className="text-sm font-medium">Category:</p>
             <p className="font-medium text-[#6D6D6D] text-sm">
-              {productDetails?.category?.name}
+              {productDetails?.categories?.map((cat, i) => {
+                return (
+                  <span className="" key={i}>
+                    {JSON.parse(cat)?.name},{" "}
+                  </span>
+                );
+              })}
             </p>
           </div>
         )}

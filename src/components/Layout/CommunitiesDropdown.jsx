@@ -49,7 +49,7 @@ const CommunitiesDropdown = () => {
 
       const list = res?.data?.data?.communities || [];
 
-      if (!list.length) {
+      if (!list.length || list?.length === 0) {
         Cookies.remove("selected-community");
       }
 
@@ -186,9 +186,9 @@ const CommunitiesDropdown = () => {
 
         {/* Dropdown list */}
         {isOpen && (
-          <ul className="absolute mt-2 bg-white rounded-[16px] lg:rounded-[32px] shadow-lg border border-gray-200 z-50 w-full max-w-[471px] pt-6 px-6 pb-2">
-            {/* Search inside dropdown */}
-            <div className="w-full h-[49px] flex items-center rounded-[19px] px-4 gap-2 bg-white custom-shadow mb-2">
+          <div className="absolute mt-2 bg-white rounded-[16px] lg:rounded-[32px] shadow-lg border border-gray-200 z-50 w-full max-w-[471px] pt-6 px-6 pb-2">
+            {/* 🔍 Search stays fixed */}
+            <div className="w-full h-[49px] flex items-center rounded-[19px] px-4 gap-2 bg-white custom-shadow mb-2 sticky top-0 z-10">
               <img
                 src="/gray-search-icon.png"
                 alt="search icon"
@@ -203,36 +203,38 @@ const CommunitiesDropdown = () => {
               />
             </div>
 
-            {/* List communities */}
-            {filteredCommunities.length > 0 ? (
-              filteredCommunities.map((c) => (
-                <li
-                  key={c.id}
-                  className="cursor-pointer text-gray-800 py-3 w-full flex items-center justify-between gap-3 border-b last:border-0"
-                  onClick={() => handleSelect(c)}
-                >
-                  <label
-                    htmlFor={`community-${c.id}`}
-                    className="w-full max-w-[80%] break-words cursor-pointer"
+            {/* 🟦 Scroll only the list */}
+            <ul className="max-h-[250px] overflow-y-auto pr-2 custom-scroll">
+              {filteredCommunities.length > 0 ? (
+                filteredCommunities.map((c) => (
+                  <li
+                    key={c.id}
+                    className="cursor-pointer text-gray-800 py-3 w-full flex items-center justify-between gap-3 border-b last:border-0"
+                    onClick={() => handleSelect(c)}
                   >
-                    {c.name}
-                  </label>
-                  <input
-                    type="radio"
-                    name="community"
-                    id={`community-${c.id}`}
-                    checked={selected?.id === c.id}
-                    readOnly
-                    className="w-[17px] h-[17px]"
-                  />
-                </li>
-              ))
-            ) : (
-              <p className="text-gray-500 text-sm text-center py-3">
-                Community not found
-              </p>
-            )}
-          </ul>
+                    <label
+                      htmlFor={`community-${c.id}`}
+                      className="w-full max-w-[80%] break-words cursor-pointer"
+                    >
+                      {c.name}
+                    </label>
+                    <input
+                      type="radio"
+                      name="community"
+                      id={`community-${c.id}`}
+                      checked={selected?.id === c.id}
+                      readOnly
+                      className="w-[17px] h-[17px]"
+                    />
+                  </li>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm text-center py-3">
+                  Community not found
+                </p>
+              )}
+            </ul>
+          </div>
         )}
       </div>
 

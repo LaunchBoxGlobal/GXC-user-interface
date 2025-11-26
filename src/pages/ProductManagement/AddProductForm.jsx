@@ -14,10 +14,13 @@ import AddProductSelectCategory from "./AddProductSelectCategory";
 import { useUser } from "../../context/userContext";
 import { RxCross2 } from "react-icons/rx";
 import { useAppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
+import { handleApiError } from "../../utils/handleApiError";
 
 const AddProductForm = ({ categories, selectedCommunity }) => {
   const { checkIamAlreadyMember } = useUser();
   const { user } = useAppContext();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(null);
@@ -91,7 +94,10 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
         formData.append("description", values.description.trim());
         // formData.append("categoryId", values.category);
         // formData.append("categoryId", JSON.stringify(values.category));
-        formData.append("categoryId", values.category[0]);
+        // formData.append("categoryId", values.category[0]);
+        values.category.forEach((catId) => {
+          formData.append("categories[]", catId);
+        });
         formData.append("deliveryMethod", deliveryMethod);
 
         values.productImages.forEach((file) =>
@@ -125,28 +131,13 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
           resetForm();
           setPreviewImages([]);
 
+          // console.log("product response === ", res?.data);
           const product = res?.data?.data?.product;
-          if (product && Object.keys(product).length > 0) {
-            window.location.href = `/products/${product.title}?productId=${product.id}`;
-          } else {
-            window.location.href = "/product-management";
-          }
+
+          navigate(`/products/${product?.title}?productId=${product?.id}`);
         }
       } catch (error) {
-        console.log("error >> ", error);
-        if (error?.response?.data?.message === "Validation failed") {
-          enqueueSnackbar("Something went wrong. Please Try again.", {
-            variant: "error",
-          });
-
-          return;
-        }
-        enqueueSnackbar(
-          error.response?.data?.message ||
-            error.message ||
-            "Something went wrong while adding a product!",
-          { variant: "error" }
-        );
+        handleApiError(error, navigate);
       } finally {
         setLoading(false);
       }
@@ -166,12 +157,6 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
   };
 
   useEffect(() => {
-    // if (
-    //   formik.values.deliveryType.includes("pickup") &&
-    //   !formik.values.customPickupAddress &&
-    //   userAddress
-    // ) {
-    // }
     formik.setFieldValue("customPickupAddress", userAddress);
   }, [formik.values.deliveryType, userAddress, user]);
 

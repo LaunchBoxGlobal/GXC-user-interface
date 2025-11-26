@@ -36,18 +36,18 @@ const ReportingPage = () => {
       setLoading(true);
 
       try {
-        // const formData = new FormData();
-        // formData.append("description", values.description);
+        const formData = new FormData();
+        formData.append("description", values.description);
 
         // Append images only if available
-        // values.images.forEach((img) => {
-        //   formData.append("images", img);
-        // });
+        values.images.forEach((img) => {
+          formData.append("image", img);
+        });
         // formData,
 
         const response = await axios.post(
           `${BASE_URL}/reports/bugs`,
-          { description: values.description },
+          formData,
           {
             headers: {
               Authorization: `Bearer ${getToken()}`,

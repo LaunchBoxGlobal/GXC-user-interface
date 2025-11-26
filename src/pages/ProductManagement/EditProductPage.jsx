@@ -104,7 +104,10 @@ const EditProductPage = () => {
       state: product?.pickupAddress?.state || "",
       productImages: product?.images || [],
       category: product?.categories?.length
-        ? product.categories.map((c) => String(c.id))
+        ? product.categories.map((c) => {
+            const parsed = JSON.parse(c);
+            return String(parsed.id);
+          })
         : product?.category?.id
         ? [String(product.category.id)]
         : [],
@@ -131,8 +134,7 @@ const EditProductPage = () => {
             price: values.price,
             description: values.description.trim(),
             deliveryMethod: "pickup",
-            // categoryId: values.category,
-            categoryId: values.category[0],
+            categories: values.category,
             pickupAddress: pickupAddress.trim(),
           },
           {
@@ -158,6 +160,8 @@ const EditProductPage = () => {
       }
     },
   });
+
+  console.log(formik.values.category);
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -416,37 +420,6 @@ const EditProductPage = () => {
                 setSelectedCategories={setSelectedCategories}
                 productCategory={productCategory}
               />
-              {/* <div className="w-full mt-1"> */}
-              {/* <label htmlFor="category" className="text-sm font-medium">
-                  Category
-                </label>
-                <select
-                  name="category"
-                  id="category"
-                  value={formik.values.category}
-                  onChange={(e) =>
-                    formik.setFieldValue("category", e.target.value)
-                  }
-                  onBlur={formik.handleBlur}
-                  className={`w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] font-normal text-[#6D6D6D] rounded-[8px] outline-none transition-all ${
-                    formik.touched.category && formik.errors.category
-                      ? "border-red-500"
-                      : "border-[var(--secondary-bg)]"
-                  }`}
-                >
-                  <option value="">Choose a category</option>
-                  {categories?.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select> */}
-              {/* {formik.touched.category && formik.errors.category && (
-                  <p className="text-red-500 text-xs">
-                    {formik.errors.category}
-                  </p>
-                )} */}
-              {/* </div> */}
 
               {/* Description */}
               <div className="mt-4">

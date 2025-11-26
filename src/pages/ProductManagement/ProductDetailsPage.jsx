@@ -29,6 +29,7 @@ const ProductDetailsPage = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [addProductInCart, setAddProductInCart] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
+  const [isError, setError] = useState(null);
 
   const fetchProductDetails = async () => {
     setLoading(true);
@@ -38,6 +39,11 @@ const ProductDetailsPage = () => {
       });
       setProductDetails(res?.data?.data?.product);
     } catch (error) {
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong."
+      );
       handleApiError(error, navigate);
     } finally {
       setLoading(false);
@@ -67,6 +73,36 @@ const ProductDetailsPage = () => {
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
           <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
             <Loader />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
+        >
+          <HiArrowLeft />
+          Back
+        </button>
+
+        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
+          <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
+            <p className="text-sm font-medium text-gray-500">
+              {isError}{" "}
+              {/* <button
+                type="button"
+                onClick={() => fetchProductDetails()}
+                className="underline text-blue-500"
+              >
+                Try again
+              </button> */}
+            </p>
           </div>
         </div>
       </div>

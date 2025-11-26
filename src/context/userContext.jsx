@@ -109,7 +109,7 @@ export const UserProvider = ({ children }) => {
       setCommunities(list);
       await checkIamAlreadyMember();
 
-      if (list.length === 0) {
+      if (list.length === 0 || !list.length) {
         Cookies.remove("selected-community");
         setSelected(null);
         // navigate({
