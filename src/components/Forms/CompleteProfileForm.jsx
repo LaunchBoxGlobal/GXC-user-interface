@@ -311,7 +311,8 @@ const CompleteProfileForm = () => {
 
           {/* Buttons */}
           <div className="pt-2 flex items-center justify-between">
-            <Link
+            <button
+              type="button"
               onClick={() => {
                 requestNotificationPermission();
                 navigate(redirect ? redirect : `/`);
@@ -319,7 +320,7 @@ const CompleteProfileForm = () => {
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
               Skip
-            </Link>
+            </button>
             <div className="w-full max-w-[110px]">
               <Button type="submit" title="Save" isLoading={loading} />
             </div>
