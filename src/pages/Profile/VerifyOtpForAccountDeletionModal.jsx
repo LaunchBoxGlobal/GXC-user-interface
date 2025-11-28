@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleLogout } from "../../utils/handleLogout";
+import { useNavigate } from "react-router-dom";
 
 const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const { user } = useAppContext();
@@ -14,6 +15,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (showModal) {

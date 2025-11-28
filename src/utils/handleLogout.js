@@ -11,4 +11,8 @@ export const handleLogout = () => {
   Cookies.remove("userSelectedDeliveryMethod");
   Cookies.remove("userSelectedDeliveryAddress");
   Cookies.remove("newDeliveryAddress");
+  localStorage.removeItem("fcmToken");
+  localStorage.removeItem("invitation-link");
+  localStorage.removeItem("userfcmToken");
+  localStorage.removeItem("userBrowserDeviceId");
 };
