@@ -89,7 +89,7 @@ const SettingsLayout = ({ page }) => {
   }, []);
 
   const handleLogout = async () => {
-    const deviceInfo = navigator.userAgent;
+    const deviceInfo = localStorage.getItem("userBrowserDeviceId");
     try {
       const res = await axios.post(
         `${BASE_URL}/auth/logout`,
