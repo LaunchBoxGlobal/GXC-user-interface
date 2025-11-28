@@ -118,6 +118,7 @@ const SettingsLayout = ({ page }) => {
         localStorage.removeItem("fcmToken");
         localStorage.removeItem("invitation-link");
         localStorage.removeItem("userfcmToken");
+        localStorage.removeItem("userBrowserDeviceId");
         navigate("/login");
       }
     } catch (error) {
@@ -136,6 +137,7 @@ const SettingsLayout = ({ page }) => {
       localStorage.removeItem("fcmToken");
       localStorage.removeItem("invitation-link");
       localStorage.removeItem("userfcmToken");
+      localStorage.removeItem("userBrowserDeviceId");
       navigate("/login");
     }
   };
