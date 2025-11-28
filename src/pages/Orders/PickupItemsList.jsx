@@ -48,18 +48,6 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
       return;
     }
 
-    // if (item?.sellerStatus !== "ready_for_pickup") {
-    //   enqueueSnackbar(
-    //     "This item can only be marked as picked up after the seller updates its status to 'Ready for Pickup'.",
-    //     {
-    //       variant: "error",
-    //       autoHideDuration: 3500,
-    //     }
-    //   );
-    //   setLoadingItemId(null);
-    //   return;
-    // }
-
     setLoading(true);
     setLoadingItemId(item?.id);
     try {
@@ -77,10 +65,10 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
         setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
-      console.error("markItemAsDelivered error >>> ", error);
+      // console.error("markItemAsDelivered error >>> ", error);
       enqueueSnackbar(
-        error?.message ||
-          error?.response?.data?.message ||
+        error?.response?.data?.message ||
+          error?.message ||
           "Something went wrong.",
         {
           variant: "error",

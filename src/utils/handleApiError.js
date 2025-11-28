@@ -9,8 +9,8 @@ export const handleApiError = (error, navigate) => {
     // ----------------- 400 -----------------
     if (status === 400) {
       enqueueSnackbar(
-        error?.message ||
-          error?.response?.data?.message ||
+        error?.response?.data?.message ||
+          error?.message ||
           "Invalid request. Please check your input.",
         { variant: "error" }
       );
