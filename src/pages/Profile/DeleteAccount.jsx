@@ -60,9 +60,13 @@ const DeleteAccount = () => {
         <div className="w-full max-w-[80%]">
           <h3 className="font-medium text-lg">
             We will send 6 digits code to{" "}
-            <span className="font-semibold">{`*******${extractEmailDomain(
-              user?.email
-            )}`}</span>{" "}
+            {user?.email && (
+              <span className="font-semibold">
+                {`${user?.email?.slice(0, 2)}********${extractEmailDomain(
+                  user?.email
+                )}`}{" "}
+              </span>
+            )}
             to confirm deletion.
           </h3>
           <p className="">
