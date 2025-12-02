@@ -65,7 +65,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Nav */}
-      <ul className="w-full max-w-[80%] hidden lg:flex items-center justify-end gap-x-14">
+      <ul className="w-full max-w-[80%] hidden xl:flex items-center justify-end gap-x-10">
         {PAGE_LINKS?.map((page) => {
           const active = isActive(page.url);
           return (
@@ -99,7 +99,7 @@ const Navbar = () => {
         })}
 
         {/* Right icons */}
-        <div className="flex items-center gap-10">
+        <div className="flex items-center gap-8">
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
             <div className="relative">
@@ -134,7 +134,7 @@ const Navbar = () => {
       </ul>
 
       {/* Mobile Menu */}
-      <div className="flex items-center justify-end gap-5 lg:hidden">
+      <div className="flex items-center justify-end gap-5 xl:hidden">
         {/* Right icons */}
         <div className="flex items-center gap-5">
           {/* Cart */}
@@ -175,7 +175,7 @@ const Navbar = () => {
         </button>
 
         <div
-          className={`w-3/4 sm:w-1/2 h-screen bg-gray-100 fixed top-0 right-0 z-50 flex flex-col items-start px-5 py-4 transform ${
+          className={`w-3/4 sm:w-1/2 lg:w-[30%] h-screen bg-gray-100 fixed top-0 right-0 z-50 flex flex-col items-start px-5 py-4 transform ${
             isSidebarOpen ? "translate-x-0" : "translate-x-full"
           } transition-transform duration-500`}
         >

@@ -1,17 +1,18 @@
 import React from "react";
-import Loader from "../../components/Common/Loader";
 import { formatDate } from "../../utils/formatDate";
 import { Link } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import Loader from "../../components/Common/Loader";
 
 const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
-  // if (loading) {
-  //   return (
-  //     <div className="w-full mt-10 flex justify-center items-center min-h-[80vh] bg-white">
-  //       <Loader />
-  //     </div>
-  //   );
-  // }
-
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center items-center mt-6 min-h-[80vh] bg-white text-red-500 font-medium">
+        <Loader />
+      </div>
+    );
+  }
   if (error) {
     return (
       <div className="w-full mt-10 flex justify-center min-h-[80vh] bg-white text-red-500 font-medium">
@@ -52,11 +53,19 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
 
               <td className="px-6 py-4 border-b text-sm">
                 <div className="flex items-center gap-2">
-                  <img
+                  {/* <img
                     src={transaction?.product?.image || "/profile-icon.png"}
                     alt="product"
                     className="w-[43px] h-[43px] object-cover rounded-full"
-                  />
+                  /> */}
+                  <div className="w-[43px] h-[43px] object-cover rounded-full">
+                    <LazyLoadImage
+                      src={transaction?.product?.image || "/profile-icon.png"}
+                      effect="blur"
+                      alt="product"
+                      className="w-[43px] h-[43px] object-cover rounded-full"
+                    />
+                  </div>
                   <Link
                     to={`/products/${transaction?.product?.title}?productId=${transaction?.product?.id}`}
                     className="text-sm font-normal"
@@ -69,14 +78,25 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
               <td className="px-6 py-4 border-b text-sm">
                 {sellerType === "buyer" ? (
                   <div className="flex items-center gap-2">
-                    <img
+                    {/* <img
                       src={
                         transaction?.seller?.profilePictureUrl ||
                         "/profile-icon.png"
                       }
                       alt="seller"
                       className="w-[43px] h-[43px] object-cover rounded-full"
-                    />
+                    /> */}
+                    <div className="w-[43px] h-[43px] object-cover rounded-full">
+                      <LazyLoadImage
+                        src={
+                          transaction?.seller?.profilePictureUrl ||
+                          "/profile-icon.png"
+                        }
+                        effect="blur"
+                        alt="seller"
+                        className="w-[43px] h-[43px] object-cover rounded-full"
+                      />
+                    </div>
                     <Link
                       to={`/transaction-history/member/details/${transaction?.seller?.id}?isOrderPlaced=true&isBuyer=false`}
                       className="text-sm font-normal"

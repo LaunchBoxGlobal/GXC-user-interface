@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
               <span className="text-sm">Back</span>
             </button>
             <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
-              Report
+              Make a Report
             </h1>
           </div>
         )}

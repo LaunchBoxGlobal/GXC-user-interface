@@ -46,6 +46,11 @@ const DeleteAccount = () => {
       setLoading(false);
     }
   };
+
+  function extractEmailDomain(email) {
+    const match = email.match(/@.+$/);
+    return match ? match[0] : null;
+  }
   return (
     <div className="w-full relative pt-2">
       <h2 className="text-[24px] font-semibold leading-none">Delete Account</h2>
@@ -53,8 +58,12 @@ const DeleteAccount = () => {
 
       <div className="w-full flex items-center justify-between">
         <div className="w-full max-w-[80%]">
-          <h3 className="font-semibold text-lg">
-            We will send 6 digits code to {user?.email}
+          <h3 className="font-medium text-lg">
+            We will send 6 digits code to{" "}
+            <span className="font-semibold">{`*******${extractEmailDomain(
+              user?.email
+            )}`}</span>{" "}
+            to confirm deletion.
           </h3>
           <p className="">
             Your data will be removed from our database permanently.

@@ -6,27 +6,12 @@ const ProductCard = ({ product }) => {
   return (
     <div className="w-full md:max-w-[290px] h-auto lg:max-h-[400px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
       <div className="w-full relative">
-        {/* <div className="w-full h-[276px] bg-[#EAEAEA] rounded-[15px] flex items-center justify-center">
-          {product?.images?.length > 0 && product?.images[0]?.imageUrl ? (
-            <img
-              src={product?.images[0]?.imageUrl}
-              alt="image placeholder"
-              className="w-full h-full max-h-[276px] object-fill rounded-[15px]"
-            />
-          ) : (
-            <img
-              src="/stats-card-icon-placeholder.png"
-              alt="image placeholder"
-              className="max-w-[100px]"
-            />
-          )}
-        </div> */}
-        <div className="w-full h-[266px] bg-[#fff] rounded-[15px] overflow-hidden relative">
+        <div className="w-full h-[266px] bg-white rounded-[15px] overflow-hidden relative [&>*]:h-full [&>*]:w-full">
           <LazyLoadImage
             src={product?.images[0]?.imageUrl}
             effect="blur"
             alt="product"
-            className="w-full h-full object-cover rounded-[15px]"
+            className="h-full w-full object-cover"
           />
         </div>
       </div>

@@ -25,7 +25,7 @@ const TransactionHistoryPage = () => {
   const { fetchNotificaiontCount } = useAppContext();
 
   const LIMIT = 10;
-  const page = searchParams.get("page") || 1;
+  const page = Number(searchParams.get("page") || 1);
 
   const [sellerType, setSellerType] = useState("buyer");
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,6 +83,38 @@ const TransactionHistoryPage = () => {
     debouncedFetch();
   }, [sellerType, page, searchTerm]);
 
+  const handlePageChange = (newPage) => {
+    if (!pagination || newPage < 1 || newPage > pagination.totalPages) return;
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage);
+    navigate(`?${params.toString()}`);
+  };
+
+  const renderPageNumbers = () => {
+    if (!pagination) return null;
+    const { totalPages } = pagination;
+    const pages = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <li key={i}>
+          <button
+            onClick={() => handlePageChange(i)}
+            aria-current={i === page ? "page" : undefined}
+            className={`flex items-center justify-center text-sm px-4 h-10 leading-tight font-medium rounded-[12px] ${
+              i === page
+                ? "text-white bg-[var(--button-bg)] font-medium"
+                : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
+            }`}
+          >
+            {i}
+          </button>
+        </li>
+      );
+    }
+    return pages;
+  };
+
   return (
     <div className="w-full relative padding-x min-h-screen">
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4 min-h-screen">
@@ -119,6 +151,10 @@ const TransactionHistoryPage = () => {
           setSearchTerm={setSearchTerm}
           loading={loading}
           error={error}
+          pagination={pagination}
+          handlePageChange={handlePageChange}
+          renderPageNumbers={renderPageNumbers}
+          page={page}
         />
       </div>
     </div>
