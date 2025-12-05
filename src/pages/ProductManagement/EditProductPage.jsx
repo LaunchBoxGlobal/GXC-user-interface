@@ -7,7 +7,6 @@ import TextField from "../../components/Common/TextField";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
-import Button from "../../components/Common/Button";
 import { useAppContext } from "../../context/AppContext";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
@@ -16,6 +15,7 @@ import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
 import { editProductSchema } from "../../validation/editProductSchema";
 import EditProductSelectCategory from "./EditProductSelectCategory";
+import EditProductDeliveryTypeSelector from "./EditProductDeliveryTypeSelector";
 
 const EditProductPage = () => {
   const navigate = useNavigate();
@@ -81,18 +81,6 @@ const EditProductPage = () => {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    formik.setFieldValue("pickupAddress", pickupAddress);
-  }, [pickupAddress]);
-
-  useEffect(() => {
-    if (product?.pickupAddress?.address) {
-      setPickupAddress(product.pickupAddress.address);
-    } else if (user?.address) {
-      setPickupAddress(user.address);
-    }
-  }, [product, user]);
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -111,21 +99,45 @@ const EditProductPage = () => {
         : product?.category?.id
         ? [String(product.category.id)]
         : [],
+      deliveryType:
+        product?.deliveryMethod === "both"
+          ? ["self", "community"]
+          : product?.deliveryMethod === "pickup"
+          ? ["self"]
+          : product?.deliveryMethod === "delivery"
+          ? ["community"]
+          : [],
+      selfPickupAddress: product?.pickupAddress?.address || user?.address || "",
+      communityPickupAddress: product?.communityPickupAddress?.address || "",
     },
 
     validationSchema: editProductSchema,
 
     onSubmit: async (values) => {
       try {
-        if (formik.values.productImages.length < 1) {
+        if (values.productImages.length < 1) {
           enqueueSnackbar("Please upload at least one product image", {
             variant: "warning",
           });
           setLoading(false);
           return;
         }
+
         checkIamAlreadyMember();
         setLoading(true);
+
+        let deliveryMethod = "pickup";
+
+        if (
+          values.deliveryType.includes("self") &&
+          values.deliveryType.includes("community")
+        ) {
+          deliveryMethod = "both";
+        } else if (values.deliveryType.includes("community")) {
+          deliveryMethod = "delivery";
+        } else {
+          deliveryMethod = "pickup";
+        }
 
         const res = await axios.put(
           `${BASE_URL}/products/${productId}`,
@@ -133,9 +145,13 @@ const EditProductPage = () => {
             title: values.productName.trim(),
             price: values.price,
             description: values.description.trim(),
-            deliveryMethod: "pickup",
             categories: values.category,
-            pickupAddress: pickupAddress.trim(),
+
+            pickupAddress: values.selfPickupAddress.trim(),
+
+            deliveryMethod: deliveryMethod,
+            selfPickupAddress: values.selfPickupAddress || null,
+            communityPickupAddress: values.communityPickupAddress || null,
           },
           {
             headers: { Authorization: `Bearer ${getToken()}` },
@@ -146,9 +162,9 @@ const EditProductPage = () => {
           enqueueSnackbar("Product updated successfully!", {
             variant: "success",
           });
-          // return;
+
           navigate(
-            `/products/${res?.data?.data?.product?.title}?productId=${res?.data?.data?.product?.id}`
+            `/products/${res.data.data.product.title}?productId=${res.data.data.product.id}`
           );
         }
       } catch (error) {
@@ -161,7 +177,19 @@ const EditProductPage = () => {
     },
   });
 
-  console.log(formik.values.category);
+  useEffect(() => {
+    if (formik.values.pickupAddress !== pickupAddress) {
+      formik.setFieldValue("pickupAddress", pickupAddress);
+    }
+  }, [pickupAddress]);
+
+  useEffect(() => {
+    if (product?.pickupAddress?.address) {
+      setPickupAddress(product.pickupAddress.address);
+    } else if (user?.address) {
+      setPickupAddress(user.address);
+    }
+  }, [product, user]);
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -333,7 +361,7 @@ const EditProductPage = () => {
     formik.setFieldValue("productImages", [...updatedExisting, ...updatedNew]);
   };
 
-  if (isImageDeleted) {
+  if (fetchingProduct || isImageDeleted) {
     return (
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.4)] flex items-center justify-center px-4">
         <Loader />
@@ -393,25 +421,41 @@ const EditProductPage = () => {
                 />
               </div>
 
+              <EditProductDeliveryTypeSelector
+                product={product}
+                formik={formik}
+              />
+
               {/* Pickup Address */}
-              <div className="mt-4">
-                <label className="font-medium text-sm mb-2 block">
-                  Pickup Address
-                </label>
-                <input
-                  type="text"
-                  value={pickupAddress}
-                  onChange={(e) => setPickupAddress(e.target.value)}
-                  placeholder="Enter pickup address"
-                  className="w-full border h-[49px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none"
-                />
-                {formik.touched.pickupAddress &&
-                  formik.errors.pickupAddress && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {formik.errors.pickupAddress}
-                    </p>
-                  )}
-              </div>
+              {formik.values.deliveryType.includes("self") && (
+                <div className="mt-4">
+                  <label className="font-medium text-sm mb-1">
+                    Self Pickup Address
+                  </label>
+                  <input
+                    type="text"
+                    name="selfPickupAddress"
+                    value={formik.values.selfPickupAddress}
+                    onChange={formik.handleChange}
+                    className="w-full h-[49px] border rounded-[8px] bg-[var(--secondary-bg)] px-3"
+                  />
+                </div>
+              )}
+
+              {formik.values.deliveryType.includes("community") && (
+                <div className="mt-4">
+                  <label className="font-medium text-sm mb-1">
+                    Community Pickup Address
+                  </label>
+                  <input
+                    type="text"
+                    name="communityPickupAddress"
+                    value={formik.values.communityPickupAddress}
+                    onChange={formik.handleChange}
+                    className="w-full h-[49px] border rounded-[8px] bg-[var(--secondary-bg)] px-3"
+                  />
+                </div>
+              )}
 
               {/* Category */}
               <EditProductSelectCategory
@@ -446,7 +490,13 @@ const EditProductPage = () => {
               </div>
 
               <div className="w-full max-w-[196px] mt-6">
-                <Button type="submit" title="Save" isLoading={loading} />
+                <button
+                  type={"submit"}
+                  disabled={loading}
+                  className="button relative flex items-center justify-center disabled:cursor-not-allowed"
+                >
+                  {loading ? <Loader /> : "Save"}
+                </button>
               </div>
             </div>
 

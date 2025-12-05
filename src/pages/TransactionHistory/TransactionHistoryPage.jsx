@@ -75,6 +75,7 @@ const TransactionHistoryPage = () => {
   };
 
   useEffect(() => {
+    document.title = "Transaction History - giveXchange";
     const debouncedFetch = debounce(() => {
       getRevenue();
       getTransactions();

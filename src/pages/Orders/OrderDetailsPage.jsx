@@ -110,7 +110,7 @@ const OrderDetailsPage = () => {
   };
 
   useEffect(() => {
-    document.title = "Order Management - GiveXChange";
+    document.title = "Order Management - giveXchange";
     fetchOrderDetails();
   }, []);
 
@@ -183,7 +183,7 @@ const OrderDetailsPage = () => {
               </p>
             </div>
 
-            {deliveryItems?.length > 0 && (
+            {deliveryItems && deliveryItems?.length > 0 && (
               <>
                 <div className="w-full border my-4" />
                 <DeliveryItemsList
@@ -193,7 +193,6 @@ const OrderDetailsPage = () => {
                 />
               </>
             )}
-
             {pickupItems && pickupItems?.length > 0 && (
               <>
                 <div className="border border-gray-300 w-full my-4" />

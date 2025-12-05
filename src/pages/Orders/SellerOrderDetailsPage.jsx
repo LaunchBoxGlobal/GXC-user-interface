@@ -250,38 +250,6 @@ const SellerOrderDetailsPage = () => {
               </div>
               {!details?.items[0]?.cancellation_reason && (
                 <div className="w-full mt-3">
-                  {/* <button
-                    type="button"
-                    disabled={
-                      details?.items[0]?.buyerStatus == "cancelled" ||
-                      details?.items[0]?.sellerStatus === "cancelled" ||
-                      details?.items[0]?.buyerStatus === "delivered" ||
-                      details?.items[0]?.buyerStatus === "picked_up"
-                    }
-                    onClick={() => setShowCancellationConfirmationModal(true)}
-                    className="w-full h-[48px] rounded-[12px] text-center bg-[#dedede] font-medium disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
-                  >
-                    Cancel Order
-                  </button> */}
-
-                  {/* <button
-                  type="button"
-                  disabled={
-                    details?.items[0]?.buyerStatus === "delivered" ||
-                    details?.items[0]?.buyerStatus === "cancelled"
-                  }
-                  onClick={() =>
-                    details?.items?.[0]?.deliveryMethod === "delivery"
-                      ? handleMarkOutForDelivery()
-                      : handleMarkReadyToPickup()
-                  }
-                  className="w-full h-[48px] rounded-[12px] text-center bg-[var(--button-bg)] text-white font-medium"
-                >
-                  {details && details?.items?.[0]?.deliveryMethod === "delivery"
-                    ? `Out For Delivery`
-                    : `Ready To Pickup`}
-                </button> */}
-
                   <button
                     type="button"
                     disabled={
@@ -306,12 +274,12 @@ const SellerOrderDetailsPage = () => {
                       : details?.items[0]?.buyerStatus === "picked_up"
                       ? "Picked Up"
                       : details?.items[0]?.sellerStatus === "out_for_delivery"
-                      ? "Out For Delivery"
+                      ? "Ready To Pickup"
                       : details?.items[0]?.sellerStatus === "cancelled"
                       ? "Cancelled by Seller"
                       : details &&
                         details?.items?.[0]?.deliveryMethod === "delivery"
-                      ? "Out For Delivery"
+                      ? "Ready To Pickup"
                       : "Ready To Pickup"}
                   </button>
                 </div>

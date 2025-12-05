@@ -50,9 +50,9 @@ const Navbar = () => {
         <Link to={`/`} className="outline-none border-none">
           {isScrolled ? (
             <img
-              src="/logo.svg"
+              src="/gxc-logo.png"
               alt="logo"
-              className="w-[70px] lg:w-[100px] xl:w-[140px]"
+              className="w-[70px] lg:w-[100px] xl:w-[120px]"
             />
           ) : (
             <img

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { HiArrowLeft } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
@@ -28,6 +27,7 @@ const AddProductPage = () => {
   };
 
   useEffect(() => {
+    document.title = "Add Product - giveXchange";
     fetchCategories();
   }, []);
 

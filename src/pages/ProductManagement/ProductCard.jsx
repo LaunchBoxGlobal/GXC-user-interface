@@ -23,28 +23,15 @@ const ProductCard = ({ product }) => {
               ? `${product?.title?.slice(0, 20)}...`
               : product?.title}
           </h3>
-          {/* <p
-            className={`text-sm font-medium ${
-              product?.status === "sold"
-                ? "text-red-500"
-                : product?.status === " delisted"
-                ? "text-[var(--rating-yellow)]"
-                : product?.status === "active"
-                ? "text-[var(--text-success)]"
-                : "text-gray-500"
-            }`}
-          >
-            {product?.status.charAt(0).toUpperCase() + product?.status.slice(1)}
-          </p> */}
         </div>
 
         <p className="text-[#9D9D9DDD] text-[15px] font-normal text-start my-2">
           {product?.deliveryMethod === "pickup"
             ? "Pickup"
             : product?.deliveryMethod === "delivery"
-            ? "Delivery"
+            ? "Community Pickup"
             : product?.deliveryMethod === "both"
-            ? "Pickup / Delivery"
+            ? "Pickup / Community Pickup"
             : null}
         </p>
 

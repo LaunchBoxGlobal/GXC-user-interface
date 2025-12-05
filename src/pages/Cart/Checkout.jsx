@@ -13,6 +13,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import OrderSuccessPopup from "./OrderSuccessPopup";
 import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
+import { useAppContext } from "../../context/AppContext";
 
 const Checkout = () => {
   const {
@@ -27,6 +28,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { user } = useAppContext();
 
   const [removingItems, setRemovingItems] = useState(false);
 
@@ -79,12 +81,12 @@ const Checkout = () => {
   );
 
   const handleNavigate = () => {
-    if (isAnyDeliveryTypeProduct || !selectedAddress) {
-      enqueueSnackbar("Please select a delivery address!", {
-        variant: "error",
-      });
-      return;
-    }
+    // if (isAnyDeliveryTypeProduct || !selectedAddress) {
+    //   enqueueSnackbar("Please select a delivery address!", {
+    //     variant: "error",
+    //   });
+    //   return;
+    // }
     if (!selectedPaymentMethod) {
       enqueueSnackbar("Please select a payment method!", {
         variant: "error",
@@ -100,9 +102,7 @@ const Checkout = () => {
       enqueueSnackbar("Something went wrong. Try again!");
       return;
     }
-    const savedAddress = Cookies.get("userSelectedDeliveryAddress")
-      ? JSON.parse(Cookies.get("userSelectedDeliveryAddress"))
-      : null;
+
     if (!savedPaymentMethod) {
       enqueueSnackbar("Something went wrong. Try again!");
       return;
@@ -117,12 +117,11 @@ const Checkout = () => {
         {
           productIds: ids,
           paymentMethodId: savedPaymentMethod?.id,
-          deliveryAddress:
-            savedAddress?.location || savedAddress?.address || "",
-          deliveryCity: savedAddress?.city || "",
-          deliveryState: savedAddress?.state || "",
-          deliveryZipcode: savedAddress?.zipcode || "",
-          deliveryCountry: savedAddress?.country || "",
+          deliveryAddress: user?.address || "",
+          deliveryCity: user?.city || "",
+          deliveryState: user?.state || "",
+          deliveryZipcode: user?.zipcode || "",
+          deliveryCountry: user?.country || "",
         },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -378,8 +377,8 @@ const Checkout = () => {
                 )}
                 {cartProducts && deliveryItems && deliveryItems?.length > 0 && (
                   <div className="w-full mt-5">
-                    <p className="text-[20px] font-semibold">Delivery Items</p>
-                    <div className="border my-5" />
+                    {/* <p className="text-[20px] font-semibold">Delivery Items</p> */}
+                    {/* <div className="border my-5" /> */}
                     {deliveryItems?.map((product, index) => (
                       <div
                         className={`w-full border-b ${
@@ -411,7 +410,7 @@ const Checkout = () => {
                                   ? "Pickup"
                                   : product?.product?.selectedDeliveryMethod ===
                                     "delivery"
-                                  ? "Delivery"
+                                  ? "Community Pickup"
                                   : ""}
                               </p>
                               <div className="w-full lg:hidden flex items-end justify-between">
@@ -446,8 +445,8 @@ const Checkout = () => {
                           </div>
                         </div>
                         {product?.product?.selectedDeliveryMethod ===
-                          "pickup" &&
-                          product?.product?.pickupAddress && (
+                          "delivery" &&
+                          product?.product?.communityPickupAddress && (
                             <div className="flex flex-col items-start justify-start gap-1 mt-3">
                               <p className="text-sm font-semibold">
                                 Pickup Address:{" "}
@@ -455,11 +454,7 @@ const Checkout = () => {
                               <div className="flex items-center gap-2">
                                 <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
                                 <p className="text-sm">
-                                  {product?.product?.pickupAddress}{" "}
-                                  {product?.product?.pickupCity}{" "}
-                                  {product?.product?.pickupState}{" "}
-                                  {product?.product?.zipcode}{" "}
-                                  {product?.product?.pickupCountry}
+                                  {product?.product?.communityPickupAddress}
                                 </p>
                               </div>
                             </div>

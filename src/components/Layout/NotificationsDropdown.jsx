@@ -11,7 +11,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
-  const { unreadNotificationCount } = useAppContext();
+  const { unreadNotificationCount, fetchNotificaiontCount } = useAppContext();
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -27,10 +27,11 @@ const NotificationsDropdown = ({ isScrolled }) => {
 
       const data = res.data?.data?.notifications || [];
 
-      console.log(res?.data?.data?.notifications);
+      // console.log(res?.data?.data?.notifications);
 
       setNotifications(data);
       setUnreadCount(data.filter((n) => !n.read).length);
+      fetchNotificaiontCount();
     } catch (error) {
       console.error("Error fetching notifications:", error);
     } finally {

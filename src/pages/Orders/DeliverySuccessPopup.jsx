@@ -11,7 +11,7 @@ const DeliverySuccessPopup = ({ showSuccessModal, setShowSuccessModal }) => {
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Marked as out for delivery
+            Marked as ready for pickup
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             You’ve successfully updated the order status.

@@ -70,7 +70,7 @@ const SellerDeliveryItemsList = ({
 
   return (
     <div className="w-full">
-      <h2 className="font-semibold mb-4">Delivery Items</h2>
+      <h2 className="font-semibold mb-4">Pickup Items</h2>
       <div className="w-full">
         {deliveryItems &&
           deliveryItems?.map((item) => {
@@ -132,28 +132,20 @@ const SellerDeliveryItemsList = ({
                   </Link>
                 </div>
 
-                {orderDetails?.deliveryAddress?.address && (
-                  <div className="w-full mt-4">
-                    <h3 className="font-semibold leading-none">
-                      Delivery Address
+                {item?.deliveryMethod === "delivery" && (
+                  <div className="w-full mt-5">
+                    <h3 className="text-sm font-semibold leading-none">
+                      Pickup Address
                     </h3>
-                    <div className="w-full flex items-center gap-1 mt-2">
-                      <FaLocationDot className="min-w-3 text-lg text-[var(--button-bg)]" />
-                      <p className="text-base text-[#181818] font-normal">
-                        {[
-                          orderDetails?.deliveryAddress?.address,
-                          orderDetails?.deliveryAddress?.city,
-                          orderDetails?.deliveryAddress?.state,
-                          orderDetails?.deliveryAddress?.zipcode,
-                          orderDetails?.deliveryAddress?.country,
-                        ]
-                          .filter(Boolean)
-                          .join(", ")}
-                      </p>
+
+                    <div className="w-full flex items-center gap-2 mt-1">
+                      <div className="min-w-4">
+                        <FaLocationDot className="text-lg text-[var(--button-bg)]" />
+                      </div>
+                      <p>{item?.communityPickupAddress?.address}</p>
                     </div>
                   </div>
                 )}
-
                 <div className="w-full border border-gray-300 my-4" />
 
                 <div className="w-full">

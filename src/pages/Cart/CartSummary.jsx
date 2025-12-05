@@ -103,11 +103,11 @@ const CartSummary = () => {
 
   // 🛒 Proceed to checkout validation
   const handleNavigate = () => {
-    if (isAnyDeliveryTypeProduct && !selectedAddress) {
-      return enqueueSnackbar("Please select a delivery address!", {
-        variant: "error",
-      });
-    }
+    // if (isAnyDeliveryTypeProduct && !selectedAddress) {
+    //   return enqueueSnackbar("Please select a address!", {
+    //     variant: "error",
+    //   });
+    // }
 
     const community = JSON.parse(Cookies.get("selected-community"));
 
@@ -187,7 +187,7 @@ const CartSummary = () => {
                 </div>
 
                 <div className="mb-5">
-                  {isAnyDeliveryTypeProduct && (
+                  {/* {isAnyDeliveryTypeProduct && (
                     <UserDeliveryAddress
                       toggleAddAddressModal={toggleAddAddressModal}
                       userNewDeliveryAddress={userNewDeliveryAddress}
@@ -196,7 +196,7 @@ const CartSummary = () => {
                       toggleEditAddressModal={toggleEditAddressModal}
                       openEditAddressModal={openEditAddressModal}
                     />
-                  )}
+                  )} */}
 
                   <div className="border my-5" />
                   <UserPaymentMethod
@@ -227,8 +227,8 @@ const CartSummary = () => {
 
                 {deliveryItems && deliveryItems?.length > 0 && (
                   <div className="w-full mt-5">
-                    <p className="text-[20px] font-semibold">Delivery Items</p>
-                    <div className="border my-5" />
+                    {/* <p className="text-[20px] font-semibold">Delivery Items</p> */}
+                    {/* <div className="border my-5" /> */}
                     <div className="w-full">
                       {deliveryItems?.map((product, index) => (
                         <CartProductCard

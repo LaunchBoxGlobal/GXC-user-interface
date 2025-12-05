@@ -36,6 +36,16 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
     .filter(Boolean)
     .join(" ")
     .trim();
+  const communityAddress = [
+    selectedCommunity?.address,
+    selectedCommunity?.city,
+    selectedCommunity?.state,
+    selectedCommunity?.zipcode,
+    selectedCommunity?.country,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
 
   const fetchRevenueSplitConfig = async () => {
     try {
@@ -61,10 +71,12 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       productName: "",
       price: "",
       description: "",
-      deliveryType: [],
       productImages: [],
       customPickupAddress: "",
       category: [],
+      deliveryType: ["self"],
+      selfPickupAddress: userAddress || "",
+      communityPickupAddress: communityAddress || "",
     },
     validationSchema: productSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -88,30 +100,48 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
           : values.deliveryType.split(",");
 
         const deliveryMethod =
-          deliveryTypes.length === 2 ? "both" : deliveryTypes[0];
+          values.deliveryType.length === 2
+            ? "both"
+            : values.deliveryType[0] === "community"
+            ? "delivery"
+            : values.deliveryType[0] === "self"
+            ? "pickup"
+            : "";
         formData.append("title", values.productName.trim());
         formData.append("price", values.price);
         formData.append("description", values.description.trim());
-        // formData.append("categoryId", values.category);
-        // formData.append("categoryId", JSON.stringify(values.category));
-        // formData.append("categoryId", values.category[0]);
         values.category.forEach((catId) => {
           formData.append("categories[]", catId);
         });
         formData.append("deliveryMethod", deliveryMethod);
+        if (values.deliveryType.includes("self")) {
+          formData.append("pickupAddress", values.selfPickupAddress);
+        }
+
+        if (values.deliveryType.includes("community")) {
+          formData.append(
+            "communityPickupAddress",
+            values.communityPickupAddress.trim()
+          );
+          formData.append(
+            "communityPickupCity",
+            selectedCommunity?.city.trim()
+          );
+          formData.append(
+            "communityPickupState",
+            selectedCommunity?.state.trim()
+          );
+          formData.append(
+            "communityPickupZipcode",
+            selectedCommunity?.zipcode.trim()
+          );
+        }
+        formData.append("pickupCity", user?.city);
+        formData.append("pickupState", user?.state);
 
         values.productImages.forEach((file) =>
           formData.append("productImages", file)
         );
-
-        if (values.deliveryType.includes("pickup")) {
-          formData.append(
-            "pickupAddress",
-            values.customPickupAddress.trim() || user?.address.trim() || ""
-          );
-          formData.append("pickupCity", user?.city.trim() || "");
-          formData.append("pickupState", user?.state.trim() || "");
-        }
 
         const res = await axios.post(
           `${BASE_URL}/communities/${selectedCommunity?.id}/products`,
@@ -243,11 +273,22 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
             </div>
           )}
 
-          {/* Pickup Address */}
-          {formik.values.deliveryType.includes("pickup") && (
-            <AddProductPickupAddressField formik={formik} />
+          {/* Address Fields */}
+          {formik.values.deliveryType.includes("self") && (
+            <AddProductPickupAddressField
+              formik={formik}
+              fieldName="selfPickupAddress"
+              label="Self Pickup Address"
+            />
           )}
 
+          {formik.values.deliveryType.includes("community") && (
+            <AddProductPickupAddressField
+              formik={formik}
+              fieldName="communityPickupAddress"
+              label="Community Pickup Address"
+            />
+          )}
           {/* Description */}
           <div className="w-full">
             <label className="font-medium text-sm mb-2 block">

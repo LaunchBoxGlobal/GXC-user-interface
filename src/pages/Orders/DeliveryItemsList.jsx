@@ -13,6 +13,7 @@ import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import { toTitleCase } from "../../utils/toTitleCase";
+import { FaLocationDot } from "react-icons/fa6";
 
 const DeliveryItemsList = ({
   deliveryItems,
@@ -53,18 +54,6 @@ const DeliveryItemsList = ({
       return;
     }
 
-    // if (product?.sellerStatus !== "out_for_delivery") {
-    //   enqueueSnackbar(
-    //     "You can mark this item as received once the seller marks it out for delivery.",
-    //     {
-    //       variant: "error",
-    //       autoHideDuration: 3500,
-    //     }
-    //   );
-
-    //   return;
-    // }
-
     setDeliveryLoadingState(true);
     try {
       const response = await axios.put(
@@ -97,9 +86,11 @@ const DeliveryItemsList = ({
     }
   };
 
+  console.log("deliveryItems >> ", deliveryItems);
+
   return (
     <div className="w-full">
-      <h2 className="font-semibold mb-4">Delivery Items</h2>
+      <h2 className="font-semibold mb-4">Pickup Items</h2>
       <div className="w-full">
         {deliveryItems &&
           deliveryItems?.map((item, index) => {
@@ -184,16 +175,6 @@ const DeliveryItemsList = ({
                         </div>
                       </Link>
                     ) : (
-                      // <button
-                      //   type="button"
-                      //   onClick={() => {
-                      //     setProduct(item);
-                      //     setOpenFeedbackModal(true);
-                      //   }}
-                      //   className="button max-w-[140px]"
-                      // >
-                      //   Write a review
-                      // </button>
                       <div className="max-w-[370px] flex items-center justify-end gap-2">
                         <button
                           type="button"
@@ -216,14 +197,22 @@ const DeliveryItemsList = ({
                 </div>
 
                 <div className="w-full border border-gray-300 my-4" />
-                {item?.deliveryAddress && (
+                {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
                     <h3 className="text-sm font-semibold leading-none">
-                      Delivery Address
+                      Pickup Address
                     </h3>
+
+                    <div className="w-full flex items-center gap-2 mt-1">
+                      <div className="min-w-4">
+                        <FaLocationDot className="text-lg text-[var(--button-bg)]" />
+                      </div>
+                      <p>{item?.communityPickupAddress?.address}</p>
+                    </div>
                   </div>
                 )}
-                <div className="w-full">
+                <div className="w-full border border-gray-300 my-4" />
+                <div className="w-full mt-5">
                   <h3 className="font-semibold leading-none">Vendor Details</h3>
                   <div className="w-full flex items-center justify-between">
                     <div className="w-full flex items-center gap-3 mt-3">

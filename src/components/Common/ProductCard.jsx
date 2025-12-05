@@ -29,9 +29,9 @@ const ProductCard = ({ product }) => {
               {product?.deliveryMethod === "pickup"
                 ? "Pickup"
                 : product?.deliveryMethod === "delivery"
-                ? "Delivery"
+                ? "Community Pickup"
                 : product?.deliveryMethod === "both"
-                ? "Pickup / Delivery"
+                ? "Pickup / Community Pickup"
                 : null}
             </p>
 

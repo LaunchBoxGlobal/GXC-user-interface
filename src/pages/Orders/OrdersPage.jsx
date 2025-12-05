@@ -48,7 +48,7 @@ const OrdersPage = () => {
   };
 
   useEffect(() => {
-    document.title = "Order Management - GiveXChange";
+    document.title = "Order Management - giveXchange";
     fetchOrders();
     fetchNotificaiontCount();
   }, [activeTab, activeOrderType, page]);

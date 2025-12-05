@@ -35,6 +35,8 @@ const ProductBuySection = ({
       setDeliveryType("pickup");
     } else if (productDetails?.deliveryMethod === "delivery") {
       setDeliveryType("delivery");
+    } else if (productDetails?.deliveryMethod === "both") {
+      setDeliveryType("both");
     }
   }, [productDetails?.deliveryMethod, setDeliveryType]);
 
@@ -60,7 +62,10 @@ const ProductBuySection = ({
     try {
       const res = await axios.post(
         `${BASE_URL}/communities/${selectedCommunity?.id}/cart/${productDetails?.id}`,
-        { deliveryMethod: deliveryType },
+        {
+          deliveryMethod:
+            deliveryType === "delivery" ? deliveryType : deliveryType,
+        },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
 
@@ -129,7 +134,7 @@ const ProductBuySection = ({
                   <FaCheck className="text-white text-xs" />
                 </div>
               )}
-              Delivery at home
+              Community Pickup
             </button>
           )}
 
@@ -150,7 +155,7 @@ const ProductBuySection = ({
                   <FaCheck className="text-white text-xs" />
                 </div>
               )}
-              Pickup
+              Self-Pickup
             </button>
           )}
         </div>
@@ -167,12 +172,22 @@ const ProductBuySection = ({
             <div className="w-full mt-2 flex items-center gap-2">
               <FaLocationDot className="text-base" />
               <div className="text-sm font-normal flex flex-wrap gap-1 break-words">
-                {/* {Object.entries(productDetails.pickupAddress)
-                  .filter(([_, value]) => value)
-                  .map(([key, value]) => (
-                    <span key={key}>{value}</span>
-                  ))} */}
                 {productDetails?.pickupAddress?.address}
+              </div>
+            </div>
+          </>
+        )}
+
+      {/* ✅ Pickup Address (conditional display) */}
+      {deliveryType === "delivery" &&
+        productDetails?.communityPickupAddress?.address && (
+          <>
+            <div className="w-full border my-5" />
+            <p className="text-sm font-semibold">Community Pickup Address</p>
+            <div className="w-full mt-2 flex items-center gap-2">
+              <FaLocationDot className="text-base" />
+              <div className="text-sm font-normal flex flex-wrap gap-1 break-words">
+                {productDetails?.communityPickupAddress?.address}
               </div>
             </div>
           </>

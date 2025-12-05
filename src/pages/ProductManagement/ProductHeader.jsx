@@ -41,8 +41,8 @@ const ProductHeader = ({
             {productDetails?.deliveryMethod === "pickup"
               ? "Pickup"
               : productDetails?.deliveryMethod === "delivery"
-              ? "Delivery"
-              : "Pickup / Delivery"}
+              ? "Community Pickup"
+              : "Pickup / Community Pickup"}
           </p>
         )}
 

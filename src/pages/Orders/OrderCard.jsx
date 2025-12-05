@@ -113,8 +113,8 @@ const OrderCard = ({ product }) => {
                   {item?.deliveryMethod === "pickup"
                     ? "Pickup"
                     : item?.deliveryMethod === "delivery"
-                    ? "Delivery"
-                    : "Pickup / Delivery"}
+                    ? "Community Pickup"
+                    : "Pickup / Community Pickup"}
                 </p>
               </div>
 
