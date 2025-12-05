@@ -67,8 +67,8 @@ const NotificationsPage = () => {
           <div className="w-full max-w-[80%]">
             <h3 className="font-semibold text-lg">New Product Alerts</h3>
             <p>
-              Receive instant alerts for newly listed products matching your
-              interests.
+              Receive notifications for new products added to your joined
+              communities.
             </p>
           </div>
 
