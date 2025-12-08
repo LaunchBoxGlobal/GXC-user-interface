@@ -48,6 +48,10 @@ import SellerOrderDetailsPage from "../pages/Orders/SellerOrderDetailsPage";
 import SellerStripeSuccess from "../pages/Auth/SellerStripeSuccess";
 import TransactionHistoryPage from "../pages/TransactionHistory/TransactionHistoryPage";
 import UserDetailsPage from "../pages/TransactionHistory/UserDetailsPage";
+import PrivacyPolicy from "../pages/Profile/PrivacyPolicy";
+import PolicyLayout from "../components/Layout/PolicyLayout";
+import PublicPrivacyPolicy from "../pages/Policies/PublicPrivacyPolicy";
+import PublicTermsConditions from "../pages/Policies/PublicTermsConditions";
 
 // --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
@@ -518,6 +522,32 @@ const AppRoutes = () => {
               <Layout>
                 <UserDetailsPage />
               </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/privacy-policy"
+        element={
+          <PublicRoute
+            element={
+              <PolicyLayout>
+                <PublicPrivacyPolicy />
+              </PolicyLayout>
+            }
+          />
+        }
+      />
+
+      <Route
+        path="/terms-and-conditions"
+        element={
+          <PublicRoute
+            element={
+              <PolicyLayout>
+                <PublicTermsConditions />
+              </PolicyLayout>
             }
           />
         }
