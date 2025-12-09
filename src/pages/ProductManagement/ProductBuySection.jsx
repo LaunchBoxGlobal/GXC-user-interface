@@ -41,12 +41,19 @@ const ProductBuySection = ({
   }, [productDetails?.deliveryMethod, setDeliveryType]);
 
   const handleAddToCartProduct = async () => {
-    if (!deliveryType) {
-      enqueueSnackbar("Please select a delivery method first!", {
+    if (!deliveryType || deliveryType === "both") {
+      enqueueSnackbar("Please select a delivery type.", {
         variant: "error",
       });
       return;
     }
+
+    // if (deliveryType === "both") {
+    //   enqueueSnackbar("Please select a delivery type.", {
+    //     variant: "error",
+    //   });
+    //   return;
+    // }
 
     if (!selectedCommunity?.id) {
       enqueueSnackbar("Community ID not found!", { variant: "error" });
@@ -57,6 +64,9 @@ const ProductBuySection = ({
       enqueueSnackbar("Product ID not found!", { variant: "error" });
       return;
     }
+
+    console.log("deliveryType >> ", deliveryType);
+    // return;
     checkIamAlreadyMember();
     setAddProductInCart(true);
     try {
