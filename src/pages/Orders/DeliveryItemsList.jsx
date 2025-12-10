@@ -19,6 +19,8 @@ const DeliveryItemsList = ({
   deliveryItems,
   fetchOrderDetails,
   orderDetails,
+  setOpenMissingItemReportModal,
+  setMissingItem,
 }) => {
   const [showDeliveryConfirmationPopup, setShowDeliveryConfirmationPopup] =
     useState(false);
@@ -86,8 +88,6 @@ const DeliveryItemsList = ({
     }
   };
 
-  console.log("deliveryItems >> ", deliveryItems);
-
   return (
     <div className="w-full">
       <h2 className="font-semibold mb-4">Pickup Items</h2>
@@ -142,6 +142,28 @@ const DeliveryItemsList = ({
                           {toTitleCase(item?.overallStatus)}
                         </p>
                       </div>
+                      {item?.report?.submitted &&
+                        item?.overallStatus !== "completed" && (
+                          <p
+                            className={`font-medium leading-none text-sm ${
+                              item?.report?.status === "pending"
+                                ? "text-[#FF7700]"
+                                : item?.report?.status === "resolved"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            {item?.report?.status === "pending"
+                              ? "Dispute Raised – Under Review"
+                              : item?.report?.status === "resolved"
+                              ? "Resolved"
+                              : item?.report?.status === "rejected"
+                              ? "Rejected"
+                              : ""}
+                            {/* {item?.report?.status.charAt(0).toUpperCase() +
+                              item?.report?.status.slice(1)} */}
+                          </p>
+                        )}
                     </div>
                   </div>
 
@@ -176,6 +198,20 @@ const DeliveryItemsList = ({
                       </Link>
                     ) : (
                       <div className="max-w-[370px] flex items-center justify-end gap-2">
+                        {(item?.sellerStatus === "out_for_delivery" ||
+                          item?.sellerStatus === "ready_for_pickup") &&
+                          !item?.report?.submitted && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setMissingItem(item);
+                                setOpenMissingItemReportModal(true);
+                              }}
+                              className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                              Mark As Missing
+                            </button>
+                          )}
                         <button
                           type="button"
                           onClick={() => {
@@ -196,7 +232,7 @@ const DeliveryItemsList = ({
                   </div>
                 </div>
 
-                <div className="w-full border border-gray-300 my-4" />
+                {/* <div className="w-full border border-gray-300 my-4" /> */}
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
                     <h3 className="text-sm font-semibold leading-none">

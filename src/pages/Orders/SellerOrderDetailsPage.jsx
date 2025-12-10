@@ -175,7 +175,8 @@ const SellerOrderDetailsPage = () => {
                       ? "text-[#FF7700]"
                       : details?.items[0]?.overallStatus === "in_progress"
                       ? "text-[#FF7700]"
-                      : details?.items[0]?.overallStatus === "completed"
+                      : details?.items[0]?.overallStatus === "completed" ||
+                        details?.items[0]?.sellerStatus === "ready"
                       ? "text-green-500"
                       : "text-gray-500"
                   }`}

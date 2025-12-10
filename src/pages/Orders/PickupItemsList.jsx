@@ -17,7 +17,13 @@ import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
 import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { toTitleCase } from "../../utils/toTitleCase";
 
-const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
+const PickupItemsList = ({
+  pickupItems,
+  fetchOrderDetails,
+  orderDetails,
+  setOpenMissingItemReportModal,
+  setMissingItem,
+}) => {
   const [showDeliveryConfirmationPopup, setShowDeliveryConfirmationPopup] =
     useState(false);
   const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
@@ -88,12 +94,14 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
     useState(false);
   // const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false)
 
+  console.log("eofineoin");
   return (
     <div className="w-full">
       <h2 className="font-semibold mb-4">Pickup Items</h2>
       <div className="w-full space-y-5">
         {pickupItems &&
           pickupItems?.map((item) => {
+            console.log(item);
             return (
               <div
                 key={item?.id}
@@ -138,6 +146,28 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                             {toTitleCase(item?.overallStatus)}
                           </p>
                         </div>
+                        {item?.report?.submitted &&
+                          item?.overallStatus !== "completed" && (
+                            <p
+                              className={`font-medium leading-none text-sm ${
+                                item?.report?.status === "pending"
+                                  ? "text-[#FF7700]"
+                                  : item?.report?.status === "resolved"
+                                  ? "text-green-500"
+                                  : "text-red-500"
+                              }`}
+                            >
+                              {item?.report?.status === "pending"
+                                ? "Dispute Raised – Under Review"
+                                : item?.report?.status === "resolved"
+                                ? "Resolved"
+                                : item?.report?.status === "rejected"
+                                ? "Rejected"
+                                : ""}
+                              {/* {item?.report?.status.charAt(0).toUpperCase() +
+                              item?.report?.status.slice(1)} */}
+                            </p>
+                          )}
                       </div>
                     </div>
                     {user?.id === item?.seller?.id ? (
@@ -187,24 +217,20 @@ const PickupItemsList = ({ pickupItems, fetchOrderDetails, orderDetails }) => {
                           </Link>
                         ) : (
                           <>
-                            {/* <button
-                              type="button"
-                              onClick={() => {
-                                setProduct(item);
-                                setShowOrderCancelPopup(true);
-                              }}
-                              disabled={
-                                item?.buyerStatus === "picked_up" ||
-                                item?.buyerStatus === "delivered" ||
-                                item?.buyerStatus === "cancelled" ||
-                                item?.sellerStatus === "cancelled" ||
-                                item?.sellerStatus === "out_for_delivery" ||
-                                item?.sellerStatus === "ready_for_pickup"
-                              }
-                              className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
-                            >
-                              Cancel Order
-                            </button> */}
+                            {(item?.sellerStatus === "out_for_delivery" ||
+                              item?.sellerStatus === "ready_for_pickup") &&
+                              !item?.report?.submitted && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setMissingItem(item);
+                                    setOpenMissingItemReportModal(true);
+                                  }}
+                                  className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
+                                >
+                                  Mark As Missing
+                                </button>
+                              )}
                             <button
                               type="button"
                               onClick={() => {
