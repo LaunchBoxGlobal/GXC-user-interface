@@ -104,7 +104,7 @@ const SellerPickupItemsList = ({
                         </p>
                         <div>
                           <p
-                            className={`text-xs font-medium ${
+                            className={`text-sm font-medium ${
                               item?.overallStatus == "cancelled"
                                 ? "text-red-500"
                                 : item?.overallStatus === "pending"

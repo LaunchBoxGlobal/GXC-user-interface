@@ -60,6 +60,7 @@ const OrderDetailsPage = () => {
       (buyerStatuses.includes("in_progress") ||
         buyerStatuses.includes("pending") ||
         sellerStatuses.includes("in_progress") ||
+        sellerStatuses.includes("pending") ||
         sellerStatuses.includes("pending"))
     )
       return "In Progress";
@@ -172,7 +173,7 @@ const OrderDetailsPage = () => {
                   {formatDate(details?.createdAt)}
                 </p>
               </div>
-              <div className="w-full border my-4" />
+              {/* <div className="w-full border my-4" />
               <div className="w-full flex items-center justify-between">
                 <p className="text-base text-gray-600">Order Status</p>
 
@@ -189,7 +190,7 @@ const OrderDetailsPage = () => {
                 >
                   {overallStatus}
                 </p>
-              </div>
+              </div> */}
 
               {deliveryItems && deliveryItems?.length > 0 && (
                 <>

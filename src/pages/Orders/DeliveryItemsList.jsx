@@ -125,8 +125,9 @@ const DeliveryItemsList = ({
                       </p>
                       <div>
                         <p
-                          className={`text-sm font-medium mt-1 ${
-                            item?.overallStatus === "completed"
+                          className={`text-sm font-medium ${
+                            item?.overallStatus === "completed" ||
+                            item?.overallStatus === "ready"
                               ? "text-green-500"
                               : item?.overallStatus === "cancelled"
                               ? "text-red-500"

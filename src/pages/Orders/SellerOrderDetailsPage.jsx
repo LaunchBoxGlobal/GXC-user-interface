@@ -155,7 +155,7 @@ const SellerOrderDetailsPage = () => {
                 {formatDate(details?.createdAt)}
               </p>
             </div>
-            <div className="w-full border my-4" />
+            {/* <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-base text-gray-600">Order Status</p>
               {details?.items[0]?.sellerStatus == "cancelled" ? (
@@ -184,7 +184,7 @@ const SellerOrderDetailsPage = () => {
                   {toTitleCase(details?.items[0]?.overallStatus)}
                 </p>
               )}
-            </div>
+            </div> */}
 
             {deliveryItems?.length > 0 && (
               <>
