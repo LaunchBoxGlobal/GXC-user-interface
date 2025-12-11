@@ -25,10 +25,6 @@ const SellerOrderCard = ({ product }) => {
   return (
     <>
       {product?.items?.map((item, index) => {
-        const buyerStatus = item?.buyerStatus;
-        const sellerStatus = item?.sellerStatus;
-        const statusColor = getStatusColor(buyerStatus);
-        const overallStatus = item?.overallStatus;
         return (
           <div
             key={index}
@@ -47,25 +43,37 @@ const SellerOrderCard = ({ product }) => {
                 Booking ID #${product?.orderNumber}
               </Link>
               <div>
-                <p
-                  className={`text-xs font-medium ${
-                    item?.overallStatus == "cancelled"
-                      ? "text-red-500"
-                      : item?.overallStatus === "pending"
-                      ? "text-[#FF7700]"
-                      : item?.overallStatus === "in_progress"
-                      ? "text-[#FF7700]"
-                      : item?.overallStatus === "completed"
-                      ? "text-green-500"
-                      : item?.overallStatus === "ready" ||
-                        item?.overallStatus === "ready_for_pickup" ||
-                        item?.overallStatus === "out_for_delivery"
-                      ? "text-green-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {toTitleCase(item?.overallStatus)}
-                </p>
+                {item?.report?.submitted &&
+                item?.overallStatus !== "completed" ? (
+                  <>
+                    <p className={`text-xs font-medium text-red-500`}>
+                      Missing
+                    </p>
+                    {/* <p className={`text-xs font-medium text-red-500`}>
+                      Dispute Raised - Under Review
+                    </p> */}
+                  </>
+                ) : (
+                  <p
+                    className={`text-xs font-medium ${
+                      item?.overallStatus == "cancelled"
+                        ? "text-red-500"
+                        : item?.overallStatus === "pending"
+                        ? "text-[#FF7700]"
+                        : item?.overallStatus === "in_progress"
+                        ? "text-[#FF7700]"
+                        : item?.overallStatus === "completed"
+                        ? "text-green-500"
+                        : item?.overallStatus === "ready" ||
+                          item?.overallStatus === "ready_for_pickup" ||
+                          item?.overallStatus === "out_for_delivery"
+                        ? "text-green-500"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {toTitleCase(item?.overallStatus)}
+                  </p>
+                )}
               </div>
             </div>
 

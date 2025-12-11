@@ -5,41 +5,6 @@ const OrderCard = ({ product }) => {
   const [searchParams] = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const getDisplayStatus = (buyerStatus, sellerStatus) => {
-    if (buyerStatus === "cancelled") return "Cancelled by Buyer";
-    if (sellerStatus === "cancelled") return "Cancelled by You";
-    if (sellerStatus === "out_for_delivery") return "Out for Delivery";
-    if (sellerStatus === "ready_for_pickup") return "Ready for Pickup";
-    if (sellerStatus === "in_progress" || buyerStatus === "in_progress")
-      return "In Progress";
-    if (buyerStatus === "delivered" || buyerStatus === "picked_up")
-      return "Completed";
-    return "Pending";
-  };
-
-  const computeOverallStatus = (items) => {
-    if (!items || items.length === 0) return "Pending";
-
-    const buyerStatuses = items.map((i) => i?.buyerStatus);
-    const sellerStatuses = items.map((i) => i?.sellerStatus);
-
-    if (buyerStatuses.includes("cancelled")) return "Cancelled by Buyer";
-    if (sellerStatuses.includes("cancelled")) return "Cancelled by Seller";
-    if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
-    if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
-    if (
-      buyerStatuses.includes("in_progress") ||
-      sellerStatuses.includes("in_progress")
-    )
-      return "In Progress";
-    if (buyerStatuses.every((s) => s === "delivered" || s === "picked_up"))
-      return "Completed";
-
-    return "Pending";
-  };
-
-  const overallStatus = computeOverallStatus(product?.items);
-
   return (
     <div className="w-full bg-[var(--secondary-bg)] p-5 rounded-[8px] relative overflow-hidden mb-5">
       {/* Header */}
@@ -82,25 +47,51 @@ const OrderCard = ({ product }) => {
                       : item?.productTitle}
                   </p>
 
-                  <p
-                    className={`text-xs mt-1.5 font-medium ${
-                      item?.overallStatus == "cancelled"
-                        ? "text-red-500"
-                        : item?.overallStatus === "pending"
-                        ? "text-[#FF7700]"
-                        : item?.overallStatus === "in_progress"
-                        ? "text-[#FF7700]"
-                        : item?.overallStatus === "completed"
-                        ? "text-green-500"
-                        : item?.overallStatus === "ready" ||
-                          item?.overallStatus === "ready_for_pickup" ||
-                          item?.overallStatus === "out_for_delivery"
-                        ? "text-green-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    {toTitleCase(item?.overallStatus)}
-                  </p>
+                  {item?.report?.submitted &&
+                  item?.overallStatus !== "completed" ? (
+                    <>
+                      <p
+                        className={`text-xs mt-1 font-medium ${
+                          item?.report?.status === "pending"
+                            ? "text-[#FF7700]"
+                            : item?.report?.status === "in_progress"
+                            ? "text-[#FF7700]"
+                            : item?.report?.status === "resolved"
+                            ? "text-green-500"
+                            : item?.report?.status === "ready" ||
+                              item?.report?.status === "ready_for_pickup" ||
+                              item?.report?.status === "out_for_delivery"
+                            ? "text-green-500"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        Missing
+                      </p>
+                      <p className="text-red-500 font-medium text-xs mt-1">
+                        Dispute Raised - Under Review
+                      </p>
+                    </>
+                  ) : (
+                    <p
+                      className={`text-xs mt-1.5 font-medium ${
+                        item?.overallStatus == "cancelled"
+                          ? "text-red-500"
+                          : item?.overallStatus === "pending"
+                          ? "text-[#FF7700]"
+                          : item?.overallStatus === "in_progress"
+                          ? "text-[#FF7700]"
+                          : item?.overallStatus === "completed"
+                          ? "text-green-500"
+                          : item?.overallStatus === "ready" ||
+                            item?.overallStatus === "ready_for_pickup" ||
+                            item?.overallStatus === "out_for_delivery"
+                          ? "text-green-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {toTitleCase(item?.overallStatus)}
+                    </p>
+                  )}
                 </div>
               </div>
 

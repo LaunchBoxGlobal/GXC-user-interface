@@ -123,28 +123,13 @@ const DeliveryItemsList = ({
                       <p className="font-semibold leading-none">
                         {item?.productTitle}
                       </p>
-                      <div>
-                        <p
-                          className={`text-sm font-medium ${
-                            item?.overallStatus === "completed" ||
-                            item?.overallStatus === "ready"
-                              ? "text-green-500"
-                              : item?.overallStatus === "cancelled"
-                              ? "text-red-500"
-                              : item?.overallStatus === "in_progress"
-                              ? "text-[#FF7700]"
-                              : item?.overallStatus === "pending"
-                              ? "text-[#FF7700]"
-                              : item?.overallStatus === "delivered"
-                              ? "text-green-500"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {toTitleCase(item?.overallStatus)}
-                        </p>
-                      </div>
+
                       {item?.report?.submitted &&
-                        item?.overallStatus !== "completed" && (
+                      item?.overallStatus !== "completed" ? (
+                        <>
+                          <p className={`text-sm font-medium text-red-500`}>
+                            Missing
+                          </p>
                           <p
                             className={`font-medium leading-none text-sm ${
                               item?.report?.status === "pending"
@@ -161,10 +146,30 @@ const DeliveryItemsList = ({
                               : item?.report?.status === "rejected"
                               ? "Rejected"
                               : ""}
-                            {/* {item?.report?.status.charAt(0).toUpperCase() +
-                              item?.report?.status.slice(1)} */}
                           </p>
-                        )}
+                        </>
+                      ) : (
+                        <div>
+                          <p
+                            className={`text-sm font-medium ${
+                              item?.overallStatus === "completed" ||
+                              item?.overallStatus === "ready"
+                                ? "text-green-500"
+                                : item?.overallStatus === "cancelled"
+                                ? "text-red-500"
+                                : item?.overallStatus === "in_progress"
+                                ? "text-[#FF7700]"
+                                : item?.overallStatus === "pending"
+                                ? "text-[#FF7700]"
+                                : item?.overallStatus === "delivered"
+                                ? "text-green-500"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            {toTitleCase(item?.overallStatus)}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
 

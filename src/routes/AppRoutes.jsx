@@ -437,6 +437,7 @@ const AppRoutes = () => {
           />
         }
       />
+
       <Route
         path="/cart/:communityId/checkout"
         element={
@@ -462,6 +463,7 @@ const AppRoutes = () => {
           />
         }
       />
+
       <Route
         path="/order-management/seller/details/:orderId"
         element={

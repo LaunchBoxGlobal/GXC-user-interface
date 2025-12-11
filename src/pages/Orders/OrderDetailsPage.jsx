@@ -26,65 +26,6 @@ const OrderDetailsPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const computeOverallStatus = (items) => {
-    if (!items || items.length === 0) return "Pending";
-
-    const buyerStatuses = items.map((i) => i?.buyerStatus);
-    const sellerStatuses = items.map((i) => i?.sellerStatus);
-
-    const allCancelled =
-      buyerStatuses.every((s) => s === "cancelled") ||
-      sellerStatuses.every((s) => s === "cancelled");
-
-    const anyCancelled =
-      buyerStatuses.includes("cancelled") ||
-      sellerStatuses.includes("cancelled");
-
-    const allCompleted = buyerStatuses.every(
-      (s) => s === "delivered" || s === "picked_up"
-    );
-
-    const anyDelivered = buyerStatuses.some(
-      (s) => s === "delivered" || s === "picked_up"
-    );
-
-    // 🟥 1. All items cancelled
-    if (allCancelled) return "Cancelled";
-
-    // 🟢 2. Some cancelled but others delivered → still Completed
-    if (anyCancelled && anyDelivered) return "Completed";
-
-    // 🟠 3. Some cancelled but others still active → In Progress
-    if (
-      anyCancelled &&
-      (buyerStatuses.includes("in_progress") ||
-        buyerStatuses.includes("pending") ||
-        sellerStatuses.includes("in_progress") ||
-        sellerStatuses.includes("pending") ||
-        sellerStatuses.includes("pending"))
-    )
-      return "In Progress";
-
-    // 🟠 4. Any still in progress
-    if (
-      buyerStatuses.includes("in_progress") ||
-      sellerStatuses.includes("in_progress")
-    )
-      return "In Progress";
-
-    // 🟢 5. Ready for pickup / out for delivery
-    if (sellerStatuses.includes("ready_for_pickup")) return "Ready for Pickup";
-    if (sellerStatuses.includes("out_for_delivery")) return "Out for Delivery";
-
-    // ✅ 6. All delivered or picked up
-    if (allCompleted) return "Completed";
-
-    // ⚪ 7. Default fallback
-    return "Pending";
-  };
-
-  const overallStatus = computeOverallStatus(details?.items);
-
   const fetchOrderDetails = async () => {
     setLoading(true);
     try {
@@ -173,24 +114,6 @@ const OrderDetailsPage = () => {
                   {formatDate(details?.createdAt)}
                 </p>
               </div>
-              {/* <div className="w-full border my-4" />
-              <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Order Status</p>
-
-                <p
-                  className={`text-base font-medium ${
-                    overallStatus === "Completed" || overallStatus === "ready"
-                      ? "text-green-500"
-                      : overallStatus === "Cancelled"
-                      ? "text-red-500"
-                      : overallStatus === "In Progress"
-                      ? "text-[#FF7700]"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {overallStatus}
-                </p>
-              </div> */}
 
               {deliveryItems && deliveryItems?.length > 0 && (
                 <>

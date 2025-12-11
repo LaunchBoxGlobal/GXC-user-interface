@@ -10,7 +10,6 @@ import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import { Link } from "react-router-dom";
-import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
 import CancelConfirmationPopup from "./CancelConfirmationPopup";
 import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
@@ -71,7 +70,6 @@ const PickupItemsList = ({
         setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
-      // console.error("markItemAsDelivered error >>> ", error);
       enqueueSnackbar(
         error?.response?.data?.message ||
           error?.message ||
@@ -92,9 +90,6 @@ const PickupItemsList = ({
     useState(false);
   const [showCancellationReasonPopup, setShowCancellationReasonPopup] =
     useState(false);
-  // const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false)
-
-  console.log("eofineoin");
   return (
     <div className="w-full">
       <h2 className="font-semibold mb-4">Pickup Items</h2>
@@ -127,28 +122,12 @@ const PickupItemsList = ({
                             ? `${item?.productTitle?.slice(0, 25)}...`
                             : item?.productTitle}
                         </p>
-                        <div>
-                          <p
-                            className={`text-sm font-medium ${
-                              item?.overallStatus === "completed" ||
-                              item?.overallStatus === "ready"
-                                ? "text-green-500"
-                                : item?.overallStatus === "cancelled"
-                                ? "text-red-500"
-                                : item?.overallStatus === "in_progress"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "pending"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "delivered"
-                                ? "text-green-500"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {toTitleCase(item?.overallStatus)}
-                          </p>
-                        </div>
                         {item?.report?.submitted &&
-                          item?.overallStatus !== "completed" && (
+                        item?.overallStatus !== "completed" ? (
+                          <>
+                            <p className={`text-sm font-medium text-red-500`}>
+                              Missing
+                            </p>
                             <p
                               className={`font-medium leading-none text-sm ${
                                 item?.report?.status === "pending"
@@ -165,10 +144,30 @@ const PickupItemsList = ({
                                 : item?.report?.status === "rejected"
                                 ? "Rejected"
                                 : ""}
-                              {/* {item?.report?.status.charAt(0).toUpperCase() +
-                              item?.report?.status.slice(1)} */}
                             </p>
-                          )}
+                          </>
+                        ) : (
+                          <div>
+                            <p
+                              className={`text-sm font-medium ${
+                                item?.overallStatus === "completed" ||
+                                item?.overallStatus === "ready"
+                                  ? "text-green-500"
+                                  : item?.overallStatus === "cancelled"
+                                  ? "text-red-500"
+                                  : item?.overallStatus === "in_progress"
+                                  ? "text-[#FF7700]"
+                                  : item?.overallStatus === "pending"
+                                  ? "text-[#FF7700]"
+                                  : item?.overallStatus === "delivered"
+                                  ? "text-green-500"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {toTitleCase(item?.overallStatus)}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                     {user?.id === item?.seller?.id ? (
