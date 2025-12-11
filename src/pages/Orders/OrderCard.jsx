@@ -67,9 +67,15 @@ const OrderCard = ({ product }) => {
                       >
                         Missing
                       </p>
-                      <p className="text-red-500 font-medium text-xs mt-1">
-                        Dispute Raised - Under Review
-                      </p>
+                      {item?.report?.status === "pending" ? (
+                        <p className="text-red-500 font-medium text-xs mt-1">
+                          Dispute Raised - Under Review
+                        </p>
+                      ) : (
+                        <p className="text-green-500 font-medium text-xs mt-1">
+                          Dispute Resolved
+                        </p>
+                      )}
                     </>
                   ) : (
                     <p
