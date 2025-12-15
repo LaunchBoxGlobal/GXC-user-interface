@@ -55,13 +55,23 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
         }),
       });
 
+      const data = await response.json();
+
+      if (response.status === 409) {
+        enqueueSnackbar(
+          data?.message || "You have already reported this product.",
+          { variant: "error" }
+        );
+        return;
+      }
+
+      // if (!response.ok) {
+      //   throw new Error(data?.message || "Failed to submit report");
+      // }
+
       setIsReportedSuccess(true);
       setIsReportModalOpen(false);
     } catch (error) {
-      console.log("AXIOS ERROR FULL:", error);
-      console.log("response:", error?.response);
-      console.log("status:", error?.response?.status);
-      console.log("data:", error?.response?.data);
       if (error?.response?.status === 409) {
         enqueueSnackbar(
           error?.response?.data?.message ||
