@@ -56,18 +56,18 @@ export const handleApiError = (error, navigate) => {
 
     // ----------------- 500+ -----------------
     if (status >= 500) {
-      if (shouldShowError("server500")) {
-        markErrorShown("server500");
+      // if (shouldShowError("server500")) {
+      //   markErrorShown("server500");
 
-        console.error("Server error:", error?.response?.data?.message);
+      //   console.error("Server error:", error?.response?.data?.message);
 
-        enqueueSnackbar(
-          error?.response?.data?.message ||
-            error?.message ||
-            "Something went wrong on our end. Please try again later.",
-          { variant: "error" }
-        );
-      }
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong on our end. Please try again later.",
+        { variant: "error" }
+      );
+      // }
       return;
     }
 
@@ -105,10 +105,10 @@ export const handleApiError = (error, navigate) => {
   if (shouldShowError("unknownError")) {
     markErrorShown("unknownError");
 
-    console.error("Error:", error?.message);
+    // console.error("Error:", error?.message);
     enqueueSnackbar(
-      error?.message ||
-        error?.response?.data?.message ||
+      error?.response?.data?.message ||
+        error?.message ||
         "Unexpected error occurred. Please try again.",
       { variant: "error" }
     );

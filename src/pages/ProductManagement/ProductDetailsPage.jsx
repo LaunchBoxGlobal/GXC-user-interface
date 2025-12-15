@@ -15,6 +15,10 @@ import ProductSellerInfo from "./ProductSellerInfo";
 import ProductBuySection from "./ProductBuySection";
 import { HiArrowLeft } from "react-icons/hi";
 import { useUser } from "../../context/userContext";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import { MdOutlineReport } from "react-icons/md";
+import ReportProductModal from "./ReportProductModal";
+import ReportProductSuccessModal from "./ReportProductSuccessModal";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -30,6 +34,10 @@ const ProductDetailsPage = () => {
   const [addProductInCart, setAddProductInCart] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
   const [isError, setError] = useState(null);
+
+  const [openReportDropdown, setOpenReportDropdown] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isReportedSuccess, setIsReportedSuccess] = useState(false);
 
   const fetchProductDetails = async () => {
     setLoading(true);
@@ -53,7 +61,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     document.title = productDetails
       ? productDetails?.title
-      : "Product Details - GiveXChange";
+      : "Product Details - giveXchange";
     checkIamAlreadyMember();
     fetchProductDetails();
   }, []);
@@ -111,14 +119,44 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
-      <button
-        type="button"
-        onClick={() => navigate(-1)}
-        className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
-      >
-        <HiArrowLeft />
-        Back
-      </button>
+      <div className="w-full flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
+        >
+          <HiArrowLeft />
+          Back
+        </button>
+        {productDetails?.seller?.id !== user?.id && (
+          <div className="relative z-50">
+            <button
+              type="button"
+              onClick={() => setOpenReportDropdown((prev) => !prev)}
+              className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-lg text-black"
+            >
+              <HiOutlineDotsVertical />
+            </button>
+            {openReportDropdown && (
+              <div className="w-40 bg-white rounded-lg p-1 h-10 absolute top-9 right-0 z-50 custom-shadow">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsReportModalOpen((prev) => !prev);
+                    setOpenReportDropdown(false);
+                  }}
+                  className="flex items-center gap-1 h-full w-full bg-gray-100 px-2 rounded-lg"
+                >
+                  <MdOutlineReport className="text-xl text-gray-600" />
+                  <span className="text-sm font-medium text-gray-600">
+                    Report
+                  </span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
         <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[50vh]">
@@ -163,6 +201,21 @@ const ProductDetailsPage = () => {
         setShowDeletePopup={setShowDeletePopup}
         productId={productDetails?.id}
       />
+
+      {/* report product modal */}
+      {isReportModalOpen && (
+        <ReportProductModal
+          setIsReportModalOpen={setIsReportModalOpen}
+          setIsReportedSuccess={setIsReportedSuccess}
+        />
+      )}
+
+      {isReportedSuccess && (
+        <ReportProductSuccessModal
+          setIsReportedSuccess={setIsReportedSuccess}
+          setIsReportModalOpen={setIsReportModalOpen}
+        />
+      )}
     </div>
   );
 };
