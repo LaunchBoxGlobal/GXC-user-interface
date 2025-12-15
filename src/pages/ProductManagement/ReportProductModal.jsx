@@ -55,18 +55,24 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit report");
-      }
-
       setIsReportedSuccess(true);
       setIsReportModalOpen(false);
     } catch (error) {
-      //   handleApiError(error, navigate);
-      console.log(error);
-      enqueueSnackbar(
-        error?.message ||
+      console.log("AXIOS ERROR FULL:", error);
+      console.log("response:", error?.response);
+      console.log("status:", error?.response?.status);
+      console.log("data:", error?.response?.data);
+      if (error?.response?.status === 409) {
+        enqueueSnackbar(
           error?.response?.data?.message ||
+            "You have already reported this product.",
+          { variant: "warning" }
+        );
+        return;
+      }
+      enqueueSnackbar(
+        error?.response?.data?.message ||
+          error?.message ||
           "Something went wrong.",
         { variant: "error" }
       );
