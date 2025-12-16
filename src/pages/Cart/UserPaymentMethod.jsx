@@ -151,8 +151,8 @@ const UserPaymentMethod = ({
         ))}
 
       {/* Add card form */}
-      {showAddCard && (
-        <Elements stripe={stripePromise}>
+      <Elements stripe={stripePromise}>
+        {showAddCard && (
           <AddCardForm
             user={user}
             onCardAdded={() => {
@@ -160,8 +160,8 @@ const UserPaymentMethod = ({
               fetchSavedCards();
             }}
           />
-        </Elements>
-      )}
+        )}
+      </Elements>
 
       {deleteCard && (
         <div className="w-full fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex flex-col items-center justify-center gap-3">
@@ -285,55 +285,9 @@ const AddCardForm = ({ user, onCardAdded }) => {
     }
   };
 
-  // const handleAddCard = async (e) => {
-  //   e.preventDefault();
-  //   if (!stripe || !elements || !clientSecret) return;
-
-  //   setLoading(true);
-  //   try {
-  //     const cardElement = elements.getElement(CardElement);
-
-  //     const { setupIntent, error } = await stripe.confirmCardSetup(
-  //       clientSecret,
-  //       {
-  //         payment_method: {
-  //           card: cardElement,
-  //           billing_details: {
-  //             name: user?.name || "Unknown User",
-  //             email: user?.email || "",
-  //           },
-  //         },
-  //       }
-  //     );
-
-  //     if (error) {
-  //       console.error(error);
-  //       enqueueSnackbar(error.message || error?.response?.data?.message, {
-  //         variant: "error",
-  //       });
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     if (setupIntent.status === "succeeded") {
-  //       enqueueSnackbar("Card successfully added!", {
-  //         variant: "success",
-  //       });
-  //       onCardAdded(); // Refresh saved cards
-  //     }
-  //   } catch (err) {
-  //     console.error("Error confirming setup intent:", err);
-  //     enqueueSnackbar("Failed to save card. Try again.", {
-  //       variant: "error",
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   return (
     <form onSubmit={handleAddCard} className="w-full mt-4">
-      <CardElement className="p-4 bg-[#2B3743]/20 rounded-[12px]" />
+      <CardElement className="h-[46px] bg-[#F5F5F5] rounded-[12px] px-3" />
       <button
         type="submit"
         disabled={loading || !clientSecret}
