@@ -74,7 +74,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       productImages: [],
       customPickupAddress: "",
       category: [],
-      deliveryType: ["self"],
+      deliveryType: [],
       selfPickupAddress: userAddress || "",
       communityPickupAddress: communityAddress || "",
     },

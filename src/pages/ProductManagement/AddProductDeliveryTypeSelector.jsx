@@ -1,10 +1,13 @@
 import { useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
+import { useNavigate } from "react-router-dom";
+import { enqueueSnackbar } from "notistack";
 
 const AddProductDeliveryTypeSelector = ({ formik }) => {
   const { user } = useAppContext();
   const { selectedCommunity } = useUser();
+  const navigate = useNavigate();
 
   const userAddress = [
     user?.address,
@@ -30,9 +33,9 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
 
   // Initialize on mount
   useEffect(() => {
-    if (formik.values.deliveryType.length === 0) {
-      formik.setFieldValue("deliveryType", ["self"]);
-    }
+    // if (formik.values.deliveryType.length === 0) {
+    //   formik.setFieldValue("deliveryType", ["self"]);
+    // }
 
     if (!formik.values.selfPickupAddress && userAddress) {
       formik.setFieldValue("selfPickupAddress", userAddress);
@@ -40,6 +43,13 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
   }, [user]);
 
   const toggleType = (type) => {
+    if (type === "self" && !userAddress) {
+      navigate("/edit-profile");
+      enqueueSnackbar("Please complete your profile.", {
+        variant: "error",
+      });
+      return;
+    }
     let current = [...formik.values.deliveryType];
 
     if (current.includes(type)) {
@@ -48,9 +58,9 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
       current.push(type);
     }
 
-    if (current.length === 0) {
-      current = ["self"]; // always keep at least one selected
-    }
+    // if (current.length === 0) {
+    //   current = ["self"];
+    // }
 
     formik.setFieldValue("deliveryType", current);
 
