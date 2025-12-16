@@ -173,8 +173,8 @@ const PaymentMethods = ({
       )}
 
       {/* Add card form */}
-      {showAddCard && (
-        <Elements stripe={stripePromise}>
+      <Elements stripe={stripePromise}>
+        {showAddCard && (
           <AddCardForm
             user={user}
             onCardAdded={() => {
@@ -182,8 +182,8 @@ const PaymentMethods = ({
               fetchSavedCards();
             }}
           />
-        </Elements>
-      )}
+        )}
+      </Elements>
 
       {deleteCard && (
         <div className="w-full fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex flex-col items-center justify-center gap-3">
@@ -196,9 +196,6 @@ const PaymentMethods = ({
 
 export default PaymentMethods;
 
-//
-// Nested AddCardForm Component (SetupIntent Flow)
-//
 const AddCardForm = ({ user, onCardAdded }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -206,7 +203,6 @@ const AddCardForm = ({ user, onCardAdded }) => {
   const [clientSecret, setClientSecret] = useState(null);
 
   useEffect(() => {
-    // Create SetupIntent when form opens
     const createSetupIntent = async () => {
       try {
         const res = await axios.post(
@@ -309,13 +305,13 @@ const AddCardForm = ({ user, onCardAdded }) => {
 
   return (
     <form onSubmit={handleAddCard} className="w-full mt-4">
-      <CardElement className="p-4 bg-[#2B3743]/20 rounded-[12px]" />
+      <CardElement className="p-4 bg-[#f5f5f5] rounded-[12px]" />
       <button
         type="submit"
         disabled={loading || !clientSecret}
-        className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px]"
+        className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px] disabled:cursor-not-allowed"
       >
-        {loading ? "Saving..." : "Save Card"}
+        {loading ? <Loader /> : "Save Card"}
       </button>
     </form>
   );
