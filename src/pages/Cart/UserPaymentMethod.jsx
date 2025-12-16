@@ -287,7 +287,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
 
   return (
     <form onSubmit={handleAddCard} className="w-full mt-4">
-      <CardElement className="h-[46px] bg-[#F5F5F5] rounded-[12px] px-3" />
+      <CardElement className="py-3.5 text-sm bg-[#F5F5F5] rounded-[12px] px-3" />
       <button
         type="submit"
         disabled={loading || !clientSecret}
