@@ -32,7 +32,7 @@ const ProductHeader = ({
     <div className="w-full flex items-start justify-between gap-4 relative">
       <div className="space-y-2 max-w-[70%]">
         {productDetails?.title && (
-          <p className="font-semibold text-[24px] leading-none tracking-tight break-words">
+          <p className="font-semibold text-lg md:text-[24px] leading-none tracking-tight break-words">
             {productDetails?.title}
           </p>
         )}
@@ -131,7 +131,7 @@ const ProductHeader = ({
           {productDetails?.status === "active" && (
             <div>
               <p className="text-sm font-medium text-[#6D6D6D]">Price</p>
-              <p className="text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
+              <p className="text-lg lg:text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
                 ${productDetails?.price}
               </p>
             </div>

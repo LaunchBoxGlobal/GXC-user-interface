@@ -147,19 +147,15 @@ const SettingsLayout = ({ page }) => {
       <div className="w-full bg-white p-5 flex items-center justify-between flex-wrap rounded-[15px] gap-5 custom-shadow">
         <div className="w-full md:max-w-[50%] flex items-start lg:items-center gap-3">
           <div className="">
-            {user?.profilePictureUrl ? (
-              <img
-                className="w-[54px] min-w-[54px] min-h-[54px] lg:w-[116px] lg:max-w-[116px] lg:max-h-[116px] lg:h-[116px] rounded-full object-cover object-center"
-                src={user?.profilePictureUrl}
-                alt="user profile picture"
-              />
-            ) : (
-              <img
-                className="lg:h-[116px] min-w-[54px] h-[54px] lg:max-w-[116px] rounded-full object-cover object-center"
-                src={"/profile-icon.png"}
-                alt="user profile picture"
-              />
-            )}
+            <img
+              className="w-[66px] h-[66px] lg:w-[116px] lg:h-[116px] rounded-full object-cover object-center"
+              src={
+                user?.profilePictureUrl
+                  ? user?.profilePictureUrl
+                  : "/profile-icon.png"
+              }
+              alt={`${user?.fullName} profile picture`}
+            />
           </div>
           <div className="space-y-2">
             <h2 className="text-[22px] lg:text-[32px] font-semibold leading-[1]">

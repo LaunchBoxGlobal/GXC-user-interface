@@ -14,6 +14,7 @@ import {
   listenForMessages,
   requestNotificationPermission,
 } from "../../notifications";
+import Pagination from "../../components/Forms/Pagination";
 
 const HomePage = () => {
   const { productSearchValue, fetchNotificaiontCount } = useAppContext();
@@ -35,17 +36,6 @@ const HomePage = () => {
   const max = searchParams.get("max") || "";
   const categoryId = searchParams.get("categoryId") || "";
   const page = Number(searchParams.get("page")) || 1;
-
-  // useEffect(() => {
-  //   requestNotificationPermission();
-
-  //   listenForMessages((payload) => {
-  //     const title = payload.notification?.title || "New Notification";
-  //     const body = payload.notification?.body || "";
-
-  //     enqueueSnackbar(`${title}\n\n${body}`);
-  //   });
-  // }, []);
 
   const fetchCategories = async () => {
     try {
@@ -117,38 +107,6 @@ const HomePage = () => {
     fetchNotificaiontCount();
   }, []);
 
-  const handlePageChange = (newPage) => {
-    if (!pagination || newPage < 1 || newPage > pagination.totalPages) return;
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage);
-    navigate(`?${params.toString()}`);
-  };
-
-  const renderPageNumbers = () => {
-    if (!pagination) return null;
-    const { totalPages } = pagination;
-    const pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <li key={i}>
-          <button
-            onClick={() => handlePageChange(i)}
-            aria-current={i === page ? "page" : undefined}
-            className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-              i === page
-                ? "text-white bg-[var(--button-bg)] font-medium"
-                : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-            }`}
-          >
-            {i}
-          </button>
-        </li>
-      );
-    }
-    return pages;
-  };
-
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
       {communities && communities?.length > 0 && <Categories />}
@@ -163,47 +121,7 @@ const HomePage = () => {
               <ProductList products={products} pagination={pagination} />
 
               {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <nav
-                  aria-label="Page navigation"
-                  className="flex justify-end w-full mt-10"
-                >
-                  <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
-                    {/* Previous Button */}
-                    <li>
-                      <button
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page <= 1}
-                        className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
-                          page <= 1
-                            ? "text-gray-400 cursor-not-allowed"
-                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                        }`}
-                      >
-                        Previous
-                      </button>
-                    </li>
-
-                    {/* Page Numbers */}
-                    {renderPageNumbers()}
-
-                    {/* Next Button */}
-                    <li>
-                      <button
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page >= pagination.totalPages}
-                        className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-                          page >= pagination.totalPages
-                            ? "text-gray-400 cursor-not-allowed"
-                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                        }`}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              )}
+              <Pagination pagination={pagination} page={page} />
             </>
           ) : (
             <div className="w-full text-center h-[70vh] flex items-center justify-center gap-2">

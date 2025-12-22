@@ -38,46 +38,6 @@ const SellerOrderDetailsPage = () => {
   const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false);
   const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
 
-  const getOrderStatus = (items = []) => {
-    if (!items || items.length === 0) {
-      return { label: "Pending", color: "#888888" };
-    }
-
-    // If any item is still in progress
-    if (items.some((item) => item?.sellerStatus === "in_progress")) {
-      return { label: "In Progress", color: "#FF7700" };
-    }
-
-    // If all items are completed
-    const allCompleted = items.every(
-      (item) =>
-        (item?.deliveryMethod === "pickup" &&
-          item?.sellerStatus === "ready_for_pickup") ||
-        (item?.deliveryMethod === "delivery" &&
-          item?.sellerStatus === "out_for_delivery")
-    );
-
-    if (allCompleted) {
-      return { label: "Completed", color: "#28A745" };
-    }
-
-    // If some are delivered/picked but not all
-    const partiallyCompleted = items.some(
-      (item) =>
-        item?.sellerStatus === "out_for_delivery" ||
-        item?.sellerStatus === "picked_up"
-    );
-
-    if (partiallyCompleted) {
-      return { label: "Completed", color: "#007BFF" };
-    }
-
-    // Default
-    return { label: "Pending", color: "#888888" };
-  };
-
-  const orderStatus = getOrderStatus(details?.items);
-
   const fetchOrderDetails = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
@@ -136,7 +96,7 @@ const SellerOrderDetailsPage = () => {
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5 grid grid-cols-3 gap-5">
-        <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[60vh] col-span-2">
+        <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[60vh] col-span-3 lg:col-span-2">
           <div className="w-full flex items-star flex-col justify-start relative">
             <div className="w-full">
               <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
@@ -145,46 +105,18 @@ const SellerOrderDetailsPage = () => {
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
-              <p className="text-base text-gray-600">Order ID</p>
-              <p className="text-base text-gray-600">{details?.orderNumber}</p>
+              <p className="text-sm lg:text-base text-gray-600">Order ID</p>
+              <p className="text-sm lg:text-base text-gray-600">
+                {details?.orderNumber}
+              </p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
-              <p className="text-base text-gray-600">Order Placed</p>
-              <p className="text-base text-gray-600">
+              <p className="text-sm lg:text-base text-gray-600">Order Placed</p>
+              <p className="text-sm lg:text-base text-gray-600">
                 {formatDate(details?.createdAt)}
               </p>
             </div>
-            {/* <div className="w-full border my-4" />
-            <div className="w-full flex items-center justify-between">
-              <p className="text-base text-gray-600">Order Status</p>
-              {details?.items[0]?.sellerStatus == "cancelled" ? (
-                <p className={`text-xs font-medium text-red-500`}>
-                  Cancelled by Seller
-                </p>
-              ) : details?.buyerStatus == "cancelled" ? (
-                <p className={`text-base font-medium text-red-500`}>
-                  Cancelled by Buyer
-                </p>
-              ) : (
-                <p
-                  className={`text-base font-medium ${
-                    details?.items[0]?.overallStatus == "cancelled"
-                      ? "text-red-500"
-                      : details?.items[0]?.overallStatus === "pending"
-                      ? "text-[#FF7700]"
-                      : details?.items[0]?.overallStatus === "in_progress"
-                      ? "text-[#FF7700]"
-                      : details?.items[0]?.overallStatus === "completed" ||
-                        details?.items[0]?.sellerStatus === "ready"
-                      ? "text-green-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {toTitleCase(details?.items[0]?.overallStatus)}
-                </p>
-              )}
-            </div> */}
 
             {deliveryItems?.length > 0 && (
               <>
@@ -210,7 +142,8 @@ const SellerOrderDetailsPage = () => {
           </div>
         </div>
 
-        <div className="w-full col-span-1">
+        {/* Order summary */}
+        <div className="w-full col-span-3 lg:col-span-1">
           <div className="bg-white rounded-[18px] w-full">
             <h2 className="text-[24px] font-semibold leading-none px-5 pt-5 lg:pt-7">
               Order Summary
@@ -230,16 +163,7 @@ const SellerOrderDetailsPage = () => {
                   {details?.items?.length}
                 </p>
               </div>
-              {/* <div className="w-full border my-3" />
-              <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Platform Fee (2%)</p>
-                <p className="text-base text-gray-600">
-                  $
-                  {details?.platformFee > 0
-                    ? details?.platformFeetoFixed(2)
-                    : details?.platformFee}
-                </p>
-              </div> */}
+
               <div className="w-full border my-3" />
               <div className="w-full flex items-center justify-between">
                 <p className="text-base text-[var(--button-bg)] font-semibold">
@@ -288,6 +212,7 @@ const SellerOrderDetailsPage = () => {
             </div>
           </div>
 
+          {/* order cancellation reason */}
           {details?.items[0]?.cancellation_reason && (
             <div className="w-full bg-white rounded-[18px] mt-5">
               <div className="w-full p-5">

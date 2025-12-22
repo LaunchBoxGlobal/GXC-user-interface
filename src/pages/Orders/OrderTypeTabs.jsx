@@ -53,7 +53,7 @@ const OrderTypeTabs = () => {
   const currentTabs = activeTab === "seller" ? sellerTabs : tabs;
 
   return (
-    <div className="w-full flex items-center gap-3">
+    <div className="w-full flex items-center flex-wrap gap-2">
       {currentTabs.map((btn) => (
         <button
           key={btn.tab}
@@ -63,7 +63,7 @@ const OrderTypeTabs = () => {
             activeHistoryTab === btn.tab
               ? "bg-[var(--button-bg)] text-white"
               : "bg-[var(--secondary-bg)]"
-          } px-5 rounded-xl text-sm transition-all`}
+          } px-3 md:px-5 font-medium rounded-xl text-[11px] md:text-sm transition-all`}
         >
           {btn.title}
         </button>

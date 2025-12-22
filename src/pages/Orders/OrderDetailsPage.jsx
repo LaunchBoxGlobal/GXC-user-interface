@@ -93,7 +93,7 @@ const OrderDetailsPage = () => {
         </button>
 
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5 grid grid-cols-3 gap-5">
-          <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[70vh] col-span-2">
+          <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[70vh] col-span-3 lg:col-span-2">
             <div className="w-full flex items-star flex-col justify-start relative">
               <div className="w-full">
                 <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
@@ -102,15 +102,17 @@ const OrderDetailsPage = () => {
               </div>
               <div className="w-full border my-4" />
               <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Order ID</p>
-                <p className="text-base text-gray-600">
+                <p className="text-sm lg:text-base text-gray-600">Order ID</p>
+                <p className="text-sm lg:text-base text-gray-600">
                   #{details?.orderNumber}
                 </p>
               </div>
               <div className="w-full border my-4" />
               <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Order Placed</p>
-                <p className="text-base text-gray-600">
+                <p className="text-sm lg:text-base text-gray-600">
+                  Order Placed
+                </p>
+                <p className="text-sm lg:text-base text-gray-600">
                   {formatDate(details?.createdAt)}
                 </p>
               </div>
@@ -146,7 +148,7 @@ const OrderDetailsPage = () => {
             </div>
           </div>
 
-          <div className="w-full col-span-1">
+          <div className="w-full col-span-3 lg:col-span-1">
             <OrderSummary orderSummary={details} />
           </div>
         </div>

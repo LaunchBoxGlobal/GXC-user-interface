@@ -334,6 +334,19 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/order-management"
+        element={
+          <PrivateRoute
+            element={
+              <Layout>
+                <OrdersPage />
+              </Layout>
+            }
+          />
+        }
+      />
+
+      <Route
         path="/order-management/details/seller/:communityId/:userId"
         element={
           <PrivateRoute
@@ -353,19 +366,6 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <WalletPage />
-              </Layout>
-            }
-          />
-        }
-      />
-
-      <Route
-        path="/order-management"
-        element={
-          <PrivateRoute
-            element={
-              <Layout>
-                <OrdersPage />
               </Layout>
             }
           />

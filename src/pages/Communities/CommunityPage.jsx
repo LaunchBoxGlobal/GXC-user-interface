@@ -287,9 +287,6 @@ const CommunityPage = () => {
     );
   }
 
-  console.log("showPopup >>> ", showPopup);
-  console.log("canJoin >>> ", canJoin);
-
   return (
     <div className="p-5 min-h-screen relative">
       {showPopup && canJoin && (

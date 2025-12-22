@@ -106,9 +106,10 @@ const PickupItemsList = ({
               >
                 <div className="w-full">
                   <div
-                    className={`w-full flex items-center justify-between gap-3 `}
+                    className={`w-full flex items-center justify-between flex-wrap gap-3 `}
                   >
                     <div className="flex items-center gap-3">
+                      {/* product image */}
                       <div className="">
                         <img
                           src={item?.productImage}
@@ -116,12 +117,14 @@ const PickupItemsList = ({
                           className="min-w-[80px] min-h-[80px] max-w-[80px] max-h-[80px] rounded-[16px]"
                         />
                       </div>
+                      {/* product title */}
                       <div className="flex flex-col items-start gap-1 justify-center">
                         <p className="font-semibold leading-none">
                           {item?.productTitle?.length > 40
                             ? `${item?.productTitle?.slice(0, 25)}...`
                             : item?.productTitle}
                         </p>
+                        {/* if an item is marked as missing status */}
                         {item?.report?.submitted &&
                         item?.overallStatus !== "completed" ? (
                           <>
@@ -148,6 +151,7 @@ const PickupItemsList = ({
                           </>
                         ) : (
                           <div>
+                            {/* product status */}
                             <p
                               className={`text-sm font-medium ${
                                 item?.overallStatus === "completed" ||
@@ -170,6 +174,7 @@ const PickupItemsList = ({
                         )}
                       </div>
                     </div>
+                    {/* view seller profile */}
                     {user?.id === item?.seller?.id ? (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
                         <Link
@@ -187,6 +192,7 @@ const PickupItemsList = ({
                       </div>
                     ) : (
                       <div className="max-w-[370px] flex items-center gap-2 justify-end">
+                        {/* write a review button */}
                         {item?.reviewSubmitted == false &&
                           item?.sellerStatus === "completed" && (
                             <button
@@ -200,6 +206,7 @@ const PickupItemsList = ({
                               Write a review
                             </button>
                           )}
+                        {/* product link */}
                         {item?.buyerStatus === "picked_up" ||
                         item?.buyerStatus === "cancelled" ||
                         item?.sellerStatus === "cancelled" ? (
@@ -217,6 +224,7 @@ const PickupItemsList = ({
                           </Link>
                         ) : (
                           <>
+                            {/* mark item as received or missing */}
                             {(item?.sellerStatus === "out_for_delivery" ||
                               item?.sellerStatus === "ready_for_pickup") &&
                               !item?.report?.submitted && (
@@ -252,6 +260,8 @@ const PickupItemsList = ({
                       </div>
                     )}
                   </div>
+
+                  {/* pickup address */}
                   {item?.deliveryMethod === "pickup" &&
                     user &&
                     user?.id !== item?.seller?.id && (
@@ -263,7 +273,7 @@ const PickupItemsList = ({
                           <div className="min-w-4">
                             <FaLocationDot className="text-lg text-[var(--button-bg)]" />
                           </div>
-                          <p>
+                          <p className="text-sm">
                             {[
                               item?.pickupAddress?.address,
                               item?.pickupAddress?.city,
@@ -278,6 +288,7 @@ const PickupItemsList = ({
                     )}
                 </div>
 
+                {/* seller details */}
                 {user && user?.id !== item?.seller?.id && (
                   <>
                     <div className="w-full border border-gray-300 my-4" />
@@ -295,14 +306,14 @@ const PickupItemsList = ({
                                   : "/profile-icon.png"
                               }
                               alt=""
-                              className="w-[80px] h-[80px] rounded-full"
+                              className="min-w-[50px] h-[50px] lg:w-[80px] lg:h-[80px] rounded-full"
                             />
                           </div>
                           <div className="flex flex-col items-start justify-center gap-2">
-                            <p className="text-lg font-semibold leading-none">
+                            <p className="text-base lg:text-lg font-semibold leading-none">
                               {item?.seller?.name}
                             </p>
-                            <p className="text-[15px] font-normal text-[#18181899] leading-none">
+                            <p className="text-xs lg:text-[15px] font-normal text-[#18181899] leading-none">
                               {item?.seller?.email}
                             </p>
                           </div>
@@ -312,7 +323,7 @@ const PickupItemsList = ({
                           to={`/order-management/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                           className="max-w-[48px]"
                         >
-                          <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                          <div className="w-[38px] lg:w-[48px] max-w-[48px] h-[38px] lg:h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                             <img
                               src="/right-arrow-icon.png"
                               alt=""
@@ -325,6 +336,7 @@ const PickupItemsList = ({
                   </>
                 )}
 
+                {/* cancellation reason */}
                 {item?.cancellation_reason && (
                   <div className="w-full">
                     <div className="w-full border border-gray-300 my-4" />

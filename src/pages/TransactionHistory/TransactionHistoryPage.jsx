@@ -84,47 +84,15 @@ const TransactionHistoryPage = () => {
     debouncedFetch();
   }, [sellerType, page, searchTerm]);
 
-  const handlePageChange = (newPage) => {
-    if (!pagination || newPage < 1 || newPage > pagination.totalPages) return;
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage);
-    navigate(`?${params.toString()}`);
-  };
-
-  const renderPageNumbers = () => {
-    if (!pagination) return null;
-    const { totalPages } = pagination;
-    const pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <li key={i}>
-          <button
-            onClick={() => handlePageChange(i)}
-            aria-current={i === page ? "page" : undefined}
-            className={`flex items-center justify-center text-sm px-4 h-10 leading-tight font-medium rounded-[12px] ${
-              i === page
-                ? "text-white bg-[var(--button-bg)] font-medium"
-                : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-            }`}
-          >
-            {i}
-          </button>
-        </li>
-      );
-    }
-    return pages;
-  };
-
   return (
     <div className="w-full relative padding-x min-h-screen">
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4 min-h-screen">
         <div className="w-full bg-white p-6 lg:p-8 rounded-[12px]">
-          <h2 className="font-medium text-xl leading-none">
+          <h2 className="font-medium text-lg lg:text-xl leading-none">
             {sellerType === "seller" ? "Available Balance" : "Total Purchases"}
           </h2>
           {sellerType === "seller" ? (
-            <p className="text-[var(--button-bg)] text-[45px] font-semibold">
+            <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">
               {userBalance &&
                 `$${
                   userBalance?.balanceAmount > 0
@@ -133,7 +101,7 @@ const TransactionHistoryPage = () => {
                 }`}
             </p>
           ) : (
-            <p className="text-[var(--button-bg)] text-[45px] font-semibold">
+            <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">
               {userBalance &&
                 `$${
                   userBalance?.totalSpent > 0
@@ -153,8 +121,6 @@ const TransactionHistoryPage = () => {
           loading={loading}
           error={error}
           pagination={pagination}
-          handlePageChange={handlePageChange}
-          renderPageNumbers={renderPageNumbers}
           page={page}
         />
       </div>

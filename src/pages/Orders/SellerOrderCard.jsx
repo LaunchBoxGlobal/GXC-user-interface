@@ -5,23 +5,6 @@ const SellerOrderCard = ({ product }) => {
   const [searchParams] = useSearchParams();
   const tab = searchParams.get("tab");
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "cancelled":
-        return "text-red-500";
-      case "pending":
-      case "in_progress":
-        return "text-yellow-500";
-      case "completed":
-      case "picked_up":
-        return "text-green-500";
-      case "delivered":
-        return "text-green-500";
-      default:
-        return "text-gray-500";
-    }
-  };
-
   return (
     <>
       {product?.items?.map((item, index) => {
@@ -80,7 +63,7 @@ const SellerOrderCard = ({ product }) => {
             <div className="w-full border border-gray-300 my-4" />
 
             {/* Item Details */}
-            <div className="w-full flex items-center justify-between">
+            <div className="w-full flex items-center justify-between flex-wrap gap-5">
               <div className="flex items-center gap-3 lg:min-w-[55%]">
                 <img
                   src={item?.imageUrl}
@@ -94,11 +77,11 @@ const SellerOrderCard = ({ product }) => {
                 </p>
               </div>
 
-              <div className="flex flex-col items-end justify-center gap-1.5">
+              <div className="flex flex-col items-start md:items-end justify-center gap-1.5">
                 <p className="text-sm text-[#6D6D6D] font-medium">
                   Delivery Type
                 </p>
-                <p className="font-medium leading-none">
+                <p className="font-medium leading-none text-sm lg:text-base">
                   {item?.deliveryMethod === "pickup"
                     ? "Pickup"
                     : item?.deliveryMethod === "delivery"
@@ -116,7 +99,7 @@ const SellerOrderCard = ({ product }) => {
                 </p>
               </div>
               {tab === "seller" && (
-                <div className="flex flex-col items-end justify-center gap-2">
+                <div className="w-full md:w-auto flex flex-col items-end justify-center gap-2">
                   <Link
                     to={
                       tab === "seller"
@@ -124,7 +107,7 @@ const SellerOrderCard = ({ product }) => {
                         : `/order-management/details/${product?.orderNumber}?itemId=${item?.id}`
                     }
                   >
-                    <div className="w-[49px] h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
+                    <div className="w-[39px] lg:w-[49px] h-[39px] lg:h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
                       <img
                         src="/white-arrow.png"
                         alt="white-arrow"

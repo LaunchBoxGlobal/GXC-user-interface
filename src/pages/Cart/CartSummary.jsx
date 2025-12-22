@@ -33,7 +33,6 @@ const CartSummary = () => {
   const navigate = useNavigate();
   const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
   const [openEditAddressModal, setOpenEditAddressModal] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     Cookies.get("userSelectedPaymentMethod")
       ? JSON.parse(Cookies.get("userSelectedPaymentMethod"))
@@ -48,7 +47,7 @@ const CartSummary = () => {
     (pr) => pr?.product?.selectedDeliveryMethod === "delivery"
   );
 
-  // 🔁 Load user’s saved delivery address (from cookies)
+  // Load user’s saved delivery address (from cookies)
   useEffect(() => {
     const savedAddress = Cookies.get("newDeliveryAddress");
     if (savedAddress) {
@@ -56,7 +55,7 @@ const CartSummary = () => {
     }
   }, []);
 
-  // 🔁 Fetch cart data on mount
+  // Fetch cart data on mount
   useEffect(() => {
     document.title = "Cart - GiveXChange";
     checkIamAlreadyMember();
@@ -67,12 +66,12 @@ const CartSummary = () => {
   const toggleAddAddressModal = () => setOpenAddAddressModal((prev) => !prev);
   const toggleEditAddressModal = () => setOpenEditAddressModal((prev) => !prev);
 
-  // ✅ Check if any product requires delivery
+  // Check if any product requires delivery
   const isAnyDeliveryTypeProduct = cartProducts?.some(
     (p) => p?.product?.selectedDeliveryMethod === "delivery"
   );
 
-  // 🧹 Remove all cart items
+  // Remove all cart items
   const removeAllItemsFromCart = async () => {
     checkIamAlreadyMember();
     setLoading(true);
@@ -101,14 +100,8 @@ const CartSummary = () => {
     }
   };
 
-  // 🛒 Proceed to checkout validation
+  // Proceed to checkout validation
   const handleNavigate = () => {
-    // if (isAnyDeliveryTypeProduct && !selectedAddress) {
-    //   return enqueueSnackbar("Please select a address!", {
-    //     variant: "error",
-    //   });
-    // }
-
     const community = JSON.parse(Cookies.get("selected-community"));
 
     if (!selectedPaymentMethod) {
@@ -119,7 +112,7 @@ const CartSummary = () => {
     navigate(`/cart/${community?.id}/checkout`);
   };
 
-  // 🌀 Loader
+  // Loader
   if (loading) {
     return (
       <div className="w-full padding-x relative -top-20">
@@ -132,7 +125,7 @@ const CartSummary = () => {
     );
   }
 
-  // ⚠️ Error UI
+  // Error UI
   if (error) {
     return (
       <div className="w-full padding-x relative -top-20">
@@ -153,7 +146,7 @@ const CartSummary = () => {
     );
   }
 
-  // ✅ Normal UI
+  // Normal UI
   return (
     <div className="w-full padding-x relative -top-28">
       <button
@@ -168,8 +161,8 @@ const CartSummary = () => {
         <div className="w-full rounded-[18px]">
           {cartProducts?.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              {/* 🛒 Cart Section */}
-              <div className="col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
+              {/* Cart Section */}
+              <div className="col-span-1 lg:col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="flex items-center justify-between">
                   <h1 className="text-[24px] font-semibold">Cart</h1>
                   <button

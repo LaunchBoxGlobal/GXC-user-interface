@@ -29,7 +29,7 @@ const OrderCard = ({ product }) => {
           return (
             <div
               key={index}
-              className={`w-full flex items-center justify-between ${
+              className={`w-full flex items-center justify-between flex-wrap gap-4 ${
                 index > 0 ? "border-t-2 border-gray-300 pt-4" : ""
               }`}
             >
@@ -102,11 +102,11 @@ const OrderCard = ({ product }) => {
               </div>
 
               {/* Delivery Type */}
-              <div className="flex flex-col items-end justify-center gap-1.5">
+              <div className="flex flex-col items-start md:items-end justify-center gap-1.5">
                 <p className="text-sm text-[#6D6D6D] font-medium">
                   Delivery Type
                 </p>
-                <p className="font-medium leading-none">
+                <p className="font-medium leading-none text-sm lg:text-base">
                   {item?.deliveryMethod === "pickup"
                     ? "Pickup"
                     : item?.deliveryMethod === "delivery"
@@ -127,11 +127,11 @@ const OrderCard = ({ product }) => {
 
               {/* Arrow (for seller tab only) */}
               {tab === "buyer" && (
-                <div className="flex flex-col items-end justify-center gap-2">
+                <div className="flex items-end justify-end md:justify-center w-full md:w-auto gap-2">
                   <Link
                     to={`/order-management/details/${product?.orderNumber}?itemId=${item?.id}`}
                   >
-                    <div className="w-[49px] h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
+                    <div className="w-[39px] h-[39px] lg:w-[49px] lg:h-[49px] rounded-[12px] bg-[var(--button-bg)] flex items-center justify-center">
                       <img
                         src="/white-arrow.png"
                         alt="white-arrow"

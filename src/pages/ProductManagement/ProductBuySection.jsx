@@ -65,7 +65,6 @@ const ProductBuySection = ({
       return;
     }
 
-    console.log("deliveryType >> ", deliveryType);
     // return;
     checkIamAlreadyMember();
     setAddProductInCart(true);
@@ -133,7 +132,7 @@ const ProductBuySection = ({
               type="button"
               onClick={() => setDeliveryType("delivery")}
               disabled={isProductInCart || productDetails?.status !== "active"}
-              className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
+              className={`rounded-[12px] text-xs md:text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                 deliveryType === "delivery"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"
@@ -154,7 +153,7 @@ const ProductBuySection = ({
               type="button"
               onClick={() => setDeliveryType("pickup")}
               disabled={isProductInCart || productDetails?.status !== "active"}
-              className={`rounded-[12px] text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
+              className={`rounded-[12px] text-xs md:text-sm font-medium h-[41px] flex items-center justify-center relative transition-all ${
                 deliveryType === "pickup"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"

@@ -202,11 +202,20 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       className="w-full grid grid-cols-3 gap-4"
     >
       {/* LEFT SECTION */}
-      <div className="w-full pt-3 col-span-2 bg-white rounded-[18px] p-5 lg:p-7">
+      <div className="w-full pt-3 col-span-3 lg:col-span-2 bg-white rounded-[18px] p-5 lg:p-7">
         <h1 className="font-semibold text-[20px] leading-none tracking-tight">
           Add New Product
         </h1>
         <div className="w-full border my-5" />
+
+        <div className="w-full block mb-5 lg:hidden col-span-3 lg:col-span-1">
+          <AddProductImagesUploader
+            formik={formik}
+            previewImages={previewImages}
+            setPreviewImages={setPreviewImages}
+            loading={loading}
+          />
+        </div>
 
         <div className="w-full flex flex-col gap-4">
           {/* Product Name & Price */}
@@ -322,12 +331,14 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       </div>
 
       {/* RIGHT SECTION */}
-      <AddProductImagesUploader
-        formik={formik}
-        previewImages={previewImages}
-        setPreviewImages={setPreviewImages}
-        loading={loading}
-      />
+      <div className="w-full hidden lg:block col-span-3 lg:col-span-1 p-5 lg:p-7 bg-white rounded-[18px]">
+        <AddProductImagesUploader
+          formik={formik}
+          previewImages={previewImages}
+          setPreviewImages={setPreviewImages}
+          loading={loading}
+        />
+      </div>
     </form>
   );
 };

@@ -68,7 +68,7 @@ const AddProductImagesUploader = ({
   };
 
   return (
-    <div className="w-full col-span-1 bg-white rounded-[18px] relative p-5 lg:p-7">
+    <div className="w-full bg-white rounded-[18px] relative">
       <h1 className="font-medium text-[14px] leading-none tracking-tight">
         Product Images
       </h1>
@@ -76,7 +76,7 @@ const AddProductImagesUploader = ({
       <div className="flex items-center justify-center w-full mt-2">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-[319px] border-2 border-[var(--button-bg)] border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all"
+          className="flex flex-col items-center justify-center w-full h-[219px] lg:h-[319px] border-2 border-[var(--button-bg)] border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <img

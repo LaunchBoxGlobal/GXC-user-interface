@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
@@ -8,8 +8,8 @@ import ProductCard from "./ProductCard";
 import { useUser } from "../../context/userContext";
 import Loader from "../../components/Common/Loader";
 import Categories from "../Home/Categories";
-import ProductTypeTabs from "./ProductTypeTabs";
 import { useAppContext } from "../../context/AppContext";
+import Pagination from "../../components/Forms/Pagination";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -24,8 +24,6 @@ const ProductManagementPage = () => {
 
   const page = Number(searchParams.get("page")) || 1;
   const limit = 12;
-  const PRODUCT_STATUS = "active";
-  // const [productType, setProductType] = useState("active");
   const { productType, fetchNotificaiontCount } = useAppContext();
 
   const fetchProducts = useCallback(async () => {
@@ -65,40 +63,6 @@ const ProductManagementPage = () => {
     fetchNotificaiontCount();
   }, [fetchProducts, categoryId]);
 
-  // Handle pagination click
-  const handlePageChange = (newPage) => {
-    if (!pagination || newPage < 1 || newPage > pagination.totalPages) return;
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage);
-    navigate(`?${params.toString()}`);
-  };
-
-  // Render numbered page buttons
-  const renderPageNumbers = () => {
-    if (!pagination) return null;
-    const { totalPages } = pagination;
-    const pages = [];
-
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <li key={i}>
-          <button
-            onClick={() => handlePageChange(i)}
-            aria-current={i === page ? "page" : undefined}
-            className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-              i === page
-                ? "text-white bg-[var(--button-bg)] font-medium"
-                : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-            }`}
-          >
-            {i}
-          </button>
-        </li>
-      );
-    }
-    return pages;
-  };
-
   return (
     <div className="w-full min-h-screen padding-x py-16">
       {communities && communities?.length > 0 && <Categories />}
@@ -119,47 +83,7 @@ const ProductManagementPage = () => {
               </div>
 
               {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <nav
-                  aria-label="Page navigation"
-                  className="flex justify-end w-full mt-10"
-                >
-                  <ul className="inline-flex items-center gap-2 px-2 -space-x-px text-base h-[58px] bg-[#E6E6E6BD] rounded-[12px]">
-                    {/* Previous Button */}
-                    <li>
-                      <button
-                        onClick={() => handlePageChange(page - 1)}
-                        disabled={page <= 1}
-                        className={`flex items-center justify-center px-4 h-10 ms-0 leading-tight font-medium rounded-[12px] ${
-                          page <= 1
-                            ? "text-gray-400 cursor-not-allowed"
-                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                        }`}
-                      >
-                        Previous
-                      </button>
-                    </li>
-
-                    {/* Page Numbers */}
-                    {renderPageNumbers()}
-
-                    {/* Next Button */}
-                    <li>
-                      <button
-                        onClick={() => handlePageChange(page + 1)}
-                        disabled={page >= pagination.totalPages}
-                        className={`flex items-center justify-center px-4 h-10 leading-tight font-medium rounded-[12px] ${
-                          page >= pagination.totalPages
-                            ? "text-gray-400 cursor-not-allowed"
-                            : "text-gray-600 hover:bg-[var(--button-bg)] hover:text-white"
-                        }`}
-                      >
-                        Next
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
-              )}
+              <Pagination pagination={pagination} page={page} />
             </>
           ) : (
             <div className="w-full text-center">

@@ -97,7 +97,7 @@ const DeliveryItemsList = ({
             return (
               <div key={item?.id} className="w-full">
                 <div
-                  className={`w-full flex items-center justify-between gap-3 ${
+                  className={`w-full flex items-center justify-between flex-wrap gap-3 ${
                     deliveryItems?.length !== 1 &&
                     index > 0 &&
                     `mt-4 pt-4 border-t-2 border-gray-300`
@@ -238,7 +238,7 @@ const DeliveryItemsList = ({
                   </div>
                 </div>
 
-                {/* <div className="w-full border border-gray-300 my-4" /> */}
+                {/* pickup address */}
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
                     <h3 className="text-sm font-semibold leading-none">
@@ -249,7 +249,9 @@ const DeliveryItemsList = ({
                       <div className="min-w-4">
                         <FaLocationDot className="text-lg text-[var(--button-bg)]" />
                       </div>
-                      <p>{item?.communityPickupAddress?.address}</p>
+                      <p className="text-sm lg:text-base">
+                        {item?.communityPickupAddress?.address}
+                      </p>
                     </div>
                   </div>
                 )}
@@ -266,14 +268,14 @@ const DeliveryItemsList = ({
                               : "/profile-icon.png"
                           }
                           alt=""
-                          className="w-[80px] h-[80px] rounded-full"
+                          className="min-w-[60px] h-[60px] lg:w-[80px] lg:h-[80px] object-cover rounded-full"
                         />
                       </div>
                       <div className="flex flex-col items-start justify-center gap-2">
-                        <p className="text-lg font-semibold leading-none">
+                        <p className="text-base lg:text-lg font-semibold leading-none">
                           {item?.seller?.name}
                         </p>
-                        <p className="text-[15px] font-normal text-[#18181899] leading-none">
+                        <p className="text-xs lg:text-[15px] font-normal text-[#18181899] leading-none">
                           {item?.seller?.email}
                         </p>
                       </div>
@@ -282,7 +284,7 @@ const DeliveryItemsList = ({
                       to={`/order-management/details/seller/${orderDetails?.communityId}/${item?.seller?.id}?isOrderPlaced=true`}
                       className="max-w-[48px]"
                     >
-                      <div className="w-[48px] max-w-[48px] h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
+                      <div className="w-[38px] h-[38px] lg:w-[48px] max-w-[48px] lg:h-[48px] rounded-[11px] flex items-center justify-center bg-[var(--button-bg)]">
                         <img
                           src="/right-arrow-icon.png"
                           alt=""

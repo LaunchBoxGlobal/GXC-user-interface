@@ -19,7 +19,7 @@ const OrderManagementHeader = () => {
   }, [searchParams]);
 
   return (
-    <div className="w-full flex justify-between items-center">
+    <div className="w-full flex justify-center md:justify-between items-center flex-wrap gap-5">
       <div>
         <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
           Order Management

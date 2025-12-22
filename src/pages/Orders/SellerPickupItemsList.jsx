@@ -221,7 +221,7 @@ const SellerPickupItemsList = ({
                         <div className="min-w-4">
                           <FaLocationDot className="text-lg text-[var(--button-bg)]" />
                         </div>
-                        <p>
+                        <p className="text-sm lg:text-base">
                           {[
                             item?.pickupAddress?.address,
                             item?.pickupAddress?.city,
@@ -236,7 +236,7 @@ const SellerPickupItemsList = ({
                   )}
                 </div>
 
-                {/* {user && user?.id !== item?.seller?.id && ( */}
+                {/* buyer details */}
                 <>
                   <div className="w-full border border-gray-300 my-4" />
                   <div className="w-full">
@@ -253,14 +253,14 @@ const SellerPickupItemsList = ({
                                 : "/profile-icon.png"
                             }
                             alt=""
-                            className="w-[80px] h-[80px] rounded-full"
+                            className="min-w-[60px] h-[60px] lg:w-[80px] lg:h-[80px] rounded-full"
                           />
                         </div>
                         <div className="flex flex-col items-start justify-center gap-2">
-                          <p className="text-lg font-semibold leading-none">
+                          <p className="text-base lg:text-lg font-semibold leading-none">
                             {orderDetails?.buyer?.name}
                           </p>
-                          <p className="text-[15px] font-normal text-[#18181899] leading-none">
+                          <p className="text-xs lg:text-[15px] font-normal text-[#18181899] leading-none">
                             {orderDetails?.buyer?.email}
                           </p>
                         </div>

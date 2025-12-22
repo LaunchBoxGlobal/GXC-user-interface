@@ -53,17 +53,12 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
 
               <td className="px-6 py-4 border-b text-sm">
                 <div className="flex items-center gap-2">
-                  {/* <img
-                    src={transaction?.product?.image || "/profile-icon.png"}
-                    alt="product"
-                    className="w-[43px] h-[43px] object-cover rounded-full"
-                  /> */}
                   <div className="w-[43px] h-[43px] object-cover rounded-full">
                     <LazyLoadImage
                       src={transaction?.product?.image || "/profile-icon.png"}
                       effect="blur"
                       alt="product"
-                      className="w-[43px] h-[43px] object-cover rounded-full"
+                      className="min-w-[43px] max-w-[43px] h-[43px] object-cover rounded-full"
                     />
                   </div>
                   <Link
@@ -78,14 +73,6 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
               <td className="px-6 py-4 border-b text-sm">
                 {sellerType === "buyer" ? (
                   <div className="flex items-center gap-2">
-                    {/* <img
-                      src={
-                        transaction?.seller?.profilePictureUrl ||
-                        "/profile-icon.png"
-                      }
-                      alt="seller"
-                      className="w-[43px] h-[43px] object-cover rounded-full"
-                    /> */}
                     <div className="w-[43px] h-[43px] object-cover rounded-full">
                       <LazyLoadImage
                         src={
@@ -94,7 +81,7 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
                         }
                         effect="blur"
                         alt="seller"
-                        className="w-[43px] h-[43px] object-cover rounded-full"
+                        className="min-w-[43px] max-w-[43px] h-[43px] object-cover rounded-full"
                       />
                     </div>
                     <Link
@@ -112,7 +99,7 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
                         "/profile-icon.png"
                       }
                       alt="buyer"
-                      className="w-[43px] h-[43px] object-cover rounded-full"
+                      className="min-w-[43px] max-w-[43px] h-[43px] object-cover rounded-full"
                     />
                     <Link
                       to={`/transaction-history/member/details/${transaction?.buyer?.id}?isOrderPlaced=true&isBuyer=true`}

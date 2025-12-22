@@ -56,9 +56,9 @@ const DeleteAccount = () => {
       <h2 className="text-[24px] font-semibold leading-none">Delete Account</h2>
       <div className="w-full border my-5" />
 
-      <div className="w-full flex items-center justify-between">
+      <div className="w-full flex items-center justify-between flex-wrap gap-5">
         <div className="w-full max-w-[80%]">
-          <h3 className="font-medium text-lg">
+          <h3 className="font-medium text-base lg:text-lg leading-[1.3]">
             We will send 6 digits code to{" "}
             {user?.email && (
               <span className="font-semibold">
@@ -69,7 +69,7 @@ const DeleteAccount = () => {
             )}
             to confirm deletion.
           </h3>
-          <p className="">
+          <p className="text-sm lg:text-base mt-3">
             Your data will be removed from our database permanently.
           </p>
         </div>
