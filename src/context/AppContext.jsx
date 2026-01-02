@@ -99,7 +99,7 @@ export const AppProvider = ({ children }) => {
       // console.log("notification count >>> ", res?.data);
       setUnreadNotificationCount(res?.data?.data?.unreadCount);
     } catch (error) {
-      console.log("err while fetching notification count >>> ", error);
+      // console.log("err while fetching notification count >>> ", error);
     }
   };
 
