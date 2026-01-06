@@ -30,14 +30,16 @@ const ProductManagementHeader = () => {
 
       if (res?.data?.data?.accountStatus === "active") {
         navigate("/product-management/add-product");
-      } else if (res?.data?.data?.accountStatus === "pending") {
-        enqueueSnackbar(
-          `Your stripe account is in progress. You can not add products until your account os approved.`,
-          {
-            variant: "error",
-          }
-        );
-      } else {
+      }
+      // else if (res?.data?.data?.accountStatus === "pending") {
+      //   enqueueSnackbar(
+      //     `Your stripe account is in progress. You can not add products until your account os approved.`,
+      //     {
+      //       variant: "error",
+      //     }
+      //   );
+      // }
+      else {
         setShowConfirmationModal((prev) => !prev);
       }
     } catch (error) {

@@ -109,7 +109,7 @@ const HomePage = () => {
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
-      {communities && communities?.length > 0 && <Categories />}
+      {categories && categories?.length >= 1 && <Categories />}
       {loading ? (
         <div className="w-full flex justify-center pt-40 min-h-screen">
           <Loader />

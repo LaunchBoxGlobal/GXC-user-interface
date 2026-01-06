@@ -50,6 +50,8 @@ const Categories = memo(() => {
     });
   };
 
+  if (categories && categories?.length < 1) return;
+
   return (
     <div className="relative w-full flex items-center">
       {/* Left Button */}
