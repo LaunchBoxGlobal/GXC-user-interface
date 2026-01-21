@@ -30,7 +30,7 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/${communityTitle}/details`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       setCommunity(res?.data?.data || null);
@@ -38,7 +38,7 @@ const CommunityPage = () => {
       console.error(
         "fetchCommunityDetails error:",
         error?.response?.status,
-        error?.message
+        error?.message,
       );
       if (error?.response?.status === 404) {
         setNotFound(true);
@@ -62,7 +62,7 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/${communityTitle}/my-membership`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       const data = res?.data?.data || {};
@@ -102,7 +102,7 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/join-status/${communityTitle}`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       const data = res?.data?.data || {};
@@ -111,11 +111,6 @@ const CommunityPage = () => {
 
       return canJoinStatus;
     } catch (error) {
-      console.error(
-        "join-status error >>>>> ",
-        error?.response?.status,
-        error?.message
-      );
       setCanJoin(false);
       return false;
     }
@@ -137,7 +132,7 @@ const CommunityPage = () => {
         { slug: communityTitle },
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       const membership = res?.data?.data?.membership;
@@ -149,26 +144,26 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/my-joined`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       const allCommunities = communitiesRes?.data?.data?.communities || [];
 
-      // ✅ Find the exact joined community by ID
+      // Find the exact joined community by ID
       const joinedCommunity = allCommunities.find(
-        (c) => c.id === membership.communityId
+        (c) => c.id === membership.communityId,
       );
 
       if (joinedCommunity) {
-        // ✅ Save selected community in cookie
+        // Save selected community in cookie
         Cookies.set("selected-community", JSON.stringify(joinedCommunity));
 
         enqueueSnackbar(
           `Welcome! You’ve joined the community "${joinedCommunity.name}" 🎉`,
-          { variant: "success", autoHideDuration: 2000 }
+          { variant: "success", autoHideDuration: 3000 },
         );
 
-        // ✅ Navigate to home with community param
+        // Navigate to home with community param
         navigate(`/?community=${joinedCommunity.slug}`, { replace: true });
       } else {
         enqueueSnackbar("Joined community not found in your list!", {
@@ -233,7 +228,8 @@ const CommunityPage = () => {
             className="w-[107px] h-[107px] mx-auto"
           />
           <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
-            You’ve been invited to join {community?.community?.name} community!
+            You’ve been invited to join a {community?.community?.name}{" "}
+            community!
           </h2>
           {community?.owner?.fullName && (
             <p className="mb-4">
