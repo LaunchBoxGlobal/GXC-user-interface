@@ -85,10 +85,10 @@ const VerifyOtp = () => {
     validationSchema: Yup.object({
       otp: Yup.array()
         .test("complete", "OTP is required", (arr) =>
-          arr.every((digit) => digit !== "")
+          arr.every((digit) => digit !== ""),
         )
         .test("valid", "OTP must be 6 digits", (arr) =>
-          /^\d{6}$/.test(arr.join(""))
+          /^\d{6}$/.test(arr.join("")),
         ),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -106,8 +106,8 @@ const VerifyOtp = () => {
           page === "/signup"
             ? `${BASE_URL}/auth/verify-email`
             : page === "/login"
-            ? `${BASE_URL}/auth/verify-email`
-            : `${BASE_URL}/auth/verify-reset-code`;
+              ? `${BASE_URL}/auth/verify-email`
+              : `${BASE_URL}/auth/verify-reset-code`;
 
         const res = await axios.post(url, body, {
           headers: {
@@ -187,7 +187,9 @@ const VerifyOtp = () => {
         className="w-full max-w-[370px] flex flex-col items-start gap-4"
       >
         <div className="w-full text-center space-y-3 mt-4">
-          <h1 className="font-semibold text-[32px] leading-none">Verify OTP</h1>
+          <h1 className="font-semibold text-[32px] leading-none">
+            Verify 6-digit code
+          </h1>
           {userEmail && (
             <p className="text-[var(--secondary-color)] flex justify-center flex-wrap gap-1">
               Verify the code sent at{" "}
