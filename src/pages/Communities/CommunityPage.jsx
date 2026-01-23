@@ -228,14 +228,14 @@ const CommunityPage = () => {
             className="w-[107px] h-[107px] mx-auto"
           />
           <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
-            You’ve been invited to join a {community?.community?.name}{" "}
-            community!
+            You’ve been invited to join a fundraising{" "}
+            {community?.community?.name} community!
           </h2>
           {community?.owner?.fullName && (
             <p className="mb-4">
               <span className="font-medium">{community.owner.fullName}</span>{" "}
-              has invited you to join their private community. Accept to become
-              a member.
+              has invited you to join their private fundraising community.
+              Accept to become a member.
             </p>
           )}
           <div className="w-full grid grid-cols-2 gap-3">
