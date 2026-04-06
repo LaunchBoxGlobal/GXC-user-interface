@@ -175,7 +175,7 @@ const LoginForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
-            label={t(`form.password_label`)}
+            label={t(`form.password`)}
           />
         </div>
 
