@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import LanguageSwitcher from "../../LanguageSwitcher";
 
 const AuthLayout = ({ children }) => {
   const location = useLocation();
@@ -49,7 +50,10 @@ const AuthLayout = ({ children }) => {
           />
         )}
       </div>
-      <div className="w-full h-full py-12 flex items-center justify-center">
+      <div className="w-full h-full py-12 flex items-center flex-col justify-center relative">
+        <div className="w-full absolute top-10 flex justify-end pr-10">
+          <LanguageSwitcher isScrolled={true} />
+        </div>
         {children}
       </div>
     </main>
