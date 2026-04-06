@@ -119,7 +119,9 @@
         "buttons": {
             "skip": "Skip",
             "save": "Save"
-        }
+        },
+        "uploadProfilePickup": "Upload Profile Picture",
+        "profilePictureRequired": "Profile picture is required"
     },
     "profile": {
         "validation": {

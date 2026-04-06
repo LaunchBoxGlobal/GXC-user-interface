@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
 
 const AuthImageUpload = ({ name, setFieldValue, error }) => {
   const [preview, setPreview] = useState(null);
-  const [fileError, setFileError] = useState(null); // 👈 local error for invalid file type
+  const [fileError, setFileError] = useState(null);
+  const { t } = useTranslation("auth");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -44,7 +46,7 @@ const AuthImageUpload = ({ name, setFieldValue, error }) => {
         <input
           type="file"
           id="profileImage"
-          accept="image/png, image/jpeg, image/jpg" // 👈 restrict file picker
+          accept="image/png, image/jpeg, image/jpg"
           onChange={handleImageChange}
           className="hidden"
         />
@@ -57,13 +59,13 @@ const AuthImageUpload = ({ name, setFieldValue, error }) => {
             fileError || error ? "text-red-500" : "text-[var(--primary-blue)]"
           }`}
         >
-          Upload Profile Picture
+          {t(`completeProfile.uploadProfilePickup`)}
         </label>
 
-        {/* 👇 Display error message */}
+        {/* Display error message */}
         {(fileError || error) && (
           <p className="text-red-500 text-xs mt-1">
-            {fileError || "Profile picture is required"}
+            {fileError || t(`completeProfile.profilePictureRequired`)}
           </p>
         )}
       </div>
