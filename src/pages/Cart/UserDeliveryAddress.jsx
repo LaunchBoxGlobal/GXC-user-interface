@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 const UserDeliveryAddress = ({
   userNewDeliveryAddress,
@@ -11,6 +12,7 @@ const UserDeliveryAddress = ({
   openEditAddressModal,
 }) => {
   const { user } = useAppContext();
+  const { t } = useTranslation("cart");
 
   useEffect(() => {
     const savedAddress = Cookies.get("userSelectedDeliveryAddress");
@@ -28,19 +30,19 @@ const UserDeliveryAddress = ({
     <div className="w-full">
       <div className="w-full border my-5" />
       <div className="w-full flex items-center justify-between gap-3">
-        <p className="font-semibold leading-none">Delivery Address</p>
+        <p className="font-semibold leading-none">{t(`deliveryAddress`)}</p>
         {!userNewDeliveryAddress && (
           <button
             type="button"
             onClick={toggleAddAddressModal}
             className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
           >
-            + Add new delivery address
+            {t(`addNewDeliveryAddress`)}
           </button>
         )}
       </div>
 
-      {/* ✅ Default user address */}
+      {/* Default user address */}
       {user && user?.address && (
         <div
           className={`w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 mt-2 rounded-[12px] px-3 border border-[var(--button-bg)]`}
@@ -72,8 +74,7 @@ const UserDeliveryAddress = ({
         </div>
       )}
 
-      {/* ✅ New address (if exists) */}
-
+      {/* New address (if exists) */}
       {userNewDeliveryAddress && (
         <>
           <div className="w-full mt-3 flex justify-end">
@@ -82,7 +83,7 @@ const UserDeliveryAddress = ({
               onClick={toggleEditAddressModal}
               className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
             >
-              + Edit delivery address
+              {t(`editDeliveryAddress`)}
             </button>
           </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { BiSolidPencil } from "react-icons/bi";
+import { useTranslation } from "react-i18next";
 
 const ProductHeader = ({
   productDetails,
@@ -10,6 +11,7 @@ const ProductHeader = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { t } = useTranslation("productManagement");
 
   const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
@@ -39,16 +41,18 @@ const ProductHeader = ({
         {productDetails?.deliveryMethod && (
           <p className="font-medium text-[#6D6D6D] text-xs">
             {productDetails?.deliveryMethod === "pickup"
-              ? "Pickup"
+              ? t(`pickup`)
               : productDetails?.deliveryMethod === "delivery"
-              ? "Community Pickup"
-              : "Pickup / Community Pickup"}
+                ? t(`communityPickup`)
+                : `${t(`pickup`)} / ${t(`communityPickup`)}`}
           </p>
         )}
 
         {productDetails?.community && (
           <div className="flex items-center gap-1">
-            <p className="text-sm font-medium">Community:</p>
+            <p className="text-sm font-medium">
+              {t(`productDetails.community`)}:
+            </p>
             <p className="font-medium text-[#6D6D6D] text-sm">
               {productDetails?.community?.name}
             </p>
@@ -57,7 +61,9 @@ const ProductHeader = ({
 
         {productDetails?.categories?.length > 0 && (
           <div className="flex items-center gap-1">
-            <p className="text-sm font-medium">Category:</p>
+            <p className="text-sm font-medium">
+              {t(`productDetails.category`)}:
+            </p>
             <p className="font-medium text-[#6D6D6D] text-sm">
               {productDetails?.categories?.map((cat, i) => {
                 return (
@@ -72,16 +78,18 @@ const ProductHeader = ({
 
         {productDetails?.seller?.id === user?.id && (
           <div className="flex items-center gap-1">
-            <p className="text-sm font-medium">Product Status:</p>
+            <p className="text-sm font-medium">
+              {t(`productDetails.productStatus`)}:
+            </p>
             <p
               className={`text-sm font-medium ${
                 productDetails?.status === "sold"
                   ? "text-red-500"
                   : productDetails?.status === " delisted"
-                  ? "text-[var(--rating-yellow)]"
-                  : productDetails?.status === "active"
-                  ? "text-[var(--text-success)]"
-                  : "text-gray-500"
+                    ? "text-[var(--rating-yellow)]"
+                    : productDetails?.status === "active"
+                      ? "text-[var(--text-success)]"
+                      : "text-gray-500"
               }`}
             >
               {productDetails?.status.charAt(0).toUpperCase() +
@@ -106,7 +114,9 @@ const ProductHeader = ({
                 className="flex items-center gap-2 px-5 hover:bg-gray-100 w-full py-2 rounded-t-[8px]"
               >
                 <BiSolidPencil className="text-lg text-[var(--button-bg)]" />
-                <span className="text-base leading-none">Edit</span>
+                <span className="text-base leading-none">
+                  {t(`productDetails.buttons.edit`)}
+                </span>
               </button>
               <div className="w-full border" />
               <button
@@ -120,7 +130,7 @@ const ProductHeader = ({
                   className="w-[13px] h-[16px]"
                 />
                 <span className="text-base leading-none text-red-500">
-                  Delete
+                  {t(`productDetails.buttons.delete`)}
                 </span>
               </button>
             </div>
@@ -130,7 +140,9 @@ const ProductHeader = ({
         <>
           {productDetails?.status === "active" && (
             <div>
-              <p className="text-sm font-medium text-[#6D6D6D]">Price</p>
+              <p className="text-sm font-medium text-[#6D6D6D]">
+                {t(`productDetails.price`)}
+              </p>
               <p className="text-lg lg:text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
                 ${productDetails?.price}
               </p>

@@ -1,0 +1,15 @@
+{
+    "no_products": "¡No se encontraron productos en esta comunidad!",
+    "no_products_in_category": "¡No se encontraron productos en esta categoría!",
+    "no_communities": "Aún no te has unido a ninguna comunidad.",
+    "communitiesNotFound": "Comunidad no encontrada",
+    "searchHere": "Busca aquí",
+    "priceRange": "Gama de precios",
+    "filter": "Filtrar",
+    "min": "Mín",
+    "max": "Máx",
+    "buttons": {
+        "reset": "Restablecer",
+        "apply": "Aplicar"
+    }
+}

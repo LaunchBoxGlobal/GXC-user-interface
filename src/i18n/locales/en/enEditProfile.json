@@ -1,0 +1,47 @@
+{
+    "editProfile": {
+        "editProfile": "Edit Profile",
+        "editProfileSubheading": "Please complete details to access all features",
+        "form": {
+            "fields": {
+                "firstNameLabel": "First Name",
+                "lastNameLabel": "Last Name",
+                "emailAddress": "Email Address",
+                "phoneNumber": "Phone Number",
+                "country": "Country",
+                "state": "State",
+                "city": "City",
+                "location": "Suite / Apartment / Street",
+                "profilePicture": "Upload Profile Picture"
+            },
+            "errors": {
+                "firstNameMin": "First name must contain at least 3 characters",
+                "firstNameMax": "First name must be 10 characters or less",
+                "firstNameMatch": "First name can only contain letters and spaces",
+                "firstNameRequired": "First name is required",
+                "lastNameMin": "Last name must contain at least 3 characters",
+                "lastNameMax": "Last name must be 10 characters or less",
+                "lastNameMatch": "Last name can only contain letters and spaces",
+                "lastNameRequired": "Last name is required",
+                "addressMin": "Address cannot be less than 1 characters",
+                "addressMax": "Address can not be more than 30 characters",
+                "addressRequired": "Please enter your location",
+                "phoneNumberRequired": "Phone number is required",
+                "invalidPhoneNumber": "Invalid phone number",
+                "invalidEmail": "Invalid email address",
+                "emailIsRequired": "Email is required",
+                "cityRequired": "City is required",
+                "stateRequired": "State is required",
+                "countryRequired": "Country is required",
+                "zipCodeMatch": "Please enter a valid zip code",
+                "zipCodeIsRequired": "Enter your zip code",
+                "profilePictureRequired": "Profile picture is required",
+                "profilePictureType": "Only PNG, JPG, or JPEG images are allowed."
+            },
+            "profileUpdatedSuccess": "Profile Updated Successfully!"
+        },
+        "buttons": {
+            "save": "Save"
+        }
+    }
+}

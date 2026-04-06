@@ -20,12 +20,12 @@ export const UserProvider = ({ children }) => {
   const [selectedCommunity, setSelectedCommunity] = useState(
     Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
-      : null
+      : null,
   );
 
   const communityFromQuery = searchParams.get("community");
 
-  /** 🧩 Check if user is still a member of selected community */
+  /** Check if user is still a member of selected community */
   const checkIamAlreadyMember = async () => {
     const community = Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
@@ -41,23 +41,13 @@ export const UserProvider = ({ children }) => {
         `${BASE_URL}/communities/${community.slug}/my-membership`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
 
       const membership = res?.data?.data?.membership;
       const status = membership?.status;
 
       if (status === "removed" || status === "banned") {
-        // enqueueSnackbar(
-        //   status === "removed"
-        //     ? `You’ve been removed from this community.`
-        //     : status === "banned"
-        //     ? `You've been blocked from this community.`
-        //     : `Something went wrong.`,
-        //   {
-        //     variant: "error",
-        //   }
-        // );
         Cookies.remove("selected-community");
         setSelectedCommunity(null);
         fetchCommunities();
@@ -66,25 +56,6 @@ export const UserProvider = ({ children }) => {
         }
       }
 
-      // if (status === "removed") {
-      //   enqueueSnackbar("You’ve been removed from this community.", {
-      //     variant: "error",
-      //     autoHideDuration: 3000,
-      //   });
-
-      //   fetchCommunities();
-      //   navigate(`/`);
-      // } else if (status === "banned") {
-      //   enqueueSnackbar("You've been blocked from this community.", {
-      //     variant: "error",
-      //     autoHideDuration: 3000,
-      //   });
-
-      //   fetchCommunities();
-      //   navigate(`/`);
-      // } else {
-      //   setIsBlocked(false);
-      // }
       setIsBlocked(false);
     } catch (error) {
       console.log("checkIamAlreadyMember error >>> ", error);
@@ -94,7 +65,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  /** 🧩 Fetch user’s joined communities */
+  /** Fetch user’s joined communities */
   const fetchCommunities = async () => {
     const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     const token = getToken();
@@ -112,11 +83,6 @@ export const UserProvider = ({ children }) => {
       if (list.length === 0 || !list.length) {
         Cookies.remove("selected-community");
         setSelected(null);
-        // navigate({
-        //   pathname: "/",
-        //   search: window?.location?.search || "",
-        // });
-        // return;
       }
 
       const currentPath = window.location.pathname;
@@ -144,7 +110,7 @@ export const UserProvider = ({ children }) => {
         list.find(
           (c) =>
             c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
-            c.name?.toLowerCase() === communityFromQuery.toLowerCase()
+            c.name?.toLowerCase() === communityFromQuery.toLowerCase(),
         );
 
       // ✅ Determine final selected community

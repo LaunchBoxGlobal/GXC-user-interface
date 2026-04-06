@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -23,6 +24,7 @@ const TransactionHistoryPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("transactionHistory");
 
   const LIMIT = 10;
   const page = Number(searchParams.get("page") || 1);
@@ -89,7 +91,9 @@ const TransactionHistoryPage = () => {
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4 min-h-screen">
         <div className="w-full bg-white p-6 lg:p-8 rounded-[12px]">
           <h2 className="font-medium text-lg lg:text-xl leading-none">
-            {sellerType === "seller" ? "Available Balance" : "Total Purchases"}
+            {sellerType === "seller"
+              ? t(`availableBalance`)
+              : t(`totalPurchases`)}
           </h2>
           {sellerType === "seller" ? (
             <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">

@@ -1,0 +1,173 @@
+{
+    "buttons": {
+        "seller_history": "Historial del vendedor",
+        "buyer_history": "Historia del comprador",
+        "all": "Todo",
+        "in_progress": "En curso",
+        "completed": "Terminado",
+        "delivered": "Entregado"
+    },
+    "order_management": "Gestión de Pedidos",
+    "no_orders": "¡No se encontraron pedidos!",
+    "cancelPopup": {
+        "title": "Cancelar pedido",
+        "description": "¿Estás seguro de que deseas cancelar este pedido?",
+        "buttons": {
+            "no": "No",
+            "yes": "Sí"
+        }
+    },
+    "cancelSuccessPopup": {
+        "title": "Pedido cancelado",
+        "description": "Tu pedido ha sido cancelado correctamente"
+    },
+    "deliveryPopup": {
+        "title": {
+            "delivered": "Producto entregado con éxito",
+            "pickedUp": "Producto recogido con éxito"
+        },
+        "description": {
+            "delivered": "Tu producto ha sido entregado con éxito. Si tienes alguna pregunta, por favor contacta a nuestro equipo de soporte.",
+            "pickedUp": "Tu producto ha sido recogido con éxito. Si tienes alguna pregunta, por favor contacta a nuestro equipo de soporte."
+        },
+        "buttons": {
+            "notNow": "Ahora no",
+            "writeReview": "Escribir una reseña"
+        }
+    },
+    "deliveryItems": {
+        "heading": "Artículos para recoger",
+        "status": {
+            "missing": "Faltante",
+            "disputePending": "Disputa iniciada – En revisión",
+            "resolved": "Resuelto",
+            "rejected": "Rechazado"
+        },
+        "buttons": {
+            "writeReview": "Escribir una reseña",
+            "markMissing": "Marcar como faltante",
+            "markReceived": "Marcar como recibido"
+        },
+        "messages": {
+            "error": "Algo salió mal. Inténtalo de nuevo.",
+            "cancelledBySeller": "Este producto ha sido cancelado por el vendedor.",
+            "genericError": "Algo salió mal."
+        },
+        "sections": {
+            "pickupAddress": "Dirección de recogida",
+            "vendorDetails": "Detalles del vendedor",
+            "cancellationReason": "Motivo de cancelación"
+        }
+    },
+    "review": {
+        "title": "Escribir reseña",
+        "yourRating": "Tu calificación",
+        "placeholder": "Comparte tu experiencia con este producto...",
+        "profilePlaceholderAlt": "imagen de perfil predeterminada",
+        "errors": {
+            "ratingRequired": "Por favor selecciona una calificación antes de enviar."
+        }
+    },
+    "common": {
+        "cancel": "Cancelar",
+        "send": "Enviar",
+        "ok": "Aceptar",
+        "submit": "Submit"
+    },
+    "successPopup": {
+        "title": "Marcado como listo para recoger",
+        "description": "Has actualizado correctamente el estado del pedido.",
+        "iconAlt": "icono de listo para entrega"
+    },
+    "feedbackSuccessPopup": {
+        "title": "Gracias por tu valiosa opinión",
+        "description": "Gracias por tu valiosa opinión. Apreciamos tus comentarios y los utilizaremos para mejorar nuestros productos y servicios.",
+        "iconAlt": "icono de éxito de retroalimentación"
+    },
+    "markItemMissingImageUpload": {
+        "clickToUpload": "Haz clic para subir una imagen",
+        "maxImagesLabel": "Máx. 5 imágenes • JPG, PNG • 5MB cada una"
+    },
+    "markItemMissingModal": {
+        "markItemMissing": "Marcar artículo como perdido",
+        "form": {
+            "errors": {
+                "minDescription": "",
+                "maxDescription": "",
+                "descriptionRequired": ""
+            },
+            "labels": {
+                "enterDescription": "Ingresar descripción"
+            },
+            "buttons": {
+                "submit": "Enviar"
+            }
+        }
+    },
+    "markItemOutForDeliveryModal": {
+        "readyForPickup": "Listo para recoger",
+        "markItemReady": "¿Estás seguro de que deseas marcar este artículo como listo para recoger?"
+    },
+    "orderCard": {
+        "orderId": "ID de pedido #",
+        "statuses": {
+            "missing": "Perdido",
+            "disputeRaised": "Disputa iniciada - En revisión",
+            "disputeResolved": "Disputa resuelta",
+            "Pickup": "Levantar",
+            "communityPickup": "Recogida comunitaria"
+        },
+        "deliveryType": "Tipo de entrega",
+        "price": "Precio"
+    },
+    "orderDetailsPage": {
+        "orderDetails": "Detalles del pedido",
+        "orderId": "ID del pedido",
+        "orderPlaced": "Pedido realizado",
+        "readyToPickup": "Listo para recoger",
+        "buttons": {
+            "back": "Atrás"
+        }
+    },
+    "orderSummary": {
+        "orderSummary": "Resumen del pedido",
+        "subtotal": "Subtotal",
+        "products": "Productos",
+        "total": "Total"
+    },
+    "pickupItemList": {
+        "errors": {
+            "somethingWrong": "¡Algo salió mal! Inténtalo de nuevo."
+        },
+        "messages": {
+            "productCancelled": "Este producto ha sido cancelado por el vendedor."
+        },
+        "pickupItems": "Artículos para recoger",
+        "statuses": {
+            "missing": "Perdido",
+            "resolved": "Resuelto",
+            "rejected": "Rechazado"
+        },
+        "buttons": {
+            "writeReview": "Escribir una reseña",
+            "markMissing": "Marcar como perdido",
+            "confirmPickup": "Confirmar recogida"
+        },
+        "pickupAddress": "Dirección de recogida",
+        "vendorDetails": "Detalles del vendedor"
+    },
+    "sellerCancelDeliveryOrderReasonModal": {
+        "reasonExceed": "La razón no debe exceder los 500 caracteres",
+        "buttons": {
+            "ok": "Aceptar",
+            "notNow": "Ahora no"
+        }
+    },
+    "SellerConfirmationMarkItemReadForPickup": {
+        "markAsReasyForPickup": "Marcado como listo para recoger",
+        "markReady": "Marcar como listo para recoger",
+        "successfullyMarkedPickup": "Has marcado este artículo como listo para recoger correctamente.",
+        "areYourSureToMarkPickup": "¿Estás seguro de que deseas marcar este artículo como listo para recoger?"
+    },
+    "customDetails": "Detalles del cliente"
+}

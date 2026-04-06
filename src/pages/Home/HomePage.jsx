@@ -4,16 +4,11 @@ import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
-import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
 import { enqueueSnackbar } from "notistack";
 import Categories from "./Categories";
-import {
-  listenForMessages,
-  requestNotificationPermission,
-} from "../../notifications";
 import Pagination from "../../components/Forms/Pagination";
 
 const HomePage = () => {
@@ -83,7 +78,7 @@ const HomePage = () => {
             "Something went wrong.",
           {
             variant: `error`,
-          }
+          },
         );
         navigate(`/`);
         return;

@@ -1,13 +1,14 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { toTitleCase } from "../../utils/toTitleCase";
+import { useTranslation } from "react-i18next";
 
 const OrderCard = ({ product }) => {
   const [searchParams] = useSearchParams();
   const tab = searchParams.get("tab");
+  const { t } = useTranslation("orderManagement");
 
   return (
     <div className="w-full bg-[var(--secondary-bg)] p-5 rounded-[8px] relative overflow-hidden mb-5">
-      {/* Header */}
       <div className="w-full flex items-center justify-between">
         <Link
           to={
@@ -17,13 +18,13 @@ const OrderCard = ({ product }) => {
           }
           className="text-xs font-medium"
         >
-          Order ID #{product?.orderNumber}
+          {t(`orderCard.orderId`)}
+          {product?.orderNumber}
         </Link>
       </div>
 
       <div className="w-full border border-gray-300 my-4" />
 
-      {/* All Items in the Order */}
       <div className="flex flex-col gap-4">
         {product?.items?.map((item, index) => {
           return (
@@ -33,7 +34,6 @@ const OrderCard = ({ product }) => {
                 index > 0 ? "border-t-2 border-gray-300 pt-4" : ""
               }`}
             >
-              {/* Left: Item Info */}
               <div className="flex items-center gap-3 lg:min-w-[55%]">
                 <img
                   src={item?.imageUrl}
@@ -55,25 +55,26 @@ const OrderCard = ({ product }) => {
                           item?.report?.status === "pending"
                             ? "text-[#FF7700]"
                             : item?.report?.status === "in_progress"
-                            ? "text-[#FF7700]"
-                            : item?.report?.status === "resolved"
-                            ? "text-green-500"
-                            : item?.report?.status === "ready" ||
-                              item?.report?.status === "ready_for_pickup" ||
-                              item?.report?.status === "out_for_delivery"
-                            ? "text-green-500"
-                            : "text-gray-500"
+                              ? "text-[#FF7700]"
+                              : item?.report?.status === "resolved"
+                                ? "text-green-500"
+                                : item?.report?.status === "ready" ||
+                                    item?.report?.status ===
+                                      "ready_for_pickup" ||
+                                    item?.report?.status === "out_for_delivery"
+                                  ? "text-green-500"
+                                  : "text-gray-500"
                         }`}
                       >
-                        Missing
+                        {t(`orderCard.statuses.missing`)}
                       </p>
                       {item?.report?.status === "pending" ? (
                         <p className="text-red-500 font-medium text-xs mt-1">
-                          Dispute Raised - Under Review
+                          {t(`orderCard.statuses.disputeRaised`)}
                         </p>
                       ) : (
                         <p className="text-green-500 font-medium text-xs mt-1">
-                          Dispute Resolved
+                          {t(`orderCard.statuses.disputeResolved`)}
                         </p>
                       )}
                     </>
@@ -83,16 +84,17 @@ const OrderCard = ({ product }) => {
                         item?.overallStatus == "cancelled"
                           ? "text-red-500"
                           : item?.overallStatus === "pending"
-                          ? "text-[#FF7700]"
-                          : item?.overallStatus === "in_progress"
-                          ? "text-[#FF7700]"
-                          : item?.overallStatus === "completed"
-                          ? "text-green-500"
-                          : item?.overallStatus === "ready" ||
-                            item?.overallStatus === "ready_for_pickup" ||
-                            item?.overallStatus === "out_for_delivery"
-                          ? "text-green-500"
-                          : "text-gray-500"
+                            ? "text-[#FF7700]"
+                            : item?.overallStatus === "in_progress"
+                              ? "text-[#FF7700]"
+                              : item?.overallStatus === "completed"
+                                ? "text-green-500"
+                                : item?.overallStatus === "ready" ||
+                                    item?.overallStatus ===
+                                      "ready_for_pickup" ||
+                                    item?.overallStatus === "out_for_delivery"
+                                  ? "text-green-500"
+                                  : "text-gray-500"
                       }`}
                     >
                       {toTitleCase(item?.overallStatus)}
@@ -104,28 +106,29 @@ const OrderCard = ({ product }) => {
               {/* Delivery Type */}
               <div className="flex flex-col items-start md:items-end justify-center gap-1.5">
                 <p className="text-sm text-[#6D6D6D] font-medium">
-                  Delivery Type
+                  {t(`orderCard.deliveryType`)}
                 </p>
                 <p className="font-medium leading-none text-sm lg:text-base">
                   {item?.deliveryMethod === "pickup"
-                    ? "Pickup"
+                    ? t(`orderCard.statuses.pickup`)
                     : item?.deliveryMethod === "delivery"
-                    ? "Community Pickup"
-                    : "Pickup / Community Pickup"}
+                      ? t(`orderCard.statuses.communityPickup`)
+                      : t(
+                          `orderCard.statuses.pickup / orderCard.statuses.communityPickup`,
+                        )}
                 </p>
               </div>
 
               {/* Price */}
               <div className="flex flex-col items-end justify-center gap-2">
                 <p className="text-sm text-[#6D6D6D] font-medium leading-none">
-                  Price
+                  {t(`orderCard.price`)}
                 </p>
                 <p className="text-base text-[#000] font-medium leading-none">
                   ${item?.price}
                 </p>
               </div>
 
-              {/* Arrow (for seller tab only) */}
               {tab === "buyer" && (
                 <div className="flex items-end justify-end md:justify-center w-full md:w-auto gap-2">
                   <Link

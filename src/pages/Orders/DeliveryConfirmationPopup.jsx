@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 const DeliveryConfirmationPopup = ({
   showDeliveryConfirmationPopup,
   setShowDeliveryConfirmationPopup,
@@ -5,6 +7,10 @@ const DeliveryConfirmationPopup = ({
   type,
   fetchOrderDetails,
 }) => {
+  const { t } = useTranslation("orderManagement");
+
+  const key = type === "delivery" ? "delivered" : "pickedUp";
+
   return (
     showDeliveryConfirmationPopup && (
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center padding-x">
@@ -16,14 +22,13 @@ const DeliveryConfirmationPopup = ({
               className="w-[63px] h-[48px]"
             />
           </div>
+
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Product successfully{" "}
-            {type == "delivery" ? "delivered" : "picked up"}
+            {t(`deliveryPopup.title.${key}`)}
           </h4>
+
           <p className="text-[#565656] text-sm leading-[1.2]">
-            Your product has been successfully{" "}
-            {type == "delivery" ? "delivered" : "picked up"}. If you have any
-            questions, please contact our support team.
+            {t(`deliveryPopup.description.${key}`)}
           </p>
 
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
@@ -35,8 +40,9 @@ const DeliveryConfirmationPopup = ({
               }}
               className="bg-[#EBEBEB] font-medium w-full h-[48px] rounded-[12px] text-center text-black"
             >
-              Not Now
+              {t("deliveryPopup.buttons.notNow")}
             </button>
+
             <button
               type="button"
               onClick={() => {
@@ -45,7 +51,7 @@ const DeliveryConfirmationPopup = ({
               }}
               className="bg-[var(--button-bg)] font-medium w-full h-[48px] rounded-[12px] text-center text-white"
             >
-              Write a review
+              {t("deliveryPopup.buttons.writeReview")}
             </button>
           </div>
         </div>

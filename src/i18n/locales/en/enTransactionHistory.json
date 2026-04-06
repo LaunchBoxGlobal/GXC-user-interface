@@ -1,0 +1,21 @@
+{
+    "buttons": {
+        "seller": "Seller",
+        "buyer": "Buyer",
+        "back": "Back",
+        "reportUser": "Report User",
+        "memberDetails": "Member Details",
+        "reviews": "Reviews"
+    },
+    "total_purchases": "Total Purchases",
+    "availableBalance": "Available Balance",
+    "transaction_history": "Transaction History",
+    "noTransactions": "No transactions found.",
+    "search": "Search",
+    "orderNumber": "Order Number",
+    "productName": "Product Name",
+    "amount": "Amount",
+    "date": "Date",
+    "no_reviews": "No reviews found for this member.",
+    "reviews": "Reviews"
+}

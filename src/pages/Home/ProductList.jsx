@@ -1,10 +1,12 @@
 import React from "react";
 import ProductCard from "../../components/Common/ProductCard";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ProductList = ({ products }) => {
   const [searchParams] = useSearchParams();
   const currentCategoryId = searchParams.get("categoryId");
+  const { t } = useTranslation("home");
   return (
     <div className="w-full mt-10">
       {products && products?.length > 0 ? (
@@ -18,8 +20,8 @@ const ProductList = ({ products }) => {
           <img src="/product-icon.png" alt="product icon" className="max-w-7" />
           <p className="text-sm font-medium text-gray-500">
             {currentCategoryId
-              ? "No products found in this category!"
-              : "No products found in this community!"}
+              ? t(`no_products_in_category`)
+              : t(`no_products`)}
           </p>
         </div>
       )}

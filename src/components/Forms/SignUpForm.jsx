@@ -12,6 +12,7 @@ import { enqueueSnackbar } from "notistack";
 import { useAppContext } from "../../context/AppContext";
 import { signupSchema } from "../../validation/signupSchema";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const SignUpForm = () => {
   const redirect = searchParams?.get("redirect");
   const { fetchUserProfile } = useAppContext();
   const { fetchCommunities } = useUser();
+  const { t } = useTranslation("auth");
 
   useEffect(() => {
     if (!redirect || redirect === "/" || redirect.trim() === "") {
@@ -39,9 +41,7 @@ const SignUpForm = () => {
       confirmPassword: "",
       profileImage: null,
     },
-    validationSchema: signupSchema,
-    // validateOnChange: true,
-    // validateOnBlur: false,
+    validationSchema: signupSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
@@ -62,7 +62,7 @@ const SignUpForm = () => {
           },
         });
         if (res?.data?.success) {
-          fetchCommunities()
+          fetchCommunities();
           Cookies.set("userEmail", values.email.trim());
           Cookies.set("isUserEmailVerified", false);
           Cookies.set("page", "/signup");
@@ -95,10 +95,10 @@ const SignUpForm = () => {
       className="w-full max-w-[400px] flex flex-col items-start gap-4"
     >
       <div className="w-full text-center space-y-3">
-        <h1 className="font-semibold text-[32px] leading-none">Sign Up</h1>
-        <p className="text-[var(--secondary-color)]">
-          Please enter details to continue
-        </p>
+        <h1 className="font-semibold text-[32px] leading-none">
+          {t("signup.title")}
+        </h1>
+        <p className="text-[var(--secondary-color)]">{t("signup.subtitle")}</p>
       </div>
 
       <div className="w-full space-y-3">
@@ -107,26 +107,26 @@ const SignUpForm = () => {
             <TextField
               type="text"
               name="firstName"
-              placeholder="Enter your first name"
+              placeholder={t("signup.placeholders.firstName")}
               value={formik.values.firstName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
-              label={"First Name"}
+              label={t("signup.firstName")}
             />
           </div>
           <div className="w-full space-y-1">
             <TextField
               type="text"
               name="lastName"
-              placeholder="Enter your last name"
+              placeholder={t("signup.placeholders.lastName")}
               value={formik.values.lastName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
-              label={"Last Name"}
+              label={t("signup.lastName")}
             />
           </div>
         </div>
@@ -135,60 +135,64 @@ const SignUpForm = () => {
           <TextField
             type="text"
             name="email"
-            placeholder="Enter your email address"
+            placeholder={t("signup.placeholders.email")}
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
-            label={"Email Address"}
+            label={t("signup.email")}
           />
         </div>
 
         <div className="w-full space-y-1">
           <PasswordField
             name="password"
-            placeholder="Enter your password"
+            placeholder={t("signup.placeholders.password")}
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
-            label={"Password"}
+            label={t("signup.password")}
           />
         </div>
 
         <div className="w-full space-y-1">
           <PasswordField
             name="confirmPassword"
-            placeholder="Enter your password"
+            placeholder={t("signup.placeholders.confirmPassword")}
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.confirmPassword}
             touched={formik.touched.confirmPassword}
-            label={"Confirm Password"}
+            label={t("signup.confirmPassword")}
           />
         </div>
 
         <div className="pt-2">
-          <Button type="submit" title="Sign Up" isLoading={loading} />
+          <Button
+            type="submit"
+            title={t("signup.submit")}
+            isLoading={loading}
+          />
         </div>
       </div>
 
       <div className="w-full flex items-center justify-between gap-6 mt-4">
         <div className="w-full border border-gray-400" />
-        <p className="text-gray-500 font-medium">OR</p>
+        <p className="text-gray-500 font-medium">{t("signup.or")}</p>
         <div className="w-full border border-gray-400" />
       </div>
 
       <div className="w-full mt-2 flex flex-col items-center gap-4">
         <div className="w-full flex items-center justify-center gap-1">
           <p className="text-[var(--secondary-color)]">
-            Already have an account?{" "}
+            {t("signup.alreadyAccount")}{" "}
           </p>
           <Link to={`/login`} className="font-medium text-[var(--button-bg)]">
-            Sign In
+            {t("signup.signIn")}
           </Link>
         </div>
       </div>

@@ -1,0 +1,23 @@
+{
+    "button": {
+        "login_button": "Acceso",
+        "send": "Enviar",
+        "back": "Atrás"
+    },
+    "auth": {
+        "welcome": "Bienvenido de nuevo",
+        "login_subheading": "Por favor ingresa los detalles para continuar",
+        "forgot_pass_heading": "Ingrese su dirección de correo electrónico registrada a continuación"
+    },
+    "form": {
+        "email_label": "Dirección de correo electrónico",
+        "password": "Contraseña",
+        "forgot_password": "Has olvidado tu contraseña"
+    },
+    "add_to_cart": "Agregar al carrito",
+    "checkout": "Pagar",
+    "notifications": {
+        "notificationsHeading": "Notificaciones",
+        "noNotifications": "Sin notificaciones"
+    }
+}

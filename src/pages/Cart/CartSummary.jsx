@@ -16,6 +16,7 @@ import UserPaymentMethod from "./UserPaymentMethod";
 import { FiArrowLeft } from "react-icons/fi";
 import EditAddressModal from "./EditAddressModal";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
 
 const CartSummary = () => {
   const {
@@ -29,6 +30,7 @@ const CartSummary = () => {
   } = useCart();
 
   const { checkIamAlreadyMember } = useUser();
+  const { t } = useTranslation("cart");
 
   const navigate = useNavigate();
   const [openAddAddressModal, setOpenAddAddressModal] = useState(false);
@@ -36,15 +38,15 @@ const CartSummary = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     Cookies.get("userSelectedPaymentMethod")
       ? JSON.parse(Cookies.get("userSelectedPaymentMethod"))
-      : null
+      : null,
   );
   const [userNewDeliveryAddress, setUserNewDeliveryAddress] = useState(null);
 
   const pickupItems = cartProducts?.filter(
-    (pr) => pr?.product?.selectedDeliveryMethod === "pickup"
+    (pr) => pr?.product?.selectedDeliveryMethod === "pickup",
   );
   const deliveryItems = cartProducts?.filter(
-    (pr) => pr?.product?.selectedDeliveryMethod === "delivery"
+    (pr) => pr?.product?.selectedDeliveryMethod === "delivery",
   );
 
   // Load user’s saved delivery address (from cookies)
@@ -68,7 +70,7 @@ const CartSummary = () => {
 
   // Check if any product requires delivery
   const isAnyDeliveryTypeProduct = cartProducts?.some(
-    (p) => p?.product?.selectedDeliveryMethod === "delivery"
+    (p) => p?.product?.selectedDeliveryMethod === "delivery",
   );
 
   // Remove all cart items
@@ -78,16 +80,13 @@ const CartSummary = () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        { headers: { Authorization: `Bearer ${getToken()}` } },
       );
 
       if (response?.data?.success) {
-        enqueueSnackbar(
-          response?.data?.message || "Cart cleared successfully",
-          {
-            variant: "success",
-          }
-        );
+        enqueueSnackbar(response?.data?.message || t(`cartCleared`), {
+          variant: "success",
+        });
         Cookies.remove("newDeliveryAddress");
         Cookies.remove("userSelectedDeliveryAddress");
         fetchCartProducts();
@@ -105,7 +104,7 @@ const CartSummary = () => {
     const community = JSON.parse(Cookies.get("selected-community"));
 
     if (!selectedPaymentMethod) {
-      return enqueueSnackbar("Please select a payment method!", {
+      return enqueueSnackbar(t(`selectPaymentMethod`), {
         variant: "error",
       });
     }
@@ -138,7 +137,7 @@ const CartSummary = () => {
               onClick={fetchCartProducts}
               className="bg-[var(--primary-color)] text-white px-5 py-2 rounded-lg hover:opacity-90 transition"
             >
-              Retry
+              {t(`buttons.retry`)}
             </button>
           </div>
         </div>
@@ -154,7 +153,7 @@ const CartSummary = () => {
         onClick={() => navigate(-1)}
         className="text-sm text-white flex items-center gap-2"
       >
-        <FiArrowLeft className="text-base" /> Back
+        <FiArrowLeft className="text-base" /> {t(`buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-5">
@@ -164,7 +163,7 @@ const CartSummary = () => {
               {/* Cart Section */}
               <div className="col-span-1 lg:col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="flex items-center justify-between">
-                  <h1 className="text-[24px] font-semibold">Cart</h1>
+                  <h1 className="text-[24px] font-semibold">{t(`cart`)}</h1>
                   <button
                     type="button"
                     onClick={removeAllItemsFromCart}
@@ -175,22 +174,11 @@ const CartSummary = () => {
                       alt="trash icon"
                       className="w-[14px] h-[15px]"
                     />
-                    <span className="text-sm">Remove All</span>
+                    <span className="text-sm">{t(`removeAll`)}</span>
                   </button>
                 </div>
 
                 <div className="mb-5">
-                  {/* {isAnyDeliveryTypeProduct && (
-                    <UserDeliveryAddress
-                      toggleAddAddressModal={toggleAddAddressModal}
-                      userNewDeliveryAddress={userNewDeliveryAddress}
-                      selectedAddress={selectedAddress}
-                      setSelectedAddress={setSelectedAddress}
-                      toggleEditAddressModal={toggleEditAddressModal}
-                      openEditAddressModal={openEditAddressModal}
-                    />
-                  )} */}
-
                   <div className="border my-5" />
                   <UserPaymentMethod
                     selectedPaymentMethod={selectedPaymentMethod}
@@ -201,7 +189,9 @@ const CartSummary = () => {
                 <div className="border my-5" />
                 {pickupItems && pickupItems?.length > 0 && (
                   <div className="w-full">
-                    <p className="text-[20px] font-semibold">Pickup Items</p>
+                    <p className="text-[20px] font-semibold">
+                      {t(`pickupItems`)}
+                    </p>
                     <div className="border my-5" />
                     <div className="w-full">
                       {pickupItems?.map((product, index) => (
@@ -220,8 +210,6 @@ const CartSummary = () => {
 
                 {deliveryItems && deliveryItems?.length > 0 && (
                   <div className="w-full mt-5">
-                    {/* <p className="text-[20px] font-semibold">Delivery Items</p> */}
-                    {/* <div className="border my-5" /> */}
                     <div className="w-full">
                       {deliveryItems?.map((product, index) => (
                         <CartProductCard
@@ -238,7 +226,6 @@ const CartSummary = () => {
                 )}
               </div>
 
-              {/* 📦 Order Summary */}
               <div className="col-span-1">
                 <OrderSummary
                   cartProducts={cartDetails}
@@ -254,7 +241,7 @@ const CartSummary = () => {
                 className="max-w-7"
               />
               <p className="text-base font-medium text-gray-500">
-                Your cart is empty.
+                {t(`cartIsEmpty`)}
               </p>
             </div>
           )}

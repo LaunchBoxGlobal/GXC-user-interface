@@ -1,0 +1,21 @@
+{
+    "communities": {
+        "headings": {
+            "community": "Community",
+            "totalMembers": "Total Membes",
+            "youHaveBeenInvited": "You’ve been invited to join a fundraising",
+            "community!": "community!",
+            "communityNotFound": "Community Not Found",
+            "youHaveBeenBlockedInCommunity": "You’ve been blocked from this community."
+        },
+        "buttons": {
+            "joinCommunity": "Join Community",
+            "communityDisabled": "Community is diabled by the owner",
+            "cancel": "Cancel",
+            "accept": "Accept"
+        },
+        "youHaveNoCommunities": "You have not joined any community yet.",
+        "hasInvitedYou": "has invited you to join their private fundraising community. Accept to become a member.",
+        "communityDoesNotExist": "The community you’re trying to access doesn’t exist or has been removed."
+    }
+}

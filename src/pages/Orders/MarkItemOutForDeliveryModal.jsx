@@ -3,6 +3,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
+import { useTranslation } from "react-i18next";
 
 const MarkItemOutForDeliveryModal = ({
   showMarkItemOutForDelivery,
@@ -13,6 +14,7 @@ const MarkItemOutForDeliveryModal = ({
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("itemId");
   const navigate = useNavigate();
+  const { t } = useTranslation("orderManagement");
 
   const markOutForDelivery = async () => {
     try {
@@ -25,7 +27,7 @@ const MarkItemOutForDeliveryModal = ({
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
@@ -49,10 +51,12 @@ const MarkItemOutForDeliveryModal = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Ready for Pickup
+            {/* Ready for Pickup */}
+            {t(`markItemOutForDeliveryModal.readyForPickup`)}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
-            Are your sure you want to mark this item as ready for pickup?
+            {/* Are your sure you want to mark this item as ready for pickup? */}
+            {t(`markItemOutForDeliveryModal.markItemReady`)}
           </p>
 
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
@@ -61,14 +65,14 @@ const MarkItemOutForDeliveryModal = ({
               onClick={() => setShowMarkItemOutForDelivery(false)}
               className="bg-[#EBEBEB] font-medium w-full h-[48px] rounded-[12px] text-center text-black"
             >
-              No
+              {t(`cancelPopup.buttons.no`)}
             </button>
             <button
               type="button"
               onClick={() => markOutForDelivery()}
               className="bg-[var(--button-bg)] font-medium w-full h-[48px] rounded-[12px] text-center text-white"
             >
-              Yes
+              {t(`yes`)}
             </button>
           </div>
         </div>

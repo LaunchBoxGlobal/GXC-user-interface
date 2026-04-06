@@ -1,0 +1,18 @@
+{
+    "makeReport": "Make a Report",
+    "havingTrouble": "Having trouble using the app?",
+    "sendReport": "Send us a report and we'll look into it right away.",
+    "label": "Enter description...",
+    "clickToUploadImage": "Click to upload image",
+    "dragDrop": "Or drag & drop",
+    "note": "Max 5 images • JPG, PNG • 5MB each",
+    "buttons": {
+        "submitRequest": "Submit Request",
+        "back": "Back"
+    },
+    "form": {
+        "min": "Description must be 10 characters or more",
+        "max": "Description must be 1500 characters or less",
+        "required": "Description is required"
+    }
+}

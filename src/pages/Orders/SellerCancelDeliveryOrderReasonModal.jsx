@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 
 const SellerCancelDeliveryOrderReasonModal = ({
   showCancelReasonModal,
@@ -16,17 +17,18 @@ const SellerCancelDeliveryOrderReasonModal = ({
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("itemId");
   const navigate = useNavigate();
+  const { t } = useTranslation("orderManagement");
 
-  // ✅ Yup validation schema
+  // Yup validation schema
   const validationSchema = Yup.object().shape({
     cancellationReason: Yup.string()
       .trim()
-      .min(10, "Reason must be at least 10 characters")
-      .max(500, "Reason must not exceed 500 characters")
-      .nullable(), // optional
+      .min(10, t(`orderCancellationReasonModal.form.errors.minReason`))
+      .max(500, t(`sellerCancelDeliveryOrderReasonModal.reasonExceed`))
+      .nullable(),
   });
 
-  // ✅ Formik setup
+  // Formik setup
   const formik = useFormik({
     initialValues: {
       cancellationReason: "",
@@ -34,12 +36,9 @@ const SellerCancelDeliveryOrderReasonModal = ({
     validationSchema,
     onSubmit: async (values) => {
       if (!itemId) {
-        enqueueSnackbar(
-          "Something went wrong. Reload the page and try again.",
-          {
-            variant: "error",
-          }
-        );
+        enqueueSnackbar(t(`pickupItemList.errors.somethingWrong`), {
+          variant: "error",
+        });
         return;
       }
 
@@ -53,7 +52,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
             headers: {
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (response?.data?.success) {
@@ -72,7 +71,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center padding-x">
         <div className="w-full bg-white max-w-[471px] rounded-[32px] p-7 text-start flex flex-col items-start gap-3">
           <h4 className="text-[24px] font-semibold leading-none">
-            Cancel reason
+            {t(`orderCancellationReasonModal.cancelReason`)}
           </h4>
 
           <form onSubmit={formik.handleSubmit} className="w-full">
@@ -104,7 +103,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
                 type="submit"
                 className="bg-[var(--button-bg)] font-medium w-full h-[48px] rounded-[12px] text-center text-white"
               >
-                OK
+                {t(`sellerCancelDeliveryOrderReasonModal.buttons.ok`)}
               </button>
 
               <button
@@ -112,7 +111,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
                 // onClick={() => setShowCancelReasonModal(false)}
                 className="underline font-medium text-sm text-center w-full mt-3"
               >
-                Not Now
+                {t(`sellerCancelDeliveryOrderReasonModal.buttons.notNow`)}
               </button>
             </div>
           </form>

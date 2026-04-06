@@ -8,10 +8,12 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
   const { checkIamAlreadyMember } = useUser();
+  const { t } = useTranslation("settings");
 
   const formik = useFormik({
     initialValues: {
@@ -20,21 +22,32 @@ const ChangePasswordPage = () => {
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      currentPassword: Yup.string().required("Enter your current password"),
+      currentPassword: Yup.string().required(
+        t(`settings.changePassword.form.errors.currentPassRequired`),
+      ),
       password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .max(25, "Password cannot be more than 25 characters")
-        .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-        .matches(/\d/, "Password must contain at least one number")
+        .min(8, t(`settings.changePassword.form.errors.minPass`))
+        .max(25, t(`settings.changePassword.form.errors.maxPass`))
+        .matches(
+          /[A-Z]/,
+          t(`settings.changePassword.form.errors.passUppercase`),
+        )
+        .matches(
+          /[a-z]/,
+          t(`settings.changePassword.form.errors.passLowercase`),
+        )
+        .matches(/\d/, t(`settings.changePassword.form.errors.passNum`))
         .matches(
           /[@$!%*?&^#_.-]/,
-          "Password must contain at least one special character"
+          t(`settings.changePassword.form.errors.passMatch`),
         )
-        .required("Enter your new password"),
+        .required(t(`settings.changePassword.form.errors.passRequired`)),
       confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords do not match")
-        .required("Confirm password is required"),
+        .oneOf(
+          [Yup.ref("password"), null],
+          t(`settings.changePassword.form.errors.confirmPass`),
+        )
+        .required(t(`settings.changePassword.form.errors.confirmPassRequired`)),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -50,14 +63,12 @@ const ChangePasswordPage = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
-
-        // console.log("change password:", res?.data);
 
         if (res?.data?.success) {
           resetForm();
-          enqueueSnackbar("Password changed successfully", {
+          enqueueSnackbar(t("settings.changePassword.passChangedSuccess"), {
             variant: "success",
           });
         }
@@ -77,13 +88,15 @@ const ChangePasswordPage = () => {
 
   return (
     <div className="w-full pt-2">
-      <h1 className="font-semibold text-[24px]">Change Password</h1>
+      <h1 className="font-semibold text-[24px]">
+        {t(`settings.changePassword.changePassword`)}
+      </h1>
       <div className="w-full border my-5" />
 
       <form onSubmit={formik.handleSubmit} className="w-full space-y-5 mt-5">
         <PasswordField
           name="currentPassword"
-          placeholder="Current Password"
+          placeholder={t(`settings.changePassword.form.currentPass`)}
           value={formik.values.currentPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -92,7 +105,7 @@ const ChangePasswordPage = () => {
         />
         <PasswordField
           name="password"
-          placeholder="New Password"
+          placeholder={t(`settings.changePassword.form.newPass`)}
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -102,7 +115,7 @@ const ChangePasswordPage = () => {
 
         <PasswordField
           name="confirmPassword"
-          placeholder="Confirm Password"
+          placeholder={t(`settings.changePassword.form.confirmPass`)}
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -115,7 +128,7 @@ const ChangePasswordPage = () => {
             type="submit"
             className="bg-[var(--button-bg)] button max-w-[150px]"
           >
-            Save
+            {t(`settings.buttons.save`)}
           </button>
         </div>
       </form>

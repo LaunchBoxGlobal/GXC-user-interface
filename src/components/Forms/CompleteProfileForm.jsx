@@ -20,6 +20,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { profileSchema } from "../../validation/profileSchema";
 import { requestNotificationPermission } from "../../notifications";
+import { useTranslation } from "react-i18next";
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ const CompleteProfileForm = () => {
   const redirect = searchParams?.get("redirect");
   const [showPopup, setShowPopup] = useState(false);
   Cookies.remove("userEmail");
+
+  const { t } = useTranslation("auth");
 
   const togglePopup = () => setShowPopup((prev) => !prev);
 
@@ -53,7 +56,7 @@ const CompleteProfileForm = () => {
       countryId: 233,
       stateId: "",
     },
-    validationSchema: profileSchema,
+    validationSchema: profileSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
@@ -72,7 +75,7 @@ const CompleteProfileForm = () => {
           },
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         if (values.profileImage instanceof File) {
@@ -86,7 +89,7 @@ const CompleteProfileForm = () => {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },
-            }
+            },
           );
         }
 
@@ -99,15 +102,13 @@ const CompleteProfileForm = () => {
           requestNotificationPermission();
         }
       } catch (error) {
-        console.error("complete profile error:", error);
         enqueueSnackbar(
           error.response?.data?.errors[0]?.message ||
             error.response?.data?.message ||
             error?.message,
-
           {
             variant: "error",
-          }
+          },
         );
         if (error?.response?.status === 401) {
           Cookies.remove("userToken");
@@ -126,17 +127,15 @@ const CompleteProfileForm = () => {
         onSubmit={formik.handleSubmit}
         className="w-full max-w-[500px] flex flex-col items-start gap-4"
       >
-        {/* Heading */}
         <div className="w-full text-center space-y-3">
           <h1 className="font-semibold text-[32px] leading-none">
-            Complete Profile Details
+            {t("completeProfile.title")}
           </h1>
           <p className="text-[var(--secondary-color)]">
-            Please complete details to access all features
+            {t("completeProfile.subtitle")}
           </p>
         </div>
 
-        {/* Profile image */}
         <div className="w-full h-[100px] flex flex-col items-center justify-center gap-2 my-3">
           <AuthImageUpload
             name="profileImage"
@@ -145,9 +144,8 @@ const CompleteProfileForm = () => {
           />
         </div>
 
-        {/* Basic details */}
         <h2 className="font-semibold text-[24px] leading-none w-full">
-          Basic Details
+          {t("completeProfile.basicDetails")}
         </h2>
 
         <div className="w-full space-y-3">
@@ -155,7 +153,7 @@ const CompleteProfileForm = () => {
             <TextField
               type="text"
               name="firstName"
-              placeholder="First Name"
+              placeholder={t("completeProfile.placeholders.firstName")}
               value={formik.values.firstName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -165,7 +163,7 @@ const CompleteProfileForm = () => {
             <TextField
               type="text"
               name="lastName"
-              placeholder="Last Name"
+              placeholder={t("completeProfile.placeholders.lastName")}
               value={formik.values.lastName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -179,32 +177,33 @@ const CompleteProfileForm = () => {
               type="text"
               name="email"
               disabled={true}
-              placeholder="Email Address"
+              placeholder={t("completeProfile.placeholders.email")}
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.email}
               touched={formik.touched.email}
-              label="Email Address"
+              label={t("completeProfile.email")}
             />
 
             <PhoneNumberField
               type="text"
               name="phoneNumber"
-              placeholder="+000 0000 00"
+              placeholder={t("completeProfile.placeholders.phoneNumber")}
               value={formik.values.phoneNumber}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.phoneNumber}
               touched={formik.touched.phoneNumber}
-              label="Phone Number"
+              label={t("completeProfile.phoneNumber")}
             />
           </div>
 
-          {/* Country, State, City, Zip */}
           <div className="grid grid-cols-2 gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">Country</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.country")}
+              </label>
               <div className="w-full pointer-events-none">
                 <CountrySelect
                   defaultValue={{
@@ -222,7 +221,7 @@ const CompleteProfileForm = () => {
             : "border-gray-200"
         }
       `}
-                  placeHolder="Select Country"
+                  placeHolder={t("completeProfile.placeholders.country")}
                   onChange={(val) => {
                     formik.setFieldValue("country", val.name);
                     formik.setFieldValue("countryId", val.id);
@@ -232,13 +231,12 @@ const CompleteProfileForm = () => {
                   }}
                 />
               </div>
-              {formik.touched.country && formik.errors.country && (
-                <p className="text-red-500 text-xs">{formik.errors.country}</p>
-              )}
             </div>
 
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">State</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.state")}
+              </label>
               <StateSelect
                 countryid={formik.values.countryId || 0}
                 containerClassName="w-full"
@@ -249,22 +247,21 @@ const CompleteProfileForm = () => {
             : "border-gray-200"
         }
       `}
-                placeHolder="Select State"
+                placeHolder={t("completeProfile.placeholders.state")}
                 onChange={(val) => {
                   formik.setFieldValue("state", val.name);
                   formik.setFieldValue("stateId", val.id);
                   formik.setFieldValue("city", "");
                 }}
               />
-              {formik.touched.state && formik.errors.state && (
-                <p className="text-red-500 text-xs">{formik.errors.state}</p>
-              )}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">City</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.city")}
+              </label>
               <CitySelect
                 countryid={formik.values.countryId || 0}
                 stateid={formik.values.stateId || 0}
@@ -276,40 +273,36 @@ const CompleteProfileForm = () => {
             : "border-gray-200"
         }
       `}
-                placeHolder="Select City"
+                placeHolder={t("completeProfile.placeholders.city")}
                 onChange={(val) => formik.setFieldValue("city", val.name)}
               />
-              {formik.touched.city && formik.errors.city && (
-                <p className="text-red-500 text-xs">{formik.errors.city}</p>
-              )}
             </div>
 
             <TextField
               type="text"
               name="zipcode"
-              placeholder="Enter zip code"
+              placeholder={t("completeProfile.placeholders.zipcode")}
               value={formik.values.zipcode}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.zipcode}
               touched={formik.touched.zipcode}
-              label="Zip Code"
+              label={t("completeProfile.zipcode")}
             />
           </div>
 
           <TextField
             type="text"
             name="location"
-            placeholder="Enter your address"
+            placeholder={t("completeProfile.placeholders.address")}
             value={formik.values.location}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.location}
             touched={formik.touched.location}
-            label="Suite / Apartment / Street"
+            label={t("completeProfile.address")}
           />
 
-          {/* Buttons */}
           <div className="pt-2 flex items-center justify-between">
             <button
               type="button"
@@ -319,14 +312,19 @@ const CompleteProfileForm = () => {
               }}
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
-              Skip
+              {t("completeProfile.buttons.skip")}
             </button>
             <div className="w-full max-w-[110px]">
-              <Button type="submit" title="Save" isLoading={loading} />
+              <Button
+                type="submit"
+                title={t("completeProfile.buttons.save")}
+                isLoading={loading}
+              />
             </div>
           </div>
         </div>
       </form>
+
       <AccountSuccessPopup
         showPopup={showPopup}
         togglePopup={togglePopup}

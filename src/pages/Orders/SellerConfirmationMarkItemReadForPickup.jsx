@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import { BASE_URL } from "../../data/baseUrl";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const SellerConfirmationMarkItemReadForPickup = ({
   showMarkItemReasyForPickupConfirmationModal,
@@ -12,11 +13,12 @@ const SellerConfirmationMarkItemReadForPickup = ({
   fetchOrderDetails,
 }) => {
   const [isMarked, setIsMarked] = useState(false);
-  const { orderId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get("itemId");
+
+  const { t } = useTranslation("orderManagement");
 
   const handleMarkReadyForPickup = async () => {
     try {
@@ -28,14 +30,13 @@ const SellerConfirmationMarkItemReadForPickup = ({
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
       if (response?.data?.success) {
         setIsMarked(true);
         fetchOrderDetails();
       }
     } catch (error) {
-      console.error("err while marking pickup item ready >>>> ", error);
       handleApiError(error, navigate);
     } finally {
       setLoading(false);
@@ -53,12 +54,20 @@ const SellerConfirmationMarkItemReadForPickup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            {isMarked ? "Marked as ready for pickup" : "Mark ready for pickup"}
+            {isMarked
+              ? t(
+                  `SellerConfirmationMarkItemReadForPickup.markAsReasyForPickup`,
+                )
+              : t(`SellerConfirmationMarkItemReadForPickup.markReady`)}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
             {isMarked
-              ? "You've successfully marked this item as ready for pickup."
-              : "Are your sure you want to mark this item as ready for pickup?"}
+              ? t(
+                  `SellerConfirmationMarkItemReadForPickup.successfullyMarkedPickup`,
+                )
+              : t(
+                  `SellerConfirmationMarkItemReadForPickup.areYourSureToMarkPickup`,
+                )}
           </p>
 
           <div className="w-full pt-2">
@@ -71,7 +80,7 @@ const SellerConfirmationMarkItemReadForPickup = ({
                 }}
                 className="button"
               >
-                OK
+                {t(`sellerCancelDeliveryOrderReasonModal.buttons.ok`)}
               </button>
             ) : (
               <div className="w-full grid grid-cols-2 gap-2">
@@ -82,7 +91,7 @@ const SellerConfirmationMarkItemReadForPickup = ({
                   }
                   className="bg-[#EBEBEB] font-medium w-full h-[48px] rounded-[12px] text-center text-black"
                 >
-                  No
+                  {t(`cancelPopup.buttons.no`)}
                 </button>
                 <button
                   type="button"
@@ -92,7 +101,7 @@ const SellerConfirmationMarkItemReadForPickup = ({
                   disabled={loading}
                   className="bg-[var(--button-bg)] font-medium w-full h-[48px] rounded-[12px] text-center text-white"
                 >
-                  {loading ? <Loader /> : "Yes"}
+                  {loading ? <Loader /> : t(`cancelPopup.buttons.yes`)}
                 </button>
               </div>
             )}

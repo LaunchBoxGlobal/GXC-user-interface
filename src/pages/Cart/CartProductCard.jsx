@@ -5,6 +5,7 @@ import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
 import { FaLocationDot } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
 
 const CartProductCard = ({
   product,
@@ -14,6 +15,8 @@ const CartProductCard = ({
   setLoading,
 }) => {
   const { fetchCartCount } = useCart();
+  const { t } = useTranslation("cart");
+
   const removeItemFromCart = async (productId) => {
     setLoading(true);
     try {
@@ -23,16 +26,13 @@ const CartProductCard = ({
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
-        enqueueSnackbar(
-          response?.data?.message || "Cart cleared successfully",
-          {
-            variant: "success",
-          }
-        );
+        enqueueSnackbar(response?.data?.message || t(`cartCleared`), {
+          variant: "success",
+        });
         fetchCartProducts();
         fetchCartCount();
       }
@@ -42,6 +42,7 @@ const CartProductCard = ({
       setLoading(false);
     }
   };
+
   return (
     <div
       key={index}
@@ -68,13 +69,13 @@ const CartProductCard = ({
               {product?.product?.selectedDeliveryMethod === "pickup"
                 ? "Pickup"
                 : product?.product?.selectedDeliveryMethod === "delivery"
-                ? "Community Pickup"
-                : "Pickup / Community Pickup"}
+                  ? "Community Pickup"
+                  : "Pickup / Community Pickup"}
             </p>
             <div className="w-full lg:hidden flex items-end justify-between">
               <div className="flex flex-col items-start justify-center gap-0 col-span-4">
                 <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-sm">
-                  Price
+                  {t(`price`)}
                 </p>
                 <p className="font-semibold text-sm lg:text-[20px] leading-none">
                   ${product?.product?.price}
@@ -92,7 +93,7 @@ const CartProductCard = ({
         </div>
         <div className="hidden lg:flex flex-col items-start justify-center gap-2 col-span-4 lg:col-span-1">
           <p className="font-normal text-[#7B7B7B] leading-none text-sm">
-            Price
+            {t(`price`)}
           </p>
           <p className="font-semibold text-[20px] leading-none">
             ${product?.product?.price}
@@ -109,14 +110,14 @@ const CartProductCard = ({
               alt="trash icon"
               className="w-[14px] h-[15px] object-contain"
             />
-            <span className="text-sm">Remove</span>
+            <span className="text-sm">{t(`buttons.remove`)}</span>
           </button>
         </div>
       </div>
 
       {product?.product?.selectedDeliveryMethod === "pickup" ? (
         <div className="flex flex-col items-start justify-start gap-1 mt-3">
-          <p className="text-sm font-semibold">Pickup Address: </p>
+          <p className="text-sm font-semibold">{t(`pickupAddress`)}: </p>
           <div className="flex items-center gap-2">
             <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
             <p className="text-sm">{product?.product?.pickupAddress} </p>
@@ -126,7 +127,7 @@ const CartProductCard = ({
 
       {product?.product?.selectedDeliveryMethod === "delivery" ? (
         <div className="flex flex-col items-start justify-start gap-1 mt-3">
-          <p className="text-sm font-semibold">Pickup Address: </p>
+          <p className="text-sm font-semibold">{t(`pickupAddress`)}: </p>
           <div className="flex items-center gap-2">
             <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
             <p className="text-sm">

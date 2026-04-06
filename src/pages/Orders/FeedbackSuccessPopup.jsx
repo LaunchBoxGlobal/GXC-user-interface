@@ -1,8 +1,12 @@
+import { useTranslation } from "react-i18next";
+
 const FeedbackSuccessPopup = ({
   showFeedbackSuccessPopup,
   setShowFeedbackSuccessPopup,
   fetchOrderDetails,
 }) => {
+  const { t } = useTranslation("orderManagement");
+
   return (
     showFeedbackSuccessPopup && (
       <div
@@ -16,16 +20,17 @@ const FeedbackSuccessPopup = ({
           <div className="w-[122px] h-[122px] flex items-center justify-center bg-[var(--button-bg)] rounded-full mx-auto">
             <img
               src="/feedback-success-popup-icon.png"
-              alt="product-delivery-popup-icon"
+              alt={t("feedbackSuccessPopup.iconAlt")}
               className="w-[54px] h-[50px]"
             />
           </div>
+
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Thanks for your valuable feeback
+            {t("feedbackSuccessPopup.title")}
           </h4>
+
           <p className="text-[#565656] text-sm leading-[1.2]">
-            Thank you for your valuable feedback. We appreciate your input and
-            will use it to enhance our products and services.
+            {t("feedbackSuccessPopup.description")}
           </p>
         </div>
       </div>

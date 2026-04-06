@@ -1,9 +1,11 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { toTitleCase } from "../../utils/toTitleCase";
+import { useTranslation } from "react-i18next";
 
 const SellerOrderCard = ({ product }) => {
   const [searchParams] = useSearchParams();
   const tab = searchParams.get("tab");
+  const { t } = useTranslation("orderManagement");
 
   return (
     <>
@@ -23,18 +25,15 @@ const SellerOrderCard = ({ product }) => {
                 }
                 className="text-xs font-medium"
               >
-                Booking ID #${product?.orderNumber}
+                {t(`sellerOrderCard.bookingId`)} #${product?.orderNumber}
               </Link>
               <div>
                 {item?.report?.submitted &&
                 item?.overallStatus !== "completed" ? (
                   <>
                     <p className={`text-xs font-medium text-red-500`}>
-                      Missing
+                      {t(`pickupItemList.statuses.missing`)}
                     </p>
-                    {/* <p className={`text-xs font-medium text-red-500`}>
-                      Dispute Raised - Under Review
-                    </p> */}
                   </>
                 ) : (
                   <p
@@ -42,16 +41,16 @@ const SellerOrderCard = ({ product }) => {
                       item?.overallStatus == "cancelled"
                         ? "text-red-500"
                         : item?.overallStatus === "pending"
-                        ? "text-[#FF7700]"
-                        : item?.overallStatus === "in_progress"
-                        ? "text-[#FF7700]"
-                        : item?.overallStatus === "completed"
-                        ? "text-green-500"
-                        : item?.overallStatus === "ready" ||
-                          item?.overallStatus === "ready_for_pickup" ||
-                          item?.overallStatus === "out_for_delivery"
-                        ? "text-green-500"
-                        : "text-gray-500"
+                          ? "text-[#FF7700]"
+                          : item?.overallStatus === "in_progress"
+                            ? "text-[#FF7700]"
+                            : item?.overallStatus === "completed"
+                              ? "text-green-500"
+                              : item?.overallStatus === "ready" ||
+                                  item?.overallStatus === "ready_for_pickup" ||
+                                  item?.overallStatus === "out_for_delivery"
+                                ? "text-green-500"
+                                : "text-gray-500"
                     }`}
                   >
                     {toTitleCase(item?.overallStatus)}
@@ -79,20 +78,23 @@ const SellerOrderCard = ({ product }) => {
 
               <div className="flex flex-col items-start md:items-end justify-center gap-1.5">
                 <p className="text-sm text-[#6D6D6D] font-medium">
-                  Delivery Type
+                  {/* Delivery Type */}
+                  {t(`pickupItemList.orderCard.deliveryType`)}
                 </p>
                 <p className="font-medium leading-none text-sm lg:text-base">
                   {item?.deliveryMethod === "pickup"
-                    ? "Pickup"
+                    ? t(`orderCard.statuses.Pickup`)
                     : item?.deliveryMethod === "delivery"
-                    ? "Community Pickup"
-                    : "Pickup / Community Pickup"}
+                      ? t(`orderCard.statuses.communityPickup`)
+                      : t(
+                          `orderCard.statuses.Pickup / orderCard.statuses.communityPickup`,
+                        )}
                 </p>
               </div>
 
               <div className="flex flex-col items-end justify-center gap-2">
                 <p className="text-sm text-[#6D6D6D] font-medium leading-none">
-                  Price
+                  {t(`orderCard.price`)}
                 </p>
                 <p className="text-sm text-[#000] font-medium leading-none">
                   $ {item?.price}

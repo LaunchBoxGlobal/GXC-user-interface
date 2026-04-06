@@ -9,6 +9,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import TextField from "../../components/Common/TextField";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 const EditAddressModal = ({
   openAddAddressModal,
@@ -18,6 +19,8 @@ const EditAddressModal = ({
   const address = Cookies.get("newDeliveryAddress")
     ? JSON.parse(Cookies.get("newDeliveryAddress"))
     : null;
+
+  const { t } = useTranslation("cart");
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -32,15 +35,15 @@ const EditAddressModal = ({
     },
     validationSchema: Yup.object({
       location: Yup.string()
-        .min(11, `Address cannot be less than 11 characters`)
-        .max(150, `Address can not be more than 150 characters`)
-        .required("Please enter your location"),
+        .min(11, t(`errors.minLocation`))
+        .max(150, t(`errors.maxLocation`))
+        .required(t(`errors.locationRequired`)),
       zipcode: Yup.string()
-        .matches(/^[A-Za-z0-9\- ]{4,10}$/, "Please enter a valid zip code")
-        .required("Enter your zip code"),
-      city: Yup.string().required("Enter your city"),
-      state: Yup.string().required("Enter your state"),
-      country: Yup.string().required("Enter your country"),
+        .matches(/^[A-Za-z0-9\- ]{4,10}$/, t(`errors.enterValidZipcode`))
+        .required(t(`errors.zipCodeIsRequired`)),
+      city: Yup.string().required(t(`errors.cityRequired`)),
+      state: Yup.string().required(t(`errors.stateRequired`)),
+      country: Yup.string().required(t(`errors.countryRequired`)),
     }),
     validateOnChange: true,
     validateOnBlur: true,
@@ -72,13 +75,13 @@ const EditAddressModal = ({
           className="w-full bg-white max-w-[470px] rounded-[12px] p-7"
         >
           <h2 className="text-[24px] font-semibold leading-none">
-            Edit New Address
+            {t(`editNewAddress`)}
           </h2>
           <div className="w-full border my-4" />
 
           <div className="grid grid-cols-2 gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">Country</label>
+              <label className="text-sm font-medium">{t(`form.country`)}</label>
               <CountrySelect
                 containerClassName="w-full"
                 inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none 
@@ -88,7 +91,7 @@ const EditAddressModal = ({
             : "border-gray-200"
         }
       `}
-                placeHolder="Select Country"
+                placeHolder={t(`form.selectCountry`)}
                 defaultValue={
                   formik.values.country
                     ? {
@@ -111,7 +114,7 @@ const EditAddressModal = ({
             </div>
 
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">State</label>
+              <label className="text-sm font-medium">{t(`form.state`)}</label>
               <StateSelect
                 countryid={formik.values.countryId || 0}
                 containerClassName="w-full"
@@ -122,7 +125,7 @@ const EditAddressModal = ({
             : "border-gray-200"
         }
       `}
-                placeHolder="Select State"
+                placeHolder={t(`form.selectState`)}
                 defaultValue={
                   formik.values.state
                     ? { name: formik.values.state, id: formik.values.stateId }
@@ -142,7 +145,7 @@ const EditAddressModal = ({
 
           <div className="grid grid-cols-2 gap-4 mt-5">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">City</label>
+              <label className="text-sm font-medium">{t(`form.city`)}</label>
               <CitySelect
                 countryid={formik.values.countryId || 0}
                 stateid={formik.values.stateId || 0}
@@ -154,7 +157,7 @@ const EditAddressModal = ({
             : "border-gray-200"
         }
       `}
-                placeHolder="Select City"
+                placeHolder={t(`form.selectCity`)}
                 defaultValue={
                   formik.values.city ? { name: formik.values.city } : null
                 }
@@ -168,13 +171,13 @@ const EditAddressModal = ({
             <TextField
               type="text"
               name="zipcode"
-              placeholder="Enter zip code"
+              placeholder={t(`form.enterZipCode`)}
               value={formik.values.zipcode}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.zipcode}
               touched={formik.touched.zipcode}
-              label="Zip Code"
+              label={t(`form.zipCode`)}
             />
           </div>
 
@@ -182,13 +185,13 @@ const EditAddressModal = ({
             <TextField
               type="text"
               name="location"
-              placeholder="Enter suite / apartment / street"
+              placeholder={t(`form.locationPlaceholer`)}
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.location}
               touched={formik.touched.location}
-              label="Suite / Apartment / Street"
+              label={t(`form.locationLabel`)}
             />
           </div>
 
@@ -198,10 +201,10 @@ const EditAddressModal = ({
               onClick={toggleAddAddressModal}
               className="w-full bg-[var(--secondary-bg)] text-black h-[49px] rounded-[8px] text-center font-medium"
             >
-              Cancel
+              {t(`buttons.cancel`)}
             </button>
             <button type="submit" className="button">
-              Save
+              {t(`buttons.save`)}
             </button>
           </div>
         </form>

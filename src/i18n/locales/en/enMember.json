@@ -1,0 +1,43 @@
+{
+    "members": {
+        "buttons": {
+            "back": "Back",
+            "no": "No",
+            "yes": "Yes",
+            "memberDetails": "Member Details",
+            "reviews": "Reviews",
+            "reportUser": "Report User",
+            "cancel": "Cancel",
+            "submit": "Submit"
+        },
+        "headings": {
+            "userDetails": "User Details",
+            "fullName": "Full Name",
+            "emailAddress": "Email Address",
+            "mobileNumber": "Mobile Number",
+            "location": "Location",
+            "description": "Description",
+            "reportUser": "Report User",
+            "reasonForReporting": "Reason for reporting",
+            "reportSubmitted": "Report Submitted",
+            "reportSuccess": "Thank you! Your report has been successfully submitted."
+        },
+        "subheadings": {
+            "areYouSureToReportUser": "Are you sure you want report this user?",
+            "whyAreYouReporting": "To help improve your experience, please let us know why you are reporting this user."
+        },
+        "form": {
+            "labels": {
+                "uploadImage": "Upload Images (Optional)",
+                "uploadSupportingImages": "Upload supporting images",
+                "maxImages": "Max 5 images, up to 10MB each (JPG, PNG, JPEG)"
+            },
+            "errors": {
+                "reasonRequired": "Description is required",
+                "minReason": "Description must be at least 10 characters",
+                "maxReason": "Description must be less than 1000 characters",
+                "selectReason": "Please select a reason before submitting."
+            }
+        }
+    }
+}

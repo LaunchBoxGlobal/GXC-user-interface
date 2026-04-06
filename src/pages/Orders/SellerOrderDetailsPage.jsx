@@ -14,7 +14,7 @@ import SellerCancelDeliveryOrderConfirmationModal from "./SellerCancelDeliveryOr
 import SellerCancelDeliveryOrderReasonModal from "./SellerCancelDeliveryOrderReasonModal";
 import SellerDeliveryOrderCancellationSuccessPopup from "./SellerDeliveryOrderCancellationSuccessPopup";
 import SellerConfirmationMarkItemReadForPickup from "./SellerConfirmationMarkItemReadForPickup";
-import { toTitleCase } from "../../utils/toTitleCase";
+import { useTranslation } from "react-i18next";
 
 const SellerOrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -38,6 +38,8 @@ const SellerOrderDetailsPage = () => {
   const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false);
   const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
 
+  const { t } = useTranslation("orderManagement");
+
   const fetchOrderDetails = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
@@ -50,7 +52,7 @@ const SellerOrderDetailsPage = () => {
 
       if (itemId) {
         const singleItem = order?.items?.find(
-          (item) => String(item?.id) === String(itemId)
+          (item) => String(item?.id) === String(itemId),
         );
         order.items = singleItem ? [singleItem] : [];
       }
@@ -59,10 +61,10 @@ const SellerOrderDetailsPage = () => {
 
       if (order?.items) {
         setPickupItems(
-          order.items.filter((item) => item.deliveryMethod === "pickup")
+          order.items.filter((item) => item.deliveryMethod === "pickup"),
         );
         setDeliveryItems(
-          order.items.filter((item) => item.deliveryMethod === "delivery")
+          order.items.filter((item) => item.deliveryMethod === "delivery"),
         );
       }
     } catch (error) {
@@ -88,11 +90,10 @@ const SellerOrderDetailsPage = () => {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        // onClick={details ? navigate(-1) : navigate("/")}
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`orderDetailsPage.buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5 grid grid-cols-3 gap-5">
@@ -100,19 +101,23 @@ const SellerOrderDetailsPage = () => {
           <div className="w-full flex items-star flex-col justify-start relative">
             <div className="w-full">
               <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
-                Order Details
+                {t(`orderDetailsPage.orderDetailsPage.orderDetails`)}
               </p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
-              <p className="text-sm lg:text-base text-gray-600">Order ID</p>
+              <p className="text-sm lg:text-base text-gray-600">
+                {t(`orderDetailsPage.orderDetailsPage.orderId`)}
+              </p>
               <p className="text-sm lg:text-base text-gray-600">
                 {details?.orderNumber}
               </p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
-              <p className="text-sm lg:text-base text-gray-600">Order Placed</p>
+              <p className="text-sm lg:text-base text-gray-600">
+                {t(`orderDetailsPage.orderDetailsPage.orderPlaced`)}
+              </p>
               <p className="text-sm lg:text-base text-gray-600">
                 {formatDate(details?.createdAt)}
               </p>
@@ -147,18 +152,21 @@ const SellerOrderDetailsPage = () => {
           <div className="bg-white rounded-[18px] w-full">
             <h2 className="text-[24px] font-semibold leading-none px-5 pt-5 lg:pt-7">
               Order Summary
+              {`orderSummary.orderSummary`}
             </h2>
             <div className="w-full border my-5" />
             <div className="w-full px-5 pb-5">
               <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Subtotal</p>
+                <p className="text-base text-gray-600">
+                  {`orderSummary.subtotal`}
+                </p>
                 <p className="text-base text-gray-600">
                   ${details?.totalAmount.toFixed(2)}
                 </p>
               </div>
               <div className="w-full border my-3" />
               <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">Products</p>
+                <p className="text-base text-gray-600">{`orderSummary.products`}</p>
                 <p className="text-base text-gray-600">
                   {details?.items?.length}
                 </p>
@@ -167,7 +175,7 @@ const SellerOrderDetailsPage = () => {
               <div className="w-full border my-3" />
               <div className="w-full flex items-center justify-between">
                 <p className="text-base text-[var(--button-bg)] font-semibold">
-                  Total
+                  {`orderSummary.total`}
                 </p>
                 <p className="text-base text-[var(--button-bg)] font-semibold">
                   ${details?.totalAmount.toFixed(2)}
@@ -195,17 +203,19 @@ const SellerOrderDetailsPage = () => {
                     {details?.items[0]?.buyerStatus === "cancelled"
                       ? "Cancelled by Buyer"
                       : details?.items[0]?.buyerStatus === "delivered"
-                      ? "Delivered"
-                      : details?.items[0]?.buyerStatus === "picked_up"
-                      ? "Picked Up"
-                      : details?.items[0]?.sellerStatus === "out_for_delivery"
-                      ? "Ready To Pickup"
-                      : details?.items[0]?.sellerStatus === "cancelled"
-                      ? "Cancelled by Seller"
-                      : details &&
-                        details?.items?.[0]?.deliveryMethod === "delivery"
-                      ? "Ready To Pickup"
-                      : "Ready To Pickup"}
+                        ? "Delivered"
+                        : details?.items[0]?.buyerStatus === "picked_up"
+                          ? "Picked Up"
+                          : details?.items[0]?.sellerStatus ===
+                              "out_for_delivery"
+                            ? "Ready To Pickup"
+                            : details?.items[0]?.sellerStatus === "cancelled"
+                              ? "Cancelled by Seller"
+                              : details &&
+                                  details?.items?.[0]?.deliveryMethod ===
+                                    "delivery"
+                                ? t(`orderDetailsPage.readyToPickup`)
+                                : t(`orderDetailsPage.readyToPickup`)}
                   </button>
                 </div>
               )}
@@ -217,7 +227,7 @@ const SellerOrderDetailsPage = () => {
             <div className="w-full bg-white rounded-[18px] mt-5">
               <div className="w-full p-5">
                 <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
-                  Cancellation Reason
+                  {t(`deliveryItems.sections.cancellationReason`)}
                 </p>
               </div>
               <div className="w-full border" />

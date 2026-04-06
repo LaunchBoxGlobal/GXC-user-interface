@@ -4,9 +4,11 @@ import Cookies from "js-cookie";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const ResendOtp = ({ email, page }) => {
   const [timer, setTimer] = useState(60);
+  const { t } = useTranslation("auth");
 
   useEffect(() => {
     if (timer <= 0) return;
@@ -36,7 +38,7 @@ const ResendOtp = ({ email, page }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (res?.data?.success) {
@@ -62,7 +64,9 @@ const ResendOtp = ({ email, page }) => {
       onClick={handleResendOtp}
       disabled={timer > 0 || !email}
     >
-      {timer > 0 ? `Resend in ${timer}s` : "Resend"}
+      {timer > 0
+        ? `${t(`auth:auth.resend_in`)} ${timer}s`
+        : t(`auth:button.resend`)}
     </button>
   );
 };

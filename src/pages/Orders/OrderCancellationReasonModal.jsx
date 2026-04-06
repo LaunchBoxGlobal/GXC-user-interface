@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
+import { useTranslation } from "react-i18next";
 
 const OrderCancellationReasonModal = ({
   showCancellationReasonPopup,
@@ -14,14 +15,15 @@ const OrderCancellationReasonModal = ({
   fetchOrderDetails,
 }) => {
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation("orderManagement");
 
-  // ✅ Validation schema
+  // Validation schema
   const validationSchema = Yup.object({
     reason: Yup.string()
       .trim()
-      .required("Cancellation reason is required.")
-      .min(10, "Reason must be at least 10 characters.")
-      .max(200, "Reason must not exceed 200 characters."),
+      .required(t(`orderCancellationReasonModal.form.errors.reasonRequired`))
+      .min(10, t(`orderCancellationReasonModal.form.errors.minReason`))
+      .max(200, t(`orderCancellationReasonModal.form.errors.maxReason`)),
   });
 
   const formik = useFormik({
@@ -29,7 +31,10 @@ const OrderCancellationReasonModal = ({
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       if (!product?.id) {
-        enqueueSnackbar("Invalid product information.", { variant: "error" });
+        enqueueSnackbar(
+          t(`orderCancellationReasonModal.form.errors.invalidProductInfo`),
+          { variant: "error" },
+        );
         return;
       }
 
@@ -44,28 +49,37 @@ const OrderCancellationReasonModal = ({
             headers: {
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (response?.data?.success) {
-          enqueueSnackbar("Order has been cancelled successfully.", {
-            variant: "success",
-          });
+          enqueueSnackbar(
+            t(`orderCancellationReasonModal.form.messages.orderCancelled`),
+            {
+              variant: "success",
+            },
+          );
           resetForm();
           setShowCancellationReasonPopup(false);
           setShowCancellationSuccessPopup(true);
           fetchOrderDetails?.();
         } else {
           enqueueSnackbar(
-            response?.data?.message || "Failed to cancel the order.",
-            { variant: "error" }
+            response?.data?.message ||
+              t(
+                `orderCancellationReasonModal.form.messages.failedToCancelOrder`,
+              ),
+            { variant: "error" },
           );
         }
       } catch (error) {
         console.error("Cancel order error:", error);
-        enqueueSnackbar("Something went wrong while cancelling the order.", {
-          variant: "error",
-        });
+        enqueueSnackbar(
+          t(`orderCancellationReasonModal.form.messages.somethingWentWrong`),
+          {
+            variant: "error",
+          },
+        );
       } finally {
         setLoading(false);
       }
@@ -78,7 +92,7 @@ const OrderCancellationReasonModal = ({
     <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center px-4">
       <div className="w-full bg-white p-7 rounded-[16px] max-w-[471px] relative">
         <h3 className="text-[24px] font-semibold leading-none">
-          Cancel reason
+          {t(`orderCancellationReasonModal.cancelReason`)}
         </h3>
 
         <form onSubmit={formik.handleSubmit} className="mt-4 space-y-4">
@@ -86,7 +100,9 @@ const OrderCancellationReasonModal = ({
             <textarea
               name="reason"
               id="reason"
-              placeholder="Write your reason for cancellation"
+              placeholder={t(
+                `orderCancellationReasonModal.form.placeholders.writeReason`,
+              )}
               value={formik.values.reason}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -110,14 +126,16 @@ const OrderCancellationReasonModal = ({
               onClick={() => setShowCancellationReasonPopup(false)}
               className="w-full bg-[#EBEBEB] h-[48px] rounded-[12px] text-center font-medium hover:bg-[#dcdcdc] transition-all disabled:opacity-70"
             >
-              Cancel
+              {t(`common.cancel`)}
             </button>
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-[var(--button-bg)] text-white h-[48px] rounded-[12px] text-center font-medium hover:opacity-90 transition-all disabled:opacity-70"
             >
-              {loading ? "Cancelling..." : "Submit"}
+              {loading
+                ? "Cancelling..."
+                : t(`markItemMissingModal.form.buttons.submit`)}
             </button>
           </div>
         </form>

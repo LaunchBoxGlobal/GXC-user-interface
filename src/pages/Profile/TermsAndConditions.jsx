@@ -1,10 +1,12 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const TermsAndConditions = () => {
+  const { t } = useTranslation("settings");
   return (
     <div className="w-full relative pt-2">
       <h1 className="text-[24px] font-semibold leading-none">
-        Terms and conditions
+        {t(`settings.termsConditions`)}
       </h1>
       <div className="w-full border my-5" />
 

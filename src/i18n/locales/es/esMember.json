@@ -1,0 +1,43 @@
+{
+    "members": {
+        "buttons": {
+            "back": "Atrás",
+            "no": "No",
+            "yes": "Sí",
+            "memberDetails": "Detalles del miembro",
+            "reviews": "Reseñas",
+            "reportUser": "Reportar usuario",
+            "cancel": "Cancelar",
+            "submit": "Enviar"
+        },
+        "headings": {
+            "userDetails": "Detalles del usuario",
+            "fullName": "Nombre completo",
+            "emailAddress": "Correo electrónico",
+            "mobileNumber": "Número de teléfono",
+            "location": "Ubicación",
+            "description": "Descripción",
+            "reportUser": "Reportar usuario",
+            "reasonForReporting": "Motivo del reporte",
+            "reportSubmitted": "Reporte enviado",
+            "reportSuccess": "¡Gracias! Tu reporte ha sido enviado con éxito."
+        },
+        "subheadings": {
+            "areYouSureToReportUser": "¿Estás seguro de que deseas reportar a este usuario?",
+            "whyAreYouReporting": "Para ayudarnos a mejorar tu experiencia, indícanos por qué estás reportando a este usuario."
+        },
+        "form": {
+            "labels": {
+                "uploadImage": "Subir imágenes (opcional)",
+                "uploadSupportingImages": "Subir imágenes de respaldo",
+                "maxImages": "Máximo 5 imágenes, hasta 10 MB cada una (JPG, PNG, JPEG)"
+            },
+            "errors": {
+                "reasonRequired": "La descripción es obligatoria",
+                "minReason": "La descripción debe tener al menos 10 caracteres",
+                "maxReason": "La descripción debe tener menos de 1000 caracteres",
+                "selectReason": "Seleccione un motivo antes de enviar."
+            }
+        }
+    }
+}

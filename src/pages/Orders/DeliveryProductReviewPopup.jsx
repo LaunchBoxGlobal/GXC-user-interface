@@ -7,6 +7,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const DeliveryProductReviewPopup = ({
   openFeedbackModal,
@@ -15,7 +16,8 @@ const DeliveryProductReviewPopup = ({
   setShowFeedbackSuccessPopup,
   fetchOrderDetails,
 }) => {
-  console.log(product);
+  const { t } = useTranslation("orderManagement");
+
   const navigate = useNavigate();
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(null);
@@ -26,7 +28,7 @@ const DeliveryProductReviewPopup = ({
     e.preventDefault();
 
     if (!rating) {
-      enqueueSnackbar("Please select a rating before submitting.", {
+      enqueueSnackbar(t("review.errors.ratingRequired"), {
         variant: "error",
       });
       return;
@@ -45,7 +47,7 @@ const DeliveryProductReviewPopup = ({
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
@@ -53,7 +55,6 @@ const DeliveryProductReviewPopup = ({
         setOpenFeedbackModal(false);
       }
     } catch (error) {
-      // console.error("Error submitting review >>>", error);
       handleApiError(error, navigate);
     } finally {
       setIsSubmitting(false);
@@ -69,24 +70,22 @@ const DeliveryProductReviewPopup = ({
         className="w-full bg-white max-w-[471px] rounded-[32px] p-7 text-start relative"
       >
         {/* Header */}
-        <h4 className="text-[24px] font-semibold leading-none">Write Review</h4>
+        <h4 className="text-[24px] font-semibold leading-none">
+          {t("review.title")}
+        </h4>
 
         {/* Product Info */}
         {product && product?.seller && (
           <div className="w-full flex items-center gap-3 my-5">
-            {product?.seller?.profilePictureUrl ? (
-              <img
-                src={product?.seller?.profilePictureUrl}
-                alt={product?.productTitle}
-                className="w-[72px] h-[72px] object-cover rounded-[16px]"
-              />
-            ) : (
-              <img
-                src="/profile-icon.png"
-                alt="profile picture placeholder"
-                className="w-[72px] h-[72px] object-cover rounded-[16px]"
-              />
-            )}
+            <img
+              src={product?.seller?.profilePictureUrl || "/profile-icon.png"}
+              alt={
+                product?.seller?.profilePictureUrl
+                  ? product?.productTitle
+                  : t("review.profilePlaceholderAlt")
+              }
+              className="w-[72px] h-[72px] object-cover rounded-[16px]"
+            />
 
             <div className="flex flex-col items-start justify-center">
               <p className="text-lg font-semibold leading-none">
@@ -101,7 +100,10 @@ const DeliveryProductReviewPopup = ({
 
         {/* Rating */}
         <div className="flex flex-col items-start justify-center">
-          <p className="text-sm font-medium leading-none mb-2">Your Rating</p>
+          <p className="text-sm font-medium leading-none mb-2">
+            {t("review.yourRating")}
+          </p>
+
           <div className="w-full flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
               <FaStar
@@ -124,7 +126,7 @@ const DeliveryProductReviewPopup = ({
           <textarea
             name="review"
             id="review"
-            placeholder="Share your experience with this product..."
+            placeholder={t("review.placeholder")}
             className="w-full h-[174px] resize-none bg-[var(--secondary-bg)] rounded-[12px] p-4 placeholder:text-[#959393] outline-none"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
@@ -141,8 +143,9 @@ const DeliveryProductReviewPopup = ({
             }}
             className="w-1/2 h-[48px] rounded-[12px] font-medium text-gray-700 bg-gray-100 transition-all"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -152,7 +155,7 @@ const DeliveryProductReviewPopup = ({
                 : "bg-[var(--button-bg)] hover:opacity-90"
             }`}
           >
-            {isSubmitting ? <Loader /> : "Send"}
+            {isSubmitting ? <Loader /> : t("common.send")}
           </button>
         </div>
       </form>

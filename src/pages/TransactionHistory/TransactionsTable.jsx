@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
+  const { t } = useTranslation("transactionHistory");
   if (loading) {
     return (
       <div className="w-full flex justify-center items-center mt-6 min-h-[80vh] bg-white text-red-500 font-medium">
@@ -24,7 +26,7 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
   if (!transactions || transactions.length === 0) {
     return (
       <div className="relative overflow-x-auto mt-6 bg-white min-h-screen custom-shadow rounded-[12px] p-3 text-center text-gray-500 font-medium flex items-center justify-center">
-        No transactions found.
+        {t(`noTransactions`)}
       </div>
     );
   }
@@ -34,13 +36,19 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 border-separate border-spacing-0 rounded-[8px] overflow-hidden bg-[#2b3743]/10">
         <thead className="text-xs text-gray-700 light-green-bg">
           <tr>
-            <th className="px-6 py-4 text-sm font-medium">Order Number</th>
-            <th className="px-6 py-4 text-sm font-medium">Product Name</th>
             <th className="px-6 py-4 text-sm font-medium">
-              {sellerType === "seller" ? "Buyer" : "Seller"}
+              {t(`orderNumber`)}
             </th>
-            <th className="px-6 py-4 text-sm font-medium">Amount</th>
-            <th className="px-6 py-4 text-sm font-medium">Date</th>
+            <th className="px-6 py-4 text-sm font-medium">
+              {t(`productName`)}
+            </th>
+            <th className="px-6 py-4 text-sm font-medium">
+              {sellerType === "seller"
+                ? t(`buttons.buyer`)
+                : t(`buttons.seller`)}
+            </th>
+            <th className="px-6 py-4 text-sm font-medium">{t(`amount`)}</th>
+            <th className="px-6 py-4 text-sm font-medium">{t(`date`)}</th>
           </tr>
         </thead>
 

@@ -12,6 +12,7 @@ import MemberHeader from "../Member/MemberHeader";
 import MemberReportConfirmationPopup from "../Member/MemberReportConfirmationPopup";
 import ReportMemberModal from "../Member/ReportMemberModal";
 import ReportMemberSuccessModal from "../Member/ReportMemberSuccessModal";
+import { useTranslation } from "react-i18next";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
@@ -23,6 +24,7 @@ const UserDetailsPage = () => {
   const [searchParams] = useSearchParams();
   const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
   const isBuyer = searchParams.get("isBuyer");
+  const { t } = useTranslation("transactionHistory");
 
   const [
     showMemberReportConfimationPopup,
@@ -47,7 +49,7 @@ const UserDetailsPage = () => {
       setError(
         error?.response?.data?.message ||
           error?.message ||
-          "Failed to load member details. Please try again."
+          "Failed to load member details. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -58,7 +60,6 @@ const UserDetailsPage = () => {
     fetchUserProfile();
   }, []);
 
-  // 🧠 1. Loading UI
   if (loading) {
     return (
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-2">
@@ -69,7 +70,6 @@ const UserDetailsPage = () => {
     );
   }
 
-  // ❌ 2. Error UI
   if (error) {
     return (
       <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
@@ -79,7 +79,7 @@ const UserDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`buttons.back`)}
         </button>
         <div className="w-full bg-[var(--light-bg)] p-5 rounded-[30px] mt-5">
           <div className="w-full rounded-[20px] p-5 bg-white text-center min-h-[100vh] flex items-center justify-center">
@@ -90,7 +90,6 @@ const UserDetailsPage = () => {
     );
   }
 
-  // ✅ 3. Normal UI
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28 min-h-[120vh]">
       <button
@@ -99,7 +98,7 @@ const UserDetailsPage = () => {
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-5 space-y-8">
@@ -135,7 +134,7 @@ const UserDetailsPage = () => {
                   onClick={() => setShowMemberReportConfimationPopup(true)}
                   className="button min-w-[214px]"
                 >
-                  Report User
+                  {t(`buttons.reportUser`)}
                 </button>
               </div>
             )}
@@ -155,7 +154,7 @@ const UserDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                Member Details
+                {t(`buttons.memberDetails`)}
               </button>
               <button
                 type="button"
@@ -166,7 +165,7 @@ const UserDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                Reviews
+                {t(`buttons.reviews`)}
               </button>
             </div>
 

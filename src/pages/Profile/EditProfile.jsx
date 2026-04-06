@@ -20,6 +20,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js";
 import { useUser } from "../../context/userContext";
 import { handleApiError } from "../../utils/handleApiError";
 import EditProfilePicture from "./EditProfilePicture";
+import { useTranslation } from "react-i18next";
 
 const EditProfile = () => {
   const [preview, setPreview] = useState(null);
@@ -31,6 +32,8 @@ const EditProfile = () => {
   const parsedPhone = parsePhoneNumberFromString(user?.phone || "");
   const defaultCountry = parsedPhone ? parsedPhone.country : "US";
   const defaultPhoneNumber = parsedPhone ? parsedPhone.number : "";
+
+  const { t } = useTranslation("editProfile");
 
   useEffect(() => {
     document.title = "Edit Profile - GiveXChange";
@@ -62,49 +65,61 @@ const EditProfile = () => {
     },
     validationSchema: Yup.object({
       firstName: Yup.string()
-        .min(3, "First name must contain at least 3 characters")
-        .max(10, "First name must be 10 characters or less")
-        .matches(
-          /^[a-zA-Z ]*$/,
-          "First name can only contain letters and spaces"
-        )
-        .required("First name is required"),
+        .min(3, t("editProfile.form.errors.firstNameMin"))
+        .max(10, t("editProfile.form.errors.firstNameMax"))
+        .matches(/^[a-zA-Z ]*$/, t("editProfile.form.errors.firstNameMatch"))
+        .required(t("editProfile.form.errors.firstNameRequired")),
+
       lastName: Yup.string()
-        .min(3, "Last name must contain at least 3 characters")
-        .max(10, "Last name must be 10 characters or less")
-        .matches(
-          /^[a-zA-Z ]*$/,
-          "Last name can only contain letters and spaces"
-        )
-        .required("Last name is required"),
+        .min(3, t("editProfile.form.errors.lastNameMin"))
+        .max(10, t("editProfile.form.errors.lastNameMax"))
+        .matches(/^[a-zA-Z ]*$/, t("editProfile.form.errors.lastNameMatch"))
+        .required(t("editProfile.form.errors.lastNameRequired")),
+
       address: Yup.string()
-        .min(1, `Address cannot be less than 1 characters`)
-        .max(30, `Address can not be more than 150 characters`)
-        .required("Please enter your location"),
+        .min(1, t("editProfile.form.errors.addressMin"))
+        .max(30, t("editProfile.form.errors.addressMax"))
+        .required(t("editProfile.form.errors.addressRequired")),
+
       phoneNumber: Yup.string()
-        .required("Phone number is required")
-        .test("is-valid-phone", "Invalid phone number", function (value) {
-          const { parent } = this;
-          const country = parent.country || defaultCountry || "US";
+        .required(t("editProfile.form.errors.phoneNumberRequired"))
+        .test(
+          "is-valid-phone",
+          t("editProfile.form.errors.invalidPhoneNumber"),
+          function (value) {
+            const { parent } = this;
+            const country = parent.country || defaultCountry || "US";
 
-          if (!value) return false;
+            if (!value) return false;
 
-          try {
-            const phone = parsePhoneNumberFromString(value, country);
-            return phone && phone.isValid();
-          } catch {
-            return false;
-          }
-        }),
+            try {
+              const phone = parsePhoneNumberFromString(value, country);
+              return phone && phone.isValid();
+            } catch {
+              return false;
+            }
+          },
+        ),
+
       email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      city: Yup.string().required("Enter your city"),
-      state: Yup.string().required("Enter your state"),
-      country: Yup.string().required("Enter your country"),
+        .email(t("editProfile.form.errors.invalidEmail"))
+        .required(t("editProfile.form.errors.emailIsRequired")),
+
+      city: Yup.string().required(t("editProfile.form.errors.cityRequired")),
+
+      state: Yup.string().required(t("editProfile.form.errors.stateRequired")),
+
+      country: Yup.string().required(
+        t("editProfile.form.errors.countryRequired"),
+      ),
+
       zipcode: Yup.string()
-        .matches(/^[A-Za-z0-9\- ]{4,10}$/, "Please enter a valid zip code")
-        .required("Enter your zip code"),
+        .matches(
+          /^[A-Za-z0-9\- ]{4,10}$/,
+          t("editProfile.form.errors.zipCodeMatch"),
+        )
+        .required(t("editProfile.form.errors.zipCodeIsRequired")),
+
       profileImage: Yup.mixed().nullable(),
     }),
     onSubmit: async (values, { resetForm }) => {
@@ -129,7 +144,7 @@ const EditProfile = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (values.profileImage instanceof File) {
@@ -144,7 +159,7 @@ const EditProfile = () => {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },
-            }
+            },
           );
         }
 
@@ -152,10 +167,11 @@ const EditProfile = () => {
           resetForm();
           fetchUserProfile();
           enqueueSnackbar(
-            profileRes?.data?.message || "Profile Updated Successfully!",
+            profileRes?.data?.message ||
+              t(`editProfile.form.profileUpdatedSuccess`),
             {
               variant: "success",
-            }
+            },
           );
           navigate(-1 || "/profile");
         }
@@ -172,9 +188,11 @@ const EditProfile = () => {
       onSubmit={formik.handleSubmit}
       className="flex flex-col items-center w-full bg-white padding-x py-20"
     >
-      <h1 className="font-semibold text-[32px] leading-[1]">Edit Profile</h1>
+      <h1 className="font-semibold text-[32px] leading-[1]">
+        {t("editProfile.editProfile")}
+      </h1>
       <p className="font-medium mt-3">
-        Please complete details to access all features
+        {t("editProfile.editProfileSubheading")}
       </p>
 
       <div className="w-full max-w-[500px] my-6">
@@ -191,24 +209,24 @@ const EditProfile = () => {
           <TextField
             type="text"
             name="firstName"
-            placeholder="First Name"
+            placeholder={t("editProfile.form.fields.firstNameLabel")}
             value={formik.values.firstName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.firstName}
             touched={formik.touched.firstName}
-            label={"First Name"}
+            label={t("editProfile.form.fields.firstNameLabel")}
           />
           <TextField
             type="text"
             name="lastName"
-            placeholder="Last Name"
+            placeholder={t("editProfile.form.fields.lastNameLabel")}
             value={formik.values.lastName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.lastName}
             touched={formik.touched.lastName}
-            label={"First Name"}
+            label={t("editProfile.form.fields.lastNameLabel")}
           />
         </div>
         <div className="w-full">
@@ -222,12 +240,12 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
-            label={"Email Address"}
+            label={t("editProfile.form.fields.emailAddress")}
           />
         </div>
         <div className="w-full">
           <label htmlFor="phoneNumber" className="font-medium text-sm">
-            Phone Number
+            {t("editProfile.form.fields.emailAddress")}
           </label>
           <PhoneNumberField
             type="text"
@@ -244,7 +262,9 @@ const EditProfile = () => {
 
         <div className="w-full grid grid-cols-2 gap-3">
           <div className="w-full flex flex-col gap-1">
-            <label className="text-sm font-medium">Country</label>
+            <label className="text-sm font-medium">
+              {t("editProfile.form.fields.country")}
+            </label>
             <div className="w-full pointer-events-none">
               <CountrySelect
                 defaultValue={{
@@ -260,7 +280,7 @@ const EditProfile = () => {
                     ? "border-red-500"
                     : "border-gray-200"
                 }`}
-                placeHolder="Select Country"
+                placeHolder={t("editProfile.form.fields.country")}
                 onChange={(val) => {
                   formik.setFieldValue("country", val.name);
                   formik.setFieldValue("countryId", val.id);
@@ -274,7 +294,9 @@ const EditProfile = () => {
             )}
           </div>
           <div className="w-full flex flex-col gap-1">
-            <label className="text-sm font-medium">State</label>
+            <label className="text-sm font-medium">
+              {t("editProfile.form.fields.state")}
+            </label>
             <StateSelect
               countryid={formik.values.countryId || undefined}
               containerClassName="w-full"
@@ -283,7 +305,7 @@ const EditProfile = () => {
                   ? "border-red-500"
                   : "border-gray-200"
               }`}
-              placeHolder="Select State"
+              placeHolder={t("editProfile.form.fields.state")}
               onChange={(val) => {
                 formik.setFieldValue("state", val.name);
                 formik.setFieldValue("stateId", val.id);
@@ -301,7 +323,9 @@ const EditProfile = () => {
 
         <div className="w-full grid grid-cols-2 gap-3">
           <div className="w-full flex flex-col gap-1">
-            <label className="text-sm font-medium">City</label>
+            <label className="text-sm font-medium">
+              {t("editProfile.form.fields.city")}
+            </label>
             <CitySelect
               countryid={formik.values.countryId || undefined}
               stateid={formik.values.stateId || undefined}
@@ -311,7 +335,7 @@ const EditProfile = () => {
                   ? "border-red-500"
                   : "border-gray-200"
               }`}
-              placeHolder="Select City"
+              placeHolder={t("editProfile.form.fields.city")}
               onChange={(val) => formik.setFieldValue("city", val.name)}
               defaultValue={
                 formik.values.city ? { name: formik.values.city } : null
@@ -325,13 +349,13 @@ const EditProfile = () => {
           <TextField
             type="text"
             name="zipcode"
-            placeholder="Enter zip code"
+            placeholder={t("editProfile.form.fields.zipCode")}
             value={formik.values.zipcode}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.zipcode}
             touched={formik.touched.zipcode}
-            label="Zip Code"
+            label={t("editProfile.form.fields.zipCode")}
           />
         </div>
 
@@ -339,13 +363,13 @@ const EditProfile = () => {
           <TextField
             type="text"
             name="address"
-            placeholder=""
+            placeholder={t("editProfile.form.fields.location")}
             value={formik.values.address}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.address}
             touched={formik.touched.address}
-            label={"Suite / Apartment / Street"}
+            label={t("editProfile.form.fields.location")}
           />
         </div>
 
@@ -355,7 +379,7 @@ const EditProfile = () => {
             disabled={loading}
             className="button disabled:cursor-not-allowed"
           >
-            {loading ? <Loader /> : "Save"}
+            {loading ? <Loader /> : t("editProfile.buttons.save")}
           </button>
         </div>
       </div>

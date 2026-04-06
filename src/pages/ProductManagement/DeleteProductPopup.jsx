@@ -7,21 +7,25 @@ import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
 
 const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { checkIamAlreadyMember } = useUser();
+  const { t } = useTranslation("productManagement");
 
   const handleDeleteProduct = async () => {
     if (!productId) {
-      enqueueSnackbar("Product ID not found!", {
+      enqueueSnackbar(t("deleteProduct.errors.noProductId"), {
         variant: "error",
       });
       return;
     }
+
     checkIamAlreadyMember();
     setLoading(true);
+
     try {
       const res = await axios.post(
         `${BASE_URL}/products/${productId}/delist`,
@@ -30,10 +34,11 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
+
       if (res?.data?.success) {
-        enqueueSnackbar("Product delete sucessfully!", {
+        enqueueSnackbar(t("deleteProduct.success"), {
           variant: "success",
         });
         navigate(`/product-management`);
@@ -45,6 +50,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
       setLoading(false);
     }
   };
+
   return (
     showPopup && (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -52,26 +58,30 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
           <div className="w-[107px] h-[107px] mx-auto bg-[var(--button-bg)] flex items-center justify-center rounded-full">
             <img
               src="/delete-product-icon.png"
-              alt="delete-product-icon"
+              alt={t("deleteProduct.alt.icon")}
               className="w-[67px] h-[57px]"
             />
           </div>
+
           <h2 className="text-lg lg:text-[32px] font-semibold mt-3 mb-1 leading-[1.2]">
-            Delete Product
+            {t("deleteProduct.title")}
           </h2>
-          <p className="mb-4">Are you sure you want to delete this product?</p>
+
+          <p className="mb-4">{t("deleteProduct.description")}</p>
+
           <div className="w-full grid grid-cols-2 gap-3 mt-1">
             <button
               onClick={() => setShowDeletePopup(false)}
               className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
             >
-              No
+              {t("common.no")}
             </button>
+
             <button
               onClick={handleDeleteProduct}
               className="w-full px-4 py-3 rounded-lg bg-[var(--button-bg)] text-white"
             >
-              {loading ? <Loader /> : "Yes"}
+              {loading ? <Loader /> : t("common.yes")}
             </button>
           </div>
         </div>

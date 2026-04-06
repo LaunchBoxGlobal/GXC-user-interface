@@ -6,12 +6,14 @@ import Loader from "../../components/Common/Loader";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
+import { useTranslation } from "react-i18next";
 
 const MemberReviews = ({ member }) => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation("transactionHistory");
 
   /** Fetch all reviews of the member */
   const fetchSellerReviews = async () => {
@@ -25,7 +27,7 @@ const MemberReviews = ({ member }) => {
         `${BASE_URL}/reviews/users/${member.id}/reviews`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
       setReviews(data?.data || {});
     } catch (err) {
@@ -68,9 +70,7 @@ const MemberReviews = ({ member }) => {
     return (
       <div className="w-full bg-white rounded-[18px] p-5">
         <div className="w-full rounded-[18px] p-5 lg:p-7 bg-[var(--secondary-bg)] flex flex-col items-center justify-center min-h-[40vh]">
-          <p className="text-gray-500 text-sm">
-            No reviews found for this member.
-          </p>
+          <p className="text-gray-500 text-sm">{t(`no_reviews`)}</p>
         </div>
       </div>
     );
@@ -82,7 +82,7 @@ const MemberReviews = ({ member }) => {
       <div className="w-full rounded-[18px] p-5 lg:p-7 bg-[var(--secondary-bg)]">
         {/* Header */}
         <h2 className="text-[24px] font-semibold leading-none">
-          Reviews{" "}
+          {t(`reviews`)}{" "}
           {reviews?.totalReviews > 0 && (
             <span className="text-gray-600">{`(${reviews?.totalReviews})`}</span>
           )}

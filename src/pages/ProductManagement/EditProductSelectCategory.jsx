@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { RxCross2 } from "react-icons/rx";
+import { useTranslation } from "react-i18next";
 
 const EditProductSelectCategory = ({ formik, categories }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
+  const { t } = useTranslation("productManagement");
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -28,7 +30,7 @@ const EditProductSelectCategory = ({ formik, categories }) => {
       // REMOVE
       formik.setFieldValue(
         "category",
-        selectedIds.filter((id) => id !== idStr)
+        selectedIds.filter((id) => id !== idStr),
       );
       return;
     }
@@ -43,7 +45,7 @@ const EditProductSelectCategory = ({ formik, categories }) => {
   const removePill = (idStr) => {
     formik.setFieldValue(
       "category",
-      formik.values.category.filter((id) => id !== idStr)
+      formik.values.category.filter((id) => id !== idStr),
     );
   };
 
@@ -51,7 +53,9 @@ const EditProductSelectCategory = ({ formik, categories }) => {
 
   return (
     <div className="w-full flex flex-col gap-2 mt-4 relative" ref={dropdownRef}>
-      <label className="text-sm font-medium">Categories</label>
+      <label className="text-sm font-medium">
+        {t(`selectCategory.categories`)}
+      </label>
 
       {/* DROPDOWN TRIGGER */}
       <div

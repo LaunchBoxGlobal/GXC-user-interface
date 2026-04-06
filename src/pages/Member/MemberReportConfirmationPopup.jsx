@@ -1,4 +1,4 @@
-import React from "react";
+import { useTranslation } from "react-i18next";
 
 const MemberReportConfirmationPopup = ({
   showMemberReportConfimationPopup,
@@ -9,6 +9,9 @@ const MemberReportConfirmationPopup = ({
     setShowMemberReportConfimationPopup(false);
     setOpenReportMemberModal(true);
   };
+
+  const { t } = useTranslation("member");
+
   return (
     showMemberReportConfimationPopup && (
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center padding-x">
@@ -20,9 +23,11 @@ const MemberReportConfirmationPopup = ({
               className="w-[57px] h-[60px]"
             />
           </div>
-          <p className="text-[24px] font-semibold leading-none">Report User</p>
+          <p className="text-[24px] font-semibold leading-none">
+            {t(`members.headings.reportUser`)}
+          </p>
           <p className="text-[#888888]">
-            Are you sure you want report this user?
+            {t(`members.subheadings.areYouSureToReportUser`)}
           </p>
 
           <div className="w-full grid grid-cols-2 gap-2">
@@ -31,14 +36,14 @@ const MemberReportConfirmationPopup = ({
               onClick={() => setShowMemberReportConfimationPopup(false)}
               className="bg-[#EDEDED] w-full h-[48px] rounded-[12px] text-center font-medium"
             >
-              No
+              {t(`members.buttons.no`)}
             </button>
             <button
               type="button"
               onClick={() => handleClickYes()}
               className="bg-[var(--button-bg)] w-full h-[48px] rounded-[12px] text-white font-medium text-center"
             >
-              Yes
+              {t(`members.buttons.yes`)}
             </button>
           </div>
         </div>

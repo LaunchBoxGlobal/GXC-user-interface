@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import MarkItemMissingImageUpload from "./MarkItemMissingImageUpload";
 import { useAppContext } from "../../context/AppContext";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const MarkItemMissingModal = ({
   setOpenMissingItemReportModal,
@@ -20,6 +21,7 @@ const MarkItemMissingModal = ({
   const [isReportSubmitted, setIsReportSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("orderManagement");
 
   useEffect(() => {
     document.title = "Reporting - giveXchange";
@@ -34,9 +36,9 @@ const MarkItemMissingModal = ({
 
     validationSchema: Yup.object({
       description: Yup.string()
-        .min(10, "Description must be 10 characters or more")
-        .max(1500, "Description must be 1500 characters or less")
-        .required("Description is required"),
+        .min(10, t(`markItemMissingModal.form.errors.minDescription`))
+        .max(1500, t(`markItemMissingModal.form.errors.maxDescription`))
+        .required(t(`markItemMissingModal.form.errors.descriptionRequired`)),
     }),
 
     onSubmit: async (values, { resetForm }) => {
@@ -66,13 +68,13 @@ const MarkItemMissingModal = ({
               Authorization: `Bearer ${getToken()}`,
               // "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
 
         if (response.data.success) {
           enqueueSnackbar(
             response?.data?.message || "Order report submitted successfully.",
-            { variant: "success" }
+            { variant: "success" },
           );
           resetForm();
           setOpenMissingItemReportModal(false);
@@ -94,7 +96,7 @@ const MarkItemMissingModal = ({
       >
         <div className="w-full flex items-center justify-between gap-4">
           <h3 className="text-[20px] font-semibold leading-none">
-            Mark Item Missing
+            {t(`markItemMissingModal.markItemMissing`)}
           </h3>
 
           <button
@@ -110,7 +112,9 @@ const MarkItemMissingModal = ({
             <div className="w-full mt-4">
               <textarea
                 name="description"
-                placeholder="Enter description..."
+                placeholder={t(
+                  `markItemMissingModal.form.labels.enterDescription`,
+                )}
                 className="w-full bg-white rounded-[18px] relative p-5 min-h-[185px] text-base resize-none outline-none"
                 value={formik.values.description}
                 onChange={formik.handleChange}
@@ -132,7 +136,11 @@ const MarkItemMissingModal = ({
 
         <div className="w-full flex justify-end mt-5">
           <div className="w-full max-w-[130px]">
-            <Button title={"Submit"} type={"submit"} isLoading={loading} />
+            <Button
+              title={t(`markItemMissingModal.form.buttons.submit`)}
+              type={"submit"}
+              isLoading={loading}
+            />
           </div>
         </div>
       </form>

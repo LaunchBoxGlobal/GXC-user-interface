@@ -1,0 +1,68 @@
+{
+    "settings": {
+        "settings": "Ajustes",
+        "buttons": {
+            "editProfile": "Editar perfil",
+            "saveCard": "Guardar tarjeta",
+            "save": "Guardar",
+            "send": "Enviar",
+            "resendCode": "Reenviar código",
+            "resending": "Reenviar",
+            "verify": "Verificar",
+            "verifying...": "verificando...",
+            "logout": "Cerrar sesión"
+        },
+        "notifications": {
+            "notificationsHeading": "Notificaciones",
+            "productAlert": "Alertas de nuevos productos",
+            "productAlertDescription": "Recibe notificaciones sobre nuevos productos añadidos a las comunidades a las que te has unido.",
+            "orderUpdates": "Actualizaciones de pedidos",
+            "orderUpdatesDescription": "Mantente informado sobre confirmaciones de pedidos, envíos y entregas.",
+            "preferencesUpdated": "¡Preferencias actualizadas exitosamente!"
+        },
+        "paymentMethods": {
+            "paymentMethod": "Método de pago",
+            "addNewCard": "Agregar nueva tarjeta"
+        },
+        "changePassword": {
+            "changePassword": "Cambiar contraseña",
+            "passChangedSuccess": "La contraseña se cambió correctamente",
+            "form": {
+                "currentPass": "Contraseña actual",
+                "newPass": "Nueva contraseña",
+                "confirmPass": "Confirmar contraseña",
+                "errors": {
+                    "currentPassRequired": "Ingresa tu contraseña actual",
+                    "passMin": "La contraseña debe tener al menos 8 caracteres",
+                    "passMax": "La contraseña no puede tener más de 25 caracteres",
+                    "passUppercase": "La contraseña debe contener al menos una letra mayúscula",
+                    "passLowercase": "La contraseña debe contener al menos una letra minúscula",
+                    "passNum": "La contraseña debe contener al menos un número",
+                    "passMatch": "La contraseña debe contener al menos un carácter especial",
+                    "passRequired": "Ingresa tu nueva contraseña",
+                    "confirmPass": "Las contraseñas no coinciden",
+                    "confirmPassRequired": "La confirmación de la contraseña es obligatoria"
+                }
+            }
+        },
+        "deleteAccount": {
+            "deleteAccount": "Eliminar cuenta",
+            "weWillSendCode": "Enviaremos un código de 6 dígitos a",
+            "confirmDeletion": "para confirmar la eliminación.",
+            "dataRemovedPermanently": "Tus datos serán eliminados permanentemente de nuestra base de datos.",
+            "codeWasSent": "El código fue enviado a",
+            "didNotReceiveCode": "¿No recibiste el código?",
+            "resendCode": "Reenviar código en"
+        },
+        "termsConditions": "Términos y condiciones",
+        "privacyPolicy": "Política de privacidad",
+        "tabs": {
+            "notifications": "Notificaciones",
+            "paymentMethod": "Método de pago",
+            "changePassword": "Cambiar contraseña",
+            "deleteAccount": "Eliminar cuenta",
+            "termsConditions": "Términos y condiciones",
+            "privacyPolicy": "Política de privacidad"
+        }
+    }
+}

@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const PasswordUpdateSuccessModal = ({ showPopup, handleTogglePopup }) => {
+  const { t } = useTranslation("auth");
   return (
     showPopup && (
       <main className="w-full h-screen fixed inset-0 z-50 flex items-center justify-center px-4 bg-[rgba(0,0,0,0.4)]">
@@ -11,17 +14,17 @@ const PasswordUpdateSuccessModal = ({ showPopup, handleTogglePopup }) => {
             />
           </div>
           <h2 className="text-[24px] font-semibold leading-[1.3] text-center">
-            Password Updated!
+            {t(`auth.password_updated`)}
           </h2>
           <p className="text-[var(--secondary-color)] text-center leading-[1.3]">
-            Your password has been updated successfully
+            {t(`auth.password_updated_successfully`)}
           </p>
           <button
             type={"button"}
             onClick={() => handleTogglePopup()}
             className="w-full bg-[var(--button-bg)] text-white h-[49px] mt-2.5 rounded-[8px] text-center font-medium"
           >
-            Continue
+            {t(`button.continue`)}
           </button>
         </div>
       </main>

@@ -5,11 +5,13 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const EditProductImagesUploader = ({ product, productId }) => {
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const { t } = useTranslation("productManagement");
 
   const MAX_IMAGES = 5;
 
@@ -25,10 +27,10 @@ const EditProductImagesUploader = ({ product, productId }) => {
 
     if (images.length >= MAX_IMAGES) {
       enqueueSnackbar(
-        `You can only have up to ${MAX_IMAGES} images in total.`,
+        `${t(`messages.totalImages_1`)} ${MAX_IMAGES} ${t(`messages.totalImages_2`)}`,
         {
           variant: "warning",
-        }
+        },
       );
       return;
     }
@@ -82,13 +84,13 @@ const EditProductImagesUploader = ({ product, productId }) => {
             Authorization: `Bearer ${getToken()}`,
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (res?.data?.success) {
         const uploaded = res?.data?.data?.images || [];
         setImages((prev) => [...prev, ...uploaded].slice(0, MAX_IMAGES));
-        enqueueSnackbar("Images uploaded successfully!", {
+        enqueueSnackbar(t(`messages.imageUploaded`), {
           variant: "success",
         });
       }
@@ -101,7 +103,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
 
   const handleDeleteImage = async (imageId) => {
     if (images.length === 1) {
-      enqueueSnackbar("At least one image is required.", {
+      enqueueSnackbar(t(`messages.oneImageRequired`), {
         variant: "warning",
       });
       return;
@@ -111,12 +113,12 @@ const EditProductImagesUploader = ({ product, productId }) => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${productId}/images/${imageId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        { headers: { Authorization: `Bearer ${getToken()}` } },
       );
 
       if (res?.data?.success) {
         setImages((prev) => prev.filter((img) => img.id !== imageId));
-        enqueueSnackbar("Image deleted successfully!", { variant: "success" });
+        enqueueSnackbar(t(`messages.imageDeleted`), { variant: "success" });
       }
     } catch (error) {
       handleApiError(error);
@@ -128,7 +130,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
   return (
     <div className="w-full bg-white rounded-[18px] p-5 lg:p-7 h-fit">
       <h1 className="font-medium text-[20px] leading-none tracking-tight">
-        Product Images
+        {t(`images.title`)}
       </h1>
 
       {/* Upload Area */}
@@ -144,12 +146,9 @@ const EditProductImagesUploader = ({ product, productId }) => {
               className="w-[30px] h-[30px]"
             />
             <p className="mb-0.5 mt-2 text-base text-[var(--button-bg)] font-medium">
-              Click to upload Image
+              {t(`images.upload`)}
             </p>
-            <p className="text-sm font-medium text-[#959393]">Or Drag & Drop</p>
-            <p className="text-xs text-gray-500 mt-1">
-              (Max {MAX_IMAGES} images, PNG/JPG/JPEG)
-            </p>
+            <p className="text-xs text-gray-500 mt-1">{t(`images.max`)}</p>
           </div>
           <input
             id="dropzone-file"
@@ -191,7 +190,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
 
       {uploading && (
         <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
-          <Loader size={18} /> Uploading images...
+          <Loader size={18} />
         </div>
       )}
     </div>

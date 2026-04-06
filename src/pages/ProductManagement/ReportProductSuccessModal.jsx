@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
+
 const ReportProductSuccessModal = ({
   setIsReportedSuccess,
   setIsReportModalOpen,
 }) => {
+  const { t } = useTranslation("productManagement");
   return (
     <div className="w-full min-h-screen fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center px-4 z-50">
       <div className="w-full max-w-[471px] min-h-[291px] bg-white p-5 rounded-[32px] z-50 relative">
@@ -15,10 +18,10 @@ const ReportProductSuccessModal = ({
             />
           </div>
           <h3 className="text-[24px] font-semibold leading-none mt-4">
-            Report Submitted
+            {t(`reportSubmitted`)}
           </h3>
           <p className="text-[#202020] leading-[1.2] text-center mt-3">
-            Thank you! Your report has been <br /> successfully submitted.
+            {t(`productManagement.reportSubmittedSuccessfully`)}
           </p>
           <button
             type="button"

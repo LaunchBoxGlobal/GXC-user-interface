@@ -6,10 +6,12 @@ import { enqueueSnackbar } from "notistack";
 import { handleApiError } from "../../utils/handleApiError";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const NotificationsPage = () => {
   const { user, fetchUserProfile } = useAppContext();
   const navigate = useNavigate();
+  const { t } = useTranslation("settings");
 
   const [updatingField, setUpdatingField] = useState(null);
 
@@ -31,13 +33,13 @@ const NotificationsPage = () => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       // Re-fetch latest user profile so state stays in sync
       await fetchUserProfile();
 
-      enqueueSnackbar("Preferences updated successfully!", {
+      enqueueSnackbar(t(`settings.notifications.preferencesUpdated`), {
         variant: "success",
       });
     } catch (error) {
@@ -45,7 +47,7 @@ const NotificationsPage = () => {
         error?.response?.data?.message ||
           error?.message ||
           "Something went wrong. Try again.",
-        { variant: "error" }
+        { variant: "error" },
       );
       handleApiError(error, navigate);
     } finally {
@@ -58,18 +60,19 @@ const NotificationsPage = () => {
 
   return (
     <div className="w-full relative pt-2">
-      <h2 className="text-[24px] font-semibold leading-none">Notifications</h2>
+      <h2 className="text-[24px] font-semibold leading-none">
+        {t(`settings.notifications.notificationsHeading`)}
+      </h2>
       <div className="w-full border my-5" />
 
       <div className="w-full space-y-4">
         {/* Product Alerts */}
         <div className="w-full bg-[#F5F5F5] rounded-[12px] p-5 flex items-center justify-between">
           <div className="w-full max-w-[80%]">
-            <h3 className="font-semibold text-lg">New Product Alerts</h3>
-            <p>
-              Receive notifications for new products added to your joined
-              communities.
-            </p>
+            <h3 className="font-semibold text-lg">
+              {t(`settings.notifications.productAlert`)}
+            </h3>
+            <p>{t(`settings.notifications.productAlertDescription`)}</p>
           </div>
 
           <label className="inline-flex items-center cursor-pointer">
@@ -95,11 +98,10 @@ const NotificationsPage = () => {
         {/* Order Alerts */}
         <div className="w-full bg-[#F5F5F5] rounded-[12px] p-5 flex items-center justify-between">
           <div className="w-full max-w-[80%]">
-            <h3 className="font-semibold text-lg">Order Updates</h3>
-            <p>
-              Stay informed about order confirmations, shipments, and
-              deliveries.
-            </p>
+            <h3 className="font-semibold text-lg">
+              {t(`settings.notifications.orderUpdates`)}
+            </h3>
+            <p>{t(`settings.notifications.orderUpdatesDescription`)}</p>
           </div>
 
           <label className="inline-flex items-center cursor-pointer">

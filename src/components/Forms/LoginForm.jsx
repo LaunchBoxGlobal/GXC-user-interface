@@ -7,12 +7,13 @@ import PasswordField from "../Common/PasswordField";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
-const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
 import { requestNotificationPermission } from "../../notifications";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../LanguageSwitcher";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const { setUser } = useAppContext();
   const { fetchCommunities } = useUser();
+  const { t } = useTranslation("auth");
 
   const redirect = searchParams?.get("redirect");
 
@@ -35,9 +37,9 @@ const LoginForm = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string().required("Password is required"),
+        .email(t("auth:errors.invalid_email"))
+        .required(t("auth:errors.email_required")),
+      password: Yup.string().required(t("auth:errors.password_required")),
     }),
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
@@ -53,7 +55,7 @@ const LoginForm = () => {
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -89,7 +91,7 @@ const LoginForm = () => {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${newToken}`,
                 },
-              }
+              },
             );
 
             if (resendRes?.data?.success) {
@@ -107,7 +109,7 @@ const LoginForm = () => {
                     email: values.email,
                     page: "/login",
                   },
-                }
+                },
               );
             }
           } catch (err) {
@@ -133,6 +135,7 @@ const LoginForm = () => {
       onSubmit={formik.handleSubmit}
       className="w-full max-w-[350px] flex flex-col items-start gap-4"
     >
+      {/* <LanguageSwitcher /> */}
       <img
         src="/logo.svg"
         alt="logo"
@@ -140,9 +143,11 @@ const LoginForm = () => {
       />
 
       <div className="w-full text-center space-y-3">
-        <h2 className="font-semibold text-[32px] leading-none">Welcome Back</h2>
+        <h2 className="font-semibold text-[32px] leading-none">
+          {t(`auth.welcome`)}
+        </h2>
         <p className="text-[var(--secondary-color)]">
-          Please enter details to continue
+          {t(`auth.login_subheading`)}
         </p>
       </div>
 
@@ -157,7 +162,7 @@ const LoginForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
-            label={"Email Address"}
+            label={t(`form.email_label`)}
           />
         </div>
 
@@ -170,7 +175,7 @@ const LoginForm = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
-            label={"Password"}
+            label={t(`form.password`)}
           />
         </div>
 
@@ -183,12 +188,16 @@ const LoginForm = () => {
             }
             className="text-xs font-medium"
           >
-            Forgot Password?
+            {t(`form.forgot_password`)}
           </Link>
         </div>
 
         <div className="pt-2 w-full">
-          <Button type={"submit"} title={`Login`} isLoading={loading} />
+          <Button
+            type={"submit"}
+            title={t(`button.login_button`)}
+            isLoading={loading}
+          />
         </div>
       </div>
 
@@ -206,13 +215,13 @@ const LoginForm = () => {
             <div className="w-full mt-2 flex flex-col items-center gap-4">
               <div className="w-full flex items-center justify-center gap-1">
                 <p className="text-[var(--secondary-color)]">
-                  Don't have an account?{" "}
+                  {t(`auth.DontHaveAnAccount`)}{" "}
                 </p>
                 <Link
                   to={redirect ? `/signup?redirect=${redirect}` : "/signup"}
                   className="font-medium text-[var(--button-bg)]"
                 >
-                  Sign Up
+                  {t(`signup.title`)}
                 </Link>
               </div>
             </div>

@@ -5,31 +5,38 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
 
 const settingPages = [
   {
     title: "Notification",
     url: "notifications",
+    key: "notifications",
   },
   {
     title: "Pyament Method",
     url: "payment-methods",
+    key: "paymentMethod",
   },
   {
     title: "Change Password",
     url: "change-password",
+    key: "changePassword",
   },
   {
     title: "Delete Account",
     url: "delete-account",
+    key: "deleteAccount",
   },
   {
     title: "Terms & Conditions",
     url: "terms-and-conditions",
+    key: "termsConditions",
   },
   {
     title: "Privacy Policy",
     url: "privacy-policy",
+    key: "privacyPolicy",
   },
 ];
 
@@ -38,6 +45,7 @@ const SettingsLayout = ({ page }) => {
   const { user, setUser } = useAppContext();
   const navigate = useNavigate();
   const { settingsTab } = useParams();
+  const { t } = useTranslation("settings");
 
   const fetchUserProfile = async () => {
     try {
@@ -75,7 +83,7 @@ const SettingsLayout = ({ page }) => {
             console.error(
               `Unexpected error: ${status} - ${
                 error.response?.data?.message || error.message
-              }`
+              }`,
             );
         }
       } else {
@@ -100,7 +108,7 @@ const SettingsLayout = ({ page }) => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (res?.data?.success) {
@@ -174,7 +182,7 @@ const SettingsLayout = ({ page }) => {
             to={`/edit-profile`}
             className="button px-10  h-[58px] flex items-center justify-center"
           >
-            Edit Profile
+            {t(`settings.buttons.editProfile`)}
           </Link>
         </div>
       </div>
@@ -183,14 +191,14 @@ const SettingsLayout = ({ page }) => {
         <div className="w-full lg:w-[25%] lg:min-h-[90vh] border-r px-8 pt-5 overflow-hidden relative">
           <div className="w-full flex items-center justify-between">
             <h2 className="text-[22px] lg:text-[28px] font-semibold">
-              Settings
+              {t(`settings.settings`)}
             </h2>
             <button
               type="button"
               onClick={() => handleLogout()}
               className={`text-sm font-medium px-4 h-[39px] lg:hidden outline-none bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
             >
-              Logout
+              {t(`settings.buttons.logout`)}
             </button>
           </div>
           <ul className="w-full flex lg:flex-col mt-5 overflow-auto">
@@ -207,7 +215,8 @@ const SettingsLayout = ({ page }) => {
                       link?.url === settingsTab && "bg-gray-100"
                     } whitespace-nowrap`}
                   >
-                    <span className="">{link?.title}</span>
+                    {/* <span className="">{link?.title}</span> */}
+                    <span className="">{t(`settings.tabs.${link.key}`)}</span>
                   </button>
                 </li>
               );
@@ -219,7 +228,7 @@ const SettingsLayout = ({ page }) => {
             onClick={() => handleLogout()}
             className={`text-sm font-medium w-full h-[49px] outline-none hidden lg:block absolute bottom-5 left-8 bg-[var(--button-bg)] text-white rounded-[12px] max-w-[120px] text-center`}
           >
-            Logout
+            {t(`settings.buttons.logout`)}
           </button>
         </div>
         <div className="w-full lg:w-[72%] pt-5 pr-5 pb-5 pl-5 lg:pl-0">

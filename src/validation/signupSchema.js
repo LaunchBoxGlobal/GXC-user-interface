@@ -1,42 +1,45 @@
 import * as Yup from "yup";
 
-export const signupSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(3, "First name must contain at least 3 characters")
-    .max(10, "First name must be 10 characters or less")
-    .matches(/^[A-Za-z ]+$/, "First name must contain only letters and spaces")
-    .required("Name is required"),
-  lastName: Yup.string()
-    .min(3, "Last name must contain at least 3 characters")
-    .max(10, "Last name must be 10 characters or less")
-    .matches(/^[A-Za-z ]+$/, "Last name must contain only letters and spaces")
-    .required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .matches(
-      /^(?![._-])([a-zA-Z0-9._%+-]{1,64})@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
-      "Please enter a valid email address"
-    )
-    .matches(
-      /^(?!.*[._-]{2,})(?!.*\.\.).*$/,
-      "Email cannot contain consecutive special characters"
-    )
-    .required("Email address is required"),
-  password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(25, "Password cannot be more than 25 characters")
-    .matches(
-      /[A-Z]/,
-      "Password must contain at least one uppercase & one lowercase letter"
-    )
-    .matches(/\d/, "Password must contain at least one number")
-    .matches(
-      /[@$!%*?&^#_.-]/,
-      "Password must contain at least one special character"
-    )
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords do not match")
-    .required("Confirm password is required"),
-  profileImage: Yup.mixed().nullable(),
-});
+export const signupSchema = (t) =>
+  Yup.object().shape({
+    firstName: Yup.string()
+      .min(3, t("signup.validation.firstName.min"))
+      .max(10, t("signup.validation.firstName.max"))
+      .matches(/^[A-Za-z ]+$/, t("signup.validation.firstName.invalid"))
+      .required(t("signup.validation.firstName.required")),
+
+    lastName: Yup.string()
+      .min(3, t("signup.validation.lastName.min"))
+      .max(10, t("signup.validation.lastName.max"))
+      .matches(/^[A-Za-z ]+$/, t("signup.validation.lastName.invalid"))
+      .required(t("signup.validation.lastName.required")),
+
+    email: Yup.string()
+      .email(t("signup.validation.email.invalid"))
+      .matches(
+        /^(?![._-])([a-zA-Z0-9._%+-]{1,64})@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/,
+        t("signup.validation.email.format"),
+      )
+      .matches(
+        /^(?!.*[._-]{2,})(?!.*\.\.).*$/,
+        t("signup.validation.email.noConsecutive"),
+      )
+      .required(t("signup.validation.email.required")),
+
+    password: Yup.string()
+      .min(8, t("signup.validation.password.min"))
+      .max(25, t("signup.validation.password.max"))
+      .matches(/[A-Z]/, t("signup.validation.password.uppercase"))
+      .matches(/\d/, t("signup.validation.password.number"))
+      .matches(/[@$!%*?&^#_.-]/, t("signup.validation.password.special"))
+      .required(t("signup.validation.password.required")),
+
+    confirmPassword: Yup.string()
+      .oneOf(
+        [Yup.ref("password"), null],
+        t("signup.validation.confirmPassword.match"),
+      )
+      .required(t("signup.validation.confirmPassword.required")),
+
+    profileImage: Yup.mixed().nullable(),
+  });

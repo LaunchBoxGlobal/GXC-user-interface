@@ -1,0 +1,47 @@
+{
+    "editProfile": {
+        "editProfile": "Editar perfil",
+        "editProfileSubheading": "Por favor completa los datos para acceder a todas las funciones",
+        "form": {
+            "fields": {
+                "firstNameLabel": "Nombre",
+                "lastNameLabel": "Apellido",
+                "emailAddress": "Correo electrónico",
+                "phoneNumber": "Número de teléfono",
+                "country": "País",
+                "state": "Estado",
+                "city": "Ciudad",
+                "location": "Suite / Apartamento / Calle",
+                "profilePicture": "Subir foto de perfil"
+            },
+            "errors": {
+                "firstNameMin": "El nombre debe tener al menos 3 caracteres",
+                "firstNameMax": "El nombre debe tener como máximo 10 caracteres",
+                "firstNameMatch": "El nombre solo puede contener letras y espacios",
+                "firstNameRequired": "El nombre es obligatorio",
+                "lastNameMin": "El apellido debe tener al menos 3 caracteres",
+                "lastNameMax": "El apellido debe tener como máximo 10 caracteres",
+                "lastNameMatch": "El apellido solo puede contener letras y espacios",
+                "lastNameRequired": "El apellido es obligatorio",
+                "addressMin": "La dirección no puede tener menos de 1 carácter",
+                "addressMax": "La dirección no puede tener más de 30 caracteres",
+                "addressRequired": "Por favor ingresa tu dirección",
+                "phoneNumberRequired": "El número de teléfono es obligatorio",
+                "invalidPhoneNumber": "Número de teléfono inválido",
+                "invalidEmail": "Correo electrónico inválido",
+                "emailIsRequired": "El correo electrónico es obligatorio",
+                "cityRequired": "La ciudad es obligatoria",
+                "stateRequired": "El estado es obligatorio",
+                "countryRequired": "El país es obligatorio",
+                "zipCodeMatch": "Por favor ingresa un código postal válido",
+                "zipCodeIsRequired": "Ingresa tu código postal",
+                "profilePictureRequired": "Se requiere foto de perfil",
+                "profilePictureType": "Sólo se permiten imágenes PNG, JPG o JPEG."
+            },
+            "profileUpdatedSuccess": "¡Perfil actualizado exitosamente!"
+        },
+        "buttons": {
+            "save": "Guardar"
+        }
+    }
+}

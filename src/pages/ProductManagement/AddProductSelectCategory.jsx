@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TiArrowSortedDown } from "react-icons/ti";
-import { RxCross2 } from "react-icons/rx";
 
 const AddProductSelectCategory = ({ formik, categories }) => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
+  const { t } = useTranslation("productManagement");
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -23,7 +23,7 @@ const AddProductSelectCategory = ({ formik, categories }) => {
     if (alreadySelected) {
       formik.setFieldValue(
         "category",
-        formik.values.category.filter((cat) => cat !== id)
+        formik.values.category.filter((cat) => cat !== id),
       );
     } else {
       if (formik.values.category.length >= 5) return;
@@ -36,7 +36,9 @@ const AddProductSelectCategory = ({ formik, categories }) => {
 
   return (
     <div className="w-full flex flex-col gap-2 relative" ref={dropdownRef}>
-      <label className="text-sm font-medium">Categories</label>
+      <label className="text-sm font-medium">
+        {t(`selectCategory.categories`)}
+      </label>
 
       {/* Select Box */}
       <div
@@ -46,7 +48,9 @@ const AddProductSelectCategory = ({ formik, categories }) => {
           ${hasError ? "border-red-500" : "border-[var(--secondary-bg)]"}
         `}
       >
-        <span className="text-gray-400">Select up to 5 categories</span>
+        <span className="text-gray-400">
+          {t(`selectCategory.messages.selectCategories`)}
+        </span>
         <TiArrowSortedDown
           className={`text-xl transition-all text-gray-500 ${
             open ? "rotate-180" : ""

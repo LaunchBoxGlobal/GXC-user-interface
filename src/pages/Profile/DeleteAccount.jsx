@@ -8,12 +8,14 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const DeleteAccount = () => {
   const navigate = useNavigate();
   const { user } = useAppContext();
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation("settings");
 
   const handleCloseModal = () => {
     setShowModal((prev) => !prev);
@@ -29,7 +31,7 @@ const DeleteAccount = () => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (res?.data?.success) {
@@ -53,24 +55,26 @@ const DeleteAccount = () => {
   }
   return (
     <div className="w-full relative pt-2">
-      <h2 className="text-[24px] font-semibold leading-none">Delete Account</h2>
+      <h2 className="text-[24px] font-semibold leading-none">
+        {t(`settings.deleteAccount.deleteAccount`)}
+      </h2>
       <div className="w-full border my-5" />
 
       <div className="w-full flex items-center justify-between flex-wrap gap-5">
         <div className="w-full max-w-[80%]">
           <h3 className="font-medium text-base lg:text-lg leading-[1.3]">
-            We will send 6 digits code to{" "}
+            {t(`settings.deleteAccount.weWillSendCode`)}{" "}
             {user?.email && (
               <span className="font-semibold">
                 {`${user?.email?.slice(0, 2)}********${extractEmailDomain(
-                  user?.email
+                  user?.email,
                 )}`}{" "}
               </span>
             )}
-            to confirm deletion.
+            {t(`settings.deleteAccount.confirmDeletion`)}
           </h3>
           <p className="text-sm lg:text-base mt-3">
-            Your data will be removed from our database permanently.
+            {t(`settings.deleteAccount.dataRemovedPermanently`)}
           </p>
         </div>
         <div className="">
@@ -79,7 +83,7 @@ const DeleteAccount = () => {
             onClick={() => handleSendOtp()}
             className="button min-w-[150px]"
           >
-            {loading ? <Loader /> : "Send"}
+            {loading ? <Loader /> : t(`settings.buttons.send`)}
           </button>
         </div>
       </div>

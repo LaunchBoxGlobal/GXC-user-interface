@@ -1,17 +1,17 @@
 import { useLocation } from "react-router-dom";
-import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const OrderSummary = ({
   cartProducts,
   handleNavigate,
   handlePlaceOrder,
-  isLoading,
   removingItems,
 }) => {
   const location = useLocation();
   const { selectedCommunity } = useUser();
+  const { t } = useTranslation("cart");
 
   const handleClick = () => {
     if (location?.pathname === `/cart/${selectedCommunity?.id}/checkout`) {
@@ -23,35 +23,28 @@ const OrderSummary = ({
   return (
     <div className="bg-white rounded-[18px] w-full">
       <h2 className="text-[24px] font-semibold leading-none px-5 pt-5 lg:pt-7">
-        Order Summary
+        {t(`orderSummary`)}
       </h2>
       <div className="w-full border my-5" />
       {cartProducts?.items?.length > 0 ? (
         <div className="w-full px-5 pb-5">
           <div className="w-full flex items-center justify-between">
-            <p className="text-base text-gray-600">Subtotal</p>
+            <p className="text-base text-gray-600">{t(`subtotal`)}</p>
             <p className="text-base text-gray-600">
               ${cartProducts?.summary?.subtotal?.toFixed(2)}
             </p>
           </div>
           <div className="w-full border my-3" />
           <div className="w-full flex items-center justify-between">
-            <p className="text-base text-gray-600">Products</p>
+            <p className="text-base text-gray-600">{t(`products`)}</p>
             <p className="text-base text-gray-600">
               {cartProducts?.summary?.itemCount}
             </p>
           </div>
-          {/* <div className="w-full border my-3" />
-          <div className="w-full flex items-center justify-between">
-            <p className="text-base text-gray-600">Platform Fee (2%)</p>
-            <p className="text-base text-gray-600">
-              ${cartProducts?.summary?.subtotal}
-            </p>
-          </div> */}
           <div className="w-full border my-3" />
           <div className="w-full flex items-center justify-between">
             <p className="text-base text-[var(--button-bg)] font-semibold">
-              Total
+              {t(`total`)}
             </p>
             <p className="text-base text-[var(--button-bg)] font-semibold">
               ${cartProducts?.summary?.subtotal?.toFixed(2)}
@@ -63,8 +56,7 @@ const OrderSummary = ({
             `/cart/${selectedCommunity?.id}/checkout` ? (
               <div>
                 <p className="text-sm">
-                  <span className="font-medium">Note:</span> No cancellations
-                  after purchase. Please review your order before confirming.
+                  <span className="font-medium">{t(`note`)}:</span> {t(`note:`)}
                 </p>
                 <button
                   type="button"
@@ -82,14 +74,14 @@ const OrderSummary = ({
                 onClick={() => handleClick()}
               >
                 {" "}
-                Proceed to checkout
+                {t(`proceedToCheckout`)}
               </button>
             )}
           </div>
         </div>
       ) : (
         <div className="pb-5 px-5">
-          <p className="">Nothing to show here...</p>
+          <p className="">{t(`nothingToShowHere`)}...</p>
         </div>
       )}
     </div>

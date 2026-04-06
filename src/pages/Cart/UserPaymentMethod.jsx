@@ -13,6 +13,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -26,6 +27,8 @@ const UserPaymentMethod = ({
   const [loadingCards, setLoadingCards] = useState(false);
   const [deleteCard, setDeleteCard] = useState(false);
 
+  const { t } = useTranslation("cart");
+
   // Fetch saved cards
   const fetchSavedCards = async () => {
     if (!user?.id) return;
@@ -35,10 +38,8 @@ const UserPaymentMethod = ({
         headers: { Authorization: `Bearer ${getToken()}` },
       });
 
-      // console.log("user cards >>> ", res?.data);
       setSavedCards(res.data?.data?.paymentMethods || []);
     } catch (err) {
-      console.error("Error fetching cards:", err);
     } finally {
       setLoadingCards(false);
     }
@@ -59,7 +60,7 @@ const UserPaymentMethod = ({
 
   const handleAddCardClick = () => {
     if (savedCards.length >= 2) {
-      enqueueSnackbar("You can add a maximum of 2 cards.", {
+      enqueueSnackbar(t(`maxTwoCards`), {
         variant: "error",
       });
       return;
@@ -76,18 +77,15 @@ const UserPaymentMethod = ({
         `${BASE_URL}/payments/payment-methods/${cardId}`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
-      enqueueSnackbar(
-        res?.data?.message || "Payment method removed successfully",
-        {
-          variant: "success",
-        }
-      );
+      enqueueSnackbar(res?.data?.message || t(`paymentMethodRemoved`), {
+        variant: "success",
+      });
       await fetchSavedCards();
     } catch (err) {
       console.error("Error deleting card:", err);
-      enqueueSnackbar("Failed to delete card. Try again.", {
+      enqueueSnackbar(t(`failedToDeleteCard`), {
         variant: "error",
       });
     } finally {
@@ -98,21 +96,21 @@ const UserPaymentMethod = ({
   return (
     <div className="w-full">
       <div className="w-full flex items-center justify-between gap-3 mb-2">
-        <p className="font-semibold leading-none">Payment Method</p>
+        <p className="font-semibold leading-none">{t(`paymentMethod`)}</p>
         {!showAddCard && savedCards?.length < 2 && (
           <button
             type="button"
             className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
             onClick={handleAddCardClick}
           >
-            + Add new payment method
+            {t(`addNewPaymentMethod`)}
           </button>
         )}
       </div>
 
       {/* Loading State */}
       {loadingCards && (
-        <p className="text-sm text-gray-400">Loading cards...</p>
+        <p className="text-sm text-gray-400">{t(`loadingCards`)}...</p>
       )}
 
       {/* Existing saved cards */}
@@ -125,7 +123,7 @@ const UserPaymentMethod = ({
                 onClick={() => handleDeleteCard(card.id)}
                 className="text-[13px] font-medium leading-none text-[var(--button-bg)]"
               >
-                Remove Payment Method
+                {t(`removePaymentMethod`)}
               </button>
             </div>
             <div className="w-full flex items-center justify-between h-[46px] bg-[#2B3743]/20 rounded-[12px] px-3 border border-[var(--button-bg)]">
@@ -192,7 +190,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
           {},
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         if (res.data.success) {
@@ -245,7 +243,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
           {},
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         const newClientSecret = res?.data?.data?.clientSecret;
@@ -256,9 +254,8 @@ const AddCardForm = ({ user, onCardAdded }) => {
         setClientSecret(newClientSecret);
 
         // Retry confirming with the new client secret
-        ({ setupIntent, error } = await confirmWithClientSecret(
-          newClientSecret
-        ));
+        ({ setupIntent, error } =
+          await confirmWithClientSecret(newClientSecret));
       }
 
       // 3️⃣ Handle any final Stripe error
@@ -293,7 +290,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
         disabled={loading || !clientSecret}
         className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px]"
       >
-        {loading ? "Saving..." : "Save Card"}
+        {loading ? t(`saving`) : t(`saveCard`)}
       </button>
     </form>
   );

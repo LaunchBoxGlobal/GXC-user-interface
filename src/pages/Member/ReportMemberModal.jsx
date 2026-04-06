@@ -8,6 +8,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export const reportReasons = [
   "Fraudulent Listings",
@@ -50,7 +51,7 @@ const ReportMemberModal = ({
           `${file.name} is not a valid file type. Only JPG and PNG are allowed.`,
           {
             variant: "error",
-          }
+          },
         );
         return false;
       }
@@ -77,13 +78,13 @@ const ReportMemberModal = ({
     },
     validationSchema: Yup.object({
       reason: Yup.string()
-        .required("Description is required")
-        .min(10, "Description must be at least 10 characters")
-        .max(1000, "Description must be less than 1000 characters"),
+        .required(t(`members.forms.errors.reasonRequired`))
+        .min(10, t(`members.forms.errors.minReason`))
+        .max(1000, t(`members.forms.errors.maxReason`)),
     }),
     onSubmit: async (values, { resetForm }) => {
       if (!selectedReason) {
-        enqueueSnackbar("Please select a reason before submitting.", {
+        enqueueSnackbar(t(`members.forms.errors.selectReason`), {
           variant: "error",
         });
         return;
@@ -104,7 +105,7 @@ const ReportMemberModal = ({
               Authorization: `Bearer ${getToken()}`,
               "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
 
         if (response?.data?.success) {
@@ -115,7 +116,6 @@ const ReportMemberModal = ({
           setOpenReportMemberSuccessModal(true);
         }
       } catch (error) {
-        console.error("Report error:", error);
         handleApiError(error, navigate);
       } finally {
         setLoading(false);
@@ -125,6 +125,8 @@ const ReportMemberModal = ({
 
   if (!openReportMemberModal) return null;
 
+  const { t } = useTranslation("member");
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] padding-x">
       <form
@@ -132,17 +134,15 @@ const ReportMemberModal = ({
         className="w-full max-w-[471px] bg-white rounded-[16px] lg:rounded-[32px] p-7 lg:p-9 flex flex-col gap-2 shadow-xl"
       >
         <h2 className="text-[22px] font-semibold leading-tight">
-          Reason for reporting
+          {t(`members.headings.reasonForReporting`)}
         </h2>
         <p className="text-[#202020] text-base">
-          To help improve your experience, please let us know why you are
-          reporting this user.
+          {t(`members.subheadings.whyAreYouReporting`)}
         </p>
 
-        {/* Image Upload */}
         <div className="w-full mt-2">
           <label className="text-xs font-medium">
-            Upload Images (Optional)
+            {t(`members.form.label.uploadImage`)}
           </label>
           <div className="flex flex-col items-center justify-center w-full">
             <label
@@ -152,11 +152,11 @@ const ReportMemberModal = ({
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <p className="mb-1 text-sm text-gray-500">
                   <span className="font-normal text-black">
-                    Upload supporting images
+                    {t(`members.form.label.uploadSupportingImages`)}
                   </span>
                 </p>
                 <p className="text-xs text-gray-500">
-                  Max 5 images, up to 10MB each (JPG, PNG, JPEG)
+                  {t(`members.form.label.maxImages`)}
                 </p>
               </div>
               <input
@@ -170,7 +170,6 @@ const ReportMemberModal = ({
             </label>
           </div>
 
-          {/* Preview selected images */}
           {images.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {images.map((img, i) => (

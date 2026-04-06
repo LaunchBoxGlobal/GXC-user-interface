@@ -1,0 +1,166 @@
+{
+    "button": {
+        "login_button": "Login",
+        "send": "Send",
+        "back": "Back",
+        "resend": "Resend",
+        "verify": "Verify",
+        "change_email": "Change Email",
+        "save": "Save",
+        "continue": "Continue"
+    },
+    "auth": {
+        "welcome": "Welcome Back",
+        "login_subheading": "Please enter details to continue",
+        "forgot_pass_heading": "Enter your registered email address below",
+        "verify_code": "Verify 6-digit code",
+        "verify_code_subheading": "Verify the code sent at",
+        "did_receive_code": "Didn't receive the code yet",
+        "resend_in": "Resend in",
+        "typed_wrong_email": "Typed wrong email?",
+        "set_new_password": "Set New Password",
+        "enter_pass_to_continue": "Enter new password to continue",
+        "email_verified": "Email has been verified successfully",
+        "password_updated": "Password Updated!",
+        "password_updated_successfully": "Your password has been updated successfully",
+        "account_success": "Account created successfully",
+        "credit_card_added_successfully": "Your credit card has been successfully added",
+        "credit_card_description": "Your credit card has been successfully added to your account. You can now use it for seamless transactions and enjoy our services without interruptions.",
+        "DontHaveAnAccount": "Don't have an account?"
+    },
+    "form": {
+        "email_label": "Email Address",
+        "password_label": "Password",
+        "forgot_password": "Forgot Password",
+        "new_password": "New Password",
+        "confirm_password": "Confirm Password"
+    },
+    "errors": {
+        "invalid_email": "Invalid email address",
+        "email_required": "Email is required",
+        "password_required": "Password is required"
+    },
+    "signup": {
+        "title": "Sign Up",
+        "subtitle": "Please enter details to continue",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "placeholders": {
+            "firstName": "Enter your first name",
+            "lastName": "Enter your last name",
+            "email": "Enter your email address",
+            "password": "Enter your password",
+            "confirmPassword": "Enter your password"
+        },
+        "submit": "Sign Up",
+        "or": "OR",
+        "alreadyAccount": "Already have an account?",
+        "signIn": "Sign In",
+        "validation": {
+            "firstName": {
+                "min": "First name must contain at least 3 characters",
+                "max": "First name must be 10 characters or less",
+                "invalid": "First name must contain only letters and spaces",
+                "required": "Name is required"
+            },
+            "lastName": {
+                "min": "Last name must contain at least 3 characters",
+                "max": "Last name must be 10 characters or less",
+                "invalid": "Last name must contain only letters and spaces",
+                "required": "Name is required"
+            },
+            "email": {
+                "invalid": "Invalid email address",
+                "format": "Please enter a valid email address",
+                "noConsecutive": "Email cannot contain consecutive special characters",
+                "required": "Email address is required"
+            },
+            "password": {
+                "min": "Password must be at least 8 characters",
+                "max": "Password cannot be more than 25 characters",
+                "uppercase": "Password must contain at least one uppercase & one lowercase letter",
+                "number": "Password must contain at least one number",
+                "special": "Password must contain at least one special character",
+                "required": "Password is required"
+            },
+            "confirmPassword": {
+                "match": "Passwords do not match",
+                "required": "Confirm password is required"
+            }
+        }
+    },
+    "completeProfile": {
+        "title": "Complete Profile Details",
+        "subtitle": "Please complete details to access all features",
+        "basicDetails": "Basic Details",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "phoneNumber": "Phone Number",
+        "country": "Country",
+        "state": "State",
+        "city": "City",
+        "zipcode": "Zip Code",
+        "address": "Suite / Apartment / Street",
+        "placeholders": {
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email Address",
+            "phoneNumber": "+000 0000 00",
+            "zipcode": "Enter zip code",
+            "address": "Enter your address",
+            "country": "Select Country",
+            "state": "Select State",
+            "city": "Select City"
+        },
+        "buttons": {
+            "skip": "Skip",
+            "save": "Save"
+        }
+    },
+    "profile": {
+        "validation": {
+            "firstName": {
+                "min": "First name must contain at least 3 characters",
+                "max": "First name must be 10 characters or less",
+                "invalid": "First name must contain only letters and spaces",
+                "required": "First name is required"
+            },
+            "lastName": {
+                "min": "Last name must contain at least 3 characters",
+                "max": "Last name must be 10 characters or less",
+                "invalid": "Last name must contain only letters and spaces",
+                "required": "Last name is required"
+            },
+            "email": {
+                "invalid": "Invalid email address",
+                "required": "Email is required"
+            },
+            "phoneNumber": {
+                "required": "Phone number is required",
+                "invalid": "Invalid phone number"
+            },
+            "location": {
+                "min": "Address cannot be less than 1 characters",
+                "max": "Address can not be more than 30 characters",
+                "required": "Please enter your location"
+            },
+            "zipcode": {
+                "invalid": "Please enter a valid zip code",
+                "required": "Enter your zip code"
+            },
+            "city": {
+                "required": "Enter your city"
+            },
+            "state": {
+                "required": "Enter your state"
+            },
+            "country": {
+                "required": "Enter your country"
+            }
+        }
+    }
+}

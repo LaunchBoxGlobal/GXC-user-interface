@@ -7,13 +7,14 @@ import { useState } from "react";
 import Loader from "../Common/Loader";
 import { MdPayments } from "react-icons/md";
 import ProductTypeTabs from "../../pages/ProductManagement/ProductTypeTabs";
-import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const ProductManagementHeader = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [checkStripe, setCheckStripe] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const { t } = useTranslation("productManagement");
 
   const handleCheckStripeAccountStatus = async () => {
     setCheckStripe(true);
@@ -24,31 +25,16 @@ const ProductManagementHeader = () => {
         },
       });
 
-      console.log(res);
-
-      // return;
-
       if (res?.data?.data?.accountStatus === "active") {
         navigate("/product-management/add-product");
-      }
-      // else if (res?.data?.data?.accountStatus === "pending") {
-      //   enqueueSnackbar(
-      //     `Your stripe account is in progress. You can not add products until your account os approved.`,
-      //     {
-      //       variant: "error",
-      //     }
-      //   );
-      // }
-      else {
+      } else {
         setShowConfirmationModal((prev) => !prev);
       }
     } catch (error) {
-      // console.log("handleCheckStripeAccountStatus error >>> ", error);
       if (error?.status === 404) {
         setShowConfirmationModal((prev) => !prev);
         return;
       }
-      // handleApiError(error, navigate);
     } finally {
       setCheckStripe(false);
     }
@@ -64,17 +50,13 @@ const ProductManagementHeader = () => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
-      // console.log("onboarding res >>> ", res?.data);
       if (res?.data?.success && res?.data?.data?.url) {
         window.open(res.data.data.url, "_blank", "noopener,noreferrer");
         setShowConfirmationModal(false);
       }
-      // handleCheckStripeAccountStatus();
-
-      //   console.log("create stripe account >>> ", res?.data);
     } catch (error) {
       console.error("create stripe account error >>> ", error);
       handleApiError(error, navigate);
@@ -84,42 +66,19 @@ const ProductManagementHeader = () => {
     }
   };
 
-  const handleCheckStripeStatus = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${BASE_URL}/seller/stripe/status`, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
-      const data = res?.data?.data;
-      console.log("seller stripe status >>> ", res?.data?.data);
-      if (!data?.hasStripeAccount) {
-        handleCreateStripeAccount();
-        return;
-      } else {
-        navigate("/product-management/add-product");
-      }
-    } catch (error) {
-      handleApiError(error, navigate);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="w-full flex items-center justify-between flex-wrap gap-5">
       <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
-        Product Management
+        {t(`product_management`)}
       </h1>
       <div className="w-full lg:w-1/2 flex items-center justify-end gap-3">
         <ProductTypeTabs />
         <button
           type="button"
           onClick={handleCheckStripeAccountStatus}
-          className="button max-w-[204px] h-[58px] flex items-center justify-center"
+          className="w-full bg-white text-black h-[49px] rounded-[8px] text-center font-medium max-w-[204px] flex items-center justify-center"
         >
-          {checkStripe ? <Loader /> : "Add New Product"}
+          {checkStripe ? <Loader /> : t(`buttons.add_new_product`)}
         </button>
       </div>
 
@@ -141,6 +100,7 @@ export const PermissionModal = ({
   showConfirmationModal,
   setShowConfirmationModal,
 }) => {
+  const { t } = useTranslation("productManagement");
   return (
     showConfirmationModal && (
       <div className="w-full h-screen fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex items-center justify-center px-5">
@@ -149,10 +109,10 @@ export const PermissionModal = ({
             <MdPayments className="text-white text-5xl" />
           </div>
           <h2 className="text-[24px] font-semibold leading-none">
-            Stripe Account Required
+            {t("stripe_required")}
           </h2>
           <p className="text-base font-normal text-[#565656]">
-            You need to create a stripe account to continue.
+            {t("stripe_required_subheading")}
           </p>
           <div className="w-full grid grid-cols-2 gap-3 mt-2">
             <button
@@ -160,14 +120,14 @@ export const PermissionModal = ({
               onClick={() => setShowConfirmationModal((prev) => !prev)}
               className="bg-[#ECECEC] h-[48px] rounded-[12px] text-center font-medium"
             >
-              No
+              {t("buttons.no")}
             </button>
             <button
               type="button"
               onClick={() => handleCreateStripeAccount()}
               className="bg-[var(--button-bg)] h-[48px] rounded-[12px] text-center font-medium text-white"
             >
-              {loading ? <Loader /> : "Continue"}
+              {loading ? <Loader /> : t("buttons.continue")}
             </button>
           </div>
         </div>

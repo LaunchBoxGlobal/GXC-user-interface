@@ -1,0 +1,166 @@
+{
+    "button": {
+        "login_button": "Acceso",
+        "send": "Enviar",
+        "back": "Atrás",
+        "resend": "Reenviar",
+        "verify": "Verificar",
+        "change_email": "Cambiar correo electrónico",
+        "save": "Ahorrar",
+        "continue": "Continuar"
+    },
+    "auth": {
+        "welcome": "Bienvenido de nuevo",
+        "login_subheading": "Por favor ingresa los detalles para continuar",
+        "forgot_pass_heading": "Ingrese su dirección de correo electrónico registrada a continuación",
+        "verify_code": "Verificar código de 6 dígitos",
+        "verify_code_subheading": "Verifica el código enviado a",
+        "did_receive_code": "¿Aún no has recibido el código?",
+        "resend_in": "Reenviar en",
+        "typed_wrong_email": "¿Escribiste un correo electrónico incorrecto?",
+        "set_new_password": "Establecer nueva contraseña",
+        "enter_pass_to_continue": "Ingrese una nueva contraseña para continuar",
+        "email_verified": "El correo electrónico se ha verificado correctamente.",
+        "password_updated": "¡Contraseña actualizada!",
+        "password_updated_successfully": "Su contraseña ha sido actualizada exitosamente",
+        "account_success": "Cuenta creada exitosamente",
+        "credit_card_added_successfully": "Su tarjeta de crédito ha sido agregada exitosamente",
+        "credit_card_description": "Su tarjeta de crédito se ha agregado exitosamente a su cuenta. Tú ahora puede usarlo para transacciones fluidas y disfrutar de nuestros servicios sin interrupciones.",
+        "DontHaveAnAccount": "¿No tienes una cuenta?"
+    },
+    "form": {
+        "email_label": "Dirección de correo electrónico",
+        "password": "Contraseña",
+        "forgot_password": "Has olvidado tu contraseña",
+        "new_password": "Nueva contraseña",
+        "confirm_password": "confirmar Contraseña"
+    },
+    "errors": {
+        "invalid_email": "Dirección de correo electrónico no válida",
+        "email_required": "Se requiere correo electrónico",
+        "password_required": "Se requiere contraseña"
+    },
+    "signup": {
+        "title": "Registrarse",
+        "subtitle": "Por favor ingresa los datos para continuar",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar contraseña",
+        "placeholders": {
+            "firstName": "Ingresa tu nombre",
+            "lastName": "Ingresa tu apellido",
+            "email": "Ingresa tu correo electrónico",
+            "password": "Ingresa tu contraseña",
+            "confirmPassword": "Ingresa tu contraseña"
+        },
+        "submit": "Registrarse",
+        "or": "O",
+        "alreadyAccount": "¿Ya tienes una cuenta?",
+        "signIn": "Iniciar sesión",
+        "validation": {
+            "firstName": {
+                "min": "El nombre debe tener al menos 3 caracteres",
+                "max": "El nombre debe tener como máximo 10 caracteres",
+                "invalid": "El nombre solo debe contener letras y espacios",
+                "required": "El nombre es obligatorio"
+            },
+            "lastName": {
+                "min": "El apellido debe tener al menos 3 caracteres",
+                "max": "El apellido debe tener como máximo 10 caracteres",
+                "invalid": "El apellido solo debe contener letras y espacios",
+                "required": "El nombre es obligatorio"
+            },
+            "email": {
+                "invalid": "Correo electrónico inválido",
+                "format": "Por favor ingresa un correo electrónico válido",
+                "noConsecutive": "El correo no puede contener caracteres especiales consecutivos",
+                "required": "El correo electrónico es obligatorio"
+            },
+            "password": {
+                "min": "La contraseña debe tener al menos 8 caracteres",
+                "max": "La contraseña no puede tener más de 25 caracteres",
+                "uppercase": "La contraseña debe contener al menos una letra mayúscula y una minúscula",
+                "number": "La contraseña debe contener al menos un número",
+                "special": "La contraseña debe contener al menos un carácter especial",
+                "required": "La contraseña es obligatoria"
+            },
+            "confirmPassword": {
+                "match": "Las contraseñas no coinciden",
+                "required": "Confirmar la contraseña es obligatorio"
+            }
+        }
+    },
+    "completeProfile": {
+        "title": "Completar perfil",
+        "subtitle": "Por favor completa los datos para acceder a todas las funciones",
+        "basicDetails": "Detalles básicos",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
+        "phoneNumber": "Número de teléfono",
+        "country": "País",
+        "state": "Estado",
+        "city": "Ciudad",
+        "zipcode": "Código postal",
+        "address": "Suite / Apartamento / Calle",
+        "placeholders": {
+            "firstName": "Nombre",
+            "lastName": "Apellido",
+            "email": "Correo electrónico",
+            "phoneNumber": "+000 0000 00",
+            "zipcode": "Ingresa el código postal",
+            "address": "Ingresa tu dirección",
+            "country": "Seleccionar país",
+            "state": "Seleccionar estado",
+            "city": "Seleccionar ciudad"
+        },
+        "buttons": {
+            "skip": "Omitir",
+            "save": "Guardar"
+        }
+    },
+    "profile": {
+        "validation": {
+            "firstName": {
+                "min": "El nombre debe tener al menos 3 caracteres",
+                "max": "El nombre debe tener como máximo 10 caracteres",
+                "invalid": "El nombre solo debe contener letras y espacios",
+                "required": "El nombre es obligatorio"
+            },
+            "lastName": {
+                "min": "El apellido debe tener al menos 3 caracteres",
+                "max": "El apellido debe tener como máximo 10 caracteres",
+                "invalid": "El apellido solo debe contener letras y espacios",
+                "required": "El apellido es obligatorio"
+            },
+            "email": {
+                "invalid": "Correo electrónico inválido",
+                "required": "El correo electrónico es obligatorio"
+            },
+            "phoneNumber": {
+                "required": "El número de teléfono es obligatorio",
+                "invalid": "Número de teléfono inválido"
+            },
+            "location": {
+                "min": "La dirección no puede tener menos de 1 carácter",
+                "max": "La dirección no puede tener más de 30 caracteres",
+                "required": "Por favor ingresa tu ubicación"
+            },
+            "zipcode": {
+                "invalid": "Por favor ingresa un código postal válido",
+                "required": "Ingresa tu código postal"
+            },
+            "city": {
+                "required": "Ingresa tu ciudad"
+            },
+            "state": {
+                "required": "Ingresa tu estado"
+            },
+            "country": {
+                "required": "Ingresa tu país"
+            }
+        }
+    }
+}

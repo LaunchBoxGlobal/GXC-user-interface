@@ -1,12 +1,17 @@
+import { useTranslation } from "react-i18next";
+
 const CancelOrderSuccessPopup = ({
   showCancellationSuccessPopup,
   setShowCancellationSuccessPopup,
   fetchOrderDetails,
 }) => {
+  const { t } = useTranslation("orderManagement");
+
   const handleClosePopup = async () => {
     setShowCancellationSuccessPopup(false);
     await fetchOrderDetails();
   };
+
   return (
     showCancellationSuccessPopup && (
       <div
@@ -21,11 +26,13 @@ const CancelOrderSuccessPopup = ({
               className="w-[55px] h-[55px]"
             />
           </div>
+
           <h4 className="text-[24px] font-semibold leading-none text-center mt-4">
-            Order cancelled
+            {t("cancelSuccessPopup.title")}
           </h4>
+
           <p className="text-[#565656] text-sm leading-[1.2] mt-3">
-            Your order successfully cancelled
+            {t("cancelSuccessPopup.description")}
           </p>
         </div>
       </div>

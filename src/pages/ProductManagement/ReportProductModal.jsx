@@ -2,28 +2,27 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Common/Button";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import { BASE_URL } from "../../data/baseUrl";
-import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 export const productReportReasons = [
-  "Fraudulent Listing",
-  "Misleading Description",
-  "Counterfeit Product",
-  "Inappropriate Content",
-  "Prohibited Item",
-  "Pricing Violation",
-  "Others",
+  { key: "fraudulent", value: "reportProduct.reasons.fraudulent" },
+  { key: "misleading", value: "reportProduct.reasons.misleading" },
+  { key: "counterfeit", value: "reportProduct.reasons.counterfeit" },
+  { key: "inappropriate", value: "reportProduct.reasons.inappropriate" },
+  { key: "prohibited", value: "reportProduct.reasons.prohibited" },
+  { key: "pricing", value: "reportProduct.reasons.pricing" },
+  { key: "others", value: "reportProduct.reasons.others" },
 ];
 
 const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  //   const { productId } = useParams();
   const [searchParams] = useSearchParams();
   const productId = searchParams.get("productId") || null;
-  const navigate = useNavigate();
+  const { t } = useTranslation("productManagement");
 
   const initialValues = {
     reason: "",
@@ -31,11 +30,11 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
   };
 
   const validationSchema = Yup.object({
-    reason: Yup.string().required("Please select a reason"),
+    reason: Yup.string().required(t("reportProduct.validation.selectReason")),
     description: Yup.string()
-      .required("Description is required")
-      .min(10, "Description can not be less than 10 characters.")
-      .max(1000, "Description can not be less than 1000 characters."),
+      .required(t("reportProduct.validation.descriptionRequired"))
+      .min(10, t("reportProduct.validation.descriptionMin"))
+      .max(1000, t("reportProduct.validation.descriptionMax")),
   });
 
   const handleSubmit = async (values) => {
@@ -58,33 +57,28 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
       const data = await response.json();
 
       if (response.status === 409) {
-        enqueueSnackbar(
-          data?.message || "You have already reported this product.",
-          { variant: "error" }
-        );
+        enqueueSnackbar(data?.message || t("reportProduct.alreadyReported"), {
+          variant: "error",
+        });
         return;
       }
-
-      // if (!response.ok) {
-      //   throw new Error(data?.message || "Failed to submit report");
-      // }
 
       setIsReportedSuccess(true);
       setIsReportModalOpen(false);
     } catch (error) {
       if (error?.response?.status === 409) {
         enqueueSnackbar(
-          error?.response?.data?.message ||
-            "You have already reported this product.",
-          { variant: "warning" }
+          error?.response?.data?.message || t("reportProduct.alreadyReported"),
+          { variant: "warning" },
         );
         return;
       }
+
       enqueueSnackbar(
         error?.response?.data?.message ||
           error?.message ||
-          "Something went wrong.",
-        { variant: "error" }
+          t("reportProduct.somethingWentWrong"),
+        { variant: "error" },
       );
     } finally {
       setIsSubmitting(false);
@@ -96,17 +90,14 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
       <div className="w-full max-w-[500px] bg-white p-5 rounded-xl">
         <div className="w-full flex items-center justify-between gap-5">
           <h3 className="text-[24px] font-semibold">
-            Why do you want to report?
+            {t("reportProduct.title")}
           </h3>
           <button type="button" onClick={() => setIsReportModalOpen(false)}>
             <img src="/close-icon.png" alt="close modal icon" width={19} />
           </button>
         </div>
 
-        <p className="text-[#202020] mt-3">
-          To help improve your experience, please tell us why you are reporting
-          this product.
-        </p>
+        <p className="text-[#202020] mt-3">{t("reportProduct.subtitle")}</p>
 
         <Formik
           initialValues={initialValues}
@@ -121,11 +112,11 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
                     <Field
                       type="radio"
                       name="reason"
-                      value={reason}
-                      id={reason}
+                      value={reason.key}
+                      id={reason.key}
                     />
-                    <label htmlFor={reason} className="text-[#202020]">
-                      {reason}
+                    <label htmlFor={reason.key} className="text-[#202020]">
+                      {t(reason.value)}
                     </label>
                   </li>
                 ))}
@@ -142,7 +133,7 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
                   htmlFor="description"
                   className="font-medium text-[#202020] text-sm"
                 >
-                  Description
+                  {t("reportProduct.descriptionLabel")}
                 </label>
                 <Field
                   as="textarea"
@@ -160,7 +151,7 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
               <div className="w-full mt-4">
                 <Button
                   type="submit"
-                  title="Submit"
+                  title={t("reportProduct.submit")}
                   isLoading={isSubmitting}
                   disabled={isSubmitting}
                 />

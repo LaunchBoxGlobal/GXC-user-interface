@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const PaymentInfoSuccessPopup = ({ showPopup, handleTogglePopup }) => {
+  const { t } = useTranslation("auth");
   return (
     showPopup && (
       <main className="w-full h-screen fixed inset-0 z-50 flex items-center justify-center px-4 bg-[rgba(0,0,0,0.4)]">
@@ -11,12 +14,10 @@ const PaymentInfoSuccessPopup = ({ showPopup, handleTogglePopup }) => {
             />
           </div>
           <h2 className="text-[24px] font-semibold leading-[1.3] text-center">
-            Your credit card has been successfully added
+            {t(`auth.credit_card_added_successfully`)}
           </h2>
           <p className="text-[var(--secondary-color)] text-center leading-[1.3]">
-            Your credit card has been successfully added to your account. You
-            can now use it for seamless transactions and enjoy our services
-            without interruptions.
+            {t(`auth.credit_card_description`)}
           </p>
           <button
             type={"button"}

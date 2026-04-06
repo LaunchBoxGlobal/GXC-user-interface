@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
 import { loadStripe } from "@stripe/stripe-js";
@@ -14,6 +14,7 @@ import { getToken } from "../../utils/getToken";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -23,8 +24,8 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
   const [showAddCard, setShowAddCard] = useState(false);
   const [loadingCards, setLoadingCards] = useState(false);
   const [deleteCard, setDeleteCard] = useState(false);
+  const { t } = useTranslation("settings");
 
-  // Fetch saved cards
   const fetchSavedCards = async () => {
     if (!user?.id) return;
     try {
@@ -60,7 +61,6 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
     setShowAddCard(true);
   };
 
-  // remove a saved card
   const handleDeleteCard = async (cardId) => {
     // if (!window.confirm("Are you sure you want to remove this card?")) return;
     setDeleteCard(true);
@@ -69,13 +69,13 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
         `${BASE_URL}/payments/payment-methods/${cardId}`,
         {
           headers: { Authorization: `Bearer ${getToken()}` },
-        }
+        },
       );
       enqueueSnackbar(
         res?.data?.message || "Payment method removed successfully",
         {
           variant: "success",
-        }
+        },
       );
       await fetchSavedCards();
     } catch (err) {
@@ -92,11 +92,10 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
     <Elements stripe={stripePromise}>
       <div className="w-full pt-2">
         <h2 className="font-semibold text-[24px] leading-none">
-          Payment Method
+          {t("settings.paymentMethods.paymentMethod")}
         </h2>
         <div className="w-full border my-5" />
 
-        {/* Loading State */}
         {loadingCards && (
           <div className="w-full flex justify-center pt-20">
             <Loader />
@@ -107,7 +106,7 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
         {!loadingCards &&
           savedCards.map((card) => (
             <div className="w-full mt-2 flex flex-col gap-1" key={card.id}>
-              <h3 className="font-medium">Saved Card</h3>
+              <h3 className="font-medium">{t(`settings.buttons.saveCard`)}</h3>
               <div className="w-full flex items-center justify-between h-[46px] bg-[#F5F5F5] rounded-[12px] px-3">
                 <div className="w-full max-w-[90%] flex items-center gap-2">
                   <img
@@ -141,10 +140,11 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
           <></>
         ) : (
           <>
-            {/* add new card button */}
             {!showAddCard && savedCards?.length < 2 && (
               <div className="w-full mt-5">
-                <h3 className="font-medium mb-1">Add New Card</h3>
+                <h3 className="font-medium mb-1">
+                  {t(`settings.paymentMethods.addNewCard`)}
+                </h3>
                 <div
                   onClick={handleAddCardClick}
                   className="w-full flex items-center justify-between h-[46px] bg-[#F5F5F5] rounded-[12px] px-3 cursor-pointer"
@@ -156,7 +156,7 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
                       className="w-[34px] h-[24px] object-contain"
                     />
                     <p className="text-sm text-gray-600 font-medium">
-                      Add New Card
+                      {t(`settings.paymentMethods.addNewCard`)}
                     </p>
                   </div>
                   <div className="w-full flex justify-end">
@@ -168,10 +168,9 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
           </>
         )}
 
-        {/* Add card form */}
-
         {showAddCard && (
           <AddCardForm
+            t={t}
             user={user}
             onCardAdded={() => {
               setShowAddCard(false);
@@ -192,7 +191,7 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
 
 export default PaymentMethods;
 
-const AddCardForm = ({ user, onCardAdded }) => {
+const AddCardForm = ({ user, onCardAdded, t }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -208,7 +207,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
           {},
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         if (res.data.success) {
@@ -263,7 +262,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
           {},
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         const newClientSecret = res?.data?.data?.clientSecret;
@@ -274,9 +273,8 @@ const AddCardForm = ({ user, onCardAdded }) => {
         setClientSecret(newClientSecret);
 
         // Retry confirming with the new client secret
-        ({ setupIntent, error } = await confirmWithClientSecret(
-          newClientSecret
-        ));
+        ({ setupIntent, error } =
+          await confirmWithClientSecret(newClientSecret));
       }
 
       // 3️⃣ Handle any final Stripe error
@@ -321,7 +319,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
         disabled={loading || !clientSecret}
         className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px] disabled:cursor-not-allowed"
       >
-        {loading ? <Loader /> : "Save Card"}
+        {loading ? <Loader /> : t(`settings.buttons.saveCard`)}
       </button>
     </form>
   );

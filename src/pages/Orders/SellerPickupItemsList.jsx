@@ -10,9 +10,9 @@ import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import { Link } from "react-router-dom";
-import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
 import { toTitleCase } from "../../utils/toTitleCase";
+import { useTranslation } from "react-i18next";
 
 const SellerPickupItemsList = ({
   pickupItems,
@@ -29,10 +29,11 @@ const SellerPickupItemsList = ({
   const [loading, setLoading] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
+  const { t } = useTranslation("orderManagement");
 
   const markItemAsPickupedUp = async (productId) => {
     if (!productId) {
-      enqueueSnackbar("Something went wrong! Try again.", {
+      enqueueSnackbar(t(`deliveryItems.messages.error`), {
         variant: "error",
       });
       return;
@@ -47,7 +48,7 @@ const SellerPickupItemsList = ({
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
@@ -59,10 +60,10 @@ const SellerPickupItemsList = ({
       enqueueSnackbar(
         error?.message ||
           error?.response?.data?.message ||
-          "Something went wrong.",
+          t(`deliveryItems.messages.error`),
         {
           variant: "error",
-        }
+        },
       );
       handleApiError(error, navigate);
     } finally {
@@ -73,7 +74,7 @@ const SellerPickupItemsList = ({
 
   return (
     <div className="w-full">
-      <h2 className="font-semibold mb-4">Pickup Items</h2>
+      <h2 className="font-semibold mb-4">{t(`deliveryItems.heading`)}</h2>
       <div className="w-full space-y-5">
         {pickupItems &&
           pickupItems?.map((item) => {
@@ -107,24 +108,24 @@ const SellerPickupItemsList = ({
                           item?.overallStatus !== "completed" ? (
                             <>
                               <p className={`text-sm font-medium text-red-500`}>
-                                Missing
+                                {t(`deliveryItems.status.missing`)}
                               </p>
                               <p
                                 className={`font-medium leading-none text-sm ${
                                   item?.report?.status === "pending"
                                     ? "text-[#FF7700]"
                                     : item?.report?.status === "resolved"
-                                    ? "text-green-500"
-                                    : "text-red-500"
+                                      ? "text-green-500"
+                                      : "text-red-500"
                                 }`}
                               >
                                 {item?.report?.status === "pending"
                                   ? "Dispute Raised – Under Review"
                                   : item?.report?.status === "resolved"
-                                  ? "Resolved"
-                                  : item?.report?.status === "rejected"
-                                  ? "Rejected"
-                                  : ""}
+                                    ? "Resolved"
+                                    : item?.report?.status === "rejected"
+                                      ? "Rejected"
+                                      : ""}
                               </p>
                             </>
                           ) : (
@@ -135,14 +136,14 @@ const SellerPickupItemsList = ({
                                   item?.overallStatus === "ready"
                                     ? "text-green-500"
                                     : item?.overallStatus === "cancelled"
-                                    ? "text-red-500"
-                                    : item?.overallStatus === "in_progress"
-                                    ? "text-[#FF7700]"
-                                    : item?.overallStatus === "pending"
-                                    ? "text-[#FF7700]"
-                                    : item?.overallStatus === "delivered"
-                                    ? "text-green-500"
-                                    : "text-gray-500"
+                                      ? "text-red-500"
+                                      : item?.overallStatus === "in_progress"
+                                        ? "text-[#FF7700]"
+                                        : item?.overallStatus === "pending"
+                                          ? "text-[#FF7700]"
+                                          : item?.overallStatus === "delivered"
+                                            ? "text-green-500"
+                                            : "text-gray-500"
                                 }`}
                               >
                                 {toTitleCase(item?.overallStatus)}
@@ -184,13 +185,6 @@ const SellerPickupItemsList = ({
                           </Link>
                         ) : (
                           <>
-                            {/* <button
-                              type="button"
-                              disabled={item?.buyerStatus === "cancelled"}
-                              className="w-[148px] h-[48px] bg-[#DEDEDE] rounded-[12px] text-sm font-medium"
-                            >
-                              Cancel Order
-                            </button> */}
                             <button
                               type="button"
                               onClick={() => {
@@ -204,7 +198,7 @@ const SellerPickupItemsList = ({
                               {loadingItemId === item?.id ? (
                                 <Loader />
                               ) : (
-                                "Confirm Pickup"
+                                t(`pickupItemList.buttons.confirmPickup`)
                               )}
                             </button>
                           </>
@@ -215,7 +209,7 @@ const SellerPickupItemsList = ({
                   {item?.deliveryMethod === "pickup" && (
                     <div className="w-full mt-4">
                       <h3 className="text-base font-semibold leading-none">
-                        Pickup Address
+                        {t(`deliveryItems.sections.pickupAddress`)}
                       </h3>
                       <div className="w-full flex items-center gap-2 mt-1">
                         <div className="min-w-4">
@@ -241,7 +235,7 @@ const SellerPickupItemsList = ({
                   <div className="w-full border border-gray-300 my-4" />
                   <div className="w-full">
                     <h3 className="font-semibold leading-none">
-                      Customer Details
+                      {t(`customDetails`)}
                     </h3>
                     <div className="w-full flex items-center justify-between">
                       <div className="w-full flex items-center gap-3 mt-3">

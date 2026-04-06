@@ -16,6 +16,7 @@ import { useUser } from "../../context/userContext";
 import { editProductSchema } from "../../validation/editProductSchema";
 import EditProductSelectCategory from "./EditProductSelectCategory";
 import EditProductDeliveryTypeSelector from "./EditProductDeliveryTypeSelector";
+import { useTranslation } from "react-i18next";
 
 const EditProductPage = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const EditProductPage = () => {
   const [categories, setCategories] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState(null);
   const [productCategory, setProductCategory] = useState(null);
+  const { t } = useTranslation("productManagement");
 
   const fetchCategories = async () => {
     try {
@@ -97,16 +99,16 @@ const EditProductPage = () => {
             return String(parsed.id);
           })
         : product?.category?.id
-        ? [String(product.category.id)]
-        : [],
+          ? [String(product.category.id)]
+          : [],
       deliveryType:
         product?.deliveryMethod === "both"
           ? ["self", "community"]
           : product?.deliveryMethod === "pickup"
-          ? ["self"]
-          : product?.deliveryMethod === "delivery"
-          ? ["community"]
-          : [],
+            ? ["self"]
+            : product?.deliveryMethod === "delivery"
+              ? ["community"]
+              : [],
       selfPickupAddress: product?.pickupAddress?.address || user?.address || "",
       communityPickupAddress: product?.communityPickupAddress?.address || "",
     },
@@ -155,7 +157,7 @@ const EditProductPage = () => {
           },
           {
             headers: { Authorization: `Bearer ${getToken()}` },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -164,7 +166,7 @@ const EditProductPage = () => {
           });
 
           navigate(
-            `/products/${res.data.data.product.title}?productId=${res.data.data.product.id}`
+            `/products/${res.data.data.product.title}?productId=${res.data.data.product.id}`,
           );
         }
       } catch (error) {
@@ -252,7 +254,7 @@ const EditProductPage = () => {
               Authorization: `Bearer ${getToken()}`,
               "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
 
         const uploaded = res?.data?.data?.image;
@@ -265,8 +267,8 @@ const EditProductPage = () => {
             prev.map((img) =>
               img.file === file
                 ? { id: uploaded.id, url: uploaded.imageUrl, isNew: false }
-                : img
-            )
+                : img,
+            ),
           );
 
           setExistingImages((prev) => [...prev, uploaded]);
@@ -296,7 +298,7 @@ const EditProductPage = () => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${product?.id}/images/${imageId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        { headers: { Authorization: `Bearer ${getToken()}` } },
       );
 
       if (res?.data?.success) {
@@ -314,7 +316,7 @@ const EditProductPage = () => {
     if (previewImages.length === 1) {
       enqueueSnackbar(
         "You must have at least one image. Please upload another before deleting this one.",
-        { variant: "warning" }
+        { variant: "warning" },
       );
       return;
     }
@@ -377,7 +379,7 @@ const EditProductPage = () => {
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`common.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
@@ -392,32 +394,34 @@ const EditProductPage = () => {
           >
             {/* LEFT SECTION */}
             <div className="col-span-2 bg-white rounded-[18px] p-5 lg:p-7">
-              <h1 className="font-semibold text-[20px]">Edit Product</h1>
+              <h1 className="font-semibold text-[20px]">
+                {t(`editProduct.title`)}
+              </h1>
               <div className="border my-5" />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <TextField
                   type="text"
                   name="productName"
-                  placeholder="Enter product name"
+                  placeholder={t(`editProduct.fields.productName.placeholder`)}
                   value={formik.values.productName}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.errors.productName}
                   touched={formik.touched.productName}
-                  label="Product Name"
+                  label={t(`editProduct.fields.productName.label`)}
                 />
 
                 <TextField
                   type="number"
                   name="price"
-                  placeholder="Enter product price"
+                  placeholder={t(`editProduct.fields.price.placeholder`)}
                   value={formik.values.price}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.errors.price}
                   touched={formik.touched.price}
-                  label="Price"
+                  label={t(`editProduct.fields.price.label`)}
                 />
               </div>
 
@@ -430,7 +434,7 @@ const EditProductPage = () => {
               {formik.values.deliveryType.includes("self") && (
                 <div className="mt-4">
                   <label className="font-medium text-sm mb-1">
-                    Self Pickup Address
+                    {t(`addProduct.fields.selfPickupAddress.label`)}
                   </label>
                   <input
                     type="text"
@@ -445,7 +449,7 @@ const EditProductPage = () => {
               {formik.values.deliveryType.includes("community") && (
                 <div className="mt-4">
                   <label className="font-medium text-sm mb-1">
-                    Community Pickup Address
+                    {t(`addProduct.fields.communityPickupAddress.label`)}
                   </label>
                   <input
                     type="text"
@@ -468,11 +472,11 @@ const EditProductPage = () => {
               {/* Description */}
               <div className="mt-4">
                 <label className="font-medium text-sm mb-2 block">
-                  Product Description
+                  {t(`addProduct.fields.description.label`)}
                 </label>
                 <textarea
                   name="description"
-                  placeholder="Enter product description"
+                  placeholder={t(`addProduct.fields.description.placeholder`)}
                   value={formik.values.description}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -495,14 +499,16 @@ const EditProductPage = () => {
                   disabled={loading}
                   className="button relative flex items-center justify-center disabled:cursor-not-allowed"
                 >
-                  {loading ? <Loader /> : "Save"}
+                  {loading ? <Loader /> : t(`addProduct.common.save`)}
                 </button>
               </div>
             </div>
 
             {/* RIGHT SECTION */}
             <div className="bg-white rounded-[18px] p-5 lg:p-7">
-              <h1 className="font-semibold text-[20px]">Product Images</h1>
+              <h1 className="font-semibold text-[20px]">
+                {t(`editProduct.images.title`)}
+              </h1>
 
               <div className="flex flex-col items-start justify-center w-full mt-4">
                 <label
@@ -516,13 +522,11 @@ const EditProductPage = () => {
                       className="w-[30px] h-[30px]"
                     />
                     <p className="mt-2 text-base text-[var(--button-bg)] font-semibold">
-                      Click to upload Image
+                      {t(`editProduct.images.upload`)}
                     </p>
-                    <p className="text-sm font-medium text-[#959393]">
-                      Or Drag & Drop
-                    </p>
+
                     <p className="text-xs text-gray-500 mt-1">
-                      (Max 5 images, PNG/JPG/JPEG)
+                      {t(`editProduct.images.max`)}
                     </p>
                   </div>
                   <input

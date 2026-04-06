@@ -1,53 +1,55 @@
 import * as Yup from "yup";
 
-export const productSchema = Yup.object().shape({
-  productName: Yup.string()
-    .trim("Product name cannot start or end with spaces")
-    .min(3, "Product name must contain at least 3 characters")
-    .max(30, "Product name must be 30 characters or less")
-    .required("Product name is required"),
+export const productSchema = (t) =>
+  Yup.object().shape({
+    productName: Yup.string()
+      .trim(t("validation.productName.trim"))
+      .min(3, t("validation.productName.min"))
+      .max(30, t("validation.productName.max"))
+      .required(t("validation.productName.required")),
 
-  price: Yup.number()
-    .typeError("Price must be a number")
-    .positive("Price must be greater than 0")
-    .min(1, "Product price can not be less than 1")
-    .max(999999, "Product price must be less than 999999")
-    .test(
-      "max-decimals",
-      "Price can have up to 2 decimal places only",
-      (value) =>
-        value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString())
-    )
-    .required("Price is required"),
-  // category: Yup.string().required("Please select a category"),
-  category: Yup.array()
-    .min(1, "Please select at least one category")
-    .max(5, "You can select up to 5 categories")
-    .required("Please select at least one category"),
-  description: Yup.string()
-    .trim("Description cannot start or end with spaces")
-    .min(10, "Description must be 10 characters or more")
-    .max(500, "Description must be 500 characters or less")
-    .required("Product description is required"),
+    price: Yup.number()
+      .typeError(t("validation.price.type"))
+      .positive(t("validation.price.positive"))
+      .min(1, t("validation.price.min"))
+      .max(999999, t("validation.price.max"))
+      .test(
+        "max-decimals",
+        t("validation.price.decimals"),
+        (value) =>
+          value === undefined || /^\d+(\.\d{1,2})?$/.test(value.toString()),
+      )
+      .required(t("validation.price.required")),
 
-  deliveryType: Yup.array()
-    .min(1, "Please select at least one delivery type")
-    .required("Please select a delivery type"),
+    category: Yup.array()
+      .min(1, t("validation.category.min"))
+      .max(5, t("validation.category.max"))
+      .required(t("validation.category.required")),
 
-  productImages: Yup.array()
-    .min(1, "Please upload at least 1 image")
-    .max(5, "You can upload up to 5 images only")
-    .required("Product image is required"),
+    description: Yup.string()
+      .trim(t("validation.description.trim"))
+      .min(10, t("validation.description.min"))
+      .max(500, t("validation.description.max"))
+      .required(t("validation.description.required")),
 
-  customPickupAddress: Yup.string()
-    .trim("Pickup address cannot start or end with spaces")
-    .when("deliveryType", {
-      is: (types) => Array.isArray(types) && types.includes("pickup"),
-      then: (schema) =>
-        schema
-          .min(10, "Pickup address must be at least 10 characters long")
-          .max(100, "Pickup address cannot exceed 100 characters")
-          .required("Pickup address is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-});
+    deliveryType: Yup.array()
+      .min(1, t("validation.deliveryType.min"))
+      .required(t("validation.deliveryType.required")),
+
+    productImages: Yup.array()
+      .min(1, t("validation.productImages.min"))
+      .max(5, t("validation.productImages.max"))
+      .required(t("validation.productImages.required")),
+
+    customPickupAddress: Yup.string()
+      .trim(t("validation.pickupAddress.trim"))
+      .when("deliveryType", {
+        is: (types) => Array.isArray(types) && types.includes("pickup"),
+        then: (schema) =>
+          schema
+            .min(10, t("validation.pickupAddress.min"))
+            .max(100, t("validation.pickupAddress.max"))
+            .required(t("validation.pickupAddress.required")),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+  });

@@ -1,0 +1,68 @@
+{
+    "settings": {
+        "settings": "Settings",
+        "buttons": {
+            "editProfile": "Edit Profile",
+            "saveCard": "Save Card",
+            "save": "Save",
+            "send": "Send",
+            "resendCode": "Resend Code",
+            "resending": "Resending",
+            "verify": "Verify",
+            "verifying...": "Verifying...",
+            "logout": "Logout"
+        },
+        "notifications": {
+            "notificationsHeading": "Notifications",
+            "productAlert": "New Product Alerts",
+            "productAlertDescription": "Receive notifications for new products added to your joined communities.",
+            "orderUpdates": "Order Updates",
+            "orderUpdatesDescription": "Stay informed about order confirmations, shipments, and deliveries.",
+            "preferencesUpdated": "Preferences updated successfully!"
+        },
+        "paymentMethods": {
+            "paymentMethod": "Payment Method",
+            "addNewCard": "Add New Card"
+        },
+        "changePassword": {
+            "changePassword": "Change Password",
+            "passChangedSuccess": "Password changed successfully",
+            "form": {
+                "currentPass": "Current Password",
+                "newPass": "New Password",
+                "confirmPass": "Confirm Password",
+                "errors": {
+                    "currentPassRequired": "Enter your current password",
+                    "passMin": "Password must be at least 8 characters",
+                    "passMax": "Password cannot be more than 25 characters",
+                    "passUppercase": "Password must contain at least one uppercase letter",
+                    "passLowercase": "Password must contain at least one lowercase letter",
+                    "passNum": "Password must contain at least one number",
+                    "passMatch": "Password must contain at least one special character",
+                    "passRequired": "Enter your new password",
+                    "confirmPass": "Passwords do not match",
+                    "confirmPassRequired": "Confirm password is required"
+                }
+            }
+        },
+        "deleteAccount": {
+            "deleteAccount": "Delete Account",
+            "weWillSendCode": "We will send 6 digits code to",
+            "confirmDeletion": "to confirm deletion.",
+            "dataRemovedPermanently": "Your data will be removed from our database permanently.",
+            "codeWasSent": "The code was sent to",
+            "didNotReceiveCode": "Didn’t receive code?",
+            "resendCode": "Resend code in"
+        },
+        "termsConditions": "Terms and Conditions",
+        "privacyPolicy": "Privacy Policy",
+        "tabs": {
+            "notifications": "Notifications",
+            "paymentMethod": "Payment Method",
+            "changePassword": "Change Password",
+            "deleteAccount": "Delete Account",
+            "termsConditions": "Terms & Conditions",
+            "privacyPolicy": "Privacy Policy"
+        }
+    }
+}

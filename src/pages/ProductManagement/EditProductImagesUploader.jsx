@@ -5,6 +5,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
+import { useTranslation } from "react-i18next";
 
 const MAX_IMAGES = 5;
 
@@ -14,6 +15,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
   const [previewImages, setPreviewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (product?.images?.length) {
@@ -33,14 +35,16 @@ const EditProductImagesUploader = ({ product, productId }) => {
       const isValidSize = file.size <= maxSize;
 
       if (!isValidType && !shownInvalid) {
-        enqueueSnackbar("Invalid file type. Use PNG, JPG, or JPEG.", {
+        enqueueSnackbar(t(`editImages.errors.invalidType`), {
           variant: "warning",
         });
         shownInvalid = true;
       }
 
       if (!isValidSize && !shownInvalid) {
-        enqueueSnackbar("File size exceeds 5MB limit.", { variant: "warning" });
+        enqueueSnackbar(t(`editImages.errors.fileTooLarge`), {
+          variant: "warning",
+        });
         shownInvalid = true;
       }
 
@@ -49,13 +53,17 @@ const EditProductImagesUploader = ({ product, productId }) => {
 
     e.target.value = "";
 
-    // ✅ Calculate total count (existing + new)
+    // Calculate total count (existing + new)
     const totalImagesCount =
       images.length + newImages.length + validFiles.length;
     if (totalImagesCount > MAX_IMAGES) {
-      enqueueSnackbar(`You can upload a maximum of ${MAX_IMAGES} images.`, {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        t(`editImages.errors.maxImages`),
+        // `You can upload a maximum of ${MAX_IMAGES} images.`,
+        {
+          variant: "error",
+        },
+      );
 
       // Allow only up to remaining slots
       const remainingSlots = MAX_IMAGES - images.length - newImages.length;
@@ -78,7 +86,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
   const handleDeleteExistingImage = async (imageId) => {
     // Prevent deleting last image if no new image exists
     if (images.length === 1 && newImages.length === 0) {
-      enqueueSnackbar("At least one image is required.", {
+      enqueueSnackbar(t(`editImages.errors.minOneImage`), {
         variant: "warning",
       });
       return;
@@ -88,11 +96,11 @@ const EditProductImagesUploader = ({ product, productId }) => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${productId}/images/${imageId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        { headers: { Authorization: `Bearer ${getToken()}` } },
       );
       if (res?.data?.success) {
         setImages((prev) => prev.filter((img) => img.id !== imageId));
-        enqueueSnackbar("Image deleted successfully!", { variant: "success" });
+        enqueueSnackbar(t(`editImages.success.delete`), { variant: "success" });
       }
     } catch (error) {
       handleApiError(error);
@@ -101,49 +109,10 @@ const EditProductImagesUploader = ({ product, productId }) => {
     }
   };
 
-  const handleUploadImages = async () => {
-    if (newImages.length === 0) {
-      enqueueSnackbar("Please select at least one image to upload.", {
-        variant: "warning",
-      });
-      return;
-    }
-
-    setUploading(true);
-    const formData = new FormData();
-    newImages.forEach((file) => formData.append("images", file));
-
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/products/${productId}/images`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (res?.data?.success) {
-        enqueueSnackbar("Images uploaded successfully!", {
-          variant: "success",
-        });
-        setImages(res?.data?.data?.images || []);
-        setNewImages([]);
-        setPreviewImages([]);
-      }
-    } catch (error) {
-      handleApiError(error);
-    } finally {
-      setUploading(false);
-    }
-  };
-
   return (
     <div className="w-full bg-white rounded-[18px] p-5 lg:p-7 h-fit">
       <h1 className="font-medium text-[20px] leading-none tracking-tight">
-        Product Images
+        {t(`editImages.title`)}
       </h1>
 
       {/* Upload Area */}
@@ -159,11 +128,13 @@ const EditProductImagesUploader = ({ product, productId }) => {
               className="w-[30px] h-[30px]"
             />
             <p className="mb-0.5 mt-2 text-base text-[var(--button-bg)] font-medium">
-              Click to upload Image
+              {t(`editImages.upload.click`)}
             </p>
-            <p className="text-sm font-medium text-[#959393]">Or Drag & Drop</p>
+            <p className="text-sm font-medium text-[#959393]">
+              {t(`editImages.upload.drag`)}
+            </p>
             <p className="text-xs text-gray-500 mt-1">
-              (Max 5 images, PNG/JPG/JPEG)
+              {t(`imageUploader.upload.hint`)}
             </p>
           </div>
           <input

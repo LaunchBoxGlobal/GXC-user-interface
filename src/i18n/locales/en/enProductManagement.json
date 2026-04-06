@@ -1,0 +1,263 @@
+{
+    "buttons": {
+        "add_new_product": "Add New Product",
+        "active": "Active",
+        "sold": "Sold",
+        "no": "No",
+        "continue": "Continue",
+        "selfPickup": "Self Pickup",
+        "back": "Back"
+    },
+    "product_management": "Product Management",
+    "no_products_added": "You have not added any product yet.",
+    "stripe_required": "Stripe Account Required",
+    "stripe_required_subheading": "You need to create a stripe account to continue.",
+    "addProduct": {
+        "title": "Add New Product",
+        "fields": {
+            "productName": {
+                "label": "Product Name",
+                "placeholder": "Enter product name"
+            },
+            "price": {
+                "label": "Price",
+                "placeholder": "Enter product price"
+            },
+            "description": {
+                "label": "Product Description",
+                "placeholder": "Enter product description"
+            },
+            "selfPickupAddress": {
+                "label": "Self Pickup Address"
+            },
+            "communityPickupAddress": {
+                "label": "Community Pickup Address"
+            },
+            "pickupAddress": {
+                "enterPickupAddress": {
+                    "label": "Pickup Address"
+                }
+            }
+        },
+        "messages": {
+            "estimatedEarnings": "Your estimated earnings:",
+            "success": "Product added successfully!",
+            "selectCommunity": "Please select a community before adding a product."
+        },
+        "actions": {
+            "submit": "Add Product"
+        }
+    },
+    "validation": {
+        "productName": {
+            "trim": "Product name cannot start or end with spaces",
+            "min": "Product name must contain at least 3 characters",
+            "max": "Product name must be 30 characters or less",
+            "required": "Product name is required"
+        },
+        "price": {
+            "type": "Price must be a number",
+            "positive": "Price must be greater than 0",
+            "min": "Product price can not be less than 1",
+            "max": "Product price must be less than 999999",
+            "decimals": "Price can have up to 2 decimal places only",
+            "required": "Price is required"
+        },
+        "category": {
+            "min": "Please select at least one category",
+            "max": "You can select up to 5 categories",
+            "required": "Please select at least one category"
+        },
+        "description": {
+            "trim": "Description cannot start or end with spaces",
+            "min": "Description must be 10 characters or more",
+            "max": "Description must be 500 characters or less",
+            "required": "Product description is required"
+        },
+        "deliveryType": {
+            "min": "Please select at least one delivery type",
+            "required": "Please select a delivery type"
+        },
+        "productImages": {
+            "min": "Please upload at least 1 image",
+            "max": "You can upload up to 5 images only",
+            "required": "Product image is required"
+        },
+        "pickupAddress": {
+            "trim": "Pickup address cannot start or end with spaces",
+            "min": "Pickup address must be at least 10 characters long",
+            "max": "Pickup address cannot exceed 100 characters",
+            "required": "Pickup address is required"
+        }
+    },
+    "imageUploader": {
+        "title": "Product Images",
+        "upload": {
+            "click": "Click to upload Image",
+            "drag": "Or Drag & Drop",
+            "hint": "(Max 5 images, PNG/JPG/JPEG)"
+        },
+        "errors": {
+            "invalidExtension": "Invalid extensions (PNG/JPG/JPEG only)",
+            "invalidType": "Unsupported file type",
+            "invalidSize": "Some files exceed 5MB size limit",
+            "maxImages": "You can only upload up to {{count}} images."
+        },
+        "alt": {
+            "camera": "camera icon",
+            "productImage": "product-{{index}}"
+        }
+    },
+    "selectCategory": {
+        "messages": {
+            "selectCategories": "Select up to 5 categories"
+        },
+        "categories": "Categories"
+    },
+    "deleteProduct": {
+        "title": "Delete Product",
+        "description": "Are you sure you want to delete this product?",
+        "success": "Product deleted successfully!",
+        "errors": {
+            "noProductId": "Product ID not found!"
+        },
+        "alt": {
+            "icon": "delete product icon"
+        }
+    },
+    "common": {
+        "yes": "Yes",
+        "no": "No",
+        "back": "Back",
+        "save": "Save"
+    },
+    "editProduct": {
+        "title": "Edit Product",
+        "success": "Product updated successfully!",
+        "errors": {
+            "minImages": "Please upload at least one product image",
+            "updateFailed": "Failed to update product"
+        },
+        "fields": {
+            "productName": {
+                "label": "Product Name",
+                "placeholder": "Enter product name"
+            },
+            "price": {
+                "label": "Price",
+                "placeholder": "Enter product price"
+            },
+            "description": {
+                "label": "Product Description",
+                "placeholder": "Enter product description"
+            }
+        },
+        "images": {
+            "title": "Product Images",
+            "upload": "Click to upload Image",
+            "max": "Max 5 images, PNG/JPG/JPEG"
+        },
+        "messages": {
+            "totalImages_1": "You can only have up to",
+            "totalImages_2": "images in total.",
+            "invalid": "Invalid extensions (PNG/JPG/JPEG only)",
+            "unsupported": "Unsupported file type",
+            "fileExceed": "File exceeds 5MB size limit",
+            "canUpload_1": "You can only upload",
+            "canUpload_2": "more image(s).",
+            "imagesUploaded": "Images uploaded successfully!",
+            "oneImageRequired": "At least one image is required.",
+            "imageDeleted": "Image deleted successfully!"
+        }
+    },
+    "deliveryType": "Delivery Type",
+    "selfPickup": "Self Pickup",
+    "communityPickup": "Community Pickup",
+    "pickup": "Pickup",
+    "description": "Description",
+    "editImages": {
+        "title": "Product Images",
+        "upload": {
+            "click": "Click to upload Image",
+            "drag": "Or Drag & Drop",
+            "hint": "(Max {{count}} images, PNG/JPG/JPEG)"
+        },
+        "errors": {
+            "invalidType": "Invalid file type. Use PNG, JPG, or JPEG.",
+            "fileTooLarge": "File size exceeds 5MB limit.",
+            "maxImages": "You can upload a maximum of {{count}} images.",
+            "minOneImage": "At least one image is required."
+        },
+        "success": {
+            "delete": "Image deleted successfully!"
+        },
+        "alt": {
+            "camera": "camera icon",
+            "product": "product image",
+            "preview": "preview-{{index}}"
+        }
+    },
+    "productBuySection": {
+        "selectDeliveryType": "Please select a delivery type.",
+        "communityIdNotFound": "Community ID not found!",
+        "productIdNotFound": "Product ID not found!",
+        "productAdded": "Product added to cart successfully!",
+        "productNotAvailable": "Unfortunately, this product is no longer available.",
+        "pickupAddress": "Pickup Address",
+        "communityPickupAddress": "Community Pickup Address"
+    },
+    "productDetails": {
+        "somethingWentWrong": "Something went wrong.",
+        "report": "Report",
+        "community": "Community",
+        "category": "Category",
+        "productStatus": "Product Status",
+        "delivery": "Delivery",
+        "buttons": {
+            "edit": "edit",
+            "addToCart": "Add to cart",
+            "goToCart": "Go to cart"
+        },
+        "delete": "Delete",
+        "price": "Price",
+        "address": "Address",
+        "city": "City",
+        "state": "state",
+        "deliverAtHome": "Deliver at home",
+        "productReportReasons": {
+            "fraudulentListing": "Fraudulent Listing",
+            "misleadingDescription": "Misleading Description",
+            "counterfeitProduct": "Counterfeit Product",
+            "inappropriateContent": "Inappropriate Content",
+            "prohibtedItem": "Prohibited Item",
+            "pricingVoilation": "Pricing Violation",
+            "others": "Others"
+        }
+    },
+    "reportProduct": {
+        "title": "Why do you want to report?",
+        "subtitle": "To help improve your experience, please tell us why you are reporting this product.",
+        "descriptionLabel": "Description",
+        "submit": "Submit",
+        "alreadyReported": "You have already reported this product.",
+        "somethingWentWrong": "Something went wrong.",
+        "validation": {
+            "selectReason": "Please select a reason",
+            "descriptionRequired": "Description is required",
+            "descriptionMin": "Description can not be less than 10 characters.",
+            "descriptionMax": "Description can not be more than 1000 characters."
+        },
+        "reasons": {
+            "fraudulent": "Fraudulent Listing",
+            "misleading": "Misleading Description",
+            "counterfeit": "Counterfeit Product",
+            "inappropriate": "Inappropriate Content",
+            "prohibited": "Prohibited Item",
+            "pricing": "Pricing Violation",
+            "others": "Others"
+        }
+    },
+    "reportSubmitted": "Report Submitted",
+    "reportSubmittedSuccessfully": "Thank you! Your report has been successfully submitted.",
+    "seller": "Seller"
+}

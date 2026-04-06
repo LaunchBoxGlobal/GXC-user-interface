@@ -13,6 +13,7 @@ import DeliveryItemsList from "./DeliveryItemsList";
 import Loader from "../../components/Common/Loader";
 import MarkItemOutForDeliveryModal from "./MarkItemOutForDeliveryModal";
 import MarkItemMissingModal from "./MarkItemMissingModal";
+import { useTranslation } from "react-i18next";
 
 const OrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const OrderDetailsPage = () => {
   const [missingItem, setMissingItem] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
+  const { t } = useTranslation("orderManagement");
 
   const fetchOrderDetails = async () => {
     setLoading(true);
@@ -42,10 +45,10 @@ const OrderDetailsPage = () => {
       if (order?.items) {
         // getOrderStatus(order?.items);
         setPickupItems(
-          order.items.filter((item) => item.deliveryMethod === "pickup")
+          order.items.filter((item) => item.deliveryMethod === "pickup"),
         );
         setDeliveryItems(
-          order.items.filter((item) => item.deliveryMethod === "delivery")
+          order.items.filter((item) => item.deliveryMethod === "delivery"),
         );
       }
     } catch (error) {
@@ -70,7 +73,7 @@ const OrderDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`orderDetailsPage.buttons.back`)}
         </button>
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
           <div className="w-full bg-white rounded-[18px] relative p-5 min-h-[70vh] flex items-center justify-center">
@@ -89,7 +92,7 @@ const OrderDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`orderDetailsPage.buttons.back`)}
         </button>
 
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5 grid grid-cols-3 gap-5">
@@ -97,12 +100,14 @@ const OrderDetailsPage = () => {
             <div className="w-full flex items-star flex-col justify-start relative">
               <div className="w-full">
                 <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
-                  Order Details
+                  {t(`orderDetailsPage.orderDetails`)}
                 </p>
               </div>
               <div className="w-full border my-4" />
               <div className="w-full flex items-center justify-between">
-                <p className="text-sm lg:text-base text-gray-600">Order ID</p>
+                <p className="text-sm lg:text-base text-gray-600">
+                  {t(`orderDetailsPage.orderId`)}
+                </p>
                 <p className="text-sm lg:text-base text-gray-600">
                   #{details?.orderNumber}
                 </p>
@@ -110,7 +115,7 @@ const OrderDetailsPage = () => {
               <div className="w-full border my-4" />
               <div className="w-full flex items-center justify-between">
                 <p className="text-sm lg:text-base text-gray-600">
-                  Order Placed
+                  {t(`orderDetailsPage.orderPlaced`)}
                 </p>
                 <p className="text-sm lg:text-base text-gray-600">
                   {formatDate(details?.createdAt)}

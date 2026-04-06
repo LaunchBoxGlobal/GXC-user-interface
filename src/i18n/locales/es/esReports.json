@@ -1,0 +1,18 @@
+{
+    "makeReport": "Hacer un informe",
+    "havingTrouble": "¿Tienes problemas para usar la aplicación?",
+    "sendReport": "Envíenos un informe y lo investigaremos de inmediato.",
+    "label": "Introduzca la descripción...",
+    "clickToUploadImage": "Haga clic para subir la imagen",
+    "dragDrop": "O arrastrar y soltar",
+    "note": "Max 5 imágenes • JPG, PNG • 5 MB cada uno",
+    "buttons": {
+        "submitRequest": "Enviar solicitud",
+        "back": "Atrás"
+    },
+    "form": {
+        "min": "La descripción debe tener 10 caracteres o más.",
+        "max": "La descripción debe tener 1500 caracteres o menos.",
+        "required": "Se requiere descripción"
+    }
+}

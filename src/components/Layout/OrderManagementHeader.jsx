@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 const OrderManagementHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = searchParams.get("tab") || "buyer";
   const [activeHistoryTab, setActiveHistoryTab] = useState(initialTab);
+  const { t } = useTranslation("orderManagement");
 
   const handleTabChange = (tab) => {
     setActiveHistoryTab(tab);
@@ -22,7 +24,7 @@ const OrderManagementHeader = () => {
     <div className="w-full flex justify-center md:justify-between items-center flex-wrap gap-5">
       <div>
         <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
-          Order Management
+          {t(`order_management`)}
         </h1>
       </div>
       <div>
@@ -33,10 +35,10 @@ const OrderManagementHeader = () => {
             className={`${
               activeHistoryTab === "seller"
                 ? "bg-white rounded-l-[10px]"
-                : "text-[var(--button-bg)]"
-            } w-full text-center h-full font-medium text-sm`}
+                : "text-white"
+            } w-full text-center h-full font-medium text-sm leading-none`}
           >
-            Seller History
+            {t(`buttons.seller_history`)}
           </button>
           <button
             type="button"
@@ -44,10 +46,10 @@ const OrderManagementHeader = () => {
             className={`${
               activeHistoryTab === "buyer"
                 ? "bg-white rounded-r-[10px]"
-                : "text-[var(--button-bg)]"
-            } w-full text-center h-full font-medium text-sm`}
+                : "text-white"
+            } w-full text-center h-full font-medium text-sm leading-none`}
           >
-            Buyer History
+            {t(`buttons.buyer_history`)}
           </button>
         </div>
       </div>

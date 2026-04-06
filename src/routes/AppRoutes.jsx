@@ -15,7 +15,6 @@ import SignUpForm from "../components/Forms/SignUpForm";
 import VerifyOtp from "../components/Forms/VerifyOtp";
 import AddPaymentInfo from "../components/Forms/AddPaymentInfo";
 import PaymentMethods from "../pages/PaymentMethods";
-import AccountSuccessPage from "../pages/Auth/AccountSuccessPage";
 import LoginForm from "../components/Forms/LoginForm";
 import VerifyEmail from "../components/Forms/VerifyEmail";
 import ChangePassword from "../components/Forms/ChangePassword";
@@ -30,7 +29,6 @@ import ChangePasswordPage from "../pages/Profile/ChangePasswordPage";
 import CommunitiesPage from "../pages/Communities/CommunitiesPage";
 import CommunityPage from "../pages/Communities/CommunityPage";
 import ReportingPage from "../pages/Reporting/ReportingPage";
-import WalletPage from "../pages/Wallet/WalletPage";
 import OrdersPage from "../pages/Orders/OrdersPage";
 import ProductManagementPage from "../pages/ProductManagement/ProductManagementPage";
 import ProductDetailsPage from "../pages/ProductManagement/ProductDetailsPage";
@@ -42,7 +40,6 @@ import Checkout from "../pages/Cart/Checkout";
 import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
 
 // Settings
-import SettingsPage from "../pages/Settings/SettingsPage";
 import MemberDetailsPage from "../pages/Member/MemberDetailsPage";
 import SellerOrderDetailsPage from "../pages/Orders/SellerOrderDetailsPage";
 import SellerStripeSuccess from "../pages/Auth/SellerStripeSuccess";
@@ -53,28 +50,7 @@ import PolicyLayout from "../components/Layout/PolicyLayout";
 import PublicPrivacyPolicy from "../pages/Policies/PublicPrivacyPolicy";
 import PublicTermsConditions from "../pages/Policies/PublicTermsConditions";
 
-// --- Helpers ---
 const isAuthenticated = () => !!Cookies.get("userToken");
-
-// --- Private Route ---
-// export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
-//   const location = useLocation();
-//   const auth = isAuthenticated();
-
-//   if (!auth) {
-//     const redirectUrl = location.pathname + location.search + location.hash;
-//     localStorage.setItem("invitation-link", redirectUrl);
-
-//     return (
-//       <Navigate
-//         to={`${redirectTo}?redirect=${encodeURIComponent(redirectUrl)}`}
-//         replace
-//       />
-//     );
-//   }
-
-//   return element;
-// };
 
 export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
   const location = useLocation();
@@ -109,7 +85,6 @@ export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
   return element;
 };
 
-// --- Public Route ---
 export const PublicRoute = ({ element, redirectTo = "/" }) => {
   const auth = isAuthenticated();
   const [searchParams] = useSearchParams();
@@ -243,19 +218,6 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/account-created"
-        element={
-          <PrivateRoute
-            element={
-              <AuthLayout>
-                <AccountSuccessPage />
-              </AuthLayout>
-            }
-          />
-        }
-      />
-
-      <Route
         path="/"
         element={
           <PrivateRoute
@@ -353,19 +315,6 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <MemberDetailsPage />
-              </Layout>
-            }
-          />
-        }
-      />
-
-      <Route
-        path="/wallet"
-        element={
-          <PrivateRoute
-            element={
-              <Layout>
-                <WalletPage />
               </Layout>
             }
           />
@@ -471,19 +420,6 @@ const AppRoutes = () => {
             element={
               <Layout key="order-details">
                 <SellerOrderDetailsPage />
-              </Layout>
-            }
-          />
-        }
-      />
-
-      <Route
-        path="/settings"
-        element={
-          <PrivateRoute
-            element={
-              <Layout key="settings-page">
-                <SettingsPage />
               </Layout>
             }
           />

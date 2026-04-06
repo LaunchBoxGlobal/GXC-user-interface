@@ -10,6 +10,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -18,10 +19,11 @@ const ChangePassword = () => {
   const { email, otp } = location?.state || {};
   const [loading, setLoading] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState(
-    Cookies.get("userEmail")
+    Cookies.get("userEmail"),
   );
   const [searchParams] = useSearchParams();
   const redirect = searchParams?.get("redirect");
+  const { t } = useTranslation("auth");
 
   const formik = useFormik({
     initialValues: {
@@ -37,7 +39,7 @@ const ChangePassword = () => {
         .matches(/\d/, "Password must contain at least one number")
         .matches(
           /[@$!%*?&^#_.-]/,
-          "Password must contain at least one special character"
+          "Password must contain at least one special character",
         )
         .required("Password is required"),
       confirmPassword: Yup.string()
@@ -69,7 +71,7 @@ const ChangePassword = () => {
             "Something went wrong",
           {
             variant: "error",
-          }
+          },
         );
       } finally {
         setLoading(false);
@@ -94,17 +96,17 @@ const ChangePassword = () => {
       >
         <div className="w-full text-center">
           <h2 className="font-semibold text-[32px] leading-none mt-8 mb-3">
-            Set New Password
+            {t(`auth.set_new_password`)}
           </h2>
           <p className="text-[var(--secondary-color)]">
-            Enter new password to continue
+            {t(`auth.enter_pass_to_continue`)}
           </p>
         </div>
 
         <div className="w-full space-y-3 mt-4">
           <div className="w-full space-y-1">
             <label htmlFor="password" className="text-sm font-medium">
-              New Password
+              {t(`form.new_password`)}
             </label>
             <PasswordField
               name={`password`}
@@ -118,7 +120,7 @@ const ChangePassword = () => {
           </div>
           <div className="w-full space-y-1">
             <label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirm Password
+              {t(`form.confirm_password`)}
             </label>
             <PasswordField
               name={`confirmPassword`}
@@ -132,7 +134,11 @@ const ChangePassword = () => {
           </div>
 
           <div className="pt-2">
-            <Button type={"submit"} title={`Save`} isLoading={loading} />
+            <Button
+              type={"submit"}
+              title={t(`button.save`)}
+              isLoading={loading}
+            />
           </div>
         </div>
       </form>

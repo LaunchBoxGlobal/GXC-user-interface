@@ -10,6 +10,7 @@ import OrderCard from "./OrderCard";
 import SellerOrderCard from "./SellerOrderCard";
 import { useAppContext } from "../../context/AppContext";
 import Pagination from "../../components/Forms/Pagination";
+import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const OrdersPage = () => {
   const [data, setData] = useState(null);
   const [pagination, setPagination] = useState(null);
   const { fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("orderManagement");
 
   const page = Number(searchParams.get("page")) || 1;
 
@@ -88,7 +90,7 @@ const OrdersPage = () => {
             </>
           ) : (
             <div className="min-h-[80vh] w-full flex items-center justify-center gap-2">
-              <p className="">No orders found!</p>
+              <p className="">{t(`no_orders`)}</p>
             </div>
           )}
         </div>

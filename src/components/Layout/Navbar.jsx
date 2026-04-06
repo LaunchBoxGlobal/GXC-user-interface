@@ -8,6 +8,8 @@ import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
 import ProfilerDropdown from "./ProfilerDropdown";
 import NotificationsDropdown from "./NotificationsDropdown";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../LanguageSwitcher";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,6 +18,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { selectedCommunity } = useUser();
   const location = useLocation();
+  const { t } = useTranslation("navbar");
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -78,8 +81,8 @@ const Navbar = () => {
                       ? "text-[var(--button-bg)]"
                       : "text-white"
                     : isScrolled
-                    ? "text-gray-900 hover:text-[var(--button-bg)]"
-                    : "text-gray-100 hover:text-white"
+                      ? "text-gray-900 hover:text-[var(--button-bg)]"
+                      : "text-gray-100 hover:text-white"
                 }`}
               >
                 <span
@@ -91,7 +94,7 @@ const Navbar = () => {
                       : "after:w-0 after:bg-transparent"
                   }`}
                 >
-                  {page.title}
+                  {t(`links.${page.key}`)}
                 </span>
               </Link>
             </li>
@@ -128,6 +131,7 @@ const Navbar = () => {
 
           <NotificationsDropdown isScrolled={isScrolled} />
 
+          <LanguageSwitcher isScrolled={isScrolled} />
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
         </div>

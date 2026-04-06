@@ -4,6 +4,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import Loader from "../Common/Loader";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
 
 const NotificationsDropdown = ({ isScrolled }) => {
   const [open, setOpen] = useState(false);
@@ -12,6 +13,8 @@ const NotificationsDropdown = ({ isScrolled }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
   const { unreadNotificationCount, fetchNotificaiontCount } = useAppContext();
+
+  const { t } = useTranslation("common");
 
   const fetchNotifications = async () => {
     setLoading(true);
@@ -22,7 +25,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       const data = res.data?.data?.notifications || [];
@@ -97,7 +100,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
       {open && (
         <div className="absolute right-0 mt-3 w-60 lg:w-96 bg-white shadow-lg rounded-lg border border-gray-200 overflow-hidden z-50">
           <div className="p-3 border-b bg-white text-gray-700 font-semibold text-start">
-            Notifications
+            {t(`notifications.notificationsHeading`)}
           </div>
 
           {loading ? (
@@ -106,7 +109,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
             </div>
           ) : notifications.length === 0 ? (
             <div className="p-4 text-center text-gray-500 text-sm min-h-[320px] flex items-center justify-center">
-              No notifications
+              {t(`notifications.noNotifications`)}
             </div>
           ) : (
             <ul className="max-h-96 overflow-y-auto">

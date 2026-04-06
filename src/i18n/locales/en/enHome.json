@@ -1,0 +1,15 @@
+{
+    "no_products": "No products found in this community!",
+    "no_products_in_category": "No products found in this category!",
+    "no_communities": "You have not joined any community yet.",
+    "communitiesNotFound": "Community not found",
+    "searchHere": "Search here",
+    "priceRange": "Price",
+    "filter": "Filter",
+    "min": "Min",
+    "max": "Max",
+    "buttons": {
+        "reset": "Reset",
+        "apply": "Apply"
+    }
+}

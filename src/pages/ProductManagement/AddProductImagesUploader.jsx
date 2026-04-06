@@ -1,4 +1,5 @@
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const AddProductImagesUploader = ({
   formik,
@@ -6,6 +7,8 @@ const AddProductImagesUploader = ({
   setPreviewImages,
   loading,
 }) => {
+  const { t } = useTranslation("productManagement");
+
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
@@ -23,21 +26,26 @@ const AddProductImagesUploader = ({
       const isValidSize = file.size <= maxSize;
 
       if (!isValidExt && !shownInvalidExt) {
-        enqueueSnackbar("Invalid extensions (PNG/JPG/JPEG only)", {
+        enqueueSnackbar(t("imageUploader.errors.invalidExtension"), {
           variant: "warning",
         });
         shownInvalidExt = true;
       }
+
       if (!isValidType && !shownInvalidType) {
-        enqueueSnackbar("Unsupported file type", { variant: "warning" });
+        enqueueSnackbar(t("imageUploader.errors.invalidType"), {
+          variant: "warning",
+        });
         shownInvalidType = true;
       }
+
       if (!isValidSize && !shownInvalidSize) {
-        enqueueSnackbar("Some files exceed 5MB size limit", {
+        enqueueSnackbar(t("imageUploader.errors.invalidSize"), {
           variant: "warning",
         });
         shownInvalidSize = true;
       }
+
       return isValidType && isValidExt && isValidSize;
     });
 
@@ -46,9 +54,10 @@ const AddProductImagesUploader = ({
     const combinedImages = [...formik.values.productImages, ...validFiles];
 
     if (combinedImages.length > maxImages) {
-      enqueueSnackbar(`You can only upload up to ${maxImages} images.`, {
-        variant: "error",
-      });
+      enqueueSnackbar(
+        t("imageUploader.errors.maxImages", { count: maxImages }),
+        { variant: "error" },
+      );
     }
 
     const newImages = combinedImages.slice(0, maxImages);
@@ -60,7 +69,7 @@ const AddProductImagesUploader = ({
 
   const handleRemoveImage = (index) => {
     const updatedImages = formik.values.productImages.filter(
-      (_, i) => i !== index
+      (_, i) => i !== index,
     );
     const updatedPreviews = previewImages.filter((_, i) => i !== index);
     formik.setFieldValue("productImages", updatedImages);
@@ -70,7 +79,7 @@ const AddProductImagesUploader = ({
   return (
     <div className="w-full bg-white rounded-[18px] relative">
       <h1 className="font-medium text-[14px] leading-none tracking-tight">
-        Product Images
+        {t("imageUploader.title")}
       </h1>
 
       <div className="flex items-center justify-center w-full mt-2">
@@ -81,17 +90,23 @@ const AddProductImagesUploader = ({
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <img
               src="/camera-icon.png"
-              alt="camera-icon"
+              alt={t("imageUploader.alt.camera")}
               className="w-[30px] h-[30px]"
             />
+
             <p className="mb-0.5 mt-2 text-base text-[var(--button-bg)] font-medium">
-              Click to upload Image
+              {t("imageUploader.upload.click")}
             </p>
-            <p className="text-sm font-medium text-[#959393]">Or Drag & Drop</p>
+
+            <p className="text-sm font-medium text-[#959393]">
+              {t("imageUploader.upload.drag")}
+            </p>
+
             <p className="text-xs text-gray-500 mt-1">
-              (Max 5 images, PNG/JPG/JPEG)
+              {t("imageUploader.upload.hint")}
             </p>
           </div>
+
           <input
             id="dropzone-file"
             type="file"
@@ -112,9 +127,10 @@ const AddProductImagesUploader = ({
             >
               <img
                 src={src}
-                alt={`product-${index}`}
+                alt={t("imageUploader.alt.productImage", { index })}
                 className="w-[53px] h-[53px] object-cover rounded-xl"
               />
+
               <button
                 type="button"
                 disabled={loading}

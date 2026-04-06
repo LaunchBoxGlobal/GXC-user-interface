@@ -3,11 +3,13 @@ import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const AddProductDeliveryTypeSelector = ({ formik }) => {
   const { user } = useAppContext();
   const { selectedCommunity } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const userAddress = [
     user?.address,
@@ -31,12 +33,7 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
     .join(" ")
     .trim();
 
-  // Initialize on mount
   useEffect(() => {
-    // if (formik.values.deliveryType.length === 0) {
-    //   formik.setFieldValue("deliveryType", ["self"]);
-    // }
-
     if (!formik.values.selfPickupAddress && userAddress) {
       formik.setFieldValue("selfPickupAddress", userAddress);
     }
@@ -75,7 +72,10 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="font-medium text-sm">Delivery Type</label>
+      <label className="font-medium text-sm">
+        {/* Delivery Type  */}
+        {t(`orderManagement:orderCard.deliveryType`)}
+      </label>
 
       <div className="grid grid-cols-2 gap-3">
         {/* Self Pickup */}
@@ -89,7 +89,7 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
                 : "bg-[#f5f5f5] text-black"
             }`}
         >
-          Self Pickup
+          {t(`productManagement:selfPickup`)}
         </button>
 
         {/* Community Pickup */}
@@ -103,7 +103,8 @@ const AddProductDeliveryTypeSelector = ({ formik }) => {
                 : "bg-[#f5f5f5] text-black"
             }`}
         >
-          Community Pickup
+          {/* Community Pickup */}
+          {t(`orderManagement:orderCard.statuses.communityPickup`)}
         </button>
       </div>
 

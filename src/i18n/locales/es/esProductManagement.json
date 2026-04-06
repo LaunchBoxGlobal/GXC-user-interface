@@ -1,0 +1,250 @@
+{
+    "buttons": {
+        "add_new_product": "Agregar nuevo producto",
+        "active": "Activa",
+        "sold": "Vendido",
+        "no": "No",
+        "continue": "Continuar",
+        "back": "Atrás"
+    },
+    "product_management": "Gestión de Productos",
+    "no_products_added": "Aún no has añadido ningún producto.",
+    "stripe_required": "Se requiere cuenta de Stripe",
+    "stripe_required_subheading": "Debes crear una cuenta de Stripe para continuar.",
+    "addProduct": {
+        "title": "Agregar nuevo producto",
+        "fields": {
+            "productName": {
+                "label": "Nombre del producto",
+                "placeholder": "Ingrese el nombre del producto"
+            },
+            "price": {
+                "label": "Precio",
+                "placeholder": "Ingrese el precio del producto"
+            },
+            "description": {
+                "label": "Descripción del producto",
+                "placeholder": "Ingrese la descripción del producto"
+            },
+            "selfPickupAddress": {
+                "label": "Dirección de recogida propia"
+            },
+            "communityPickupAddress": {
+                "label": "Dirección de recogida de la comunidad"
+            },
+            "pickupAddress": {
+                "enterPickupAddress": {
+                    "label": "Dirección de recogida"
+                }
+            }
+        },
+        "messages": {
+            "estimatedEarnings": "Ganancias estimadas:",
+            "success": "¡Producto agregado con éxito!",
+            "selectCommunity": "Por favor seleccione una comunidad antes de agregar un producto."
+        },
+        "actions": {
+            "submit": "Agregar producto"
+        }
+    },
+    "validation": {
+        "productName": {
+            "trim": "El nombre del producto no puede comenzar ni terminar con espacios",
+            "min": "El nombre del producto debe tener al menos 3 caracteres",
+            "max": "El nombre del producto debe tener como máximo 30 caracteres",
+            "required": "El nombre del producto es obligatorio"
+        },
+        "price": {
+            "type": "El precio debe ser un número",
+            "positive": "El precio debe ser mayor que 0",
+            "min": "El precio del producto no puede ser menor que 1",
+            "max": "El precio del producto debe ser menor que 999999",
+            "decimals": "El precio puede tener hasta 2 decimales",
+            "required": "El precio es obligatorio"
+        },
+        "category": {
+            "min": "Seleccione al menos una categoría",
+            "max": "Puede seleccionar hasta 5 categorías",
+            "required": "Seleccione al menos una categoría"
+        },
+        "description": {
+            "trim": "La descripción no puede comenzar ni terminar con espacios",
+            "min": "La descripción debe tener al menos 10 caracteres",
+            "max": "La descripción debe tener como máximo 500 caracteres",
+            "required": "La descripción del producto es obligatoria"
+        },
+        "deliveryType": {
+            "min": "Seleccione al menos un tipo de entrega",
+            "required": "Seleccione un tipo de entrega"
+        },
+        "productImages": {
+            "min": "Suba al menos 1 imagen",
+            "max": "Puede subir hasta 5 imágenes solamente",
+            "required": "La imagen del producto es obligatoria"
+        },
+        "pickupAddress": {
+            "trim": "La dirección de recogida no puede comenzar ni terminar con espacios",
+            "min": "La dirección de recogida debe tener al menos 10 caracteres",
+            "max": "La dirección de recogida no puede exceder los 100 caracteres",
+            "required": "La dirección de recogida es obligatoria"
+        }
+    },
+    "imageUploader": {
+        "title": "Imágenes del producto",
+        "upload": {
+            "click": "Haz clic para subir una imagen",
+            "drag": "O arrastra y suelta",
+            "hint": "(Máx. 5 imágenes, PNG/JPG/JPEG)"
+        },
+        "errors": {
+            "invalidExtension": "Extensiones no válidas (solo PNG/JPG/JPEG)",
+            "invalidType": "Tipo de archivo no compatible",
+            "invalidSize": "Algunos archivos superan el límite de 5MB",
+            "maxImages": "Solo puedes subir hasta {{count}} imágenes."
+        },
+        "alt": {
+            "camera": "icono de cámara",
+            "productImage": "producto-{{index}}"
+        }
+    },
+    "selectCategory": {
+        "messages": {
+            "selectCategories": "Seleccione hasta 5 categorías"
+        },
+        "categories": "Categorías"
+    },
+    "deleteProduct": {
+        "title": "Eliminar producto",
+        "description": "¿Estás seguro de que deseas eliminar este producto?",
+        "success": "¡Producto eliminado con éxito!",
+        "errors": {
+            "noProductId": "¡ID del producto no encontrado!"
+        },
+        "alt": {
+            "icon": "icono de eliminar producto"
+        }
+    },
+    "common": {
+        "yes": "Sí",
+        "no": "No",
+        "back": "Volver",
+        "save": "Guardar"
+    },
+    "editProduct": {
+        "title": "Editar producto",
+        "success": "¡Producto actualizado con éxito!",
+        "errors": {
+            "minImages": "Sube al menos una imagen del producto",
+            "updateFailed": "Error al actualizar el producto"
+        },
+        "fields": {
+            "productName": {
+                "label": "Nombre del producto",
+                "placeholder": "Ingrese el nombre del producto"
+            },
+            "price": {
+                "label": "Precio",
+                "placeholder": "Ingrese el precio del producto"
+            },
+            "description": {
+                "label": "Descripción del producto",
+                "placeholder": "Ingrese la descripción del producto"
+            }
+        },
+        "images": {
+            "title": "Imágenes del producto",
+            "upload": "Haz clic para subir una imagen",
+            "max": "Máximo 5 imágenes, PNG/JPG/JPEG"
+        }
+    },
+    "deliveryType": "Tipo de entrega",
+    "selfPickup": "Recogida automática",
+    "communityPickup": "Recogida comunitaria",
+    "pickup": "Levantar",
+    "description": "Descripción",
+    "editImages": {
+        "title": "Imágenes del producto",
+        "upload": {
+            "click": "Haz clic para subir una imagen",
+            "drag": "O arrastra y suelta",
+            "hint": "(Máx. {{count}} imágenes, PNG/JPG/JPEG)"
+        },
+        "errors": {
+            "invalidType": "Tipo de archivo no válido. Usa PNG, JPG o JPEG.",
+            "fileTooLarge": "El archivo supera el límite de 5MB.",
+            "maxImages": "Puedes subir un máximo de {{count}} imágenes.",
+            "minOneImage": "Se requiere al menos una imagen."
+        },
+        "success": {
+            "delete": "¡Imagen eliminada con éxito!"
+        },
+        "alt": {
+            "camera": "icono de cámara",
+            "product": "imagen del producto",
+            "preview": "vista previa-{{index}}"
+        }
+    },
+    "productBuySection": {
+        "selectDeliveryType": "Por favor selecciona un tipo de entrega.",
+        "communityIdNotFound": "¡ID de la comunidad no encontrado!",
+        "productIdNotFound": "¡ID del producto no encontrado!",
+        "productAdded": "¡Producto añadido al carrito con éxito!",
+        "productNotAvailable": "Lamentablemente, este producto ya no está disponible.",
+        "pickupAddress": "Dirección de recogida",
+        "communityPickupAddress": "Dirección de recogida de la comunidad"
+    },
+    "productDetails": {
+        "somethingWentWrong": "Algo salió mal.",
+        "report": "Reportar",
+        "community": "Comunidad",
+        "category": "Categoría",
+        "productStatus": "Estado del producto",
+        "delivery": "Entrega",
+        "buttons": {
+            "edit": "editar",
+            "addToCart": "Añadir al carrito",
+            "goToCart": "Ir al carrito"
+        },
+        "delete": "Eliminar",
+        "price": "Precio",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "state": "Estado",
+        "deliverAtHome": "Entrega a domicilio",
+        "productReportReasons": {
+            "fraudulentListing": "Listado fraudulento",
+            "misleadingDescription": "Descripción engañosa",
+            "counterfeitProduct": "Producto falsificado",
+            "inappropriateContent": "Contenido inapropiado",
+            "prohibtedItem": "Artículo prohibido",
+            "pricingVoilation": "Violación de precios",
+            "others": "Otros"
+        }
+    },
+    "reportProduct": {
+        "title": "¿Por qué deseas reportar?",
+        "subtitle": "Para ayudarnos a mejorar tu experiencia, dinos por qué estás reportando este producto.",
+        "descriptionLabel": "Descripción",
+        "submit": "Enviar",
+        "alreadyReported": "Ya has reportado este producto.",
+        "somethingWentWrong": "Algo salió mal.",
+        "validation": {
+            "selectReason": "Por favor selecciona una razón",
+            "descriptionRequired": "La descripción es obligatoria",
+            "descriptionMin": "La descripción no puede tener menos de 10 caracteres.",
+            "descriptionMax": "La descripción no puede tener más de 1000 caracteres."
+        },
+        "reasons": {
+            "fraudulent": "Listado fraudulento",
+            "misleading": "Descripción engañosa",
+            "counterfeit": "Producto falsificado",
+            "inappropriate": "Contenido inapropiado",
+            "prohibited": "Artículo prohibido",
+            "pricing": "Violación de precios",
+            "others": "Otros"
+        }
+    },
+    "reportSubmitted": "Informe enviado",
+    "reportSubmittedSuccessfully": "¡Gracias! Su informe se ha enviado correctamente.",
+    "seller": "Vendedor"
+}

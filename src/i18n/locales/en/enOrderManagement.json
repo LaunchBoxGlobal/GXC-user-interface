@@ -1,0 +1,196 @@
+{
+    "buttons": {
+        "seller_history": "Seller History",
+        "buyer_history": "Buyer History",
+        "all": "All",
+        "in_progress": "In Progress",
+        "completed": "Completed",
+        "delivered": "Delivered",
+        "no": "No",
+        "yes": "Yes"
+    },
+    "order_management": "Order Management",
+    "no_orders": "No orders found!",
+    "cancelPopup": {
+        "title": "Cancel order",
+        "description": "Are your sure you want to cancel this order?",
+        "buttons": {
+            "no": "No",
+            "yes": "Yes"
+        }
+    },
+    "cancelSuccessPopup": {
+        "title": "Order cancelled",
+        "description": "Your order was successfully cancelled"
+    },
+    "deliveryPopup": {
+        "title": {
+            "delivered": "Product successfully delivered",
+            "pickedUp": "Product successfully picked up"
+        },
+        "description": {
+            "delivered": "Your product has been successfully delivered. If you have any questions, please contact our support team.",
+            "pickedUp": "Your product has been successfully picked up. If you have any questions, please contact our support team."
+        },
+        "buttons": {
+            "notNow": "Not Now",
+            "writeReview": "Write a review"
+        }
+    },
+    "deliveryItems": {
+        "heading": "Pickup Items",
+        "status": {
+            "missing": "Missing",
+            "disputePending": "Dispute Raised – Under Review",
+            "resolved": "Resolved",
+            "rejected": "Rejected"
+        },
+        "buttons": {
+            "writeReview": "Write a review",
+            "markMissing": "Mark As Missing",
+            "markReceived": "Mark As Received"
+        },
+        "messages": {
+            "error": "Something went wrong! Try again.",
+            "cancelledBySeller": "This product has been cancelled by the seller.",
+            "genericError": "Something went wrong."
+        },
+        "sections": {
+            "pickupAddress": "Pickup Address",
+            "vendorDetails": "Vendor Details",
+            "cancellationReason": "Cancellation Reason"
+        }
+    },
+    "review": {
+        "title": "Write Review",
+        "yourRating": "Your Rating",
+        "placeholder": "Share your experience with this product...",
+        "profilePlaceholderAlt": "profile picture placeholder",
+        "errors": {
+            "ratingRequired": "Please select a rating before submitting."
+        }
+    },
+    "common": {
+        "cancel": "Cancel",
+        "send": "Send",
+        "ok": "OK"
+    },
+    "successPopup": {
+        "title": "Marked as ready for pickup",
+        "description": "You’ve successfully updated the order status.",
+        "iconAlt": "out-for-delivery-popup-icon"
+    },
+    "feedbackSuccessPopup": {
+        "title": "Thanks for your valuable feedback",
+        "description": "Thank you for your valuable feedback. We appreciate your input and will use it to enhance our products and services.",
+        "iconAlt": "product-delivery-popup-icon"
+    },
+    "markItemMissingImageUpload": {
+        "clickToUpload": "Click to upload image",
+        "maxImagesLabel": "Max 5 images • JPG, PNG • 5MB each"
+    },
+    "markItemMissingModal": {
+        "markItemMissing": "Mark Item Missing",
+        "form": {
+            "errors": {
+                "minDescription": "",
+                "maxDescription": "",
+                "descriptionRequired": ""
+            },
+            "labels": {
+                "enterDescription": "Enter description"
+            },
+            "buttons": {
+                "submit": "Submit"
+            }
+        }
+    },
+    "markItemOutForDeliveryModal": {
+        "readyForPickup": "Ready for Pickup",
+        "markItemReady": "Are your sure you want to mark this item as ready for pickup?"
+    },
+    "orderCancellationReasonModal": {
+        "form": {
+            "errors": {
+                "reasonRequired": "Cancellation reason is required.",
+                "minReason": "Reason must be at least 10 characters.",
+                "maxReason": "Reason must not exceed 200 characters.",
+                "invalidProductInfo": "Invalid product information."
+            },
+            "messages": {
+                "orderCancelled": "Order has been cancelled successfully.",
+                "failedToCancelOrder": "Failed to cancel the order.",
+                "somethingWentWrong": "Something went wrong while cancelling the order."
+            },
+            "placeholders": {
+                "writeReason": "Write your reason for cancellation"
+            }
+        },
+        "cancelReason": "Cancel Reason"
+    },
+    "orderCard": {
+        "orderId": "Order ID #",
+        "statuses": {
+            "missing": "Missing",
+            "disputeRaised": "Dispute Raised - Under Review",
+            "disputeResolved": "Dispute Resolved",
+            "Pickup": "Pickup",
+            "communityPickup": "Community Pickup"
+        },
+        "deliveryType": "Delivery Type",
+        "price": "Price"
+    },
+    "orderDetailsPage": {
+        "orderDetails": "Order Details",
+        "orderId": "Order ID",
+        "orderPlaced": "Order Placed",
+        "readyToPickup": "Ready To Pickup",
+        "buttons": {
+            "back": "Back"
+        }
+    },
+    "orderSummary": {
+        "orderSummary": "Order Summary",
+        "subtotal": "Subtotal",
+        "products": "Products",
+        "total": "Total"
+    },
+    "pickupItemList": {
+        "errors": {
+            "somethingWrong": "Something went wrong! Try again."
+        },
+        "messages": {
+            "productCancelled": "This product has been cancelled by the seller."
+        },
+        "pickupItems": "Pickup Items",
+        "statuses": {
+            "missing": "Missing",
+            "resolved": "Resolved",
+            "rejected": "Rejected"
+        },
+        "buttons": {
+            "writeReview": "Write a review",
+            "markMissing": "Mark As Missing",
+            "confirmPickup": "Confirm Pickup"
+        },
+        "pickupAddress": "Pickup Address",
+        "vendorDetails": "Vendor Details"
+    },
+    "sellerCancelDeliveryOrderReasonModal": {
+        "reasonExceed": "Reason must not exceed 500 characters",
+        "buttons": {
+            "ok": "Ok",
+            "notNow": "Not Now"
+        }
+    },
+    "SellerConfirmationMarkItemReadForPickup": {
+        "markAsReasyForPickup": "Marked as ready for pickup",
+        "markReady": "Mark ready for pickup",
+        "successfullyMarkedPickup": "You've successfully marked this item as ready for pickup.",
+        "areYourSureToMarkPickup": "Are your sure you want to mark this item as ready for pickup?"
+    },
+    "customDetails": "Customer Details",
+    "sellerOrderCard": {
+        "bookingId": "Booking ID"
+    }
+}
