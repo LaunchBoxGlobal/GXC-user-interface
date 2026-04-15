@@ -45,7 +45,7 @@ const CartPage = () => {
 
       if (response?.data?.success) {
         enqueueSnackbar(
-          response?.data?.message || "Cart cleared successfully",
+          response?.data?.message || t("Cart cleared successfully"),
           {
             variant: "success",
           },

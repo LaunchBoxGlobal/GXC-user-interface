@@ -180,7 +180,7 @@ const CartSummary = () => {
                       alt="trash icon"
                       className="w-[14px] h-[15px]"
                     />
-                    <span className="text-sm">{t(`removeAll`)}</span>
+                    <span className="text-sm">{t(`buttons.removeAll`)}</span>
                   </button>
                 </div>
 

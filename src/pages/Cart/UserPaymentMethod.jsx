@@ -187,6 +187,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [clientSecret, setClientSecret] = useState(null);
+  const { t } = useTranslation("cart");
 
   useEffect(() => {
     // Create SetupIntent when form opens
@@ -303,7 +304,7 @@ const AddCardForm = ({ user, onCardAdded }) => {
         disabled={loading || !clientSecret}
         className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px]"
       >
-        {loading ? t(`saving`) : t(`saveCard`)}
+        {loading ? t(`buttons.saving`) : t(`buttons.saveCard`)}
       </button>
     </form>
   );

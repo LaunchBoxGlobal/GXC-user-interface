@@ -57,7 +57,7 @@ const AddAddressModal = ({
       Cookies.set("newDeliveryAddress", JSON.stringify(userAddress));
       setUserNewDeliveryAddress(userAddress);
       resetForm();
-      enqueueSnackbar("Address added successfully!", {
+      enqueueSnackbar(t("Address added successfully!"), {
         variant: "success",
       });
       toggleAddAddressModal();

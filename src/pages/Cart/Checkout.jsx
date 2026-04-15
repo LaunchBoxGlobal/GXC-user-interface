@@ -69,7 +69,7 @@ const Checkout = () => {
     if (cartProducts?.length <= 0) {
       navigate("/");
       enqueueSnackbar(
-        "No items in your cart! Product is no longer available.",
+        t("No items in your cart! Product is no longer available."),
         {
           variant: "error",
         },
@@ -92,7 +92,7 @@ const Checkout = () => {
     //   return;
     // }
     if (!selectedPaymentMethod) {
-      enqueueSnackbar("Please select a payment method!", {
+      enqueueSnackbar(t("Please select a payment method!"), {
         variant: "error",
       });
       return;
@@ -103,12 +103,12 @@ const Checkout = () => {
   // Place order function
   const handlePlaceOrder = async () => {
     if (!ids || ids?.length <= 0) {
-      enqueueSnackbar("Something went wrong. Try again!");
+      enqueueSnackbar(t("Something went wrong. Try again!"));
       return;
     }
 
     if (!savedPaymentMethod) {
-      enqueueSnackbar("Something went wrong. Try again!");
+      enqueueSnackbar(t("Something went wrong. Try again!"));
       return;
     }
 
@@ -164,7 +164,7 @@ const Checkout = () => {
         error.response.data?.message == "Some products are not in your cart"
       ) {
         enqueueSnackbar(
-          `Some products are not available and removed from your cart`,
+          t(`Some products are not available and removed from your cart`),
           {
             variant: "error",
           },
