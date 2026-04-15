@@ -49,7 +49,7 @@ const ProductDetailsPage = () => {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
-          "Accept-Language": i18n.language,
+          "Accept-Language": i18next.language,
         },
       });
       setProductDetails(res?.data?.data?.product);

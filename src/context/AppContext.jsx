@@ -44,7 +44,7 @@ export const AppProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
-          "Accept-Language": i18n.language,
+          "Accept-Language": i18next.language,
         },
       });
 
@@ -94,7 +94,7 @@ export const AppProvider = ({ children }) => {
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
-            "Accept-Language": i18n.language,
+            "Accept-Language": i18next.language,
           },
         },
       );

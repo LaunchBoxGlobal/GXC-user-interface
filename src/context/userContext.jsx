@@ -7,6 +7,7 @@ import { handleApiError } from "../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 const UserContext = createContext();
 
@@ -23,6 +24,8 @@ export const UserProvider = ({ children }) => {
       ? JSON.parse(Cookies.get("selected-community"))
       : null,
   );
+
+  const { t } = useTranslation("common");
 
   const communityFromQuery = searchParams.get("community");
 
@@ -161,11 +164,11 @@ export const UserProvider = ({ children }) => {
       });
       if (res?.data?.success) {
         navigate("/product-management/add-product");
-        enqueueSnackbar("Your account has been created!", {
+        enqueueSnackbar(t("Your account has been created!"), {
           variant: "success",
         });
       } else {
-        enqueueSnackbar("Your account could not be created!", {
+        enqueueSnackbar(t("Your account could not be created!"), {
           variant: "error",
         });
         navigate("/product-management");

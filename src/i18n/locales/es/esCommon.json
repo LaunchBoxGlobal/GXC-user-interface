@@ -19,5 +19,7 @@
     "notifications": {
         "notificationsHeading": "Notificaciones",
         "noNotifications": "Sin notificaciones"
-    }
+    },
+    "Your account has been created!": "¡Tu cuenta ha sido creada!",
+    "Your account could not be created!": "¡No se pudo crear tu cuenta!"
 }

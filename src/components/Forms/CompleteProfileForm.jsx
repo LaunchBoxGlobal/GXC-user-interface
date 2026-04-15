@@ -76,7 +76,7 @@ const CompleteProfileForm = () => {
           },
           {
             headers: {
-              "Accept-Language": i18n.language,
+              "Accept-Language": i18next.language,
               Authorization: `Bearer ${getToken()}`,
             },
           },
@@ -90,7 +90,7 @@ const CompleteProfileForm = () => {
             formData,
             {
               headers: {
-                "Accept-Language": i18n.language,
+                "Accept-Language": i18next.language,
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },
