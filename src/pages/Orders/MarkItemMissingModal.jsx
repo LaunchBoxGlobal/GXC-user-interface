@@ -11,6 +11,7 @@ import MarkItemMissingImageUpload from "./MarkItemMissingImageUpload";
 import { useAppContext } from "../../context/AppContext";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MarkItemMissingModal = ({
   setOpenMissingItemReportModal,
@@ -65,6 +66,7 @@ const MarkItemMissingModal = ({
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               // "Content-Type": "multipart/form-data",
             },

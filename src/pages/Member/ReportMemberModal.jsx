@@ -9,6 +9,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export const reportReasons = [
   "Fraudulent Listings",
@@ -102,6 +103,7 @@ const ReportMemberModal = ({
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               "Content-Type": "multipart/form-data",
             },

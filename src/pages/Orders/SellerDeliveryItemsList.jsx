@@ -15,6 +15,7 @@ import Loader from "../../components/Common/Loader";
 import { FaLocationDot } from "react-icons/fa6";
 import { toTitleCase } from "../../utils/toTitleCase";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SellerDeliveryItemsList = ({
   deliveryItems,
@@ -54,6 +55,7 @@ const SellerDeliveryItemsList = ({
         { status: "delivered" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

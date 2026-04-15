@@ -3,6 +3,7 @@ import { getToken, onMessage } from "firebase/messaging";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
+import i18n from "i18next";
 
 // --- New Function to get or create Device ID ---
 const getOrCreateDeviceId = () => {
@@ -54,9 +55,10 @@ export const requestNotificationPermission = async () => {
         { token: currentToken, deviceInfo: browserDeviceId },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${userToken}`,
           },
-        }
+        },
       );
 
       localStorage.setItem("userfcmToken", currentToken);

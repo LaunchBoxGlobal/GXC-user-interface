@@ -10,6 +10,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const VerifyEmail = () => {
           { email: values.email.trim() },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
             },
           },

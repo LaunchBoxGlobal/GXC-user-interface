@@ -9,6 +9,7 @@ import { useAppContext } from "../../context/AppContext";
 import { handleApiError } from "../../utils/handleApiError";
 import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunityPage = () => {
   const { communityTitle } = useParams();
@@ -31,7 +32,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/${communityTitle}/details`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -63,7 +64,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/${communityTitle}/my-membership`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -103,7 +104,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/join-status/${communityTitle}`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -133,7 +134,7 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/${communityTitle}/join`,
         { slug: communityTitle },
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -145,7 +146,7 @@ const CommunityPage = () => {
       const communitiesRes = await axios.get(
         `${BASE_URL}/communities/my-joined`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 

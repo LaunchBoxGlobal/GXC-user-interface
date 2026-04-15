@@ -7,6 +7,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MemberReviews = ({ member }) => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const MemberReviews = ({ member }) => {
       const { data } = await axios.get(
         `${BASE_URL}/reviews/users/${member.id}/reviews`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
       setReviews(data?.data || {});

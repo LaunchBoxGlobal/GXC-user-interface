@@ -10,6 +10,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
 import { getToken } from "../../utils/getToken";
+import i18n from "i18next";
 
 const ChangeEmailForm = () => {
   const navigate = useNavigate();
@@ -49,10 +50,11 @@ const ChangeEmailForm = () => {
           { newEmail: values.email.trim() },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -69,7 +71,7 @@ const ChangeEmailForm = () => {
                 page: "/forgot-password",
                 email: values.email,
               },
-            }
+            },
           );
         }
       } catch (error) {

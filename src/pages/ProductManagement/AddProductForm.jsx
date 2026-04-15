@@ -17,6 +17,7 @@ import { useAppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const AddProductForm = ({ categories, selectedCommunity }) => {
   const { checkIamAlreadyMember } = useUser();
@@ -53,6 +54,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
     try {
       const res = await axios.get(`${BASE_URL}/user/get-revenue-config`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -150,6 +152,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${getToken()}`,
             },

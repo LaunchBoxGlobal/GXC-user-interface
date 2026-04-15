@@ -6,6 +6,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import Cookies from "js-cookie";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const settingPages = [
   {
@@ -51,6 +52,7 @@ const SettingsLayout = ({ page }) => {
     try {
       const res = await axios.get(`${BASE_URL}/auth/profile`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -106,6 +108,7 @@ const SettingsLayout = ({ page }) => {
         },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

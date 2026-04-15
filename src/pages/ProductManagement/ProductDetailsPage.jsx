@@ -20,6 +20,7 @@ import { MdOutlineReport } from "react-icons/md";
 import ReportProductModal from "./ReportProductModal";
 import ReportProductSuccessModal from "./ReportProductSuccessModal";
 import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -46,7 +47,10 @@ const ProductDetailsPage = () => {
     setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
+        },
       });
       setProductDetails(res?.data?.data?.product);
     } catch (error) {

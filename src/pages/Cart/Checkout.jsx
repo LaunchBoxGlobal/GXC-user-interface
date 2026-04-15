@@ -15,6 +15,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const Checkout = () => {
   const {
@@ -126,7 +127,12 @@ const Checkout = () => {
           deliveryZipcode: user?.zipcode || "",
           deliveryCountry: user?.country || "",
         },
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       if (response?.data?.success) {
@@ -137,6 +143,7 @@ const Checkout = () => {
           `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
             },
           },

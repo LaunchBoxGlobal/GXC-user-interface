@@ -8,6 +8,7 @@ import Loader from "../Common/Loader";
 import { MdPayments } from "react-icons/md";
 import ProductTypeTabs from "../../pages/ProductManagement/ProductTypeTabs";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductManagementHeader = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const ProductManagementHeader = () => {
     try {
       const res = await axios.get(`${BASE_URL}/seller/stripe/return`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -48,6 +50,7 @@ const ProductManagementHeader = () => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

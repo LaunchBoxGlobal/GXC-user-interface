@@ -14,6 +14,7 @@ import Loader from "../../components/Common/Loader";
 import MarkItemOutForDeliveryModal from "./MarkItemOutForDeliveryModal";
 import MarkItemMissingModal from "./MarkItemMissingModal";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const OrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const OrderDetailsPage = () => {
     try {
       const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });

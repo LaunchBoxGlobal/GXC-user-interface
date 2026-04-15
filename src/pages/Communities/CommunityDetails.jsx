@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunityDetails = ({
   community,
@@ -33,7 +34,7 @@ const CommunityDetails = ({
         `${BASE_URL}/communities/${communityTitle}/join`,
         { slug: communityTitle },
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 

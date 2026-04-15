@@ -14,6 +14,7 @@ import { useUser } from "../../context/userContext";
 import { requestNotificationPermission } from "../../notifications";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../../LanguageSwitcher";
+import i18n from "i18next";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ const LoginForm = () => {
           },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
             },
           },
@@ -88,6 +90,7 @@ const LoginForm = () => {
               { email: values.email },
               {
                 headers: {
+                  "Accept-Language": i18n.language,
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${newToken}`,
                 },

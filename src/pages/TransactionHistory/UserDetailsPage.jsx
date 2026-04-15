@@ -13,6 +13,7 @@ import MemberReportConfirmationPopup from "../Member/MemberReportConfirmationPop
 import ReportMemberModal from "../Member/ReportMemberModal";
 import ReportMemberSuccessModal from "../Member/ReportMemberSuccessModal";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
@@ -40,7 +41,7 @@ const UserDetailsPage = () => {
     setError(null);
     try {
       const response = await axios.get(`${BASE_URL}/users/${userId}/profile`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
       });
       setMember(response?.data?.data?.user);
     } catch (error) {

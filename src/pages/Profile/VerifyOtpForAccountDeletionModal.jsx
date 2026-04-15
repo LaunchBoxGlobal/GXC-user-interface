@@ -7,6 +7,7 @@ import { getToken } from "../../utils/getToken";
 import { handleLogout } from "../../utils/handleLogout";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
   const { user } = useAppContext();
@@ -80,6 +81,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },
@@ -129,6 +131,7 @@ const VerifyOtpForAccountDeletionModal = ({ onClose, showModal }) => {
         },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

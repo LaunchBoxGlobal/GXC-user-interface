@@ -16,6 +16,7 @@ import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
 import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { toTitleCase } from "../../utils/toTitleCase";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const PickupItemsList = ({
   pickupItems,
@@ -63,6 +64,7 @@ const PickupItemsList = ({
         { status: "picked_up" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

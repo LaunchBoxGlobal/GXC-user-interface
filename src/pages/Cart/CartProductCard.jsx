@@ -6,6 +6,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useCart } from "../../context/cartContext";
 import { FaLocationDot } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CartProductCard = ({
   product,
@@ -24,6 +25,7 @@ const CartProductCard = ({
         `${BASE_URL}/communities/${cartDetails?.communityId}/cart/${productId}`,
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

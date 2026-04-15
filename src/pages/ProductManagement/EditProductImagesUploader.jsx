@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MAX_IMAGES = 5;
 
@@ -96,7 +97,7 @@ const EditProductImagesUploader = ({ product, productId }) => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${productId}/images/${imageId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        { headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` } },
       );
       if (res?.data?.success) {
         setImages((prev) => prev.filter((img) => img.id !== imageId));

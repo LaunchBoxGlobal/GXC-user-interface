@@ -11,6 +11,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
 import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductBuySection = ({
   productDetails,
@@ -70,7 +71,7 @@ const ProductBuySection = ({
           deliveryMethod:
             deliveryType === "delivery" ? deliveryType : deliveryType,
         },
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        { headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` } },
       );
 
       if (res?.data?.success) {

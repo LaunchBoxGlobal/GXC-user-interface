@@ -6,6 +6,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SellerConfirmationMarkItemReadForPickup = ({
   showMarkItemReasyForPickupConfirmationModal,
@@ -28,6 +29,7 @@ const SellerConfirmationMarkItemReadForPickup = ({
         { status: "ready_for_pickup" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

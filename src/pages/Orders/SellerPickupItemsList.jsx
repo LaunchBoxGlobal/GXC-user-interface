@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import { toTitleCase } from "../../utils/toTitleCase";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SellerPickupItemsList = ({
   pickupItems,
@@ -46,6 +47,7 @@ const SellerPickupItemsList = ({
         { status: "picked_up" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

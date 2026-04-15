@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import Cookies from "js-cookie";
 import { loadStripe } from "@stripe/stripe-js";
+import i18n from "i18next";
 import {
   Elements,
   CardElement,
@@ -31,7 +32,10 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
     try {
       setLoadingCards(true);
       const res = await axios.get(`${BASE_URL}/payments/payment-methods`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       // console.log("user cards >>> ", res?.data);
@@ -68,7 +72,10 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
       const res = await axios.delete(
         `${BASE_URL}/payments/payment-methods/${cardId}`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
         },
       );
       enqueueSnackbar(
@@ -206,7 +213,10 @@ const AddCardForm = ({ user, onCardAdded, t }) => {
           `${BASE_URL}/payments/setup-intent`,
           {},
           {
-            headers: { Authorization: `Bearer ${getToken()}` },
+            headers: {
+              "Accept-Language": i18n.language,
+              Authorization: `Bearer ${getToken()}`,
+            },
           },
         );
 
@@ -261,7 +271,10 @@ const AddCardForm = ({ user, onCardAdded, t }) => {
           `${BASE_URL}/payments/setup-intent`,
           {},
           {
-            headers: { Authorization: `Bearer ${getToken()}` },
+            headers: {
+              "Accept-Language": i18n.language,
+              Authorization: `Bearer ${getToken()}`,
+            },
           },
         );
 

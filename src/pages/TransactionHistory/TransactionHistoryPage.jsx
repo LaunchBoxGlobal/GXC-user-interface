@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -39,7 +40,10 @@ const TransactionHistoryPage = () => {
   const getRevenue = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/user/financial-summary`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       setUserBalance(response?.data?.data);
@@ -61,6 +65,7 @@ const TransactionHistoryPage = () => {
           search: searchTerm || undefined,
         },
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });

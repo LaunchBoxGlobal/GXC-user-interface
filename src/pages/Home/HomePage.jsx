@@ -11,6 +11,7 @@ import { enqueueSnackbar } from "notistack";
 import Categories from "./Categories";
 import Pagination from "../../components/Forms/Pagination";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const HomePage = () => {
   const { productSearchValue, fetchNotificaiontCount } = useAppContext();
@@ -39,6 +40,7 @@ const HomePage = () => {
       const res = await axios.get(`${BASE_URL}/categories`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
         },
       });
       // console.log("res >> ", res?.data?.data?.categories);
@@ -67,7 +69,10 @@ const HomePage = () => {
         selectedCommunity.id
       }/products?status=active&${params.toString()}`;
       const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
+        },
       });
 
       setProducts(res?.data?.data?.products || []);

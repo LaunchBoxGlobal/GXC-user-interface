@@ -13,6 +13,7 @@ import MemberReportConfirmationPopup from "./MemberReportConfirmationPopup";
 import ReportMemberModal from "./ReportMemberModal";
 import ReportMemberSuccessModal from "./ReportMemberSuccessModal";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MemberDetailsPage = () => {
   const { communityId, userId } = useParams();
@@ -42,7 +43,7 @@ const MemberDetailsPage = () => {
       const response = await axios.get(
         `${BASE_URL}/communities/${communityId}/members/${userId}/details`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
       setMember(response?.data?.data?.member);

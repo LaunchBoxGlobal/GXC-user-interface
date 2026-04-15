@@ -9,6 +9,7 @@ import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
 import AddProductForm from "./AddProductForm";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const AddProductPage = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const AddProductPage = () => {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/categories`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
       });
       setCategories(res?.data?.data?.categories || []);
     } catch (error) {

@@ -6,6 +6,7 @@ import { enqueueSnackbar } from "notistack";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const OrderCancellationReasonModal = ({
   showCancellationReasonPopup,
@@ -47,6 +48,7 @@ const OrderCancellationReasonModal = ({
           payload,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
             },
           },

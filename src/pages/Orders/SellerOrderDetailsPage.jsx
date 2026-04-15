@@ -15,6 +15,7 @@ import SellerCancelDeliveryOrderReasonModal from "./SellerCancelDeliveryOrderRea
 import SellerDeliveryOrderCancellationSuccessPopup from "./SellerDeliveryOrderCancellationSuccessPopup";
 import SellerConfirmationMarkItemReadForPickup from "./SellerConfirmationMarkItemReadForPickup";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SellerOrderDetailsPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const SellerOrderDetailsPage = () => {
   const fetchOrderDetails = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
       });
 
       const order = response?.data?.data?.order;

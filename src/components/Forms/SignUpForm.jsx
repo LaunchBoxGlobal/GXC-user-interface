@@ -13,6 +13,7 @@ import { useAppContext } from "../../context/AppContext";
 import { signupSchema } from "../../validation/signupSchema";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SignUpForm = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const SignUpForm = () => {
 
         const res = await axios.post(`${BASE_URL}/auth/register`, formData, {
           headers: {
+            "Accept-Language": i18n.language,
             "Content-Type": "multipart/form-data",
           },
         });

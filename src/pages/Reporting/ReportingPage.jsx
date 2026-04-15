@@ -11,6 +11,7 @@ import ReportSuccessPopup from "./ReportSuccessPopup";
 import ImageUpload from "./ImageUpload";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ReportingPage = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const ReportingPage = () => {
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               // "Content-Type": "multipart/form-data",
             },

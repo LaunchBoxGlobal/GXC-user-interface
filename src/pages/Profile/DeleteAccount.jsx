@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const DeleteAccount = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const DeleteAccount = () => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

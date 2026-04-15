@@ -12,6 +12,7 @@ import { getToken } from "../../utils/getToken";
 import AccountSuccessPopup from "../Popups/AccountSuccessPopup";
 import PhoneNumberField from "../Common/PhoneNumberField";
 import { enqueueSnackbar } from "notistack";
+import i18next from "i18next";
 import {
   CountrySelect,
   StateSelect,
@@ -74,7 +75,10 @@ const CompleteProfileForm = () => {
             country: values.country.trim(),
           },
           {
-            headers: { Authorization: `Bearer ${getToken()}` },
+            headers: {
+              "Accept-Language": i18n.language,
+              Authorization: `Bearer ${getToken()}`,
+            },
           },
         );
 
@@ -86,6 +90,7 @@ const CompleteProfileForm = () => {
             formData,
             {
               headers: {
+                "Accept-Language": i18n.language,
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },

@@ -4,6 +4,7 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
+import i18n from "i18next";
 
 const Categories = memo(() => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const Categories = memo(() => {
     try {
       const res = await axios.get(`${BASE_URL}/categories`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });

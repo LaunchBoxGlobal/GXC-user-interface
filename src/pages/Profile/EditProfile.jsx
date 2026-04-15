@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { getToken } from "../../utils/getToken";
 import PhoneNumberField from "../../components/Common/PhoneNumberField";
 import { enqueueSnackbar } from "notistack";
+import i18n from "i18next";
 import {
   CountrySelect,
   StateSelect,
@@ -141,6 +142,7 @@ const EditProfile = () => {
           },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
@@ -156,6 +158,7 @@ const EditProfile = () => {
             formData,
             {
               headers: {
+                "Accept-Language": i18n.language,
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },

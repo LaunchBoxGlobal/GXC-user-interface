@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MarkItemOutForDeliveryModal = ({
   showMarkItemOutForDelivery,
@@ -25,6 +26,7 @@ const MarkItemOutForDeliveryModal = ({
         },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

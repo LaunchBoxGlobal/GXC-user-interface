@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ const ChangePasswordPage = () => {
           },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },

@@ -17,6 +17,7 @@ import { editProductSchema } from "../../validation/editProductSchema";
 import EditProductSelectCategory from "./EditProductSelectCategory";
 import EditProductDeliveryTypeSelector from "./EditProductDeliveryTypeSelector";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const EditProductPage = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const EditProductPage = () => {
     try {
       const res = await axios.get(`${BASE_URL}/categories`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -54,7 +56,10 @@ const EditProductPage = () => {
     setFetchingProduct(true);
     try {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       const productData = res?.data?.data?.product;
@@ -156,7 +161,10 @@ const EditProductPage = () => {
             communityPickupAddress: values.communityPickupAddress || null,
           },
           {
-            headers: { Authorization: `Bearer ${getToken()}` },
+            headers: {
+              "Accept-Language": i18n.language,
+              Authorization: `Bearer ${getToken()}`,
+            },
           },
         );
 
@@ -251,6 +259,7 @@ const EditProductPage = () => {
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               "Content-Type": "multipart/form-data",
             },
@@ -298,7 +307,12 @@ const EditProductPage = () => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/products/${product?.id}/images/${imageId}`,
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       if (res?.data?.success) {

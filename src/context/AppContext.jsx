@@ -4,6 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../data/baseUrl";
 import { getToken } from "../utils/getToken";
 import { useNavigate } from "react-router-dom";
+import i18next from "i18next";
 
 const AppContext = createContext();
 
@@ -43,6 +44,7 @@ export const AppProvider = ({ children }) => {
       const res = await axios.get(`${BASE_URL}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
         },
       });
 
@@ -76,7 +78,7 @@ export const AppProvider = ({ children }) => {
             console.error(
               `Unexpected error: ${status} - ${
                 error.response?.data?.message || error.message
-              }`
+              }`,
             );
         }
       } else {
@@ -92,8 +94,9 @@ export const AppProvider = ({ children }) => {
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
+            "Accept-Language": i18n.language,
           },
-        }
+        },
       );
 
       // console.log("notification count >>> ", res?.data);

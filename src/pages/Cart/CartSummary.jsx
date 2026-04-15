@@ -17,6 +17,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import EditAddressModal from "./EditAddressModal";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CartSummary = () => {
   const {
@@ -80,7 +81,12 @@ const CartSummary = () => {
     try {
       const response = await axios.delete(
         `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       if (response?.data?.success) {

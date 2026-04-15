@@ -7,6 +7,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SellerCancelDeliveryOrderReasonModal = ({
   showCancelReasonModal,
@@ -50,6 +51,7 @@ const SellerCancelDeliveryOrderReasonModal = ({
           },
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
             },
           },

@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import SearchFilterBox from "./SearchFilterBox";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunitiesDropdown = () => {
   const { setProductSearchValue } = useAppContext();
@@ -47,7 +48,12 @@ const CommunitiesDropdown = () => {
         `${BASE_URL}/communities/my-joined${
           searchCommunityValue ? `?search=${searchCommunityValue}` : ""
         }`,
-        { headers: { Authorization: `Bearer ${getToken()}` } },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       const list = res?.data?.data?.communities || [];

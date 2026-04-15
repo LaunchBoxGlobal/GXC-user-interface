@@ -5,6 +5,7 @@ import { getToken } from "../../utils/getToken";
 import Loader from "../Common/Loader";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const NotificationsDropdown = ({ isScrolled }) => {
   const [open, setOpen] = useState(false);
@@ -23,6 +24,7 @@ const NotificationsDropdown = ({ isScrolled }) => {
         `${BASE_URL}/user/get-notifications?limit=1000`,
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

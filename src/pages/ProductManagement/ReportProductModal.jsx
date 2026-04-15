@@ -7,6 +7,7 @@ import { getToken } from "../../utils/getToken";
 import { BASE_URL } from "../../data/baseUrl";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export const productReportReasons = [
   { key: "fraudulent", value: "reportProduct.reasons.fraudulent" },
@@ -44,6 +45,7 @@ const ReportProductModal = ({ setIsReportModalOpen, setIsReportedSuccess }) => {
       const response = await fetch(`${BASE_URL}/products/reports/`, {
         method: "POST",
         headers: {
+          "Accept-Language": i18n.language,
           "Content-Type": "application/json",
           Authorization: `Bearer ${getToken()}`,
         },

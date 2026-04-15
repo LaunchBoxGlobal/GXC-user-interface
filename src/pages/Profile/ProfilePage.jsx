@@ -12,6 +12,7 @@ import PaymentMethods from "./PaymentMethods";
 import DeleteAccount from "./DeleteAccount";
 import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
+import i18n from "i18next";
 
 const ProfilePage = () => {
   const { user, setUser, fetchNotificaiontCount } = useAppContext();
@@ -40,6 +41,7 @@ const ProfilePage = () => {
     try {
       const res = await axios.get(`${BASE_URL}/auth/profile`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -72,7 +74,7 @@ const ProfilePage = () => {
             console.error(
               `Unexpected error: ${status} - ${
                 error.response?.data?.message || error.message
-              }`
+              }`,
             );
         }
       } else {

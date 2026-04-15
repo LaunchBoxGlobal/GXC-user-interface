@@ -5,6 +5,7 @@ import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ResendOtp = ({ email, page }) => {
   const [timer, setTimer] = useState(60);
@@ -35,6 +36,7 @@ const ResendOtp = ({ email, page }) => {
         { email: savedEmail || email },
         {
           headers: {
+            "Accept-Language": i18n.language,
             "Content-Type": "application/json",
             Authorization: `Bearer ${getToken()}`,
           },

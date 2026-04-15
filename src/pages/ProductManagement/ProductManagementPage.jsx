@@ -11,6 +11,7 @@ import Categories from "../Home/Categories";
 import { useAppContext } from "../../context/AppContext";
 import Pagination from "../../components/Forms/Pagination";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -40,7 +41,10 @@ const ProductManagementPage = () => {
           categoryId ? `&categoryId=${categoryId}` : ""
         }`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Accept-Language": i18n.language,
+          },
         },
       );
 

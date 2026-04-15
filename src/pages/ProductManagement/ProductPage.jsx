@@ -15,6 +15,7 @@ import { enqueueSnackbar } from "notistack";
 import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const ProductDetailsPage = () => {
     try {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -99,6 +101,7 @@ const ProductDetailsPage = () => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import Button from "../Common/Button";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import i18n from "i18next";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -113,6 +114,7 @@ const VerifyOtp = () => {
 
         const res = await axios.post(url, body, {
           headers: {
+            "Accept-Language": i18n.language,
             "Content-Type": "application/json",
           },
         });

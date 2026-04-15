@@ -8,6 +8,7 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
   const [loading, setLoading] = useState(false);
@@ -32,6 +33,7 @@ const DeleteProductPopup = ({ showPopup, setShowDeletePopup, productId }) => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },

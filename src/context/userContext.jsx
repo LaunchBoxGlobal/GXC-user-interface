@@ -6,6 +6,7 @@ import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import i18n from "i18next";
 
 const UserContext = createContext();
 
@@ -40,7 +41,10 @@ export const UserProvider = ({ children }) => {
       const res = await axios.get(
         `${BASE_URL}/communities/${community.slug}/my-membership`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
         },
       );
 
@@ -73,7 +77,10 @@ export const UserProvider = ({ children }) => {
     if (!token) return;
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       const list = res?.data?.data?.communities || [];
@@ -148,6 +155,7 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await axios.get(`${BASE_URL}/seller/stripe/return`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });

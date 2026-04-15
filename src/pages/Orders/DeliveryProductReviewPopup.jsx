@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const DeliveryProductReviewPopup = ({
   openFeedbackModal,
@@ -45,6 +46,7 @@ const DeliveryProductReviewPopup = ({
         },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
         },
