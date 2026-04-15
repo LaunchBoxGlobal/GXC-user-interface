@@ -68,7 +68,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Nav */}
-      <ul className="w-full max-w-[80%] hidden xl:flex items-center justify-end gap-x-10">
+      <ul className="w-full max-w-[80%] hidden xl:flex items-center justify-end gap-x-9">
         {PAGE_LINKS?.map((page) => {
           const active = isActive(page.url);
           return (
@@ -102,7 +102,7 @@ const Navbar = () => {
         })}
 
         {/* Right icons */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
             <div className="relative">
@@ -131,7 +131,7 @@ const Navbar = () => {
 
           <NotificationsDropdown isScrolled={isScrolled} />
 
-          <LanguageSwitcher isScrolled={isScrolled} />
+          <LanguageSwitcher />
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
         </div>
@@ -141,6 +141,8 @@ const Navbar = () => {
       <div className="flex items-center justify-end gap-5 xl:hidden">
         {/* Right icons */}
         <div className="flex items-center gap-5">
+          <LanguageSwitcher />
+
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
             <div className="relative">

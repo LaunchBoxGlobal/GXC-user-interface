@@ -85,6 +85,7 @@ i18n
       "member",
       "community",
     ],
+    supportedLngs: ["en", "es"],
     defaultNS: "common",
     interpolation: {
       escapeValue: false,

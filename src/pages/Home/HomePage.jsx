@@ -10,6 +10,7 @@ import { useUser } from "../../context/userContext";
 import { enqueueSnackbar } from "notistack";
 import Categories from "./Categories";
 import Pagination from "../../components/Forms/Pagination";
+import { useTranslation } from "react-i18next";
 
 const HomePage = () => {
   const { productSearchValue, fetchNotificaiontCount } = useAppContext();
@@ -20,6 +21,7 @@ const HomePage = () => {
     fetchCommunities,
   } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation("home");
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
@@ -127,7 +129,7 @@ const HomePage = () => {
                 className="max-w-7"
               />
               <p className="text-sm text-gray-500 font-medium">
-                You have not joined any community yet.
+                {t(`You have not joined any community yet.`)}
               </p>
             </div>
           )}

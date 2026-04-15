@@ -51,8 +51,8 @@ const AuthLayout = ({ children }) => {
         )}
       </div>
       <div className="w-full h-full py-12 flex items-center flex-col justify-center relative">
-        <div className="w-full absolute top-10 flex justify-end pr-10">
-          <LanguageSwitcher isScrolled={true} />
+        <div className="absolute top-5 flex justify-end right-5">
+          <LanguageSwitcher />
         </div>
         {children}
       </div>

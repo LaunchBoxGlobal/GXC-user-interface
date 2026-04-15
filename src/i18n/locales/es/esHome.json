@@ -11,5 +11,6 @@
     "buttons": {
         "reset": "Restablecer",
         "apply": "Aplicar"
-    }
+    },
+    "You have not joined any community yet.": "Todavía no te has unido a ninguna comunidad."
 }
