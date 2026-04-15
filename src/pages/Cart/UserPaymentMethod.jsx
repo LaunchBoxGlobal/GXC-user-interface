@@ -16,7 +16,9 @@ import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(
+  `pk_test_51S7yfzF0N7Cp4mC9y4YwRXeb4ERRENsNwWYVhZpKYSOteIurmHh62vHnxCYbZQ7PCd05HxKI5IwR39cMFYkEISqz00DLrEkrXF`,
+);
 
 const UserPaymentMethod = ({
   selectedPaymentMethod,
