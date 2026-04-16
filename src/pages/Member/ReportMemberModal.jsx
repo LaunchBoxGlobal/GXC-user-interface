@@ -32,6 +32,8 @@ const ReportMemberModal = ({
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
 
+  const { t } = useTranslation("member");
+
   // Handle file selection
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -126,8 +128,6 @@ const ReportMemberModal = ({
   });
 
   if (!openReportMemberModal) return null;
-
-  const { t } = useTranslation("member");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(0,0,0,0.5)] padding-x">
