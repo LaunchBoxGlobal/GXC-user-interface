@@ -12,5 +12,7 @@
         "reset": "Reset",
         "apply": "Apply"
     },
-    "You have not joined any community yet.": "You have not joined any community yet."
+    "You have not joined any community yet.": "You have not joined any community yet.",
+    "Home": "Home",
+    "Search community": "Search community"
 }

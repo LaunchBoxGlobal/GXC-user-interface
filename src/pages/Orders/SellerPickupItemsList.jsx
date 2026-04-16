@@ -80,6 +80,7 @@ const SellerPickupItemsList = ({
       <div className="w-full space-y-5">
         {pickupItems &&
           pickupItems?.map((item) => {
+            console.log(item);
             return (
               <div
                 key={item?.id}
@@ -218,14 +219,15 @@ const SellerPickupItemsList = ({
                           <FaLocationDot className="text-lg text-[var(--button-bg)]" />
                         </div>
                         <p className="text-sm lg:text-base">
-                          {[
+                          {/* {[
                             item?.pickupAddress?.address,
                             item?.pickupAddress?.city,
                             item?.pickupAddress?.state,
                             item?.pickupAddress?.zipcode,
                           ]
                             .filter(Boolean)
-                            .join(", ")}
+                            .join(", ")} */}
+                          {item?.pickupAddress?.address}
                         </p>
                       </div>
                     </div>

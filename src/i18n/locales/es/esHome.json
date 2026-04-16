@@ -12,5 +12,7 @@
         "reset": "Restablecer",
         "apply": "Aplicar"
     },
-    "You have not joined any community yet.": "Todavía no te has unido a ninguna comunidad."
+    "You have not joined any community yet.": "Todavía no te has unido a ninguna comunidad.",
+    "Home": "Hogar",
+    "Search community": "Comunidad de búsqueda"
 }

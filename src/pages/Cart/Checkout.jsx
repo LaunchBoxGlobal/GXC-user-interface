@@ -85,12 +85,6 @@ const Checkout = () => {
   );
 
   const handleNavigate = () => {
-    // if (isAnyDeliveryTypeProduct || !selectedAddress) {
-    //   enqueueSnackbar("Please select a delivery address!", {
-    //     variant: "error",
-    //   });
-    //   return;
-    // }
     if (!selectedPaymentMethod) {
       enqueueSnackbar(t("Please select a payment method!"), {
         variant: "error",
@@ -136,7 +130,6 @@ const Checkout = () => {
       );
 
       if (response?.data?.success) {
-        // console.log("place order response >>> ", response?.data);
         setOrderId(response?.data?.data?.orderNumber);
 
         await axios.delete(

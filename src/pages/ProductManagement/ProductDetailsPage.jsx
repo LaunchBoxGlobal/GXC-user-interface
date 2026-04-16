@@ -127,7 +127,7 @@ const ProductDetailsPage = () => {
           {t(`buttons.back`)}
         </button>
         {productDetails?.seller?.id !== user?.id && (
-          <div className="relative z-50">
+          <div className="relative z-30">
             <button
               type="button"
               onClick={() => setOpenReportDropdown((prev) => !prev)}

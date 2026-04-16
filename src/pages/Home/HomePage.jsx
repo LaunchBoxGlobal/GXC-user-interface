@@ -102,7 +102,7 @@ const HomePage = () => {
   }, [fetchCommunityProducts]);
 
   useEffect(() => {
-    document.title = "Home - giveXchange";
+    document.title = `${t("Home")} - giveXchange`;
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCategories();
     fetchCommunities();

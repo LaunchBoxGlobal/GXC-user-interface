@@ -114,7 +114,7 @@
             "missing": "Perdido",
             "disputeRaised": "Disputa iniciada - En revisión",
             "disputeResolved": "Disputa resuelta",
-            "Pickup": "Levantar",
+            "pickup": "Levantar",
             "communityPickup": "Recogida comunitaria"
         },
         "deliveryType": "Tipo de entrega",

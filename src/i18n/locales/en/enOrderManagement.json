@@ -134,7 +134,7 @@
             "missing": "Missing",
             "disputeRaised": "Dispute Raised - Under Review",
             "disputeResolved": "Dispute Resolved",
-            "Pickup": "Pickup",
+            "pickup": "Pickup",
             "communityPickup": "Community Pickup"
         },
         "deliveryType": "Delivery Type",

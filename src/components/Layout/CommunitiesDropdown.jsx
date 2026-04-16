@@ -205,7 +205,7 @@ const CommunitiesDropdown = () => {
               />
               <input
                 type="text"
-                placeholder="Search community"
+                placeholder={t("Search community")}
                 className="w-full border-none outline-none bg-transparent text-[15px] font-normal text-[#787878] placeholder:text-[#787878]"
                 value={searchCommunityValue}
                 onChange={handleCommunitySearch}

@@ -44,7 +44,10 @@ const SellerOrderDetailsPage = () => {
   const fetchOrderDetails = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/orders/${orderId}`, {
-        headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       const order = response?.data?.data?.order;
@@ -102,13 +105,13 @@ const SellerOrderDetailsPage = () => {
           <div className="w-full flex items-star flex-col justify-start relative">
             <div className="w-full">
               <p className="font-semibold text-[20px] leading-none tracking-tight break-words">
-                {t(`orderDetailsPage.orderDetailsPage.orderDetails`)}
+                {t(`orderDetailsPage.orderDetails`)}
               </p>
             </div>
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-sm lg:text-base text-gray-600">
-                {t(`orderDetailsPage.orderDetailsPage.orderId`)}
+                {t(`orderDetailsPage.orderId`)}
               </p>
               <p className="text-sm lg:text-base text-gray-600">
                 {details?.orderNumber}
@@ -117,7 +120,7 @@ const SellerOrderDetailsPage = () => {
             <div className="w-full border my-4" />
             <div className="w-full flex items-center justify-between">
               <p className="text-sm lg:text-base text-gray-600">
-                {t(`orderDetailsPage.orderDetailsPage.orderPlaced`)}
+                {t(`orderDetailsPage.orderPlaced`)}
               </p>
               <p className="text-sm lg:text-base text-gray-600">
                 {formatDate(details?.createdAt)}
@@ -152,14 +155,13 @@ const SellerOrderDetailsPage = () => {
         <div className="w-full col-span-3 lg:col-span-1">
           <div className="bg-white rounded-[18px] w-full">
             <h2 className="text-[24px] font-semibold leading-none px-5 pt-5 lg:pt-7">
-              Order Summary
-              {`orderSummary.orderSummary`}
+              {t(`orderSummary.orderSummary`)}
             </h2>
             <div className="w-full border my-5" />
             <div className="w-full px-5 pb-5">
               <div className="w-full flex items-center justify-between">
                 <p className="text-base text-gray-600">
-                  {`orderSummary.subtotal`}
+                  {t(`orderSummary.subtotal`)}
                 </p>
                 <p className="text-base text-gray-600">
                   ${details?.totalAmount.toFixed(2)}
@@ -167,7 +169,9 @@ const SellerOrderDetailsPage = () => {
               </div>
               <div className="w-full border my-3" />
               <div className="w-full flex items-center justify-between">
-                <p className="text-base text-gray-600">{`orderSummary.products`}</p>
+                <p className="text-base text-gray-600">
+                  {t(`orderSummary.products`)}
+                </p>
                 <p className="text-base text-gray-600">
                   {details?.items?.length}
                 </p>
@@ -176,7 +180,7 @@ const SellerOrderDetailsPage = () => {
               <div className="w-full border my-3" />
               <div className="w-full flex items-center justify-between">
                 <p className="text-base text-[var(--button-bg)] font-semibold">
-                  {`orderSummary.total`}
+                  {t(`orderSummary.total`)}
                 </p>
                 <p className="text-base text-[var(--button-bg)] font-semibold">
                   ${details?.totalAmount.toFixed(2)}

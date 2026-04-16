@@ -79,15 +79,15 @@ const SellerOrderCard = ({ product }) => {
               <div className="flex flex-col items-start md:items-end justify-center gap-1.5">
                 <p className="text-sm text-[#6D6D6D] font-medium">
                   {/* Delivery Type */}
-                  {t(`pickupItemList.orderCard.deliveryType`)}
+                  {t(`orderCard.deliveryType`)}
                 </p>
                 <p className="font-medium leading-none text-sm lg:text-base">
                   {item?.deliveryMethod === "pickup"
-                    ? t(`orderCard.statuses.Pickup`)
+                    ? t(`orderCard.statuses.pickup`)
                     : item?.deliveryMethod === "delivery"
                       ? t(`orderCard.statuses.communityPickup`)
                       : t(
-                          `orderCard.statuses.Pickup / orderCard.statuses.communityPickup`,
+                          `orderCard.statuses.pickup / orderCard.statuses.communityPickup`,
                         )}
                 </p>
               </div>

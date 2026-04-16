@@ -64,7 +64,7 @@ const OrderSummary = ({
                   disabled={removingItems}
                   onClick={() => handleClick()}
                 >
-                  {removingItems ? <Loader /> : "Place Order"}
+                  {removingItems ? <Loader /> : t("Place Order")}
                 </button>
               </div>
             ) : (
