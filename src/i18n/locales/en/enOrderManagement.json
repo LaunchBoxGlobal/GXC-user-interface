@@ -192,5 +192,11 @@
     "customDetails": "Customer Details",
     "sellerOrderCard": {
         "bookingId": "Booking ID"
-    }
+    },
+    "Cancelled by Buyer": "Cancelled by Buyer",
+    "Delivered": "Delivered",
+    "Picked Up": "Picked Up",
+    "Ready To Pickup": "Ready To Pickup",
+    "Cancelled by Seller": "Cancelled by Seller",
+    "readyToPickup": "Ready To Pickup"
 }

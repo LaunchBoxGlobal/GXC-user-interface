@@ -169,5 +169,14 @@
         "successfullyMarkedPickup": "Has marcado este artículo como listo para recoger correctamente.",
         "areYourSureToMarkPickup": "¿Estás seguro de que deseas marcar este artículo como listo para recoger?"
     },
-    "customDetails": "Detalles del cliente"
+    "customDetails": "Detalles del cliente",
+    "sellerOrderCard": {
+        "bookingId": "ID de reserva"
+    },
+    "Cancelled by Buyer": "Cancelado por el comprador",
+    "Delivered": "Entregado",
+    "Picked Up": "Recogido",
+    "Ready To Pickup": "Listo para recoger",
+    "Cancelled by Seller": "Cancelado por el vendedor",
+    "readyToPickup": "Listo para recoger"
 }

@@ -206,21 +206,21 @@ const SellerOrderDetailsPage = () => {
                     className={`w-full h-[48px] rounded-[12px] text-center font-medium bg-[var(--button-bg)] text-white disabled:bg-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed`}
                   >
                     {details?.items[0]?.buyerStatus === "cancelled"
-                      ? "Cancelled by Buyer"
+                      ? t("Cancelled by Buyer")
                       : details?.items[0]?.buyerStatus === "delivered"
-                        ? "Delivered"
+                        ? t("Delivered")
                         : details?.items[0]?.buyerStatus === "picked_up"
-                          ? "Picked Up"
+                          ? t("Picked Up")
                           : details?.items[0]?.sellerStatus ===
                               "out_for_delivery"
-                            ? "Ready To Pickup"
+                            ? t("Ready To Pickup")
                             : details?.items[0]?.sellerStatus === "cancelled"
-                              ? "Cancelled by Seller"
+                              ? t("Cancelled by Seller")
                               : details &&
                                   details?.items?.[0]?.deliveryMethod ===
                                     "delivery"
-                                ? t(`orderDetailsPage.readyToPickup`)
-                                : t(`orderDetailsPage.readyToPickup`)}
+                                ? t(`readyToPickup`)
+                                : t(`readyToPickup`)}
                   </button>
                 </div>
               )}
