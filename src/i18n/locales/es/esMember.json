@@ -39,5 +39,13 @@
                 "selectReason": "Seleccione un motivo antes de enviar."
             }
         }
-    }
+    },
+    "Fraudulent Listings": "Anuncios fraudulentos",
+    "Misleading Information": "Información engañosa",
+    "Counterfeit Products": "Productos falsificados",
+    "Non-Delivery": "No entrega",
+    "Poor Quality Products": "Productos de mala calidad",
+    "Seller Misconducts": "Conductas indebidas del vendedor",
+    "Others": "Otros",
+    "Please describe your reason...": "Por favor describa su motivo..."
 }

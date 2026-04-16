@@ -39,5 +39,13 @@
                 "selectReason": "Please select a reason before submitting."
             }
         }
-    }
+    },
+    "Fraudulent Listings": "Fraudulent Listings",
+    "Misleading Information": "Misleading Information",
+    "Counterfeit Products": "Counterfeit Products",
+    "Non-Delivery": "Non-Delivery",
+    "Poor Quality Products": "Poor Quality Products",
+    "Seller Misconducts": "Seller Misconducts",
+    "Others": "Others",
+    "Please describe your reason...": "Please describe your reason..."
 }
