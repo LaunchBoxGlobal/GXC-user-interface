@@ -43,7 +43,10 @@ const MemberDetailsPage = () => {
       const response = await axios.get(
         `${BASE_URL}/communities/${communityId}/members/${userId}/details`,
         {
-          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
         },
       );
       setMember(response?.data?.data?.member);
@@ -129,7 +132,7 @@ const MemberDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                {t(`members.headings.memberDetails`)}
+                {t(`members.buttons.memberDetails`)}
               </button>
               <button
                 type="button"
@@ -140,7 +143,7 @@ const MemberDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                {t(`members.headings.reviews`)}
+                {t(`members.buttons.reviews`)}
               </button>
             </div>
 
