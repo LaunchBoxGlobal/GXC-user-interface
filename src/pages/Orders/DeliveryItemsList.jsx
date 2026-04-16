@@ -77,14 +77,14 @@ const DeliveryItemsList = ({
         // fetchOrderDetails();
       }
     } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          error?.message ||
-          t("deliveryItems.messages.cancelledBySeller"),
-        {
-          variant: "error",
-        },
-      );
+      // enqueueSnackbar(
+      //   error?.response?.data?.message ||
+      //     error?.message ||
+      //     t("deliveryItems.messages.cancelledBySeller"),
+      //   {
+      //     variant: "error",
+      //   },
+      // );
       // console.error("markItemAsDelivered error >>> ", error);
       handleApiError(error, navigate);
     } finally {

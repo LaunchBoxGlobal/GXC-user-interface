@@ -74,14 +74,6 @@ const PickupItemsList = ({
         setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          error?.message ||
-          t(`pickupItemList.errors.somethingWrong`),
-        {
-          variant: "error",
-        },
-      );
       handleApiError(error, navigate);
     } finally {
       setLoading(false);
