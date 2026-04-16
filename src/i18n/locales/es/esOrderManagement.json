@@ -178,5 +178,6 @@
     "Picked Up": "Recogido",
     "Ready To Pickup": "Listo para recoger",
     "Cancelled by Seller": "Cancelado por el vendedor",
-    "readyToPickup": "Listo para recoger"
+    "readyToPickup": "Listo para recoger",
+    "Order report submitted successfully.": "Informe de pedido enviado correctamente."
 }

@@ -5,7 +5,9 @@
         "sold": "Vendido",
         "no": "No",
         "continue": "Continuar",
-        "back": "Atrás"
+        "back": "Atrás",
+        "delete": "Borrar",
+        "save": "Ahorrar"
     },
     "product_management": "Gestión de Productos",
     "no_products_added": "Aún no has añadido ningún producto.",
@@ -201,9 +203,10 @@
         "productStatus": "Estado del producto",
         "delivery": "Entrega",
         "buttons": {
-            "edit": "editar",
+            "edit": "Editar",
             "addToCart": "Añadir al carrito",
-            "goToCart": "Ir al carrito"
+            "goToCart": "Ir al carrito",
+            "delete": "Eliminar"
         },
         "delete": "Eliminar",
         "price": "Precio",

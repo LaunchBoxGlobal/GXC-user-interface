@@ -513,7 +513,7 @@ const EditProductPage = () => {
                   disabled={loading}
                   className="button relative flex items-center justify-center disabled:cursor-not-allowed"
                 >
-                  {loading ? <Loader /> : t(`addProduct.common.save`)}
+                  {loading ? <Loader /> : t(`buttons.save`)}
                 </button>
               </div>
             </div>

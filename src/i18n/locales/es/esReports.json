@@ -14,5 +14,7 @@
         "min": "La descripción debe tener 10 caracteres o más.",
         "max": "La descripción debe tener 1500 caracteres o menos.",
         "required": "Se requiere descripción"
-    }
+    },
+    "Report Submitted": "Informe enviado",
+    " Your report has been submitted successfully. Our team will review it and respond accordingly.": "Su informe se ha enviado correctamente. Nuestro equipo lo revisará y le responderá en consecuencia."
 }

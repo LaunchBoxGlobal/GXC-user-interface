@@ -14,5 +14,7 @@
         "min": "Description must be 10 characters or more",
         "max": "Description must be 1500 characters or less",
         "required": "Description is required"
-    }
+    },
+    "Report Submitted": "Report Submitted",
+    " Your report has been submitted successfully. Our team will review it and respond accordingly.": "Your report has been submitted successfully. Our team will review it and respond accordingly."
 }

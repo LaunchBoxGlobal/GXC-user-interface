@@ -75,7 +75,8 @@ const MarkItemMissingModal = ({
 
         if (response.data.success) {
           enqueueSnackbar(
-            response?.data?.message || "Order report submitted successfully.",
+            response?.data?.message ||
+              t("Order report submitted successfully."),
             { variant: "success" },
           );
           resetForm();

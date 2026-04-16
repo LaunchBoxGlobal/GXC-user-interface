@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 const ReportSuccessPopup = ({ isReportSubmitted, setIsReportSubmitted }) => {
+  const { t } = useTranslation("reports");
   const handleClickYes = () => {
     setIsReportSubmitted(false);
   };
@@ -17,11 +20,11 @@ const ReportSuccessPopup = ({ isReportSubmitted, setIsReportSubmitted }) => {
             />
           </div>
           <p className="text-[24px] font-semibold leading-none">
-            Report Submitted
+            {t(`Report Submitted`)}
           </p>
           <p className="text-[#888888]">
-            Your report has been submitted successfully. Our team will review it
-            and respond accordingly.
+            {t(`Your report has been submitted successfully. Our team will review it
+            and respond accordingly.`)}
           </p>
         </div>
       </div>

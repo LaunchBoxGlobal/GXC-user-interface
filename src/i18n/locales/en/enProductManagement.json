@@ -6,7 +6,9 @@
         "no": "No",
         "continue": "Continue",
         "selfPickup": "Self Pickup",
-        "back": "Back"
+        "back": "Back",
+        "delete": "Delete",
+        "save": "Save"
     },
     "product_management": "Product Management",
     "no_products_added": "You have not added any product yet.",
@@ -214,9 +216,10 @@
         "productStatus": "Product Status",
         "delivery": "Delivery",
         "buttons": {
-            "edit": "edit",
+            "edit": "Edit",
             "addToCart": "Add to cart",
-            "goToCart": "Go to cart"
+            "goToCart": "Go to cart",
+            "delete": "Delete"
         },
         "delete": "Delete",
         "price": "Price",
