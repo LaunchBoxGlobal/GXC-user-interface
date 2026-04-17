@@ -1,12 +1,40 @@
 import i18n from "i18next";
 import { useState, useEffect } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+import axios from "axios";
+import { BASE_URL } from "./data/baseUrl";
+import { getToken } from "./utils/getToken";
+import { handleApiError } from "./utils/handleApiError";
+import { useNavigate } from "react-router-dom";
 
 const LanguageSwitcher = ({ className, isScrolled }) => {
   const [language, setLanguage] = useState(i18n.language || "en");
+  const navigate = useNavigate();
 
   useEffect(() => {
     i18n.changeLanguage(language);
+
+    const updateLanguage = async () => {
+      const token = getToken();
+      if (!token) return;
+
+      try {
+        await axios.patch(
+          `${BASE_URL}/user/update-preferred-language`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Accept-Language": language,
+            },
+          },
+        );
+      } catch (error) {
+        handleApiError(error, navigate);
+      }
+    };
+
+    updateLanguage();
   }, [language]);
 
   return (
