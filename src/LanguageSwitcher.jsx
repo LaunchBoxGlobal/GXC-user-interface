@@ -1,7 +1,8 @@
 import i18n from "i18next";
 import { useState, useEffect } from "react";
+import { IoIosArrowDown } from "react-icons/io";
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher = ({ className, isScrolled }) => {
   const [language, setLanguage] = useState(i18n.language || "en");
 
   useEffect(() => {
@@ -13,41 +14,19 @@ const LanguageSwitcher = () => {
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
-        className="
-          appearance-none
-          bg-white
-          border border-gray-300
-          text-gray-700
-          py-1 lg:py-1.5 pl-1.5 lg:pl-2 pr-7 lg:pr-8
-          rounded-lg
-          shadow-sm
-          focus:outline-none
-          focus:ring-2 focus:ring-blue-950
-          focus:border-blue-950
-          text-sm
-          cursor-pointer
-        "
+        className={className}
       >
-        <option value="en">English</option>
-        <option value="es">Spanish</option>
+        <option value="en" className="text-black">
+          English
+        </option>
+        <option value="es" className="text-black">
+          Spanish
+        </option>
       </select>
 
-      {/* Custom dropdown arrow */}
-      <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-500">
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </div>
+      <IoIosArrowDown
+        className={`pointer-events-none absolute top-1/2 -translate-y-1/2 right-2 ${isScrolled ? "text-gray-400" : "text-gray-100"} `}
+      />
     </div>
   );
 };

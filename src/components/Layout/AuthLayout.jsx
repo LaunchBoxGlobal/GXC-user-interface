@@ -9,6 +9,9 @@ const AuthLayout = ({ children }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const className =
+    "appearance-none bg-white border border-gray-300 text-gray-700 py-1 lg:py-1.5 pl-1.5 lg:pl-2 pr-7 lg:pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-blue-950 text-sm cursor-pointer";
+
   return (
     <main className="w-full min-h-screen relative grid grid-cols-1 lg:grid-cols-2 p-4 auth-bg">
       <div className="w-full h-full bg-transparent hidden lg:block">
@@ -52,7 +55,7 @@ const AuthLayout = ({ children }) => {
       </div>
       <div className="w-full h-full py-12 flex items-center flex-col justify-center relative">
         <div className="absolute top-5 flex justify-end right-5">
-          <LanguageSwitcher />
+          <LanguageSwitcher className={className} isScrolled={true} />
         </div>
         {children}
       </div>

@@ -42,6 +42,8 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
+  const languageTogglerStyle = `appearance-none bg-transparent ${isScrolled ? "text-black" : "text-white"} border border-gray-300 text-gray-700 py-1 lg:py-1.5 pl-1.5 lg:pl-2 pr-7 lg:pr-8 rounded-lg shadow-sm outline-none text-sm cursor-pointer
+        `;
   return (
     <header
       className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-visible transition-colors duration-300 ${
@@ -131,7 +133,10 @@ const Navbar = () => {
 
           <NotificationsDropdown isScrolled={isScrolled} />
 
-          <LanguageSwitcher />
+          <LanguageSwitcher
+            className={languageTogglerStyle}
+            isScrolled={isScrolled}
+          />
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
         </div>
@@ -141,7 +146,10 @@ const Navbar = () => {
       <div className="flex items-center justify-end gap-5 xl:hidden">
         {/* Right icons */}
         <div className="flex items-center gap-5">
-          <LanguageSwitcher />
+          <LanguageSwitcher
+            className={languageTogglerStyle}
+            isScrolled={isScrolled}
+          />
 
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
