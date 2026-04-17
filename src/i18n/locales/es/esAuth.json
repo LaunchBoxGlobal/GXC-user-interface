@@ -31,7 +31,7 @@
     "form": {
         "email_label": "Dirección de correo electrónico",
         "password": "Contraseña",
-        "forgot_password": "Has olvidado tu contraseña",
+        "forgot_password": "Has olvidado tu contraseña?",
         "new_password": "Nueva contraseña",
         "confirm_password": "confirmar Contraseña"
     },

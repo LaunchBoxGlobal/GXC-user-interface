@@ -184,7 +184,7 @@ const SellerDeliveryItemsList = ({
 
                 <div className="w-full">
                   <h3 className="font-semibold leading-none">
-                    {t(`deliveryItems.customDetails`)}
+                    {t(`customDetails`)}
                   </h3>
                   <div className="w-full flex items-center justify-between">
                     <div className="w-full flex items-center gap-3 mt-3">

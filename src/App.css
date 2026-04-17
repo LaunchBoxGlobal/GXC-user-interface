@@ -27,9 +27,6 @@
 .hero {
   width: 100%;
   height: 340px;
-  /* background-image: url("/header-background-image.png");
-  background-position: center;
-  background-size: cover; */
   /* background-color: var(--green-bg); */
   background-color: var(--button-bg);
 }
