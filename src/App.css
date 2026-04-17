@@ -30,16 +30,18 @@
   /* background-image: url("/header-background-image.png");
   background-position: center;
   background-size: cover; */
-  background-color: var(--green-bg);
+  /* background-color: var(--green-bg); */
+  background-color: var(--button-bg);
 }
 
 .productSearchInput {
-  background: rgba(78, 157, 75, 0.79);
+  /* background: rgba(78, 157, 75, 0.79); */
+  background: var(--button-bg);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10.3px);
   -webkit-backdrop-filter: blur(10.3px);
-  border: 1px solid rgba(78, 157, 75, 0.42);
+  border: 1px solid rgba(92, 94, 92, 0.42);
 }
 
 .stdropdown-container {
