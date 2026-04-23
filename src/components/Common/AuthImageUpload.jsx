@@ -11,7 +11,7 @@ const AuthImageUpload = ({ name, setFieldValue, error }) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 👇 Validate file type
+    // Validate file type
     const validTypes = ["image/png", "image/jpeg", "image/jpg"];
     if (!validTypes.includes(file.type)) {
       setFileError("Only PNG, JPG, or JPEG images are allowed.");
