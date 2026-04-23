@@ -12,7 +12,7 @@ export const handleApiError = (error, navigate) => {
         error?.response?.data?.message ||
           error?.message ||
           "Invalid request. Please check your input.",
-        { variant: "error" }
+        { variant: "error" },
       );
       return;
     }
@@ -25,7 +25,7 @@ export const handleApiError = (error, navigate) => {
           error?.response?.data?.message ||
             error?.message ||
             "Your session has expired. Please log in again.",
-          { variant: "error" }
+          { variant: "error" },
         );
 
         Cookies.remove("token");
@@ -48,7 +48,7 @@ export const handleApiError = (error, navigate) => {
           error?.response?.data?.message ||
             error?.message ||
             "Access denied. Please contact support.",
-          { variant: "error" }
+          { variant: "error" },
         );
       }
       return;
@@ -62,10 +62,10 @@ export const handleApiError = (error, navigate) => {
       //   console.error("Server error:", error?.response?.data?.message);
 
       enqueueSnackbar(
-        error?.response?.data?.message ||
+        error?.response?.data?.error ||
           error?.message ||
           "Something went wrong on our end. Please try again later.",
-        { variant: "error" }
+        { variant: "error" },
       );
       // }
       return;
@@ -80,7 +80,7 @@ export const handleApiError = (error, navigate) => {
         error?.response?.data?.message ||
           error?.message ||
           "An error occurred.",
-        { variant: "error" }
+        { variant: "error" },
       );
     }
 
@@ -95,7 +95,7 @@ export const handleApiError = (error, navigate) => {
       console.error("No response from server:", error.request);
       enqueueSnackbar(
         "Unable to connect to the server. Please check your internet.",
-        { variant: "error" }
+        { variant: "error" },
       );
     }
     return;
@@ -110,7 +110,7 @@ export const handleApiError = (error, navigate) => {
       error?.response?.data?.message ||
         error?.message ||
         "Unexpected error occurred. Please try again.",
-      { variant: "error" }
+      { variant: "error" },
     );
   }
 };

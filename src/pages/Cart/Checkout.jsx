@@ -227,9 +227,10 @@ const Checkout = () => {
     } catch (error) {
       console.error(error);
 
-      enqueueSnackbar(error?.message || "Payment failed. Please try again.", {
-        variant: "error",
-      });
+      // enqueueSnackbar(error?.message || error || "Payment failed. Please try again.", {
+      //   variant: "error",
+      // });
+      handleApiError(error, navigate);
     } finally {
       setRemovingItems(false);
     }
