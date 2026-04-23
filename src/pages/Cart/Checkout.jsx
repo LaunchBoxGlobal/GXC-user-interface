@@ -181,6 +181,13 @@ const Checkout = () => {
           card: cardElement,
         });
 
+        if (!paymentMethod || !paymentMethod?.paymentMethod?.id) {
+          enqueueSnackbar("Please add or select your payment method.", {
+            variant: "error",
+          });
+          return;
+        }
+
         paymentMethodId = paymentMethod.paymentMethod.id;
       }
 
@@ -189,6 +196,12 @@ const Checkout = () => {
        * CALL CHECKOUT API
        * ============================
        */
+      if (!paymentMethodId) {
+        enqueueSnackbar("Please add or select your payment method.", {
+          variant: "error",
+        });
+        return;
+      }
       const response = await axios.post(
         `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
         {
@@ -221,6 +234,7 @@ const Checkout = () => {
         setCartProducts(null);
 
         Cookies.remove("userSelectedPaymentMethod");
+        Cookies.remove("userSelectedDeliveryAddress");
 
         setShowOrderPlacePopup(true);
       }

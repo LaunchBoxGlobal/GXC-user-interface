@@ -128,7 +128,7 @@ const UserPaymentMethod = ({
       {/* Existing saved cards */}
       {!loadingCards &&
         savedCards.map((card) => (
-          <div className="w-full mt-2 flex flex-col gap-2" key={card.id}>
+          <div className="w-full mt-2 flex flex-col gap-2 mb-4" key={card.id}>
             <div className="w-full flex justify-end">
               <button
                 type="button"
