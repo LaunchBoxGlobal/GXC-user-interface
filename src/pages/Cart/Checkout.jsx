@@ -16,6 +16,16 @@ import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import UserPaymentMethod from "./UserPaymentMethod";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+
+import {
+  createSetupIntent,
+  confirmSetupIntent,
+  confirmOneTimePayment,
+} from "./stripeService";
+import Loading from "./Loading";
+import CheckoutError from "./CheckoutError";
 
 const Checkout = () => {
   const {
@@ -52,9 +62,14 @@ const Checkout = () => {
   const [ShowOrderPlacePopup, setShowOrderPlacePopup] = useState(false);
   const [orderId, setOrderId] = useState(null);
 
+  const [saveCard, setSaveCard] = useState(false);
+
   const handleCloseSuccessPopup = () => {
     setShowOrderPlacePopup((prev) => !prev);
   };
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   const { t } = useTranslation("cart");
 
@@ -94,27 +109,91 @@ const Checkout = () => {
     navigate(`/cart/${selectedCommunity?.id}/checkout`);
   };
 
-  // Place order function
+  const deleteAllCartItems = async () => {
+    await axios.delete(
+      `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
+      {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    );
+  };
+
   const handlePlaceOrder = async () => {
-    if (!ids || ids?.length <= 0) {
-      enqueueSnackbar(t("Something went wrong. Try again!"));
+    const cardElement = elements.getElement(CardElement);
+
+    if (!selectedPaymentMethod?.id && !cardElement) {
+      enqueueSnackbar(
+        t("Please select a saved card or enter new card details"),
+        {
+          variant: "error",
+        },
+      );
       return;
     }
 
-    if (!savedPaymentMethod) {
-      enqueueSnackbar(t("Something went wrong. Try again!"));
+    if (!stripe || !elements) {
+      enqueueSnackbar("Stripe not initialized", { variant: "error" });
       return;
     }
 
-    checkIamAlreadyMember();
+    if (!ids || ids.length === 0) {
+      enqueueSnackbar("Cart is empty", { variant: "error" });
+      return;
+    }
 
     setRemovingItems(true);
+
     try {
+      let paymentMethodId = null;
+
+      /**
+       * ============================
+       * CASE 1: USER SELECTED SAVED CARD
+       * ============================
+       */
+      if (selectedPaymentMethod?.id) {
+        paymentMethodId = selectedPaymentMethod.id;
+      } else if (saveCard) {
+        /**
+         * ============================
+         * CASE 2: NEW CARD + SAVE CARD
+         * ============================
+         */
+        const clientSecret = await createSetupIntent();
+
+        paymentMethodId = await confirmSetupIntent(
+          stripe,
+          elements,
+          user,
+          clientSecret,
+        );
+      } else {
+        /**
+         * ============================
+         * CASE 2: NEW CARD + ONE TIME PAYMENT
+         * ============================
+         */
+        const paymentMethod = await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+        });
+
+        paymentMethodId = paymentMethod.paymentMethod.id;
+      }
+
+      /**
+       * ============================
+       * CALL CHECKOUT API
+       * ============================
+       */
       const response = await axios.post(
         `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
         {
           productIds: ids,
-          paymentMethodId: savedPaymentMethod?.id,
+          paymentMethodId,
           deliveryAddress: user?.address || "",
           deliveryCity: user?.city || "",
           deliveryState: user?.state || "",
@@ -129,85 +208,43 @@ const Checkout = () => {
         },
       );
 
+      /**
+       * ============================
+       * SUCCESS FLOW
+       * ============================
+       */
       if (response?.data?.success) {
         setOrderId(response?.data?.data?.orderNumber);
 
-        await axios.delete(
-          `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
-          {
-            headers: {
-              "Accept-Language": i18n.language,
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
-        );
+        await deleteAllCartItems();
         fetchCartCount();
-        Cookies.remove("newDeliveryAddress");
-        Cookies.remove("userSelectedDeliveryAddress");
-        Cookies.remove("userSelectedPaymentMethod");
-        // fetchCartProducts();
         setCartProducts(null);
-        // return;
+
+        Cookies.remove("userSelectedPaymentMethod");
+
         setShowOrderPlacePopup(true);
       }
     } catch (error) {
-      console.log("error on checkout >>> ", error);
-      if (
-        error?.status === 400 &&
-        error.response.data?.message == "Some products are not in your cart"
-      ) {
-        enqueueSnackbar(
-          t(`Some products are not available and removed from your cart`),
-          {
-            variant: "error",
-          },
-        );
-        checkIamAlreadyMember();
-        fetchCartCount();
-        fetchCartProducts();
-        Cookies.remove("newDeliveryAddress");
-        Cookies.remove("userSelectedDeliveryAddress");
-        Cookies.remove("userSelectedPaymentMethod");
-        // navigate(`/`);
-        return;
-      }
-      handleApiError(error, navigate);
+      console.error(error);
+
+      enqueueSnackbar(error?.message || "Payment failed. Please try again.", {
+        variant: "error",
+      });
     } finally {
       setRemovingItems(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex items-center justify-center">
-            <Loader />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <Loading />;
 
-  if (error) {
+  if (error)
     return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex flex-col items-center justify-center gap-4">
-            <p className="text-lg font-semibold text-gray-800 text-center max-w-md">
-              {error}
-            </p>
-            <button
-              onClick={fetchCartProducts}
-              className="bg-[var(--primary-color)] text-white px-5 py-2 rounded-lg hover:opacity-90 transition"
-            >
-              {t(`buttons.retry`)}
-            </button>
-          </div>
-        </div>
-      </div>
+      <CheckoutError
+        t={t}
+        error={error}
+        fetchCartProducts={fetchCartProducts}
+      />
     );
-  }
 
   const handleNavigateBack = () => {
     if (cartProducts) {
@@ -238,9 +275,22 @@ const Checkout = () => {
                     {t(`checkout`)}
                   </h1>
                 </div>
+
                 <div className="w-full border my-5" />
 
+                <>
+                  <UserPaymentMethod
+                    selectedPaymentMethod={selectedPaymentMethod}
+                    setSelectedPaymentMethod={setSelectedPaymentMethod}
+                    saveCard={saveCard}
+                    setSaveCard={setSaveCard}
+                  />
+                  <div className="w-full border my-5" />
+                </>
+
+                {/* user address + payment method */}
                 <div className="w-full mb-5">
+                  {/* User selected delivery address */}
                   {isAnyDeliveryTypeProduct && savedAddress && (
                     <>
                       <div className="w-full">
@@ -262,27 +312,8 @@ const Checkout = () => {
                       <div className="w-full border my-5" />
                     </>
                   )}
-
-                  <div className="w-full">
-                    <p className="font-semibold leading-none">
-                      {t(`paymentMethod`)}
-                    </p>
-                    <div
-                      className={`w-full flex items-center justify-start gap-3 h-[46px] bg-[var(--secondary-bg)] mt-2 rounded-[12px] px-3`}
-                    >
-                      <img
-                        src="/stripe-icon.png"
-                        alt="stripe icon"
-                        className="w-[34px] h-[24px]"
-                      />
-                      <div className="w-full max-w-[90%] text-sm">
-                        <p>**** **** **** {savedPaymentMethod?.last4}</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                <div className="w-full border my-5" />
                 {cartProducts && pickupItems && pickupItems?.length > 0 && (
                   <div className="w-full">
                     <p className="text-[20px] font-semibold">
@@ -373,6 +404,7 @@ const Checkout = () => {
                     ))}
                   </div>
                 )}
+
                 {cartProducts && deliveryItems && deliveryItems?.length > 0 && (
                   <div className="w-full mt-5">
                     {deliveryItems?.map((product, index) => (

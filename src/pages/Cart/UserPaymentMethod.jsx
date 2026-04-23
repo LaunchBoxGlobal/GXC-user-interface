@@ -15,12 +15,15 @@ import { getToken } from "../../utils/getToken";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import AddCardForm from "./AddCardForm";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const UserPaymentMethod = ({
   selectedPaymentMethod,
   setSelectedPaymentMethod,
+  saveCard,
+  setSaveCard,
 }) => {
   const { user } = useAppContext();
   const [savedCards, setSavedCards] = useState([]);
@@ -102,12 +105,14 @@ const UserPaymentMethod = ({
 
   return (
     <div className="w-full">
-      <div className="w-full flex items-center justify-between gap-3 mb-2">
-        <p className="font-semibold leading-none">{t(`paymentMethod`)}</p>
+      <div className="w-full flex items-center justify-between flex-wrap gap-3 mb-2">
+        <p className="font-semibold leading-none whitespace-nowrap">
+          {t(`paymentMethod`)}
+        </p>
         {!showAddCard && savedCards?.length < 2 && (
           <button
             type="button"
-            className="text-[15px] font-medium leading-none text-[var(--button-bg)]"
+            className="text-xs lg:text-[14px] font-medium leading-none text-[var(--button-bg)]"
             onClick={handleAddCardClick}
           >
             {t(`addNewPaymentMethod`)}
@@ -156,17 +161,17 @@ const UserPaymentMethod = ({
         ))}
 
       {/* Add card form */}
-      <Elements stripe={stripePromise}>
-        {showAddCard && (
-          <AddCardForm
-            user={user}
-            onCardAdded={() => {
-              setShowAddCard(false);
-              fetchSavedCards();
-            }}
-          />
-        )}
-      </Elements>
+      {showAddCard && (
+        <AddCardForm
+          user={user}
+          onCardAdded={() => {
+            setShowAddCard(false);
+            fetchSavedCards();
+          }}
+          saveCard={saveCard}
+          setSaveCard={setSaveCard}
+        />
+      )}
 
       {deleteCard && (
         <div className="w-full fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)] flex flex-col items-center justify-center gap-3">
@@ -178,134 +183,3 @@ const UserPaymentMethod = ({
 };
 
 export default UserPaymentMethod;
-
-//
-// Nested AddCardForm Component (SetupIntent Flow)
-//
-const AddCardForm = ({ user, onCardAdded }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState(null);
-  const { t } = useTranslation("cart");
-
-  useEffect(() => {
-    // Create SetupIntent when form opens
-    const createSetupIntent = async () => {
-      try {
-        const res = await axios.post(
-          `${BASE_URL}/payments/setup-intent`,
-          {},
-          {
-            headers: {
-              "Accept-Language": i18n.language,
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
-        );
-
-        if (res.data.success) {
-          setClientSecret(res.data.data.clientSecret);
-        } else {
-          console.error("Failed to create SetupIntent:", res.data);
-        }
-      } catch (err) {
-        console.error("Error creating SetupIntent:", err);
-      }
-    };
-
-    createSetupIntent();
-  }, []);
-
-  const handleAddCard = async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
-
-    setLoading(true);
-
-    const cardElement = elements.getElement(CardElement);
-
-    async function confirmWithClientSecret(secret) {
-      return await stripe.confirmCardSetup(secret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: user?.name || "Unknown User",
-            email: user?.email || "",
-          },
-        },
-      });
-    }
-
-    try {
-      // 1️⃣ Try with the existing client secret
-      let { setupIntent, error } = await confirmWithClientSecret(clientSecret);
-
-      // 2️⃣ Handle the canceled SetupIntent case
-      if (
-        error?.code === "setup_intent_unexpected_state" ||
-        setupIntent?.status === "canceled"
-      ) {
-        console.warn("SetupIntent was canceled. Creating a new one...");
-
-        // Create a new SetupIntent
-        const res = await axios.post(
-          `${BASE_URL}/payments/setup-intent`,
-          {},
-          {
-            headers: {
-              "Accept-Language": i18n.language,
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
-        );
-
-        const newClientSecret = res?.data?.data?.clientSecret;
-        if (!newClientSecret) {
-          throw new Error("Failed to get new client secret from backend.");
-        }
-
-        setClientSecret(newClientSecret);
-
-        // Retry confirming with the new client secret
-        ({ setupIntent, error } =
-          await confirmWithClientSecret(newClientSecret));
-      }
-
-      // 3️⃣ Handle any final Stripe error
-      if (error) {
-        enqueueSnackbar(error.message || "Failed to save card.", {
-          variant: "error",
-        });
-        console.error("Stripe error:", error);
-        return;
-      }
-
-      // 4️⃣ Success!
-      if (setupIntent.status === "succeeded") {
-        enqueueSnackbar("Card successfully added!", { variant: "success" });
-        onCardAdded();
-      }
-    } catch (err) {
-      console.error("Error confirming setup intent:", err);
-      enqueueSnackbar("Failed to save card. Please try again.", {
-        variant: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleAddCard} className="w-full mt-4">
-      <CardElement className="py-3.5 text-sm bg-[#F5F5F5] rounded-[12px] px-3" />
-      <button
-        type="submit"
-        disabled={loading || !clientSecret}
-        className="mt-3 w-full bg-[var(--button-bg)] text-white py-2 rounded-[12px] text-[16px] font-medium h-[49px]"
-      >
-        {loading ? t(`buttons.saving`) : t(`buttons.saveCard`)}
-      </button>
-    </form>
-  );
-};

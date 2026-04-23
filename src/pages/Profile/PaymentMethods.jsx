@@ -48,10 +48,11 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
   };
 
   useEffect(() => {
-    const savedPaymentMethod = Cookies.get("userSelectedPaymentMethod");
-    if (savedPaymentMethod) {
-      setSelectedPaymentMethod(JSON.parse(savedPaymentMethod));
-    }
+    // const savedPaymentMethod = Cookies.get("userSelectedPaymentMethod");
+    // console.log("savedPaymentMethod >> ", savedPaymentMethod);
+    // if (savedPaymentMethod) {
+    //   setSelectedPaymentMethod(JSON.parse(savedPaymentMethod));
+    // }
     fetchSavedCards();
   }, [user]);
 
@@ -113,7 +114,9 @@ const PaymentMethods = ({ setSelectedPaymentMethod }) => {
         {!loadingCards &&
           savedCards.map((card) => (
             <div className="w-full mt-2 flex flex-col gap-1" key={card.id}>
-              <h3 className="font-medium">{t(`settings.buttons.saveCard`)}</h3>
+              <h3 className="font-medium">
+                {t(`settings.paymentMethods.savedCard`)}
+              </h3>
               <div className="w-full flex items-center justify-between h-[46px] bg-[#F5F5F5] rounded-[12px] px-3">
                 <div className="w-full max-w-[90%] flex items-center gap-2">
                   <img

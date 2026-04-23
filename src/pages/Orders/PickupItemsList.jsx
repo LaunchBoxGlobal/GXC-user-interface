@@ -9,7 +9,7 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import CancelConfirmationPopup from "./CancelConfirmationPopup";
 import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
@@ -36,6 +36,7 @@ const PickupItemsList = ({
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
   const { t } = useTranslation("orderManagement");
+  const navigate = useNavigate();
 
   const markItemAsPickupedUp = async (item) => {
     if (!item?.id) {
@@ -74,6 +75,7 @@ const PickupItemsList = ({
         setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
+      console.log("err >>> ", error);
       handleApiError(error, navigate);
     } finally {
       setLoading(false);

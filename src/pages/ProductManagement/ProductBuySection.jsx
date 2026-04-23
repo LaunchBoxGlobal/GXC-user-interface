@@ -71,7 +71,12 @@ const ProductBuySection = ({
           deliveryMethod:
             deliveryType === "delivery" ? deliveryType : deliveryType,
         },
-        { headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` } },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       if (res?.data?.success) {
@@ -190,7 +195,9 @@ const ProductBuySection = ({
         productDetails?.communityPickupAddress?.address && (
           <>
             <div className="w-full border my-5" />
-            <p className="text-sm font-semibold">{`productBuySection.communityPickupAddress`}</p>
+            <p className="text-sm font-semibold">
+              {t(`productBuySection.communityPickupAddress`)}
+            </p>
             <div className="w-full mt-2 flex items-center gap-2">
               <FaLocationDot className="text-base" />
               <div className="text-sm font-normal flex flex-wrap gap-1 break-words">

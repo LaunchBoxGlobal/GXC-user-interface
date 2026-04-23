@@ -50,6 +50,11 @@ import PolicyLayout from "../components/Layout/PolicyLayout";
 import PublicPrivacyPolicy from "../pages/Policies/PublicPrivacyPolicy";
 import PublicTermsConditions from "../pages/Policies/PublicTermsConditions";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
 const isAuthenticated = () => !!Cookies.get("userToken");
 
 export const PrivateRoute = ({ element, redirectTo = "/login" }) => {
@@ -191,7 +196,7 @@ const AppRoutes = () => {
         }
       />
 
-      <Route
+      {/* <Route
         path="/add-payment-info"
         element={
           <PrivateRoute
@@ -202,9 +207,9 @@ const AppRoutes = () => {
             }
           />
         }
-      />
+      /> */}
 
-      <Route
+      {/* <Route
         path="/payment-methods"
         element={
           <PrivateRoute
@@ -215,7 +220,7 @@ const AppRoutes = () => {
             }
           />
         }
-      />
+      /> */}
 
       <Route
         path="/"
@@ -393,7 +398,9 @@ const AppRoutes = () => {
           <PrivateRoute
             element={
               <Layout key="checkout">
-                <Checkout />
+                <Elements stripe={stripePromise}>
+                  <Checkout />
+                </Elements>
               </Layout>
             }
           />

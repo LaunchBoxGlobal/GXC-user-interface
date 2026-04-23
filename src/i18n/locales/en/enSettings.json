@@ -22,7 +22,8 @@
         },
         "paymentMethods": {
             "paymentMethod": "Payment Method",
-            "addNewCard": "Add New Card"
+            "addNewCard": "Add New Card",
+            "savedCard": "Saved Card"
         },
         "changePassword": {
             "changePassword": "Change Password",

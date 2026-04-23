@@ -109,11 +109,11 @@ const CartSummary = () => {
   const handleNavigate = () => {
     const community = JSON.parse(Cookies.get("selected-community"));
 
-    if (!selectedPaymentMethod) {
-      return enqueueSnackbar(t(`selectPaymentMethod`), {
-        variant: "error",
-      });
-    }
+    // if (!selectedPaymentMethod) {
+    //   return enqueueSnackbar(t(`selectPaymentMethod`), {
+    //     variant: "error",
+    //   });
+    // }
     navigate(`/cart/${community?.id}/checkout`);
   };
 
@@ -184,13 +184,13 @@ const CartSummary = () => {
                   </button>
                 </div>
 
-                <div className="mb-5">
+                {/* <div className="mb-5">
                   <div className="border my-5" />
                   <UserPaymentMethod
                     selectedPaymentMethod={selectedPaymentMethod}
                     setSelectedPaymentMethod={setSelectedPaymentMethod}
                   />
-                </div>
+                </div> */}
 
                 <div className="border my-5" />
                 {pickupItems && pickupItems?.length > 0 && (

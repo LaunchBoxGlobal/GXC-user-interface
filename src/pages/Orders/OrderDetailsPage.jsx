@@ -140,7 +140,7 @@ const OrderDetailsPage = () => {
               )}
               {pickupItems && pickupItems?.length > 0 && (
                 <>
-                  <div className="border border-gray-300 w-full my-4" />
+                  <div className="border w-full my-4" />
                   <PickupItemsList
                     pickupItems={pickupItems}
                     fetchOrderDetails={fetchOrderDetails}

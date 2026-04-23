@@ -22,7 +22,8 @@
         },
         "paymentMethods": {
             "paymentMethod": "Método de pago",
-            "addNewCard": "Agregar nueva tarjeta"
+            "addNewCard": "Agregar nueva tarjeta",
+            "savedCard": "Tarjeta guardada"
         },
         "changePassword": {
             "changePassword": "Cambiar contraseña",

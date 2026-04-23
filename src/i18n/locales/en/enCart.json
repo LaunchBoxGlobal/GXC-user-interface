@@ -68,5 +68,7 @@
     "Please select a payment method!": "Please select a payment method!",
     "Something went wrong. Try again!": "Something went wrong. Try again!",
     "Some products are not available and removed from your cart": "Some products are not available and removed from your cart",
-    "Place Order": "Place Order"
+    "Place Order": "Place Order",
+    "Save Card for Future Transactions": "Save Card for Future Transactions",
+    "Please select a saved card or enter new card details": "Please select a payment method or enter a new payment method."
 }
