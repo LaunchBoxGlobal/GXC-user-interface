@@ -23,11 +23,7 @@ const ChangeEmailForm = () => {
   }, []);
 
   const handleBack = () => {
-    // if (redirect) {
-    //   navigate(redirect);
-    // } else {
-    navigate(-1); // go back in history
-    // }
+    navigate(-1);
   };
 
   const formik = useFormik({
@@ -52,7 +48,7 @@ const ChangeEmailForm = () => {
               "Content-Type": "application/json",
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -69,7 +65,7 @@ const ChangeEmailForm = () => {
                 page: "/forgot-password",
                 email: values.email,
               },
-            }
+            },
           );
         }
       } catch (error) {
