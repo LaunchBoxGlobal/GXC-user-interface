@@ -7,9 +7,9 @@
         "memberDetails": "Member Details",
         "reviews": "Reviews"
     },
-    "total_purchases": "Total Purchases",
+    "totalPurchases": "Total Purchases",
     "availableBalance": "Available Balance",
-    "transaction_history": "Transaction History",
+    "transactionHistory": "Transaction History",
     "noTransactions": "No transactions found.",
     "search": "Search",
     "orderNumber": "Order Number",

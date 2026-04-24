@@ -74,18 +74,8 @@ const DeliveryItemsList = ({
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
-        // fetchOrderDetails();
       }
     } catch (error) {
-      // enqueueSnackbar(
-      //   error?.response?.data?.message ||
-      //     error?.message ||
-      //     t("deliveryItems.messages.cancelledBySeller"),
-      //   {
-      //     variant: "error",
-      //   },
-      // );
-      // console.error("markItemAsDelivered error >>> ", error);
       handleApiError(error, navigate);
     } finally {
       setDeliveryLoadingState(false);
@@ -245,7 +235,9 @@ const DeliveryItemsList = ({
                 {/* pickup address */}
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
-                    <h3>{t("deliveryItems.sections.pickupAddress")}</h3>
+                    <h3 className="font-semibold text-sm border border-black">
+                      {t("deliveryItems.sections.pickupAddress")}
+                    </h3>
 
                     <div className="w-full flex items-center gap-2 mt-1">
                       <div className="min-w-4">

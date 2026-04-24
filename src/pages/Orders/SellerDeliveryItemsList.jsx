@@ -166,8 +166,8 @@ const SellerDeliveryItemsList = ({
 
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-5">
-                    <h3 className="text-sm font-semibold leading-none">
-                      {t(`deliveryItems.heading`)}
+                    <h3 className="text-base font-semibold leading-none">
+                      {t(`deliveryItems.sections.pickupAddress`)}
                     </h3>
 
                     <div className="w-full flex items-center gap-2 mt-1">

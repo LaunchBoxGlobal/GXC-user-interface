@@ -5,7 +5,9 @@
         "all": "Todo",
         "in_progress": "En curso",
         "completed": "Terminado",
-        "delivered": "Entregado"
+        "delivered": "Entregado",
+        "no": "No",
+        "yes": "Sí"
     },
     "order_management": "Gestión de Pedidos",
     "no_orders": "¡No se encontraron pedidos!",
