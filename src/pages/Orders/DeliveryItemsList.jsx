@@ -235,7 +235,7 @@ const DeliveryItemsList = ({
                 {/* pickup address */}
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
-                    <h3 className="font-semibold text-sm border border-black">
+                    <h3 className="font-semibold text-sm">
                       {t("deliveryItems.sections.pickupAddress")}
                     </h3>
 

@@ -12,7 +12,8 @@
                 "state": "Estado",
                 "city": "Ciudad",
                 "location": "Suite / Apartamento / Calle",
-                "profilePicture": "Subir foto de perfil"
+                "profilePicture": "Subir foto de perfil",
+                "zipcode": "Código postal"
             },
             "errors": {
                 "firstNameMin": "El nombre debe tener al menos 3 caracteres",

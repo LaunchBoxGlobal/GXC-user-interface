@@ -5,6 +5,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Loader from "../../components/Common/Loader";
 import { useTranslation } from "react-i18next";
+import formatAmount from "../../utils/formatAmount";
 
 const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
   const { t } = useTranslation("transactionHistory");
@@ -122,8 +123,8 @@ const TransactionsTable = ({ loading, error, transactions, sellerType }) => {
               <td className="px-6 py-4 border-b text-sm">
                 $
                 {sellerType === "buyer"
-                  ? transaction?.price?.toFixed(2)
-                  : transaction?.transaction?.seller?.amount}
+                  ? formatAmount(transaction?.price?.toFixed(2))
+                  : formatAmount(transaction?.transaction?.seller?.amount)}
               </td>
 
               <td className="px-6 py-4 border-b text-sm">

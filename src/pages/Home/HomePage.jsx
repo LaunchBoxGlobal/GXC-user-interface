@@ -43,7 +43,6 @@ const HomePage = () => {
           "Accept-Language": i18n.language,
         },
       });
-      // console.log("res >> ", res?.data?.data?.categories);
       setCategories(res?.data?.data?.categories);
     } catch (error) {
       console.log("err while fetching categories >>> ", error);
@@ -99,7 +98,7 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchCommunityProducts();
-  }, [fetchCommunityProducts]);
+  }, [fetchCommunityProducts, i18n?.language]);
 
   useEffect(() => {
     document.title = `${t("Home")} - giveXchange`;
@@ -107,7 +106,7 @@ const HomePage = () => {
     fetchCategories();
     fetchCommunities();
     fetchNotificaiontCount();
-  }, []);
+  }, [i18n?.language]);
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">

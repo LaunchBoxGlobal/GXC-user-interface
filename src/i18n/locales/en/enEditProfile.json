@@ -12,7 +12,8 @@
                 "state": "State",
                 "city": "City",
                 "location": "Suite / Apartment / Street",
-                "profilePicture": "Upload Profile Picture"
+                "profilePicture": "Upload Profile Picture",
+                "zipcode": "Zip Code"
             },
             "errors": {
                 "firstNameMin": "First name must contain at least 3 characters",

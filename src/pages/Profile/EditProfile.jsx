@@ -358,7 +358,7 @@ const EditProfile = () => {
             onBlur={formik.handleBlur}
             error={formik.errors.zipcode}
             touched={formik.touched.zipcode}
-            label={t("editProfile.form.fields.zipCode")}
+            label={t("editProfile.form.fields.zipcode")}
           />
         </div>
 

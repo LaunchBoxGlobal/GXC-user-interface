@@ -262,5 +262,8 @@
     },
     "reportSubmitted": "Report Submitted",
     "reportSubmittedSuccessfully": "Thank you! Your report has been successfully submitted.",
-    "seller": "Seller"
+    "seller": "Seller",
+    "active": "Active",
+    "sold": "Sold",
+    "delisted": "Delisted"
 }

@@ -71,7 +71,7 @@ const ProductDetailsPage = () => {
       : "Product Details - giveXchange";
     checkIamAlreadyMember();
     fetchProductDetails();
-  }, []);
+  }, [i18next?.language]);
 
   if (loading) {
     return (

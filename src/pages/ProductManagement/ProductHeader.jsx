@@ -92,8 +92,7 @@ const ProductHeader = ({
                       : "text-gray-500"
               }`}
             >
-              {productDetails?.status.charAt(0).toUpperCase() +
-                productDetails?.status.slice(1)}
+              {t(productDetails?.status)}
             </p>
           </div>
         )}

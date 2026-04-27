@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
 import { useAppContext } from "../../context/AppContext";
 import { useTranslation } from "react-i18next";
+import formatAmount from "../../utils/formatAmount";
 import i18n from "i18next";
 
 const debounce = (fn, delay) => {
@@ -105,8 +106,8 @@ const TransactionHistoryPage = () => {
               {userBalance &&
                 `$${
                   userBalance?.balanceAmount > 0
-                    ? userBalance?.balanceAmount.toFixed(2)
-                    : userBalance?.balanceAmount
+                    ? formatAmount(userBalance?.balanceAmount.toFixed(2))
+                    : `$0`
                 }`}
             </p>
           ) : (
@@ -114,8 +115,8 @@ const TransactionHistoryPage = () => {
               {userBalance &&
                 `$${
                   userBalance?.totalSpent > 0
-                    ? userBalance?.totalSpent.toFixed(2)
-                    : userBalance?.totalSpent
+                    ? formatAmount(userBalance?.totalSpent.toFixed(2))
+                    : `$0`
                 }`}
             </p>
           )}

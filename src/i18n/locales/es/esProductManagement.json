@@ -249,5 +249,8 @@
     },
     "reportSubmitted": "Informe enviado",
     "reportSubmittedSuccessfully": "¡Gracias! Su informe se ha enviado correctamente.",
-    "seller": "Vendedor"
+    "seller": "Vendedor",
+    "active": "Activo",
+    "sold": "Vendido",
+    "delisted": "Eliminado de la lista"
 }
