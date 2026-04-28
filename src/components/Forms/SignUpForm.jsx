@@ -42,6 +42,8 @@ const SignUpForm = () => {
       confirmPassword: "",
       profileImage: null,
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: signupSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -91,6 +93,18 @@ const SignUpForm = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -111,7 +125,7 @@ const SignUpForm = () => {
               name="firstName"
               placeholder={t("signup.placeholders.firstName")}
               value={formik.values.firstName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
@@ -124,7 +138,7 @@ const SignUpForm = () => {
               name="lastName"
               placeholder={t("signup.placeholders.lastName")}
               value={formik.values.lastName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
@@ -139,7 +153,7 @@ const SignUpForm = () => {
             name="email"
             placeholder={t("signup.placeholders.email")}
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
@@ -152,7 +166,7 @@ const SignUpForm = () => {
             name="password"
             placeholder={t("signup.placeholders.password")}
             value={formik.values.password}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}
@@ -165,7 +179,7 @@ const SignUpForm = () => {
             name="confirmPassword"
             placeholder={t("signup.placeholders.confirmPassword")}
             value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.confirmPassword}
             touched={formik.touched.confirmPassword}

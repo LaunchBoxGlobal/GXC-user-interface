@@ -118,6 +118,8 @@ const EditProductPage = () => {
       communityPickupAddress: product?.communityPickupAddress?.address || "",
     },
 
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: editProductSchema,
 
     onSubmit: async (values) => {
@@ -200,6 +202,18 @@ const EditProductPage = () => {
       setPickupAddress(user.address);
     }
   }, [product, user]);
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
 
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -419,7 +433,7 @@ const EditProductPage = () => {
                   name="productName"
                   placeholder={t(`editProduct.fields.productName.placeholder`)}
                   value={formik.values.productName}
-                  onChange={formik.handleChange}
+                  onChange={handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.errors.productName}
                   touched={formik.touched.productName}
@@ -431,7 +445,7 @@ const EditProductPage = () => {
                   name="price"
                   placeholder={t(`editProduct.fields.price.placeholder`)}
                   value={formik.values.price}
-                  onChange={formik.handleChange}
+                  onChange={handleChange}
                   onBlur={formik.handleBlur}
                   error={formik.errors.price}
                   touched={formik.touched.price}
@@ -454,7 +468,7 @@ const EditProductPage = () => {
                     type="text"
                     name="selfPickupAddress"
                     value={formik.values.selfPickupAddress}
-                    onChange={formik.handleChange}
+                    onChange={handleChange}
                     className="w-full h-[49px] border rounded-[8px] bg-[var(--secondary-bg)] px-3"
                   />
                 </div>
@@ -469,7 +483,7 @@ const EditProductPage = () => {
                     type="text"
                     name="communityPickupAddress"
                     value={formik.values.communityPickupAddress}
-                    onChange={formik.handleChange}
+                    onChange={handleChange}
                     className="w-full h-[49px] border rounded-[8px] bg-[var(--secondary-bg)] px-3"
                   />
                 </div>
@@ -492,7 +506,7 @@ const EditProductPage = () => {
                   name="description"
                   placeholder={t(`addProduct.fields.description.placeholder`)}
                   value={formik.values.description}
-                  onChange={formik.handleChange}
+                  onChange={handleChange}
                   onBlur={formik.handleBlur}
                   className={`w-full border h-[159px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none resize-none ${
                     formik.touched.description && formik.errors.description

@@ -35,6 +35,8 @@ const ChangeEmailForm = () => {
     initialValues: {
       email: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       email: Yup.string()
         .email("Invalid email address")
@@ -85,6 +87,18 @@ const ChangeEmailForm = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -106,7 +120,7 @@ const ChangeEmailForm = () => {
             name="email"
             placeholder="Email Address"
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}

@@ -45,19 +45,19 @@ const ProductBuySection = ({
 
   const handleAddToCartProduct = async () => {
     if (!deliveryType || deliveryType === "both") {
-      enqueueSnackbar("Please select a delivery type.", {
+      enqueueSnackbar(t("Please select a delivery type."), {
         variant: "error",
       });
       return;
     }
 
     if (!selectedCommunity?.id) {
-      enqueueSnackbar("Community ID not found!", { variant: "error" });
+      enqueueSnackbar(t("Community ID not found!"), { variant: "error" });
       return;
     }
 
     if (!productDetails?.id) {
-      enqueueSnackbar("Product ID not found!", { variant: "error" });
+      enqueueSnackbar(t("Product ID not found!"), { variant: "error" });
       return;
     }
 
@@ -121,7 +121,7 @@ const ProductBuySection = ({
         <p className="text-sm font-semibold">{t(`deliveryType`)}</p>
 
         <div
-          className={`w-full max-w-[320px] grid ${
+          className={`w-full max-w-[360px] grid ${
             showDeliveryButton && showPickupButton
               ? "grid-cols-2"
               : "grid-cols-1"
@@ -137,7 +137,7 @@ const ProductBuySection = ({
                 deliveryType === "delivery"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"
-              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[150px]`}
+              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[180px]`}
             >
               {deliveryType === "delivery" && (
                 <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">
@@ -158,7 +158,7 @@ const ProductBuySection = ({
                 deliveryType === "pickup"
                   ? "bg-[var(--button-bg)] text-white"
                   : "bg-[var(--secondary-bg)] text-black"
-              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[130px]`}
+              } disabled:opacity-60 disabled:cursor-not-allowed max-w-[180px]`}
             >
               {deliveryType === "pickup" && (
                 <div className="w-4 h-4 border p-1 rounded-full bg-[var(--button-bg)] flex items-center justify-center absolute -top-1 -right-1">

@@ -33,9 +33,10 @@ const LoginForm = () => {
   const formik = useFormik({
     initialValues: {
       email: "",
-
       password: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       email: Yup.string()
         .email(t("auth:errors.invalid_email"))
@@ -133,6 +134,18 @@ const LoginForm = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -161,7 +174,7 @@ const LoginForm = () => {
             name="email"
             placeholder="johndoe@gmail.com"
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
@@ -174,7 +187,7 @@ const LoginForm = () => {
             name={`password`}
             placeholder={`Password`}
             value={formik.values.password}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.password}
             touched={formik.touched.password}

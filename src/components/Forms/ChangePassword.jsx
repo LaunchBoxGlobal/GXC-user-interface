@@ -30,6 +30,8 @@ const ChangePassword = () => {
       password: "",
       confirmPassword: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
@@ -79,6 +81,18 @@ const ChangePassword = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   const handleTogglePopup = () => {
     setShowPopup(false);
     navigate(`/login${redirect ? `?redirect=${redirect}` : ""}`);
@@ -112,7 +126,7 @@ const ChangePassword = () => {
               name={`password`}
               placeholder={`New Password`}
               value={formik.values.password}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.password}
               touched={formik.touched.password}
@@ -126,7 +140,7 @@ const ChangePassword = () => {
               name={`confirmPassword`}
               placeholder={`Confirm Password`}
               value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.confirmPassword}
               touched={formik.touched.confirmPassword}

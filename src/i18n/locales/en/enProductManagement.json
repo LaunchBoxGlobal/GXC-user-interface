@@ -265,5 +265,8 @@
     "seller": "Seller",
     "active": "Active",
     "sold": "Sold",
-    "delisted": "Delisted"
+    "delisted": "Delisted",
+    "Please select a delivery type.": "Please select a delivery type.",
+    "Product ID not found!": "Product ID not found!",
+    "Community ID not found!": "Community ID not found!"
 }

@@ -82,6 +82,8 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       selfPickupAddress: userAddress || "",
       communityPickupAddress: communityAddress || "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: productSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -201,6 +203,18 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
     (revenueConfig?.seller_percentage / 100)
   ).toFixed(2);
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -231,7 +245,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
               name="productName"
               placeholder={t(`addProduct.fields.productName.placeholder`)}
               value={formik.values.productName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.productName}
               touched={formik.touched.productName}
@@ -243,7 +257,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
                 name="price"
                 placeholder={t(`addProduct.fields.price.placeholder`)}
                 value={formik.values.price}
-                onChange={formik.handleChange}
+                onChange={handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.errors.price}
                 touched={formik.touched.price}
@@ -314,7 +328,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
               id="description"
               placeholder={t(`addProduct.fields.description.placeholder`)}
               value={formik.values.description}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               className={`w-full border text-[#6D6D6D] h-[159px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none resize-none ${
                 formik.touched.description && formik.errors.description

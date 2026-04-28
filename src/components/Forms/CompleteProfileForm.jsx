@@ -57,6 +57,8 @@ const CompleteProfileForm = () => {
       countryId: 233,
       stateId: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: profileSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
@@ -126,6 +128,18 @@ const CompleteProfileForm = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <>
       <form
@@ -160,7 +174,7 @@ const CompleteProfileForm = () => {
               name="firstName"
               placeholder={t("completeProfile.placeholders.firstName")}
               value={formik.values.firstName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
@@ -170,7 +184,7 @@ const CompleteProfileForm = () => {
               name="lastName"
               placeholder={t("completeProfile.placeholders.lastName")}
               value={formik.values.lastName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
@@ -184,7 +198,7 @@ const CompleteProfileForm = () => {
               disabled={true}
               placeholder={t("completeProfile.placeholders.email")}
               value={formik.values.email}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.email}
               touched={formik.touched.email}
@@ -196,7 +210,7 @@ const CompleteProfileForm = () => {
               name="phoneNumber"
               placeholder={t("completeProfile.placeholders.phoneNumber")}
               value={formik.values.phoneNumber}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.phoneNumber}
               touched={formik.touched.phoneNumber}
@@ -288,7 +302,7 @@ const CompleteProfileForm = () => {
               name="zipcode"
               placeholder={t("completeProfile.placeholders.zipcode")}
               value={formik.values.zipcode}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.zipcode}
               touched={formik.touched.zipcode}
@@ -301,7 +315,7 @@ const CompleteProfileForm = () => {
             name="location"
             placeholder={t("completeProfile.placeholders.address")}
             value={formik.values.location}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.location}
             touched={formik.touched.location}

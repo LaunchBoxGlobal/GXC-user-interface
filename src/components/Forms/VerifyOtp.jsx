@@ -85,6 +85,7 @@ const VerifyOtp = () => {
     initialValues: {
       otp: ["", "", "", "", "", ""],
     },
+
     validationSchema: Yup.object({
       otp: Yup.array()
         .test("complete", "OTP is required", (arr) =>

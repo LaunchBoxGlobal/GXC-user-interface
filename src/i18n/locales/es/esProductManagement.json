@@ -252,5 +252,8 @@
     "seller": "Vendedor",
     "active": "Activo",
     "sold": "Vendido",
-    "delisted": "Eliminado de la lista"
+    "delisted": "Eliminado de la lista",
+    "Please select a delivery type.": "Por favor, seleccione un tipo de entrega.",
+    "Product ID not found!": "¡No se encontró el ID del producto!",
+    "Community ID not found!": "¡No se encontró el ID de la comunidad!"
 }

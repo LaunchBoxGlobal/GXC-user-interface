@@ -64,6 +64,8 @@ const EditProfile = () => {
       profileImage: null,
       stateId: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       firstName: Yup.string()
         .min(3, t("editProfile.form.errors.firstNameMin"))
@@ -186,6 +188,18 @@ const EditProfile = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -214,7 +228,7 @@ const EditProfile = () => {
             name="firstName"
             placeholder={t("editProfile.form.fields.firstNameLabel")}
             value={formik.values.firstName}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.firstName}
             touched={formik.touched.firstName}
@@ -225,7 +239,7 @@ const EditProfile = () => {
             name="lastName"
             placeholder={t("editProfile.form.fields.lastNameLabel")}
             value={formik.values.lastName}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.lastName}
             touched={formik.touched.lastName}
@@ -239,7 +253,7 @@ const EditProfile = () => {
             placeholder=""
             disabled={true}
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
@@ -255,7 +269,7 @@ const EditProfile = () => {
             name="phoneNumber"
             placeholder=""
             value={formik.values.phoneNumber}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.phoneNumber}
             touched={formik.touched.phoneNumber}
@@ -354,7 +368,7 @@ const EditProfile = () => {
             name="zipcode"
             placeholder={t("editProfile.form.fields.zipCode")}
             value={formik.values.zipcode}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.zipcode}
             touched={formik.touched.zipcode}
@@ -368,7 +382,7 @@ const EditProfile = () => {
             name="address"
             placeholder={t("editProfile.form.fields.location")}
             value={formik.values.address}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.address}
             touched={formik.touched.address}

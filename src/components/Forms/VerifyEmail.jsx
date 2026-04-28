@@ -27,6 +27,8 @@ const VerifyEmail = () => {
     initialValues: {
       email: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       email: Yup.string()
         .email(t("auth:errors.invalid_email"))
@@ -77,6 +79,18 @@ const VerifyEmail = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -102,7 +116,7 @@ const VerifyEmail = () => {
             name="email"
             placeholder="Email Address"
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}

@@ -21,7 +21,7 @@ const ReportProductSuccessModal = ({
             {t(`reportSubmitted`)}
           </h3>
           <p className="text-[#202020] leading-[1.2] text-center mt-3">
-            {t(`productManagement.reportSubmittedSuccessfully`)}
+            {t(`reportSubmittedSuccessfully`)}
           </p>
           <button
             type="button"
