@@ -30,7 +30,7 @@ const Categories = memo(() => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [i18n?.language]);
 
   const handleCategoryClick = (c) => {
     const params = new URLSearchParams(searchParams);
