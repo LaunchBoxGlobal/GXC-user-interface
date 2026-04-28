@@ -16,7 +16,8 @@ const getOrCreateDeviceId = () => {
 };
 
 const VAPID_KEY =
-  "BM6D1oVjxWpWP9wym2P2KEc3oqRh_f540clMC9TssC2tFBN5HsVT9D1rj-vKafvhnIAT9bUsBG2-A0Z32VsVBQI";
+  "BM_coTyyDbwYJyUPpCXCo3FRWfsCP-6WivDa-qbKaa970g2qho5FQ4ERhxLUc4gqpbkFb69DdSQl4csjpRsa2yc";
+// "BM6D1oVjxWpWP9wym2P2KEc3oqRh_f540clMC9TssC2tFBN5HsVT9D1rj-vKafvhnIAT9bUsBG2-A0Z32VsVBQI";
 
 export const requestNotificationPermission = async () => {
   const permission = await Notification.requestPermission();
