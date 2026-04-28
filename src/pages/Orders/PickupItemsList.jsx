@@ -166,7 +166,7 @@ const PickupItemsList = ({
                                           : "text-gray-500"
                               }`}
                             >
-                              {toTitleCase(item?.overallStatus)}
+                              {t(item?.overallStatus)}
                             </p>
                           </div>
                         )}

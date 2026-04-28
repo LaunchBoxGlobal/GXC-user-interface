@@ -199,5 +199,12 @@
     "Ready To Pickup": "Ready To Pickup",
     "Cancelled by Seller": "Cancelled by Seller",
     "readyToPickup": "Ready To Pickup",
-    "Order report submitted successfully.": "Order report submitted successfully."
+    "Order report submitted successfully.": "Order report submitted successfully.",
+    "cancelled": "cancelled",
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "ready": "Ready",
+    "ready_for_pickup": "Ready for Pickup",
+    "out_for_delivery": "Out for Delivery"
 }
