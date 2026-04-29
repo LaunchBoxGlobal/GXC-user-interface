@@ -90,7 +90,7 @@ const TransactionHistoryPage = () => {
       fetchNotificaiontCount();
     }, 500);
     debouncedFetch();
-  }, [sellerType, page, searchTerm]);
+  }, [sellerType, page, searchTerm, i18n?.language]);
 
   return (
     <div className="w-full relative padding-x min-h-screen">
@@ -113,9 +113,9 @@ const TransactionHistoryPage = () => {
           ) : (
             <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">
               {userBalance &&
-                `$${
+                `${
                   userBalance?.totalSpent > 0
-                    ? formatAmount(userBalance?.totalSpent.toFixed(2))
+                    ? `$${formatAmount(userBalance?.totalSpent.toFixed(2))}`
                     : `$0`
                 }`}
             </p>

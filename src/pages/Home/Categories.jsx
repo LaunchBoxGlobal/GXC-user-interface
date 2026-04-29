@@ -6,7 +6,7 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import i18n from "i18next";
 
-const Categories = memo(() => {
+const Categories = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentCategoryId = searchParams.get("categoryId");
@@ -114,6 +114,6 @@ const Categories = memo(() => {
       </div>
     </div>
   );
-});
+};
 
 export default Categories;

@@ -16,6 +16,7 @@ import enSettings from "./locales/en/enSettings.json";
 import enEditProfile from "./locales/en/enEditProfile.json";
 import enMember from "./locales/en/enMember.json";
 import enCommunity from "./locales/en/enCommunity.json";
+import enPolicies from "./locales/en/enPolicies.json";
 
 // Spanish
 import esCommon from "./locales/es/esCommon.json";
@@ -31,6 +32,7 @@ import esSettings from "./locales/es/esSettings.json";
 import esEditProfile from "./locales/es/esEditProfile.json";
 import esMember from "./locales/es/esMember.json";
 import esCommunity from "./locales/es/esCommunity.json";
+import esPolicies from "./locales/es/esPolicies.json";
 
 i18n
   .use(LanguageDetector)
@@ -51,6 +53,7 @@ i18n
         editProfile: enEditProfile,
         member: enMember,
         community: enCommunity,
+        policies: enPolicies,
       },
       es: {
         auth: esAuth,
@@ -66,6 +69,7 @@ i18n
         editProfile: esEditProfile,
         member: esMember,
         community: esCommunity,
+        policies: esPolicies,
       },
     },
     fallbackLng: "en",
@@ -84,6 +88,7 @@ i18n
       "editProfile",
       "member",
       "community",
+      "policies",
     ],
     supportedLngs: ["en", "es"],
     defaultNS: "common",

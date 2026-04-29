@@ -10,6 +10,7 @@ import { enqueueSnackbar } from "notistack";
 import { useUser } from "../../context/userContext";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import { changePasswordSchema } from "../../validation/changePasswordSchema";
 
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
@@ -22,34 +23,9 @@ const ChangePasswordPage = () => {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: Yup.object({
-      currentPassword: Yup.string().required(
-        t(`settings.changePassword.form.errors.currentPassRequired`),
-      ),
-      password: Yup.string()
-        .min(8, t(`settings.changePassword.form.errors.minPass`))
-        .max(25, t(`settings.changePassword.form.errors.maxPass`))
-        .matches(
-          /[A-Z]/,
-          t(`settings.changePassword.form.errors.passUppercase`),
-        )
-        .matches(
-          /[a-z]/,
-          t(`settings.changePassword.form.errors.passLowercase`),
-        )
-        .matches(/\d/, t(`settings.changePassword.form.errors.passNum`))
-        .matches(
-          /[@$!%*?&^#_.-]/,
-          t(`settings.changePassword.form.errors.passMatch`),
-        )
-        .required(t(`settings.changePassword.form.errors.passRequired`)),
-      confirmPassword: Yup.string()
-        .oneOf(
-          [Yup.ref("password"), null],
-          t(`settings.changePassword.form.errors.confirmPass`),
-        )
-        .required(t(`settings.changePassword.form.errors.confirmPassRequired`)),
-    }),
+    validateOnChange: false,
+    validateOnBlur: true,
+    validationSchema: changePasswordSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         checkIamAlreadyMember();
@@ -88,6 +64,16 @@ const ChangePasswordPage = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    formik.setFieldTouched(name, true, false);
+
+    await formik.validateField(name);
+  };
+
   return (
     <div className="w-full pt-2">
       <h1 className="font-semibold text-[24px]">
@@ -100,7 +86,7 @@ const ChangePasswordPage = () => {
           name="currentPassword"
           placeholder={t(`settings.changePassword.form.currentPass`)}
           value={formik.values.currentPassword}
-          onChange={formik.handleChange}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           error={formik.errors.currentPassword}
           touched={formik.touched.currentPassword}
@@ -109,7 +95,7 @@ const ChangePasswordPage = () => {
           name="password"
           placeholder={t(`settings.changePassword.form.newPass`)}
           value={formik.values.password}
-          onChange={formik.handleChange}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           error={formik.errors.password}
           touched={formik.touched.password}
@@ -119,7 +105,7 @@ const ChangePasswordPage = () => {
           name="confirmPassword"
           placeholder={t(`settings.changePassword.form.confirmPass`)}
           value={formik.values.confirmPassword}
-          onChange={formik.handleChange}
+          onChange={handleChange}
           onBlur={formik.handleBlur}
           error={formik.errors.confirmPassword}
           touched={formik.touched.confirmPassword}
