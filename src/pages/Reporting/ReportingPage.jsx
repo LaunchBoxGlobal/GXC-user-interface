@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
@@ -20,6 +20,15 @@ const ReportingPage = () => {
   const { fetchNotificaiontCount } = useAppContext();
   const { t } = useTranslation("reports");
 
+  const validationSchema = useMemo(() => {
+    return Yup.object({
+      description: Yup.string()
+        .min(10, t(`form.min`))
+        .max(1500, t(`form.max`))
+        .required(t(`form.required`)),
+    });
+  }, [i18n.language]);
+
   useEffect(() => {
     document.title = "Reporting - giveXchange";
     fetchNotificaiontCount();
@@ -31,12 +40,14 @@ const ReportingPage = () => {
       images: [],
     },
 
-    validationSchema: Yup.object({
-      description: Yup.string()
-        .min(10, t(`form.min`))
-        .max(1500, t(`form.max`))
-        .required(t(`form.required`)),
-    }),
+    // validationSchema: Yup.object({
+    //   description: Yup.string()
+    //     .min(10, t(`form.min`))
+    //     .max(1500, t(`form.max`))
+    //     .required(t(`form.required`)),
+    // }),
+    validationSchema,
+    enableReinitialize: true,
 
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
@@ -74,6 +85,10 @@ const ReportingPage = () => {
       }
     },
   });
+
+  useEffect(() => {
+    formik.validateForm();
+  }, [i18n.language]);
 
   return (
     <>
