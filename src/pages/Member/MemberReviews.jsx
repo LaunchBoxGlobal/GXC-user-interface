@@ -12,11 +12,15 @@ import i18n from "i18next";
 const MemberReviews = ({ member }) => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState(null);
+  const [translatedReviews, setTranslatedReviews] = useState({});
+  const [showTranslated, setShowTranslated] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { t } = useTranslation("transactionHistory");
 
-  /** Fetch all reviews of the member */
+  const lang = i18n.language;
+
+  /* Fetch all reviews of the member */
   const fetchSellerReviews = async () => {
     if (!member?.id) return;
 
@@ -27,7 +31,10 @@ const MemberReviews = ({ member }) => {
       const { data } = await axios.get(
         `${BASE_URL}/reviews/users/${member.id}/reviews`,
         {
-          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
         },
       );
       setReviews(data?.data || {});
@@ -41,10 +48,45 @@ const MemberReviews = ({ member }) => {
 
   useEffect(() => {
     fetchSellerReviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member?.id]);
 
-  /** Loading State */
+  useEffect(() => {
+    if (!reviews?.reviews) return;
+
+    setTranslatedReviews({});
+
+    reviews.reviews.forEach((review) => {
+      if (review.comment) {
+        translateText(review.id, review.comment);
+      }
+    });
+  }, [i18n.language]);
+
+  const translateText = async (reviewId, text) => {
+    if (!text) return;
+    // const lang = i18n.language === "es" ? "en" : "es";
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/google/translate`,
+        { text },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
+      );
+
+      setTranslatedReviews((prev) => ({
+        ...prev,
+        [reviewId]: data?.data?.translatedText,
+      }));
+    } catch (error) {
+      handleApiError(error, navigate);
+    }
+  };
+
+  /* Loading State */
   if (loading) {
     return (
       <div className="w-full bg-white rounded-[18px] p-5">
@@ -115,11 +157,38 @@ const MemberReviews = ({ member }) => {
 
               {/* Comment */}
               {review?.comment ? (
-                <p className="text-sm text-gray-700 mb-3 break-words">
-                  {review.comment}
-                </p>
+                <div className="w-full mb-2">
+                  <p className="text-sm text-gray-700 break-words">
+                    {showTranslated[review.id]
+                      ? translatedReviews[review.id] || review.comment
+                      : review.comment}
+                  </p>
+                  {lang === "es" && (
+                    <button
+                      type="button"
+                      className="text-xs font-medium"
+                      onClick={() => {
+                        const reviewId = review.id;
+
+                        if (!translatedReviews[reviewId]) {
+                          translateText(reviewId, review.comment);
+                        }
+
+                        // Toggle view
+                        setShowTranslated((prev) => ({
+                          ...prev,
+                          [reviewId]: !prev[reviewId],
+                        }));
+                      }}
+                    >
+                      {showTranslated[review.id]
+                        ? t("See Original")
+                        : t("See Translation")}
+                    </button>
+                  )}
+                </div>
               ) : (
-                <p className="text-sm text-gray-700 mb-3 break-words">N/A</p>
+                <div className="mb-1"></div>
               )}
 
               {/* Reviewer Info */}
