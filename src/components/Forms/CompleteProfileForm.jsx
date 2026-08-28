@@ -261,16 +261,33 @@ const CompleteProfileForm = () => {
                 containerClassName="w-full"
                 inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none text-gray-500 
         ${
-          formik.touched.state && formik.errors.state
+          // FIX (issue #2): also redden after a submit attempt (submitCount > 0),
+          // not just when `touched.state` happens to be set. This guarantees
+          // the field matches every other field's behavior on an empty submit.
+          (formik.touched.state || formik.submitCount > 0) &&
+          formik.errors.state
             ? "border-red-500"
             : "border-gray-200"
         }
       `}
                 placeHolder={t("completeProfile.placeholders.state")}
                 onChange={(val) => {
-                  formik.setFieldValue("state", val.name);
-                  formik.setFieldValue("stateId", val.id);
-                  formik.setFieldValue("city", "");
+                  // FIX (issue #1): update state + stateId + reset city in ONE
+                  // atomic update and validate immediately (shouldValidate = true)
+                  // so the error is computed against the value we just picked,
+                  // not a stale pre-selection snapshot. Also mark the field
+                  // touched right away instead of waiting for some other
+                  // field's onBlur to trigger a full-form validation pass.
+                  formik.setValues(
+                    (prev) => ({
+                      ...prev,
+                      state: val.name,
+                      stateId: val.id,
+                      city: "",
+                    }),
+                    true,
+                  );
+                  formik.setFieldTouched("state", true, false);
                 }}
               />
             </div>
@@ -287,13 +304,18 @@ const CompleteProfileForm = () => {
                 containerClassName="w-full"
                 inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none text-gray-500 
         ${
-          formik.touched.city && formik.errors.city
+          // Same submitCount fallback as State, for the same reason.
+          (formik.touched.city || formik.submitCount > 0) && formik.errors.city
             ? "border-red-500"
             : "border-gray-200"
         }
       `}
                 placeHolder={t("completeProfile.placeholders.city")}
-                onChange={(val) => formik.setFieldValue("city", val.name)}
+                onChange={(val) => {
+                  // Same fix as State: validate immediately and mark touched.
+                  formik.setFieldValue("city", val.name, true);
+                  formik.setFieldTouched("city", true, false);
+                }}
               />
             </div>
 

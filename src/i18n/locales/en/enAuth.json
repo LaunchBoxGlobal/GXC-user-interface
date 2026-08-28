@@ -109,7 +109,7 @@
             "firstName": "First Name",
             "lastName": "Last Name",
             "email": "Email Address",
-            "phoneNumber": "+000 0000 00",
+            "phoneNumber": "000 0000 00",
             "zipcode": "Enter zip code",
             "address": "Enter your address",
             "country": "Select Country",

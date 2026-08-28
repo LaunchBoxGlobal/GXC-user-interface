@@ -15,43 +15,69 @@ const AuthLayout = ({ children }) => {
   return (
     <main className="w-full min-h-screen relative grid grid-cols-1 lg:grid-cols-2 p-4 auth-bg">
       <div className="w-full h-full bg-transparent hidden lg:block">
-        {location?.pathname === "/login" ? (
-          <img
-            src="/sign-in-mockup.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : location?.pathname === "/forgot-password" ? (
-          <img
-            src="/verify-email-mockup.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : location?.pathname === "/verify-otp" ? (
-          <img
-            src="/verify-otp.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : location?.pathname === "/change-password" ? (
-          <img
-            src="/change-password-mockup.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : location?.pathname === "/signup" ? (
-          <img
-            src="/signup-page-mockup.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <img
-            src="/login-page-mockup.png"
-            alt=""
-            className="w-full h-full object-cover"
-          />
-        )}
+        <div className="w-full h-full bg-[#4E9D4B] rounded-[20px] relative overflow-hidden flex flex-col justify-between gap-0">
+          <div className="w-full p-10">
+            <h1 className="text-[45px] leading-none font-medium text-white">
+              Community <br /> Market Place
+            </h1>
+            <p className="text-white text-[22px] leading-[1.35] mt-3">
+              Connect with your community <br /> to buy and sell products.
+            </p>
+          </div>
+          {location?.pathname === "/login" ? (
+            <img
+              src="/20824344_6343823.svg"
+              alt="login-screen-mockup"
+              width={750}
+              height={750}
+              className="mx-auto object-contain max-w-[70%]"
+            />
+          ) : location?.pathname === "/forgot-password" ? (
+            <div className="w-full relative">
+              <img
+                src="/forgot-password-vector.png"
+                alt="forgot-password-vector"
+                className="w-full max-w-[85%] mx-auto h-auto object-cover rounded-[20px] absolute bottom-0 left-1/2 -translate-x-1/2 z-0"
+              />
+              <img
+                src="/forgot-password-screen-mockup.png"
+                alt="forgot-password-screen-mockup"
+                className="w-full max-w-[62%] m-auto relative z-20"
+              />
+            </div>
+          ) : location?.pathname === "/verify-otp" ? (
+            <div className="w-full relative">
+              <img
+                src="/forgot-password-vector.png"
+                alt="forgot-password-vector"
+                className="w-full max-w-[95%] mx-auto h-auto object-cover rounded-[20px] absolute bottom-0 left-1/2 -translate-x-1/2 z-0"
+              />
+              <img
+                src="/verify-otp-screen-mockup.png"
+                alt="verify-otp-screen-mockup"
+                className="w-full max-w-[72%] m-auto relative z-20"
+              />
+            </div>
+          ) : location?.pathname === "/change-password" ? (
+            <img
+              src="/change-password-mockup.png"
+              alt="change-password-mockup"
+              className="w-full h-full object-cover rounded-[20px]"
+            />
+          ) : location?.pathname === "/signup" ? (
+            <img
+              src="/signup-screen-mockup.svg"
+              alt="signup-screen-mockup"
+              className="w-full max-w-[90%] mx-auto"
+            />
+          ) : (
+            <img
+              src="/complete-profile-screen-mockup.svg"
+              alt="complete-profile-screen-mockup"
+              className="w-full max-w-[80%] mx-auto h-auto object-contain rounded-[20px] absolute bottom-10 left-1/2 -translate-x-1/2"
+            />
+          )}
+        </div>
       </div>
       <div className="w-full h-full py-12 flex items-center flex-col justify-center relative">
         <div className="absolute top-5 flex justify-end right-5">

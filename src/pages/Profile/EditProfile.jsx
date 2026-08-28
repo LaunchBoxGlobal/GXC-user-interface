@@ -318,23 +318,32 @@ const EditProfile = () => {
               countryid={formik.values.countryId || undefined}
               containerClassName="w-full"
               inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none bg-[var(--secondary-bg)] text-gray-500 ${
-                formik.touched.state && formik.errors.state
+                (formik.touched.state || formik.submitCount > 0) &&
+                formik.errors.state
                   ? "border-red-500"
                   : "border-gray-200"
               }`}
               placeHolder={t("editProfile.form.fields.state")}
               onChange={(val) => {
-                formik.setFieldValue("state", val.name);
-                formik.setFieldValue("stateId", val.id);
-                formik.setFieldValue("city", "");
+                formik.setValues(
+                  (prev) => ({
+                    ...prev,
+                    state: val.name,
+                    stateId: val.id,
+                    city: "",
+                  }),
+                  true,
+                );
+                formik.setFieldTouched("state", true, false);
               }}
               defaultValue={
                 formik.values.state ? { name: formik.values.state } : null
               }
             />
-            {formik.touched.state && formik.errors.state && (
-              <p className="text-red-500 text-xs">{formik.errors.state}</p>
-            )}
+            {(formik.touched.state || formik.submitCount > 0) &&
+              formik.errors.state && (
+                <p className="text-red-500 text-xs">{formik.errors.state}</p>
+              )}
           </div>
         </div>
 
@@ -348,25 +357,31 @@ const EditProfile = () => {
               stateid={formik.values.stateId || undefined}
               containerClassName="w-full"
               inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none text-gray-500 bg-[var(--secondary-bg)] ${
-                formik.touched.city && formik.errors.city
+                (formik.touched.city || formik.submitCount > 0) &&
+                formik.errors.city
                   ? "border-red-500"
                   : "border-gray-200"
               }`}
               placeHolder={t("editProfile.form.fields.city")}
-              onChange={(val) => formik.setFieldValue("city", val.name)}
+              onChange={(val) => {
+                // Same fix as State: validate immediately, mark touched.
+                formik.setFieldValue("city", val.name, true);
+                formik.setFieldTouched("city", true, false);
+              }}
               defaultValue={
                 formik.values.city ? { name: formik.values.city } : null
               }
             />
-            {formik.touched.city && formik.errors.city && (
-              <p className="text-red-500 text-xs">{formik.errors.city}</p>
-            )}
+            {(formik.touched.city || formik.submitCount > 0) &&
+              formik.errors.city && (
+                <p className="text-red-500 text-xs">{formik.errors.city}</p>
+              )}
           </div>
 
           <TextField
             type="text"
             name="zipcode"
-            placeholder={t("editProfile.form.fields.zipCode")}
+            placeholder={t("editProfile.form.fields.zipcode")}
             value={formik.values.zipcode}
             onChange={handleChange}
             onBlur={formik.handleBlur}
