@@ -133,10 +133,10 @@ const Navbar = () => {
 
           <NotificationsDropdown isScrolled={isScrolled} />
 
-          <LanguageSwitcher
+          {/* <LanguageSwitcher
             className={languageTogglerStyle}
             isScrolled={isScrolled}
-          />
+          /> */}
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
         </div>
