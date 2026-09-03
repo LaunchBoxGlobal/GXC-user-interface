@@ -16,6 +16,8 @@ import { RxCross2 } from "react-icons/rx";
 import { useAppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const AddProductForm = ({ categories, selectedCommunity }) => {
   const { checkIamAlreadyMember } = useUser();
@@ -25,6 +27,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState(null);
   const [revenueConfig, setRevenueConfig] = useState(null);
+  const { t } = useTranslation("productManagement");
 
   const userAddress = [
     user?.address,
@@ -51,6 +54,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
     try {
       const res = await axios.get(`${BASE_URL}/user/get-revenue-config`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -78,7 +82,9 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       selfPickupAddress: userAddress || "",
       communityPickupAddress: communityAddress || "",
     },
-    validationSchema: productSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
+    validationSchema: productSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         if (!selectedCommunity?.id) {
@@ -86,7 +92,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
             "Please select a community before adding a product.",
             {
               variant: "warning",
-            }
+            },
           );
           return;
         }
@@ -103,10 +109,10 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
           values.deliveryType.length === 2
             ? "both"
             : values.deliveryType[0] === "community"
-            ? "delivery"
-            : values.deliveryType[0] === "self"
-            ? "pickup"
-            : "";
+              ? "delivery"
+              : values.deliveryType[0] === "self"
+                ? "pickup"
+                : "";
         formData.append("title", values.productName.trim());
         formData.append("price", values.price);
         formData.append("description", values.description.trim());
@@ -121,26 +127,26 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
         if (values.deliveryType.includes("community")) {
           formData.append(
             "communityPickupAddress",
-            values.communityPickupAddress.trim()
+            values.communityPickupAddress.trim(),
           );
           formData.append(
             "communityPickupCity",
-            selectedCommunity?.city.trim()
+            selectedCommunity?.city.trim(),
           );
           formData.append(
             "communityPickupState",
-            selectedCommunity?.state.trim()
+            selectedCommunity?.state.trim(),
           );
           formData.append(
             "communityPickupZipcode",
-            selectedCommunity?.zipcode.trim()
+            selectedCommunity?.zipcode.trim(),
           );
         }
         formData.append("pickupCity", user?.city);
         formData.append("pickupState", user?.state);
 
         values.productImages.forEach((file) =>
-          formData.append("productImages", file)
+          formData.append("productImages", file),
         );
 
         const res = await axios.post(
@@ -148,10 +154,11 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${getToken()}`,
             },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -176,7 +183,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
 
   useEffect(() => {
     const selected = categories.filter((c) =>
-      formik.values.category.includes(c.id)
+      formik.values.category.includes(c.id),
     );
     setSelectedCategories(selected);
   }, [formik.values.category, categories]);
@@ -196,6 +203,18 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
     (revenueConfig?.seller_percentage / 100)
   ).toFixed(2);
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -204,7 +223,8 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
       {/* LEFT SECTION */}
       <div className="w-full pt-3 col-span-3 lg:col-span-2 bg-white rounded-[18px] p-5 lg:p-7">
         <h1 className="font-semibold text-[20px] leading-none tracking-tight">
-          Add New Product
+          {/* Add New Product */}
+          {t(`addProduct.title`)}
         </h1>
         <div className="w-full border my-5" />
 
@@ -223,28 +243,28 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
             <TextField
               type="text"
               name="productName"
-              placeholder="Enter product name"
+              placeholder={t(`addProduct.fields.productName.placeholder`)}
               value={formik.values.productName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.productName}
               touched={formik.touched.productName}
-              label={"Product Name"}
+              label={t(`addProduct.fields.productName.label`)}
             />
             <div className="w-full">
               <TextField
                 type="number"
                 name="price"
-                placeholder="Enter product price"
+                placeholder={t(`addProduct.fields.price.placeholder`)}
                 value={formik.values.price}
-                onChange={formik.handleChange}
+                onChange={handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.errors.price}
                 touched={formik.touched.price}
-                label={"Price"}
+                label={t(`addProduct.fields.price.label`)}
               />
               <p className="text-sm text-gray-500 mt-1">
-                Your estimated earnings:{" "}
+                {t(`addProduct.messages.estimatedEarnings`)}{" "}
                 <span className="text-black font-medium">
                   ${estimatedEarnings}
                 </span>
@@ -287,7 +307,7 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
             <AddProductPickupAddressField
               formik={formik}
               fieldName="selfPickupAddress"
-              label="Self Pickup Address"
+              label={t(`addProduct.fields.selfPickupAddress.label`)}
             />
           )}
 
@@ -295,20 +315,20 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
             <AddProductPickupAddressField
               formik={formik}
               fieldName="communityPickupAddress"
-              label="Community Pickup Address"
+              label={t(`addProduct.fields.communityPickupAddress.label`)}
             />
           )}
           {/* Description */}
           <div className="w-full">
             <label className="font-medium text-sm mb-2 block">
-              Product Description
+              {t(`addProduct.fields.description.label`)}
             </label>
             <textarea
               name="description"
               id="description"
-              placeholder="Enter product description"
+              placeholder={t(`addProduct.fields.description.placeholder`)}
               value={formik.values.description}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               className={`w-full border text-[#6D6D6D] h-[159px] bg-[var(--secondary-bg)] px-[15px] py-[14px] rounded-[8px] outline-none resize-none ${
                 formik.touched.description && formik.errors.description
@@ -325,7 +345,11 @@ const AddProductForm = ({ categories, selectedCommunity }) => {
 
           {/* Submit */}
           <div className="w-full max-w-[196px]">
-            <Button type="submit" title="Add Product" isLoading={loading} />
+            <Button
+              type="submit"
+              title={t(`addProduct.actions.submit`)}
+              isLoading={loading}
+            />
           </div>
         </div>
       </div>

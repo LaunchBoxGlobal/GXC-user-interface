@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 const MemberHeader = ({ member, setShowMemberReportConfimationPopup }) => {
   const [searchParams] = useSearchParams();
   const isBuyer = searchParams.get("isBuyer");
   const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
+  const { t } = useTranslation("member");
   return (
     <div className="w-full bg-white rounded-[18px] relative p-5">
       <div className="w-full flex items-center justify-between flex-wrap gap-y-7">
@@ -37,7 +39,7 @@ const MemberHeader = ({ member, setShowMemberReportConfimationPopup }) => {
               onClick={() => setShowMemberReportConfimationPopup(true)}
               className="button min-w-[214px]"
             >
-              Report User
+              {t(`members.buttons.reportUser`)}
             </button>
           </div>
         )}

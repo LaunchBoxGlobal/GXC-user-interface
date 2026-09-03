@@ -4,17 +4,14 @@ import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
-import { handleApiError } from "../../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loader from "../../components/Common/Loader";
 import { useUser } from "../../context/userContext";
 import { enqueueSnackbar } from "notistack";
 import Categories from "./Categories";
-import {
-  listenForMessages,
-  requestNotificationPermission,
-} from "../../notifications";
 import Pagination from "../../components/Forms/Pagination";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const HomePage = () => {
   const { productSearchValue, fetchNotificaiontCount } = useAppContext();
@@ -25,6 +22,7 @@ const HomePage = () => {
     fetchCommunities,
   } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation("home");
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
@@ -42,9 +40,9 @@ const HomePage = () => {
       const res = await axios.get(`${BASE_URL}/categories`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
         },
       });
-      // console.log("res >> ", res?.data?.data?.categories);
       setCategories(res?.data?.data?.categories);
     } catch (error) {
       console.log("err while fetching categories >>> ", error);
@@ -70,7 +68,10 @@ const HomePage = () => {
         selectedCommunity.id
       }/products?status=active&${params.toString()}`;
       const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18n.language,
+        },
       });
 
       setProducts(res?.data?.data?.products || []);
@@ -83,7 +84,7 @@ const HomePage = () => {
             "Something went wrong.",
           {
             variant: `error`,
-          }
+          },
         );
         navigate(`/`);
         return;
@@ -97,15 +98,15 @@ const HomePage = () => {
 
   useEffect(() => {
     fetchCommunityProducts();
-  }, [fetchCommunityProducts]);
+  }, [fetchCommunityProducts, i18n?.language]);
 
   useEffect(() => {
-    document.title = "Home - giveXchange";
+    document.title = `${t("Home")} - giveXchange`;
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCategories();
     fetchCommunities();
     fetchNotificaiontCount();
-  }, []);
+  }, [i18n?.language]);
 
   return (
     <main className="w-full py-16 min-h-screen text-center padding-x">
@@ -132,7 +133,7 @@ const HomePage = () => {
                 className="max-w-7"
               />
               <p className="text-sm text-gray-500 font-medium">
-                You have not joined any community yet.
+                {t(`You have not joined any community yet.`)}
               </p>
             </div>
           )}

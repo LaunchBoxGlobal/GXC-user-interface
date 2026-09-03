@@ -2,14 +2,15 @@ import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
-import Loader from "../../components/Common/Loader";
 import CommunityCard from "../../components/Common/CommunityCard";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunitiesPage = () => {
   const [communities, setCommunities] = useState(null);
   const [pagination, setPagination] = useState(null);
+  const { t } = useTranslation(`community`);
 
   useEffect(() => {
     checkJoinStatus();
@@ -19,6 +20,7 @@ const CommunitiesPage = () => {
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -46,7 +48,8 @@ const CommunitiesPage = () => {
       ) : (
         <div className="w-full flex flex-col justify-start items-center">
           <h1 className="text-gray-600">
-            You have not joined any community yet.
+            {/* You have not joined any community yet. */}
+            {t(`communities.youHaveNoCommunities`)}
           </h1>
         </div>
       )}

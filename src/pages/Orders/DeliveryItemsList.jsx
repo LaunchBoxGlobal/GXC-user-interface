@@ -14,6 +14,8 @@ import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
 import { toTitleCase } from "../../utils/toTitleCase";
 import { FaLocationDot } from "react-icons/fa6";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const DeliveryItemsList = ({
   deliveryItems,
@@ -28,6 +30,7 @@ const DeliveryItemsList = ({
   const [showFeedbackSuccessPopup, setShowFeedbackSuccessPopup] =
     useState(false);
   const [product, setProduct] = useState(null);
+  const { t } = useTranslation("orderManagement");
 
   // cancel order states
   const [showOrderCancelPopup, setShowOrderCancelPopup] = useState(false);
@@ -41,14 +44,14 @@ const DeliveryItemsList = ({
 
   const markItemAsDelivered = async (product) => {
     if (!product) {
-      enqueueSnackbar("Something went wrong! Try again.", {
+      enqueueSnackbar(t("deliveryItems.messages.genericError"), {
         variant: "error",
       });
       return;
     }
 
     if (product?.sellerStatus === "cancelled") {
-      enqueueSnackbar("This product has been cancelled by the seller.", {
+      enqueueSnackbar(t("deliveryItems.messages.cancelledBySeller"), {
         variant: "error",
         autoHideDuration: 3000,
       });
@@ -63,25 +66,16 @@ const DeliveryItemsList = ({
         { status: "delivered" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
-        // fetchOrderDetails();
       }
     } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Something went wrong.",
-        {
-          variant: "error",
-        }
-      );
-      // console.error("markItemAsDelivered error >>> ", error);
       handleApiError(error, navigate);
     } finally {
       setDeliveryLoadingState(false);
@@ -90,7 +84,7 @@ const DeliveryItemsList = ({
 
   return (
     <div className="w-full">
-      <h2 className="font-semibold mb-4">Pickup Items</h2>
+      <h2 className="font-semibold mb-4">{t("deliveryItems.heading")}</h2>
       <div className="w-full">
         {deliveryItems &&
           deliveryItems?.map((item, index) => {
@@ -128,24 +122,24 @@ const DeliveryItemsList = ({
                       item?.overallStatus !== "completed" ? (
                         <>
                           <p className={`text-sm font-medium text-red-500`}>
-                            Missing
+                            {t("deliveryItems.status.missing")}
                           </p>
                           <p
                             className={`font-medium leading-none text-sm ${
                               item?.report?.status === "pending"
                                 ? "text-[#FF7700]"
                                 : item?.report?.status === "resolved"
-                                ? "text-green-500"
-                                : "text-red-500"
+                                  ? "text-green-500"
+                                  : "text-red-500"
                             }`}
                           >
                             {item?.report?.status === "pending"
                               ? "Dispute Raised – Under Review"
                               : item?.report?.status === "resolved"
-                              ? "Resolved"
-                              : item?.report?.status === "rejected"
-                              ? "Rejected"
-                              : ""}
+                                ? "Resolved"
+                                : item?.report?.status === "rejected"
+                                  ? "Rejected"
+                                  : ""}
                           </p>
                         </>
                       ) : (
@@ -156,17 +150,17 @@ const DeliveryItemsList = ({
                               item?.overallStatus === "ready"
                                 ? "text-green-500"
                                 : item?.overallStatus === "cancelled"
-                                ? "text-red-500"
-                                : item?.overallStatus === "in_progress"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "pending"
-                                ? "text-[#FF7700]"
-                                : item?.overallStatus === "delivered"
-                                ? "text-green-500"
-                                : "text-gray-500"
+                                  ? "text-red-500"
+                                  : item?.overallStatus === "in_progress"
+                                    ? "text-[#FF7700]"
+                                    : item?.overallStatus === "pending"
+                                      ? "text-[#FF7700]"
+                                      : item?.overallStatus === "delivered"
+                                        ? "text-green-500"
+                                        : "text-gray-500"
                             }`}
                           >
-                            {toTitleCase(item?.overallStatus)}
+                            {t(item?.overallStatus)}
                           </p>
                         </div>
                       )}
@@ -184,7 +178,7 @@ const DeliveryItemsList = ({
                             setOpenFeedbackModal(true);
                           }}
                         >
-                          Write a review
+                          {t("deliveryItems.buttons.writeReview")}
                         </button>
                       )}
                     {item?.buyerStatus === "delivered" ||
@@ -215,7 +209,7 @@ const DeliveryItemsList = ({
                               }}
                               className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
                             >
-                              Mark As Missing
+                              {t("deliveryItems.buttons.markMissing")}
                             </button>
                           )}
                         <button
@@ -230,7 +224,7 @@ const DeliveryItemsList = ({
                           {deliveryLoadingState ? (
                             <Loader />
                           ) : (
-                            "Mark As Received"
+                            t("deliveryItems.buttons.markReceived")
                           )}
                         </button>
                       </div>
@@ -241,8 +235,8 @@ const DeliveryItemsList = ({
                 {/* pickup address */}
                 {item?.deliveryMethod === "delivery" && (
                   <div className="w-full mt-3">
-                    <h3 className="text-sm font-semibold leading-none">
-                      Pickup Address
+                    <h3 className="font-semibold text-sm">
+                      {t("deliveryItems.sections.pickupAddress")}
                     </h3>
 
                     <div className="w-full flex items-center gap-2 mt-1">
@@ -257,7 +251,7 @@ const DeliveryItemsList = ({
                 )}
                 <div className="w-full border border-gray-300 my-4" />
                 <div className="w-full mt-5">
-                  <h3 className="font-semibold leading-none">Vendor Details</h3>
+                  <h3>{t("deliveryItems.sections.vendorDetails")}</h3>
                   <div className="w-full flex items-center justify-between">
                     <div className="w-full flex items-center gap-3 mt-3">
                       <div className="">
@@ -298,9 +292,7 @@ const DeliveryItemsList = ({
                 {item?.cancellation_reason && (
                   <div className="w-full">
                     <div className="w-full border border-gray-300 my-4" />
-                    <h3 className="font-semibold leading-none">
-                      Cancellation Reason
-                    </h3>
+                    <h3>{t("deliveryItems.sections.cancellationReason")}</h3>
                     <p className="font-normal leading-[1.2] mt-1 break-words">
                       {item?.cancellation_reason}
                     </p>

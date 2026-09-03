@@ -2,20 +2,26 @@
 
 // Use compat version for service worker:
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"
+  "https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js",
 );
 importScripts(
-  "https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging-compat.js"
+  "https://www.gstatic.com/firebasejs/9.6.10/firebase-messaging-compat.js",
 );
 
 // SAME config as in src/firebase.js
 firebase.initializeApp({
-  apiKey: "AIzaSyB2IDE8PHZwXX1xDwkuS8xF5NTrD3bB_b0",
-  authDomain: "givexchange-96249.firebaseapp.com",
-  projectId: "givexchange-96249",
-  storageBucket: "givexchange-96249.firebasestorage.app",
-  messagingSenderId: "502661287670",
-  appId: "1:502661287670:web:a9ce75c8e57b2c5e62e6d7",
+  // apiKey: "AIzaSyB2IDE8PHZwXX1xDwkuS8xF5NTrD3bB_b0",
+  // authDomain: "givexchange-96249.firebaseapp.com",
+  // projectId: "givexchange-96249",
+  // storageBucket: "givexchange-96249.firebasestorage.app",
+  // messagingSenderId: "502661287670",
+  // appId: "1:502661287670:web:a9ce75c8e57b2c5e62e6d7",
+  apiKey: "AIzaSyAqpAOu3TFwV6ICjDL5npxttsKfMnZnz-4",
+  authDomain: "givexchnage.firebaseapp.com",
+  projectId: "givexchnage",
+  storageBucket: "givexchnage.firebasestorage.app",
+  messagingSenderId: "872155075471",
+  appId: "1:872155075471:web:0e586cf00ebaaceadc71fa",
 });
 
 const messaging = firebase.messaging();
@@ -24,7 +30,7 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
-    payload
+    payload,
   );
 
   const notificationTitle = payload.notification?.title || "New Notification";

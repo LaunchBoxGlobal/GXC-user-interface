@@ -8,12 +8,14 @@ import { useUser } from "../../context/userContext";
 import OrderManagementHeader from "./OrderManagementHeader";
 import { HiArrowLeft } from "react-icons/hi";
 import ProductManagementHeader from "./ProductManagementHeader";
+import { useTranslation } from "react-i18next";
 
 const Layout = ({ children }) => {
   const { user, fetchUserProfile } = useAppContext();
   const pathname = useLocation();
   const { selectedCommunity } = useUser();
   const navigate = useNavigate();
+  const { t } = useTranslation("reports");
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -47,10 +49,10 @@ const Layout = ({ children }) => {
               className="flex items-center gap-1 text-white"
             >
               <HiArrowLeft />
-              <span className="text-sm">Back</span>
+              <span className="text-sm">{t(`buttons.back`)}</span>
             </button>
             <h1 className="text-[24px] lg:text-[32px] font-semibold leading-none text-white">
-              Make a Report
+              {t(`makeReport`)}
             </h1>
           </div>
         )}

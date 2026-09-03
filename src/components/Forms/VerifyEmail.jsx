@@ -7,15 +7,17 @@ import { RiArrowLeftSLine } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
-const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import Cookies from "js-cookie";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const redirect = searchParams?.get("redirect");
+  const { t } = useTranslation("auth");
 
   useEffect(() => {
     document.title = `Verify Email - GiveXChange`;
@@ -25,10 +27,12 @@ const VerifyEmail = () => {
     initialValues: {
       email: "",
     },
+    validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object({
       email: Yup.string()
-        .email("Invalid email address")
-        .required("Email address is required"),
+        .email(t("auth:errors.invalid_email"))
+        .required(t("auth:errors.email_required")),
     }),
     onSubmit: async (values, { resetForm }) => {
       resetForm();
@@ -40,9 +44,10 @@ const VerifyEmail = () => {
           { email: values.email.trim() },
           {
             headers: {
+              "Accept-Language": i18n.language,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (res?.data?.success) {
@@ -60,7 +65,7 @@ const VerifyEmail = () => {
                 page: "/forgot-password",
                 email: values.email,
               },
-            }
+            },
           );
         }
       } catch (error) {
@@ -74,6 +79,18 @@ const VerifyEmail = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <form
       onSubmit={formik.handleSubmit}
@@ -81,17 +98,17 @@ const VerifyEmail = () => {
     >
       <div className="w-full text-center">
         <h2 className="font-semibold text-[32px] leading-none mt-8 mb-3">
-          Forgot Password
+          {t(`form.forgot_password`)}
         </h2>
         <p className="text-[var(--secondary-color)]">
-          Enter your registered email address below
+          {t(`auth.forgot_pass_heading`)}
         </p>
       </div>
 
       <div className="w-full flex flex-col items-start gap-4 mt-4">
         <div className="w-full space-y-1">
           <label htmlFor="email" className="text-sm font-medium">
-            Email Address
+            {t(`form.email_label`)}
           </label>
 
           <TextField
@@ -99,7 +116,7 @@ const VerifyEmail = () => {
             name="email"
             placeholder="Email Address"
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.email}
             touched={formik.touched.email}
@@ -107,7 +124,11 @@ const VerifyEmail = () => {
         </div>
 
         <div className="pt-2 w-full">
-          <Button type={"submit"} title={`Send`} isLoading={loading} />
+          <Button
+            type={"submit"}
+            title={t(`button.send`)}
+            isLoading={loading}
+          />
         </div>
       </div>
 
@@ -121,7 +142,7 @@ const VerifyEmail = () => {
           <div className="w-[18px] h-[18px] bg-[var(--button-bg)] rounded-full flex items-center justify-center">
             <RiArrowLeftSLine className="text-white text-base" />
           </div>
-          Back
+          {t(`button.back`)}
         </Link>
       </div>
     </form>

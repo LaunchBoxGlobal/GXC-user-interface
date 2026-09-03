@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
 const MAX_PRICE_LIMIT = 999999;
 
@@ -13,7 +13,7 @@ const SearchFilterBox = ({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [searchValue, setSearchValue] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
   const [minPrice, setMinPrice] = useState(searchParams.get("min") || "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("max") || "");
@@ -36,15 +36,21 @@ const SearchFilterBox = ({
     setMaxPrice(searchParams.get("max") || "");
   }, [searchParams]);
 
-  // Handle search typing and query update
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (searchValue) searchParams.set("search", searchValue);
+      else searchParams.delete("search");
+
+      setSearchParams(searchParams);
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchValue]);
+
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    if (value) searchParams.set("search", value);
-    else searchParams.delete("search");
-    setSearchParams(searchParams);
+    setSearchValue(e.target.value);
   };
 
-  // Common number validation helper
   const isValidPrice = (value) => /^\d+(\.\d{0,2})?$/.test(value);
 
   const validatePrices = (min, max) => {
@@ -96,7 +102,7 @@ const SearchFilterBox = ({
     if (maxPrice) searchParams.set("max", maxPrice);
     else searchParams.delete("max");
     setSearchParams(searchParams);
-    setOpenPriceFilter(false)
+    setOpenPriceFilter(false);
   };
 
   // Reset price filter
@@ -109,6 +115,8 @@ const SearchFilterBox = ({
     setSearchParams(searchParams);
     handleTogglePriceFilter();
   };
+
+  const { t } = useTranslation("home");
 
   return (
     <div
@@ -124,7 +132,7 @@ const SearchFilterBox = ({
         />
         <input
           type="text"
-          placeholder="Search here"
+          placeholder={t("searchHere")}
           className="w-full border-none outline-none bg-transparent text-[15px] font-normal text-white placeholder:text-gray-300"
           value={searchValue}
           onChange={handleSearchChange}
@@ -141,7 +149,7 @@ const SearchFilterBox = ({
           <img
             src="/filter-icon.png"
             alt="filter-icon"
-            className="w-[25px] h-[15px]"
+            className="w-[25px] h-[15px] filter brightness-0 invert-[20%] sepia-[10%] saturate-[500%] hue-rotate-[170deg]"
           />
         </button>
       </div>
@@ -149,7 +157,9 @@ const SearchFilterBox = ({
       {/* Price Filter Dropdown */}
       {openPriceFilter && (
         <div className="absolute top-14 right-0 w-full sm:w-[400px] bg-white rounded-[16px] py-6 lg:rounded-[32px] shadow-md z-50">
-          <p className="text-[24px] font-semibold leading-none px-6">Filter</p>
+          <p className="text-[24px] font-semibold leading-none px-6">
+            {t(`filter`)}
+          </p>
           <div className="w-full border my-5" />
 
           <div className="w-full px-6">
@@ -157,7 +167,7 @@ const SearchFilterBox = ({
               htmlFor="priceRange"
               className="text-base font-medium leading-none"
             >
-              Price Range
+              {t(`priceRange`)}
             </label>
 
             <div className="w-full relative mt-2">
@@ -168,7 +178,7 @@ const SearchFilterBox = ({
                     htmlFor="min"
                     className="text-xs font-medium block mb-1"
                   >
-                    Min
+                    {t(`min`)}
                   </label>
                   <input
                     type="number"
@@ -197,7 +207,7 @@ const SearchFilterBox = ({
                     htmlFor="max"
                     className="text-xs font-medium block mb-1"
                   >
-                    Max
+                    {t(`max`)}
                   </label>
                   <input
                     type="number"
@@ -234,7 +244,7 @@ const SearchFilterBox = ({
                 onClick={handleResetPriceFilter}
                 className="w-full h-[49px] rounded-[12px] font-medium bg-[#E0E0E0]"
               >
-                Reset
+                {t(`buttons.reset`)}
               </button>
               <button
                 type="button"
@@ -246,7 +256,7 @@ const SearchFilterBox = ({
                 }`}
                 disabled={!!errors.min || !!errors.max}
               >
-                Apply
+                {t(`buttons.apply`)}
               </button>
             </div>
           </div>

@@ -14,6 +14,8 @@ import { FaCheck } from "react-icons/fa6";
 import { enqueueSnackbar } from "notistack";
 import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -27,6 +29,8 @@ const ProductDetailsPage = () => {
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [deliveryType, setDeliveryType] = useState(null);
   const [addProductInCart, setAddProductInCart] = useState(false);
+
+  const { t } = useTranslation("productManagement");
 
   // Dropdown open/close state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -52,10 +56,10 @@ const ProductDetailsPage = () => {
     try {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
-      // console.log("product >>>> ", res?.data?.data);
       setProductDetails(res?.data?.data?.product);
     } catch (error) {
       handleApiError(error, navigate);
@@ -79,14 +83,14 @@ const ProductDetailsPage = () => {
   const handleAddToCartProduct = async () => {
     setAddProductInCart(true);
     if (!selectedCommunity?.id) {
-      enqueueSnackbar(`Community ID not found!`, {
+      enqueueSnackbar(t(`productBuySection.communityIdNotFound`), {
         variant: "error",
       });
       return;
     }
 
     if (!productId) {
-      enqueueSnackbar(`Product ID not found!`, {
+      enqueueSnackbar(t(`productBuySection.productIdNotFound`), {
         variant: "error",
       });
       return;
@@ -97,23 +101,22 @@ const ProductDetailsPage = () => {
         {},
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
-      // console.log("add to cart res >>> ", res?.data);
       if (res?.data?.success) {
         enqueueSnackbar(
-          res?.data?.message || "Product added to cart successfully!",
+          res?.data?.message || t(`productBuySection.productAdded`),
           {
             variant: "success",
-          }
+          },
         );
         fetchCartCount();
       }
     } catch (error) {
-      console.log(`err while adding to cart >>> `, error);
       handleApiError(error, navigate);
     } finally {
       setAddProductInCart(false);
@@ -143,7 +146,7 @@ const ProductDetailsPage = () => {
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
@@ -164,10 +167,10 @@ const ProductDetailsPage = () => {
                   {productDetails?.deliveryMethod && (
                     <p className="font-medium text-[#6D6D6D] text-xs">
                       {productDetails?.deliveryMethod === "pickup"
-                        ? "Pickup"
+                        ? t(`pickup`)
                         : productDetails?.deliveryMethod === "delivery"
-                        ? "Delivery"
-                        : "Pickup / Delivery"}
+                          ? t(`delivery`)
+                          : `${t(`pickup`)} / ${t(`delivery`)}`}
                     </p>
                   )}
                 </div>
@@ -187,7 +190,9 @@ const ProductDetailsPage = () => {
                           className="flex items-center gap-2 px-5 hover:bg-gray-100 w-full py-2 rounded-t-[8px]"
                         >
                           <BiSolidPencil className="text-lg text-[var(--button-bg)]" />
-                          <span className="text-base leading-none">Edit</span>
+                          <span className="text-base leading-none">
+                            {t(`productDetails.buttons.edit`)}
+                          </span>
                         </button>
                         <div className="w-full border" />
                         <button
@@ -201,7 +206,7 @@ const ProductDetailsPage = () => {
                             className="w-[13px] h-[16px]"
                           />
                           <span className="text-base leading-none text-red-500">
-                            Delete
+                            {t(`productDetails.delete`)}
                           </span>
                         </button>
                       </div>
@@ -209,7 +214,9 @@ const ProductDetailsPage = () => {
                   </div>
                 ) : (
                   <div className="">
-                    <p className="text-sm font-medium text-[#6D6D6D]">Price</p>
+                    <p className="text-sm font-medium text-[#6D6D6D]">
+                      {t(`productDetails.price`)}
+                    </p>
                     <p className="text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
                       ${productDetails?.price}
                     </p>
@@ -220,7 +227,7 @@ const ProductDetailsPage = () => {
               <div className="w-full border my-5" />
 
               <div className="w-full space-y-3">
-                <p className="text-sm font-semibold">Description</p>
+                <p className="text-sm font-semibold">{t(`description`)}</p>
                 {productDetails?.description && (
                   <p className="text-sm font-normal leading-[1.3]">
                     {productDetails?.description}
@@ -236,18 +243,20 @@ const ProductDetailsPage = () => {
                         <div className="w-full border my-5" />
                         <div className="w-full space-y-3">
                           <p className="text-sm font-semibold">
-                            Pickup Address
+                            {t(`productBuySection.pickupAddress`)}
                           </p>
                           <p className="text-sm font-normal leading-[1.3]">
-                            <span className="font-medium">Address: </span>{" "}
+                            <span className="font-medium">
+                              {t(`productDetails.address`)}:{" "}
+                            </span>{" "}
                             {productDetails?.pickupAddress?.address}
                           </p>
                           <p className="text-sm font-normal leading-[1.3]">
-                            <span className="font-medium">City: </span>{" "}
+                            <span className="font-medium">{t(`city`)}: </span>{" "}
                             {productDetails?.pickupAddress?.city}
                           </p>
                           <p className="text-sm font-normal leading-[1.3]">
-                            <span className="font-medium">State: </span>{" "}
+                            <span className="font-medium">{t(`state`)}: </span>{" "}
                             {productDetails?.pickupAddress?.state}
                           </p>
                         </div>
@@ -256,7 +265,7 @@ const ProductDetailsPage = () => {
                     <div className="w-full border my-5" />
                     <div className="w-full">
                       <p className="text-sm font-medium text-[#6D6D6D]">
-                        Price
+                        {t(`productDetails.price`)}
                       </p>
                       <p className="text-[24px] font-semibold text-[var(--button-bg)] leading-[1.3]">
                         ${productDetails?.price}
@@ -268,7 +277,7 @@ const ProductDetailsPage = () => {
                 <div className="w-full">
                   <div className="w-full border my-5" />
                   <div className="w-full space-y-3">
-                    <p className="text-sm font-semibold">Delivery Type</p>
+                    <p className="text-sm font-semibold">{t(`deliveryType`)}</p>
                     <div className="w-full border border-black max-w-[450px] grid grid-cols-2 gap-2">
                       {productDetails?.deliveryMethod !== "pickup" && (
                         <button
@@ -285,7 +294,7 @@ const ProductDetailsPage = () => {
                               <FaCheck className="text-white text-xs" />
                             </div>
                           )}
-                          Deliver at home
+                          {t(`productDetails.deliverAtHome`)}
                         </button>
                       )}
 
@@ -304,7 +313,7 @@ const ProductDetailsPage = () => {
                               <FaCheck className="text-white text-xs" />
                             </div>
                           )}
-                          Pickup
+                          {t(`pickup`)}
                         </button>
                       )}
                     </div>
@@ -316,7 +325,11 @@ const ProductDetailsPage = () => {
                     className="button mt-5"
                     onClick={() => handleAddToCartProduct()}
                   >
-                    {addProductInCart ? <Loader /> : `Add To Cart`}
+                    {addProductInCart ? (
+                      <Loader />
+                    ) : (
+                      t(`productDetails.buttons.addToCart`)
+                    )}
                   </button>
                 </div>
               )}

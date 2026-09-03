@@ -3,6 +3,7 @@ import * as Yup from "yup";
 import Button from "../Common/Button";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import i18n from "i18next";
 const PAGETITLE = import.meta.env.VITE_PAGE_TITLE;
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -11,6 +12,7 @@ import Cookies from "js-cookie";
 import EmailVerificationPopup from "../Popups/EmailVerificationPopup";
 import { useAppContext } from "../../context/AppContext";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const VerifyOtp = () => {
   const inputRefs = useRef([]);
@@ -24,6 +26,7 @@ const VerifyOtp = () => {
   const [loading, setLoading] = useState(false);
   const [userOtp, setUserOtp] = useState(null);
   const userEmail = Cookies.get("userEmail");
+  const { t } = useTranslation("auth");
 
   const toggleEmailVerificationPopup = () => {
     setShowEmailVerificationPopup((prev) => !prev);
@@ -82,6 +85,7 @@ const VerifyOtp = () => {
     initialValues: {
       otp: ["", "", "", "", "", ""],
     },
+
     validationSchema: Yup.object({
       otp: Yup.array()
         .test("complete", "OTP is required", (arr) =>
@@ -111,6 +115,7 @@ const VerifyOtp = () => {
 
         const res = await axios.post(url, body, {
           headers: {
+            "Accept-Language": i18n.language,
             "Content-Type": "application/json",
           },
         });
@@ -188,11 +193,11 @@ const VerifyOtp = () => {
       >
         <div className="w-full text-center space-y-3 mt-4">
           <h1 className="font-semibold text-[32px] leading-none">
-            Verify 6-digit code
+            {t(`auth:auth.verify_code`)}
           </h1>
           {userEmail && (
             <p className="text-[var(--secondary-color)] flex justify-center flex-wrap gap-1">
-              Verify the code sent at{" "}
+              {t(`auth:auth.verify_code_subheading`)}{" "}
               <span className="text-black font-medium">{userEmail}</span>
             </p>
           )}
@@ -220,21 +225,27 @@ const VerifyOtp = () => {
           </div>
 
           <div className="pt-3">
-            <Button type="submit" title="Verify" isLoading={loading} />
+            <Button
+              type="submit"
+              title={t(`auth:button.verify`)}
+              isLoading={loading}
+            />
           </div>
         </div>
 
         <div className="w-full mt-2 flex flex-col items-center gap-4">
           <div className="w-full flex items-center justify-center gap-1">
             <p className="text-[var(--secondary-color)]">
-              Didn't receive the code yet?{" "}
+              {t(`auth:auth.did_receive_code`)}{" "}
             </p>
             <ResendOtp page={page} email={userEmail} />
           </div>
         </div>
 
         <div className="w-full mt-2 flex items-center gap-2 justify-center">
-          <p className="text-[var(--secondary-color)]">Typed wrong email?</p>
+          <p className="text-[var(--secondary-color)]">
+            {t(`auth:auth.typed_wrong_email`)}
+          </p>
           <button
             type="button"
             onClick={() => {
@@ -247,7 +258,7 @@ const VerifyOtp = () => {
             }}
             className="text-sm font-medium flex items-center gap-1 text-[var(--primary-color)]"
           >
-            Change Email
+            {t(`auth:button.change_email`)}
           </button>
         </div>
       </form>

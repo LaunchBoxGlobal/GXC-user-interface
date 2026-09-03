@@ -8,6 +8,8 @@ import Loader from "../../components/Common/Loader";
 import { useAppContext } from "../../context/AppContext";
 import { handleApiError } from "../../utils/handleApiError";
 import Cookies from "js-cookie";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunityPage = () => {
   const { communityTitle } = useParams();
@@ -22,6 +24,7 @@ const CommunityPage = () => {
   const [blocked, setBlocked] = useState(false);
   const navigate = useNavigate();
   const [initialized, setInitialized] = useState(false);
+  const { t } = useTranslation(`community`);
 
   const fetchCommunityDetails = async () => {
     setFetchingCommunity(true);
@@ -29,7 +32,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/${communityTitle}/details`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -61,7 +64,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/${communityTitle}/my-membership`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -101,7 +104,7 @@ const CommunityPage = () => {
       const res = await axios.get(
         `${BASE_URL}/communities/join-status/${communityTitle}`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -131,7 +134,7 @@ const CommunityPage = () => {
         `${BASE_URL}/communities/${communityTitle}/join`,
         { slug: communityTitle },
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -143,7 +146,7 @@ const CommunityPage = () => {
       const communitiesRes = await axios.get(
         `${BASE_URL}/communities/my-joined`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
         },
       );
 
@@ -228,14 +231,16 @@ const CommunityPage = () => {
             className="w-[107px] h-[107px] mx-auto"
           />
           <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
-            You’ve been invited to join a fundraising{" "}
-            {community?.community?.name} community!
+            {t(`communities.headings.youHaveBeenInvited`)}
+            {/* You’ve been invited to join a fundraising */}{" "}
+            {community?.community?.name} {t(`communities.headings.community!`)}
           </h2>
           {community?.owner?.fullName && (
             <p className="mb-4">
               <span className="font-medium">{community.owner.fullName}</span>{" "}
-              has invited you to join their private fundraising community.
-              Accept to become a member.
+              {t(`communities.hasInvitedYou`)}
+              {/* has invited you to join their private fundraising community.
+              Accept to become a member. */}
             </p>
           )}
           <div className="w-full grid grid-cols-2 gap-3">
@@ -243,13 +248,13 @@ const CommunityPage = () => {
               onClick={handleCancelInvitation}
               className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
             >
-              Cancel
+              {t(`communities.buttons.cancel`)}
             </button>
             <button
               onClick={handleAcceptInvite}
               className="w-full px-4 py-3 rounded-lg bg-[#4E9D4B] text-white"
             >
-              {loading ? <Loader /> : "Accept"}
+              {loading ? <Loader /> : t(`communities.buttons.accept`)}
             </button>
           </div>
         </div>
@@ -262,11 +267,12 @@ const CommunityPage = () => {
       <div className="min-h-screen flex items-start justify-center text-center padding-x pt-20">
         <div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-            Community Not Found
+            {t(`communities.headings.communityNotFound`)}
           </h2>
           <p className="text-gray-600">
-            The community you’re trying to access doesn’t exist or has been
-            removed.
+            {t(`communities.communityDoesNotExist`)}
+            {/* The community you’re trying to access doesn’t exist or has been
+            removed. */}
           </p>
         </div>
       </div>
@@ -277,7 +283,7 @@ const CommunityPage = () => {
     return (
       <div className="w-full text-center h-screen flex items-center justify-center padding-x">
         <p className="text-sm text-gray-500">
-          You’ve been blocked from this community.
+          {t(`communities.headings.youHaveBeenBlockedInCommunity`)}
         </p>
       </div>
     );
@@ -294,14 +300,14 @@ const CommunityPage = () => {
               className="w-[107px] h-[107px] mx-auto"
             />
             <h2 className="text-lg lg:text-[32px] font-semibold my-4 leading-[1.2]">
-              You’ve been invited to join {community?.community?.name}{" "}
-              community!
+              {t(`communities.headings.youHaveBeenInvited`)}{" "}
+              {community?.community?.name}{" "}
+              {t(`communities.headings.community!`)}
             </h2>
             {community?.owner?.fullName && (
               <p className="mb-4">
                 <span className="font-medium">{community.owner.fullName}</span>{" "}
-                has invited you to join their private community. Accept to
-                become a member.
+                {t(`communities.hasInvitedYou`)}
               </p>
             )}
             <div className="w-full grid grid-cols-2 gap-3">
@@ -309,13 +315,13 @@ const CommunityPage = () => {
                 onClick={handleCancelInvitation}
                 className="w-full px-4 py-3 rounded-lg bg-[#EAEAEA]"
               >
-                Cancel
+                {t(`communities.buttons.cancel!`)}
               </button>
               <button
                 onClick={handleAcceptInvite}
                 className="w-full px-4 py-3 rounded-lg bg-[#4E9D4B] text-white"
               >
-                {loading ? <Loader /> : "Accept"}
+                {loading ? <Loader /> : t(`communities.buttons.accept!`)}
               </button>
             </div>
           </div>

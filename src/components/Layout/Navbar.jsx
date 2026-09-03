@@ -8,6 +8,8 @@ import { useCart } from "../../context/cartContext";
 import { useUser } from "../../context/userContext";
 import ProfilerDropdown from "./ProfilerDropdown";
 import NotificationsDropdown from "./NotificationsDropdown";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../../LanguageSwitcher";
 
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,6 +18,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { selectedCommunity } = useUser();
   const location = useLocation();
+  const { t } = useTranslation("navbar");
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -39,6 +42,8 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
+  const languageTogglerStyle = `appearance-none bg-transparent ${isScrolled ? "text-black" : "text-white"} border border-gray-300 text-gray-700 py-1 lg:py-1.5 pl-1.5 lg:pl-2 pr-7 lg:pr-8 rounded-lg shadow-sm outline-none text-sm cursor-pointer
+        `;
   return (
     <header
       className={`w-full border-b border-gray-200 border-opacity-40 fixed top-0 z-50 inset-x-0 py-6 text-center padding-x flex items-center justify-between gap-8 xl:gap-20 overflow-visible transition-colors duration-300 ${
@@ -65,7 +70,7 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Nav */}
-      <ul className="w-full max-w-[80%] hidden xl:flex items-center justify-end gap-x-10">
+      <ul className="w-full max-w-[80%] hidden xl:flex items-center justify-end gap-x-9">
         {PAGE_LINKS?.map((page) => {
           const active = isActive(page.url);
           return (
@@ -78,8 +83,8 @@ const Navbar = () => {
                       ? "text-[var(--button-bg)]"
                       : "text-white"
                     : isScrolled
-                    ? "text-gray-900 hover:text-[var(--button-bg)]"
-                    : "text-gray-100 hover:text-white"
+                      ? "text-gray-900 hover:text-[var(--button-bg)]"
+                      : "text-gray-100 hover:text-white"
                 }`}
               >
                 <span
@@ -91,7 +96,7 @@ const Navbar = () => {
                       : "after:w-0 after:bg-transparent"
                   }`}
                 >
-                  {page.title}
+                  {t(`links.${page.key}`)}
                 </span>
               </Link>
             </li>
@@ -99,7 +104,7 @@ const Navbar = () => {
         })}
 
         {/* Right icons */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
             <div className="relative">
@@ -128,6 +133,10 @@ const Navbar = () => {
 
           <NotificationsDropdown isScrolled={isScrolled} />
 
+          <LanguageSwitcher
+            className={languageTogglerStyle}
+            isScrolled={isScrolled}
+          />
           {/* Profile */}
           {user && <ProfilerDropdown user={user} />}
         </div>
@@ -137,6 +146,11 @@ const Navbar = () => {
       <div className="flex items-center justify-end gap-5 xl:hidden">
         {/* Right icons */}
         <div className="flex items-center gap-5">
+          <LanguageSwitcher
+            className={languageTogglerStyle}
+            isScrolled={isScrolled}
+          />
+
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
             <div className="relative">

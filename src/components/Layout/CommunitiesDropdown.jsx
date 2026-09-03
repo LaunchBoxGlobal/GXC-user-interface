@@ -10,6 +10,8 @@ import { useCart } from "../../context/cartContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SearchFilterBox from "./SearchFilterBox";
 import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunitiesDropdown = () => {
   const { setProductSearchValue } = useAppContext();
@@ -25,6 +27,8 @@ const CommunitiesDropdown = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const [searchParams] = useSearchParams();
+
+  const { t } = useTranslation("home");
 
   const communityFromQuery = searchParams.get("community");
   const searchFromQuery = searchParams.get("search") || "";
@@ -44,7 +48,12 @@ const CommunitiesDropdown = () => {
         `${BASE_URL}/communities/my-joined${
           searchCommunityValue ? `?search=${searchCommunityValue}` : ""
         }`,
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       const list = res?.data?.data?.communities || [];
@@ -74,7 +83,7 @@ const CommunitiesDropdown = () => {
       communities.find(
         (c) =>
           c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
-          c.name?.toLowerCase() === communityFromQuery.toLowerCase()
+          c.name?.toLowerCase() === communityFromQuery.toLowerCase(),
       );
 
     let selectedC = null;
@@ -135,7 +144,7 @@ const CommunitiesDropdown = () => {
       setFilteredCommunities(communities);
     } else {
       const filtered = communities.filter((c) =>
-        c.name.toLowerCase().includes(value)
+        c.name.toLowerCase().includes(value),
       );
       setFilteredCommunities(filtered);
     }
@@ -149,7 +158,7 @@ const CommunitiesDropdown = () => {
 
     navigate(
       `/?community=${c.slug}${searchValue ? `&search=${searchValue}` : ""}`,
-      { replace: true }
+      { replace: true },
     );
   };
 
@@ -196,14 +205,14 @@ const CommunitiesDropdown = () => {
               />
               <input
                 type="text"
-                placeholder="Search community"
+                placeholder={t("Search community")}
                 className="w-full border-none outline-none bg-transparent text-[15px] font-normal text-[#787878] placeholder:text-[#787878]"
                 value={searchCommunityValue}
                 onChange={handleCommunitySearch}
               />
             </div>
 
-            {/* 🟦 Scroll only the list */}
+            {/* Scroll only the list */}
             <ul className="max-h-[250px] overflow-y-auto pr-2 custom-scroll">
               {filteredCommunities.length > 0 ? (
                 filteredCommunities.map((c) => (
@@ -230,7 +239,7 @@ const CommunitiesDropdown = () => {
                 ))
               ) : (
                 <p className="text-gray-500 text-sm text-center py-3">
-                  Community not found
+                  {t(`communitiesNotFound`)}
                 </p>
               )}
             </ul>

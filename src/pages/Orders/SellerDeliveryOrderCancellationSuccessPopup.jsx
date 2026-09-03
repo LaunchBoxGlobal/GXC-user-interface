@@ -1,7 +1,10 @@
+import { useTranslation } from "react-i18next";
+
 const SellerDeliveryOrderCancellationSuccessPopup = ({
   showCancelSuccessModal,
   setShowCancelSuccessModal,
 }) => {
+  const { t } = useTranslation("orderManagement");
   return (
     showCancelSuccessModal && (
       <div
@@ -17,10 +20,10 @@ const SellerDeliveryOrderCancellationSuccessPopup = ({
             />
           </div>
           <h4 className="text-[24px] font-semibold leading-none text-center">
-            Order cancelled
+            {t(`cancelSuccessPopup.title`)}
           </h4>
           <p className="text-[#565656] text-sm leading-[1.2]">
-            Your order successfully cancelled.
+            {t(`cancelSuccessPopup.description`)}
           </p>
         </div>
       </div>

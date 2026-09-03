@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 export const tabs = [
-  { title: "All", tab: "all" },
-  { title: "In Progress", tab: "in_progress" },
-  { title: "Completed", tab: "delivered" },
+  { title: "All", tab: "all", key: "all" },
+  { title: "In Progress", tab: "in_progress", key: "in_progress" },
+  { title: "Completed", tab: "delivered", key: "delivered" },
   // { title: "Cancelled", tab: "cancelled" },
 ];
 
 export const sellerTabs = [
-  { title: "All", tab: "pending,in_progress,ready,completed,cancelled" },
-  { title: "In Progress", tab: "pending,in_progress" },
-  { title: "Completed", tab: "completed" },
+  {
+    title: "All",
+    tab: "pending,in_progress,ready,completed,cancelled",
+    key: "all",
+  },
+  { title: "In Progress", tab: "pending,in_progress", key: "in_progress" },
+  { title: "Completed", tab: "completed", key: "completed" },
   // { title: "Cancelled", tab: "cancelled" },
 ];
 
 const OrderTypeTabs = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab");
+  const { t } = useTranslation("orderManagement");
 
   const initialTab =
     searchParams.get("orderType") ||
@@ -65,7 +71,7 @@ const OrderTypeTabs = () => {
               : "bg-[var(--secondary-bg)]"
           } px-3 md:px-5 font-medium rounded-xl text-[11px] md:text-sm transition-all`}
         >
-          {btn.title}
+          {t(`buttons.${btn.key}`)}
         </button>
       ))}
     </div>

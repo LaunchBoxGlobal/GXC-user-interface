@@ -1,8 +1,11 @@
 import { enqueueSnackbar } from "notistack";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { IoClose } from "react-icons/io5";
 
 const ImageUpload = ({ images, setImages }) => {
+  const { t } = useTranslation("reports");
+
   const handleFileSelect = (e) => {
     let files = Array.from(e.target.files);
 
@@ -10,7 +13,7 @@ const ImageUpload = ({ images, setImages }) => {
 
     files.forEach((file) => {
       const isValidType = ["image/jpeg", "image/jpg", "image/png"].includes(
-        file.type
+        file.type,
       );
       const isValidSize = file.size <= 5 * 1024 * 1024;
 
@@ -58,13 +61,13 @@ const ImageUpload = ({ images, setImages }) => {
             <img src="/picture-icon.png" alt="image icon" width={30} />
             <p className="mt-3 text-sm">
               <span className="text-[var(--button-bg)] font-medium">
-                Click to upload image
+                {t(`clickToUploadImage`)}
               </span>
             </p>
-            <p className="text-sm font-medium text-[#959393]">Or drag & drop</p>
-            <p className="text-xs mt-1 text-gray-500">
-              Max 5 images • JPG, PNG • 5MB each
+            <p className="text-sm font-medium text-[#959393]">
+              {t(`dragDrop`)}
             </p>
+            <p className="text-xs mt-1 text-gray-500">{t(`note`)}</p>
           </div>
 
           <input

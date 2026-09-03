@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 const ReportMemberSuccessModal = ({
   openReportMemberSuccessModal,
   setOpenReportMemberSuccessModal,
@@ -5,6 +7,8 @@ const ReportMemberSuccessModal = ({
   const handleClickYes = () => {
     setOpenReportMemberSuccessModal(false);
   };
+
+  const { t } = useTranslation("member");
   return (
     openReportMemberSuccessModal && (
       <div
@@ -20,10 +24,10 @@ const ReportMemberSuccessModal = ({
             />
           </div>
           <p className="text-[24px] font-semibold leading-none">
-            Report Submitted
+            {t(`members.headings.reportSubmitted`)}
           </p>
           <p className="text-[#888888]">
-            Thank you! Your report has been successfully submitted.
+            {t(`members.headings.reportSuccess`)}
           </p>
         </div>
       </div>

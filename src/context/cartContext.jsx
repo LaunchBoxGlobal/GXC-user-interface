@@ -6,6 +6,7 @@ import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "./AppContext";
+import i18n from "i18next";
 
 const CartContext = createContext();
 
@@ -16,7 +17,7 @@ export const CartProvider = ({ children }) => {
   const [selectedCommunity, setSelectedCommunity] = useState(
     Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
-      : null
+      : null,
   );
   // const { setSelectedCommunity } = useUser();
   const [cartProducts, setCartProducts] = useState(null);
@@ -39,9 +40,10 @@ export const CartProvider = ({ children }) => {
         `${BASE_URL}/communities/${community?.id}/cart/count`,
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       setCartCount(res?.data?.data?.count);
@@ -65,9 +67,10 @@ export const CartProvider = ({ children }) => {
         `${BASE_URL}/communities/${selectedCommunity?.id}/cart`,
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       setCartProducts(res?.data?.data?.items);

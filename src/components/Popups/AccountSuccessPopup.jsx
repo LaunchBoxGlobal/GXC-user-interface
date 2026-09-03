@@ -1,7 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const AccountSuccessPopup = ({ showPopup, togglePopup, redirect }) => {
+  const { t } = useTranslation("auth");
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate(redirect ? redirect : "/");
@@ -20,7 +22,7 @@ const AccountSuccessPopup = ({ showPopup, togglePopup, redirect }) => {
               />
             </div>
             <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
-              Account created <br /> successfully
+              {t(`auth.account_success`)}
             </h1>
             <button
               type="button"
@@ -28,7 +30,7 @@ const AccountSuccessPopup = ({ showPopup, togglePopup, redirect }) => {
               // to={`/`}
               className="bg-[var(--button-bg)] text-white rounded-[8px] font-medium text-center h-[49px] block py-[14px] w-full"
             >
-              Continue
+              {t(`button.continue`)}
             </button>
           </div>
         </div>

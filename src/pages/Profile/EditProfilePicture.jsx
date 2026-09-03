@@ -1,24 +1,24 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
 
 const EditProfilePicture = ({ name, setFieldValue, error, imagePreview }) => {
   const [preview, setPreview] = useState(null);
   const [fileError, setFileError] = useState(null);
+  const { t } = useTranslation("editProfile");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // 👇 Validate file type
     const validTypes = ["image/png", "image/jpeg", "image/jpg"];
     if (!validTypes.includes(file.type)) {
-      setFileError("Only PNG, JPG, or JPEG images are allowed.");
+      setFileError(t(`editProfile.errors.profilePictureType`));
       setPreview(null);
       setFieldValue(name, null);
       return;
     }
 
-    // 👇 Clear error and set preview
     setFileError(null);
     setPreview(URL.createObjectURL(file));
     setFieldValue(name, file);
@@ -44,7 +44,7 @@ const EditProfilePicture = ({ name, setFieldValue, error, imagePreview }) => {
         <input
           type="file"
           id="profileImage"
-          accept="image/png, image/jpeg, image/jpg" // 👈 restrict file picker
+          accept="image/png, image/jpeg, image/jpg"
           onChange={handleImageChange}
           className="hidden"
         />
@@ -57,13 +57,14 @@ const EditProfilePicture = ({ name, setFieldValue, error, imagePreview }) => {
             fileError || error ? "text-red-500" : "text-[var(--primary-blue)]"
           }`}
         >
-          Upload Profile Picture
+          {/* Upload Profile Picture */}
+          {t(`editProfile.form.fields.profilePicture`)}
         </label>
 
-        {/* 👇 Display error message */}
+        {/* Display error message */}
         {(fileError || error) && (
           <p className="text-red-500 text-xs mt-1">
-            {fileError || "Profile picture is required"}
+            {fileError || t(`editProfile.errors.profilePictureRequired`)}
           </p>
         )}
       </div>

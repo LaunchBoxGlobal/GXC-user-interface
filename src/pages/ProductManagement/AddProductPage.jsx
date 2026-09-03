@@ -8,17 +8,20 @@ import { handleApiError } from "../../utils/handleApiError";
 import { useAppContext } from "../../context/AppContext";
 import { useUser } from "../../context/userContext";
 import AddProductForm from "./AddProductForm";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const AddProductPage = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const { user } = useAppContext();
   const { selectedCommunity } = useUser();
+  const { t } = useTranslation("productManagement");
 
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/categories`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
       });
       setCategories(res?.data?.data?.categories || []);
     } catch (error) {
@@ -39,7 +42,7 @@ const AddProductPage = () => {
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">

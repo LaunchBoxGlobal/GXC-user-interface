@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../../context/cartContext";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -9,16 +9,17 @@ import Loader from "../../components/Common/Loader";
 import OrderSummary from "./OrderSummary";
 import CartProductCard from "./CartProductCard";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/userContext";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CartPage = () => {
   const { fetchCartCount, fetchCartProducts } = useCart();
-  const { selectedCommunity } = useUser();
   const [cartProducts, setCartProducts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [cartDetails, setCartDetails] = useState(null);
   const navigate = useNavigate();
+  const { t } = useTranslation("cart");
 
   useEffect(() => {
     document.title = "Cart - GiveXChange";
@@ -36,17 +37,18 @@ const CartPage = () => {
         `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
         enqueueSnackbar(
-          response?.data?.message || "Cart cleared successfully",
+          response?.data?.message || t("Cart cleared successfully"),
           {
             variant: "success",
-          }
+          },
         );
         fetchCartProducts();
       }
@@ -57,7 +59,6 @@ const CartPage = () => {
     }
   };
 
-  // ✅ Loader
   if (loading) {
     return (
       <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
@@ -70,7 +71,6 @@ const CartPage = () => {
     );
   }
 
-  // ✅ Error UI
   if (error) {
     return (
       <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
@@ -83,7 +83,7 @@ const CartPage = () => {
               onClick={fetchCartProducts}
               className="bg-[var(--primary-color)] text-white px-5 py-2 rounded-lg hover:opacity-90 transition"
             >
-              Retry
+              {t(`buttons.retry`)}
             </button>
           </div>
         </div>
@@ -91,7 +91,6 @@ const CartPage = () => {
     );
   }
 
-  // ✅ Normal UI
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
@@ -101,7 +100,7 @@ const CartPage = () => {
               <div className="w-full col-span-3 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="w-full flex items-center justify-between">
                   <h1 className="text-[24px] font-semibold leading-none">
-                    Cart
+                    {t(`cart`)}
                   </h1>
                   {cartProducts && cartProducts?.length > 0 && (
                     <button
@@ -114,7 +113,7 @@ const CartPage = () => {
                         alt="trash icon"
                         className="w-[14px] h-[15px] object-contain"
                       />
-                      <span className="text-sm">Remove All</span>
+                      <span className="text-sm">{t(`removeAll`)}</span>
                     </button>
                   )}
                 </div>
@@ -132,7 +131,7 @@ const CartPage = () => {
                   ))
                 ) : (
                   <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-gray-500">
-                    <p className="text-base font-medium">Your cart is empty.</p>
+                    <p className="text-base font-medium">{t(`cartIsEmpty`)}</p>
                   </div>
                 )}
               </div>
@@ -143,7 +142,7 @@ const CartPage = () => {
             </div>
           ) : (
             <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-[18px]">
-              <p className="text-base font-medium">Your cart is empty.</p>
+              <p className="text-base font-medium">{t(`cartIsEmpty`)}</p>
             </div>
           )}
         </div>

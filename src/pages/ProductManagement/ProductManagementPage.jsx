@@ -10,6 +10,8 @@ import Loader from "../../components/Common/Loader";
 import Categories from "../Home/Categories";
 import { useAppContext } from "../../context/AppContext";
 import Pagination from "../../components/Forms/Pagination";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ProductManagementPage = () => {
   const [products, setProducts] = useState([]);
@@ -25,6 +27,7 @@ const ProductManagementPage = () => {
   const page = Number(searchParams.get("page")) || 1;
   const limit = 12;
   const { productType, fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("productManagement");
 
   const fetchProducts = useCallback(async () => {
     if (!selectedCommunity) return;
@@ -38,8 +41,11 @@ const ProductManagementPage = () => {
           categoryId ? `&categoryId=${categoryId}` : ""
         }`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Accept-Language": i18n.language,
+          },
+        },
       );
 
       const data = res?.data?.data || {};
@@ -49,7 +55,7 @@ const ProductManagementPage = () => {
     } catch (error) {
       handleApiError(error, navigate);
       setErrorMessage(
-        error?.response?.data?.message || "Something went wrong!"
+        error?.response?.data?.message || "Something went wrong!",
       );
       setError(true);
     } finally {
@@ -97,7 +103,7 @@ const ProductManagementPage = () => {
                     className="max-w-7"
                   />
                   <p className="text-sm font-medium text-gray-500">
-                    You have not added any products yet.
+                    {t(`no_products_added`)}
                   </p>
                 </div>
               )}

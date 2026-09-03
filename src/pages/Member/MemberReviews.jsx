@@ -6,14 +6,21 @@ import Loader from "../../components/Common/Loader";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MemberReviews = ({ member }) => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState(null);
+  const [translatedReviews, setTranslatedReviews] = useState({});
+  const [showTranslated, setShowTranslated] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { t } = useTranslation("transactionHistory");
 
-  /** Fetch all reviews of the member */
+  const lang = i18n.language;
+
+  /* Fetch all reviews of the member */
   const fetchSellerReviews = async () => {
     if (!member?.id) return;
 
@@ -24,8 +31,11 @@ const MemberReviews = ({ member }) => {
       const { data } = await axios.get(
         `${BASE_URL}/reviews/users/${member.id}/reviews`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
       setReviews(data?.data || {});
     } catch (err) {
@@ -38,10 +48,45 @@ const MemberReviews = ({ member }) => {
 
   useEffect(() => {
     fetchSellerReviews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [member?.id]);
 
-  /** Loading State */
+  useEffect(() => {
+    if (!reviews?.reviews) return;
+
+    setTranslatedReviews({});
+
+    reviews.reviews.forEach((review) => {
+      if (review.comment) {
+        translateText(review.id, review.comment);
+      }
+    });
+  }, [i18n.language]);
+
+  const translateText = async (reviewId, text) => {
+    if (!text) return;
+    // const lang = i18n.language === "es" ? "en" : "es";
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/google/translate`,
+        { text },
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
+      );
+
+      setTranslatedReviews((prev) => ({
+        ...prev,
+        [reviewId]: data?.data?.translatedText,
+      }));
+    } catch (error) {
+      handleApiError(error, navigate);
+    }
+  };
+
+  /* Loading State */
   if (loading) {
     return (
       <div className="w-full bg-white rounded-[18px] p-5">
@@ -68,9 +113,7 @@ const MemberReviews = ({ member }) => {
     return (
       <div className="w-full bg-white rounded-[18px] p-5">
         <div className="w-full rounded-[18px] p-5 lg:p-7 bg-[var(--secondary-bg)] flex flex-col items-center justify-center min-h-[40vh]">
-          <p className="text-gray-500 text-sm">
-            No reviews found for this member.
-          </p>
+          <p className="text-gray-500 text-sm">{t(`no_reviews`)}</p>
         </div>
       </div>
     );
@@ -82,7 +125,7 @@ const MemberReviews = ({ member }) => {
       <div className="w-full rounded-[18px] p-5 lg:p-7 bg-[var(--secondary-bg)]">
         {/* Header */}
         <h2 className="text-[24px] font-semibold leading-none">
-          Reviews{" "}
+          {t(`reviews`)}{" "}
           {reviews?.totalReviews > 0 && (
             <span className="text-gray-600">{`(${reviews?.totalReviews})`}</span>
           )}
@@ -114,11 +157,38 @@ const MemberReviews = ({ member }) => {
 
               {/* Comment */}
               {review?.comment ? (
-                <p className="text-sm text-gray-700 mb-3 break-words">
-                  {review.comment}
-                </p>
+                <div className="w-full mb-2">
+                  <p className="text-sm text-gray-700 break-words">
+                    {showTranslated[review.id]
+                      ? translatedReviews[review.id] || review.comment
+                      : review.comment}
+                  </p>
+                  {lang === "es" && (
+                    <button
+                      type="button"
+                      className="text-xs font-medium"
+                      onClick={() => {
+                        const reviewId = review.id;
+
+                        if (!translatedReviews[reviewId]) {
+                          translateText(reviewId, review.comment);
+                        }
+
+                        // Toggle view
+                        setShowTranslated((prev) => ({
+                          ...prev,
+                          [reviewId]: !prev[reviewId],
+                        }));
+                      }}
+                    >
+                      {showTranslated[review.id]
+                        ? t("See Original")
+                        : t("See Translation")}
+                    </button>
+                  )}
+                </div>
               ) : (
-                <p className="text-sm text-gray-700 mb-3 break-words">N/A</p>
+                <div className="mb-1"></div>
               )}
 
               {/* Reviewer Info */}

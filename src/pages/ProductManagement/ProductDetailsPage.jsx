@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
@@ -19,6 +19,8 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { MdOutlineReport } from "react-icons/md";
 import ReportProductModal from "./ReportProductModal";
 import ReportProductSuccessModal from "./ReportProductSuccessModal";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const ProductDetailsPage = () => {
   const navigate = useNavigate();
@@ -39,18 +41,23 @@ const ProductDetailsPage = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isReportedSuccess, setIsReportedSuccess] = useState(false);
 
+  const { t } = useTranslation("productManagement");
+
   const fetchProductDetails = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${BASE_URL}/products/${productId}`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          "Accept-Language": i18next.language,
+        },
       });
       setProductDetails(res?.data?.data?.product);
     } catch (error) {
       setError(
         error?.response?.data?.message ||
           error?.message ||
-          "Something went wrong."
+          t(`productDetails.somethingWentWrong`),
       );
       handleApiError(error, navigate);
     } finally {
@@ -64,7 +71,7 @@ const ProductDetailsPage = () => {
       : "Product Details - giveXchange";
     checkIamAlreadyMember();
     fetchProductDetails();
-  }, []);
+  }, [i18next?.language]);
 
   if (loading) {
     return (
@@ -75,7 +82,7 @@ const ProductDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`buttons.back`)}
         </button>
 
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
@@ -96,21 +103,12 @@ const ProductDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`buttons.back`)}
         </button>
 
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
           <div className="w-full bg-white rounded-[18px] relative p-5 flex justify-center min-h-[80vh] items-center">
-            <p className="text-sm font-medium text-gray-500">
-              {isError}{" "}
-              {/* <button
-                type="button"
-                onClick={() => fetchProductDetails()}
-                className="underline text-blue-500"
-              >
-                Try again
-              </button> */}
-            </p>
+            <p className="text-sm font-medium text-gray-500">{isError} </p>
           </div>
         </div>
       </div>
@@ -126,10 +124,10 @@ const ProductDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`buttons.back`)}
         </button>
         {productDetails?.seller?.id !== user?.id && (
-          <div className="relative z-50">
+          <div className="relative z-30">
             <button
               type="button"
               onClick={() => setOpenReportDropdown((prev) => !prev)}
@@ -149,7 +147,7 @@ const ProductDetailsPage = () => {
                 >
                   <MdOutlineReport className="text-xl text-gray-600" />
                   <span className="text-sm font-medium text-gray-600">
-                    Report
+                    {t(`productDetails.report`)}
                   </span>
                 </button>
               </div>

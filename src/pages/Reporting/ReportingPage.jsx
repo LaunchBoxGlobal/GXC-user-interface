@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
@@ -10,12 +10,24 @@ import * as Yup from "yup";
 import ReportSuccessPopup from "./ReportSuccessPopup";
 import ImageUpload from "./ImageUpload";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const ReportingPage = () => {
   const navigate = useNavigate();
   const [isReportSubmitted, setIsReportSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("reports");
+
+  const validationSchema = useMemo(() => {
+    return Yup.object({
+      description: Yup.string()
+        .min(10, t(`form.min`))
+        .max(1500, t(`form.max`))
+        .required(t(`form.required`)),
+    });
+  }, [i18n.language]);
 
   useEffect(() => {
     document.title = "Reporting - giveXchange";
@@ -28,12 +40,14 @@ const ReportingPage = () => {
       images: [],
     },
 
-    validationSchema: Yup.object({
-      description: Yup.string()
-        .min(10, "Description must be 10 characters or more")
-        .max(1500, "Description must be 1500 characters or less")
-        .required("Description is required"),
-    }),
+    // validationSchema: Yup.object({
+    //   description: Yup.string()
+    //     .min(10, t(`form.min`))
+    //     .max(1500, t(`form.max`))
+    //     .required(t(`form.required`)),
+    // }),
+    validationSchema,
+    enableReinitialize: true,
 
     onSubmit: async (values, { resetForm }) => {
       setLoading(true);
@@ -53,10 +67,11 @@ const ReportingPage = () => {
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               // "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
 
         if (response.data.success) {
@@ -71,6 +86,10 @@ const ReportingPage = () => {
     },
   });
 
+  useEffect(() => {
+    formik.validateForm();
+  }, [i18n.language]);
+
   return (
     <>
       <form
@@ -80,18 +99,16 @@ const ReportingPage = () => {
         <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4">
           <div className="w-full">
             <h2 className="font-medium text-[var(--button-bg)]">
-              Having trouble using the app?
+              {t(`havingTrouble`)}
             </h2>
-            <p className="font-medium">
-              Send us a report and we'll look into it right away.
-            </p>
+            <p className="font-medium">{t(`sendReport`)}</p>
           </div>
 
           <div className="w-full grid grid-cols-3 gap-4">
             <div className="w-full mt-4 col-span-3 lg:col-span-2">
               <textarea
                 name="description"
-                placeholder="Enter description..."
+                placeholder={t(`label`)}
                 className="w-full bg-white rounded-[18px] relative p-5 min-h-[185px] text-base resize-none outline-none"
                 value={formik.values.description}
                 onChange={formik.handleChange}
@@ -114,8 +131,8 @@ const ReportingPage = () => {
         <div className="w-full flex justify-end mt-10">
           <div className="w-full max-w-[190px]">
             <Button
-              title={"Submit Request"}
-              type={"submit"}
+              title={t(`buttons.submitRequest`)}
+              type={`submit`}
               isLoading={loading}
             />
           </div>

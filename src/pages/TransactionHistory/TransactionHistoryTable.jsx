@@ -3,6 +3,7 @@ import { LuSearch } from "react-icons/lu";
 import { IoClose } from "react-icons/io5";
 import TransactionsTable from "./TransactionsTable";
 import Pagination from "../../components/Forms/Pagination";
+import { useTranslation } from "react-i18next";
 
 const TransactionHistoryTable = ({
   sellerType,
@@ -15,12 +16,13 @@ const TransactionHistoryTable = ({
   page,
   pagination,
 }) => {
+  const { t } = useTranslation("transactionHistory");
   return (
     <div className="w-full relative mt-6">
       {/* Top Section (Title + Tabs + Search) */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-5">
         <h3 className="text-[24px] lg:text-[32px] font-semibold leading-none">
-          Transaction History
+          {t(`transactionHistory`)}
         </h3>
 
         <div className="w-full flex justify-end flex-wrap gap-5">
@@ -34,7 +36,7 @@ const TransactionHistoryTable = ({
                   : "bg-white text-[var(--button-bg)]"
               } font-medium text-sm rounded-[9px]`}
             >
-              Seller
+              {t(`buttons.seller`)}
             </button>
             <button
               type="button"
@@ -45,7 +47,7 @@ const TransactionHistoryTable = ({
                   : "bg-white text-[var(--button-bg)]"
               } font-medium text-sm rounded-[9px]`}
             >
-              Buyer
+              {t(`buttons.buyer`)}
             </button>
           </div>
 
@@ -55,7 +57,7 @@ const TransactionHistoryTable = ({
               <LuSearch className="text-xl text-[var(--secondary-color)]" />
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t("search")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full outline-none border-none"

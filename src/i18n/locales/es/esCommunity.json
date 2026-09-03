@@ -1,0 +1,21 @@
+{
+    "communities": {
+        "headings": {
+            "community": "Comunidad",
+            "totalMembers": "Total de miembros",
+            "youHaveBeenInvited": "Has sido invitado a unirte a una recaudación de fondos",
+            "community!": "¡comunidad!",
+            "communityNotFound": "Comunidad no encontrada"
+        },
+        "buttons": {
+            "joiCommunity": "Unirse a la comunidad",
+            "communityDisabled": "La comunidad ha sido deshabilitada por el propietario",
+            "cancel": "Cancelar",
+            "accept": "Aceptar"
+        },
+        "youHaveNoCommunities": "Aún no te has unido a ninguna comunidad.",
+        "hasInvitedYou": "te ha invitado a unirte a su comunidad privada de recaudación de fondos. Acepta para convertirte en miembro.",
+        "communityDoesNotExist": "La comunidad a la que intentas acceder no existe o ha sido eliminada.",
+        "youHaveBeenBlockedInCommunity": "Has sido bloqueado de esta comunidad."
+    }
+}

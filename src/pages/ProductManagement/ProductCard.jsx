@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useTranslation } from "react-i18next";
 
 const ProductCard = ({ product }) => {
+  const { t } = useTranslation("productManagement");
   return (
     <div className="w-full md:max-w-[290px] h-auto lg:max-h-[400px] bg-white rounded-[20px] p-3 custom-shadow overflow-hidden">
       <div className="w-full relative">
@@ -27,12 +29,12 @@ const ProductCard = ({ product }) => {
 
         <p className="text-[#9D9D9DDD] text-[15px] font-normal text-start my-2">
           {product?.deliveryMethod === "pickup"
-            ? "Pickup"
+            ? t(`pickup`)
             : product?.deliveryMethod === "delivery"
-            ? "Community Pickup"
-            : product?.deliveryMethod === "both"
-            ? "Pickup / Community Pickup"
-            : null}
+              ? t(`communityPickup`)
+              : product?.deliveryMethod === "both"
+                ? `${t(`pickup`)} / ${t(`communityPickup`)}`
+                : null}
         </p>
 
         <div className="flex items-center justify-between gap-2">

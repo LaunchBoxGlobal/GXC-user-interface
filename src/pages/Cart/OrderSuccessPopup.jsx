@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const OrderSuccessPpup = ({
@@ -6,8 +7,8 @@ const OrderSuccessPpup = ({
   ShowOrderPlacePopup,
   orderId,
 }) => {
-  // console.log("orderId from popup >>>> ", orderId);
   const navigate = useNavigate();
+  const { t } = useTranslation("cart");
 
   useEffect(() => {
     if (ShowOrderPlacePopup) {
@@ -37,10 +38,10 @@ const OrderSuccessPpup = ({
               />
             </div>
             <h1 className="font-semibold text-[24px] leading-none mt-4">
-              Order placed
+              {t(`orderPlaced`)}
             </h1>
             <p className="text-[#565656] tracking-tight leading-none mb-4 mt-4">
-              Order placed successfully
+              {t(`orderPlacedSuccessfully`)}
             </p>
           </div>
         </div>

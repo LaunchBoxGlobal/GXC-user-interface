@@ -12,6 +12,7 @@ import { getToken } from "../../utils/getToken";
 import AccountSuccessPopup from "../Popups/AccountSuccessPopup";
 import PhoneNumberField from "../Common/PhoneNumberField";
 import { enqueueSnackbar } from "notistack";
+import i18next from "i18next";
 import {
   CountrySelect,
   StateSelect,
@@ -20,6 +21,7 @@ import {
 import "react-country-state-city/dist/react-country-state-city.css";
 import { profileSchema } from "../../validation/profileSchema";
 import { requestNotificationPermission } from "../../notifications";
+import { useTranslation } from "react-i18next";
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ const CompleteProfileForm = () => {
   const redirect = searchParams?.get("redirect");
   const [showPopup, setShowPopup] = useState(false);
   Cookies.remove("userEmail");
+
+  const { t } = useTranslation("auth");
 
   const togglePopup = () => setShowPopup((prev) => !prev);
 
@@ -53,7 +57,9 @@ const CompleteProfileForm = () => {
       countryId: 233,
       stateId: "",
     },
-    validationSchema: profileSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
+    validationSchema: profileSchema(t),
     onSubmit: async (values, { resetForm }) => {
       try {
         setLoading(true);
@@ -71,8 +77,11 @@ const CompleteProfileForm = () => {
             country: values.country.trim(),
           },
           {
-            headers: { Authorization: `Bearer ${getToken()}` },
-          }
+            headers: {
+              "Accept-Language": i18next.language,
+              Authorization: `Bearer ${getToken()}`,
+            },
+          },
         );
 
         if (values.profileImage instanceof File) {
@@ -83,10 +92,11 @@ const CompleteProfileForm = () => {
             formData,
             {
               headers: {
+                "Accept-Language": i18next.language,
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${getToken()}`,
               },
-            }
+            },
           );
         }
 
@@ -99,15 +109,13 @@ const CompleteProfileForm = () => {
           requestNotificationPermission();
         }
       } catch (error) {
-        console.error("complete profile error:", error);
         enqueueSnackbar(
           error.response?.data?.errors[0]?.message ||
             error.response?.data?.message ||
             error?.message,
-
           {
             variant: "error",
-          }
+          },
         );
         if (error?.response?.status === 401) {
           Cookies.remove("userToken");
@@ -120,23 +128,33 @@ const CompleteProfileForm = () => {
     },
   });
 
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+
+    formik.setFieldValue(name, value);
+
+    // Mark ONLY this field as touched while typing
+    formik.setFieldTouched(name, true, false);
+
+    // Validate ONLY this field
+    await formik.validateField(name);
+  };
+
   return (
     <>
       <form
         onSubmit={formik.handleSubmit}
         className="w-full max-w-[500px] flex flex-col items-start gap-4"
       >
-        {/* Heading */}
         <div className="w-full text-center space-y-3">
           <h1 className="font-semibold text-[32px] leading-none">
-            Complete Profile Details
+            {t("completeProfile.title")}
           </h1>
           <p className="text-[var(--secondary-color)]">
-            Please complete details to access all features
+            {t("completeProfile.subtitle")}
           </p>
         </div>
 
-        {/* Profile image */}
         <div className="w-full h-[100px] flex flex-col items-center justify-center gap-2 my-3">
           <AuthImageUpload
             name="profileImage"
@@ -145,9 +163,8 @@ const CompleteProfileForm = () => {
           />
         </div>
 
-        {/* Basic details */}
         <h2 className="font-semibold text-[24px] leading-none w-full">
-          Basic Details
+          {t("completeProfile.basicDetails")}
         </h2>
 
         <div className="w-full space-y-3">
@@ -155,9 +172,9 @@ const CompleteProfileForm = () => {
             <TextField
               type="text"
               name="firstName"
-              placeholder="First Name"
+              placeholder={t("completeProfile.placeholders.firstName")}
               value={formik.values.firstName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.firstName}
               touched={formik.touched.firstName}
@@ -165,9 +182,9 @@ const CompleteProfileForm = () => {
             <TextField
               type="text"
               name="lastName"
-              placeholder="Last Name"
+              placeholder={t("completeProfile.placeholders.lastName")}
               value={formik.values.lastName}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.lastName}
               touched={formik.touched.lastName}
@@ -179,32 +196,33 @@ const CompleteProfileForm = () => {
               type="text"
               name="email"
               disabled={true}
-              placeholder="Email Address"
+              placeholder={t("completeProfile.placeholders.email")}
               value={formik.values.email}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.email}
               touched={formik.touched.email}
-              label="Email Address"
+              label={t("completeProfile.email")}
             />
 
             <PhoneNumberField
               type="text"
               name="phoneNumber"
-              placeholder="+000 0000 00"
+              placeholder={t("completeProfile.placeholders.phoneNumber")}
               value={formik.values.phoneNumber}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.phoneNumber}
               touched={formik.touched.phoneNumber}
-              label="Phone Number"
+              label={t("completeProfile.phoneNumber")}
             />
           </div>
 
-          {/* Country, State, City, Zip */}
           <div className="grid grid-cols-2 gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">Country</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.country")}
+              </label>
               <div className="w-full pointer-events-none">
                 <CountrySelect
                   defaultValue={{
@@ -222,7 +240,7 @@ const CompleteProfileForm = () => {
             : "border-gray-200"
         }
       `}
-                  placeHolder="Select Country"
+                  placeHolder={t("completeProfile.placeholders.country")}
                   onChange={(val) => {
                     formik.setFieldValue("country", val.name);
                     formik.setFieldValue("countryId", val.id);
@@ -232,84 +250,100 @@ const CompleteProfileForm = () => {
                   }}
                 />
               </div>
-              {formik.touched.country && formik.errors.country && (
-                <p className="text-red-500 text-xs">{formik.errors.country}</p>
-              )}
             </div>
 
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">State</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.state")}
+              </label>
               <StateSelect
                 countryid={formik.values.countryId || 0}
                 containerClassName="w-full"
                 inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none text-gray-500 
         ${
-          formik.touched.state && formik.errors.state
+          // FIX (issue #2): also redden after a submit attempt (submitCount > 0),
+          // not just when `touched.state` happens to be set. This guarantees
+          // the field matches every other field's behavior on an empty submit.
+          (formik.touched.state || formik.submitCount > 0) &&
+          formik.errors.state
             ? "border-red-500"
             : "border-gray-200"
         }
       `}
-                placeHolder="Select State"
+                placeHolder={t("completeProfile.placeholders.state")}
                 onChange={(val) => {
-                  formik.setFieldValue("state", val.name);
-                  formik.setFieldValue("stateId", val.id);
-                  formik.setFieldValue("city", "");
+                  // FIX (issue #1): update state + stateId + reset city in ONE
+                  // atomic update and validate immediately (shouldValidate = true)
+                  // so the error is computed against the value we just picked,
+                  // not a stale pre-selection snapshot. Also mark the field
+                  // touched right away instead of waiting for some other
+                  // field's onBlur to trigger a full-form validation pass.
+                  formik.setValues(
+                    (prev) => ({
+                      ...prev,
+                      state: val.name,
+                      stateId: val.id,
+                      city: "",
+                    }),
+                    true,
+                  );
+                  formik.setFieldTouched("state", true, false);
                 }}
               />
-              {formik.touched.state && formik.errors.state && (
-                <p className="text-red-500 text-xs">{formik.errors.state}</p>
-              )}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="w-full flex flex-col gap-1">
-              <label className="text-sm font-medium">City</label>
+              <label className="text-sm font-medium">
+                {t("completeProfile.city")}
+              </label>
               <CitySelect
                 countryid={formik.values.countryId || 0}
                 stateid={formik.values.stateId || 0}
                 containerClassName="w-full"
                 inputClassName={`w-full border h-[39px] px-[15px] rounded-[8px] outline-none text-gray-500 
         ${
-          formik.touched.city && formik.errors.city
+          // Same submitCount fallback as State, for the same reason.
+          (formik.touched.city || formik.submitCount > 0) && formik.errors.city
             ? "border-red-500"
             : "border-gray-200"
         }
       `}
-                placeHolder="Select City"
-                onChange={(val) => formik.setFieldValue("city", val.name)}
+                placeHolder={t("completeProfile.placeholders.city")}
+                onChange={(val) => {
+                  // Same fix as State: validate immediately and mark touched.
+                  formik.setFieldValue("city", val.name, true);
+                  formik.setFieldTouched("city", true, false);
+                }}
               />
-              {formik.touched.city && formik.errors.city && (
-                <p className="text-red-500 text-xs">{formik.errors.city}</p>
-              )}
             </div>
 
             <TextField
               type="text"
               name="zipcode"
-              placeholder="Enter zip code"
+              placeholder={t("completeProfile.placeholders.zipcode")}
               value={formik.values.zipcode}
-              onChange={formik.handleChange}
+              onChange={handleChange}
               onBlur={formik.handleBlur}
               error={formik.errors.zipcode}
               touched={formik.touched.zipcode}
-              label="Zip Code"
+              label={t("completeProfile.zipcode")}
             />
           </div>
 
           <TextField
             type="text"
             name="location"
-            placeholder="Enter your address"
+            placeholder={t("completeProfile.placeholders.address")}
             value={formik.values.location}
-            onChange={formik.handleChange}
+            onChange={handleChange}
             onBlur={formik.handleBlur}
             error={formik.errors.location}
             touched={formik.touched.location}
-            label="Suite / Apartment / Street"
+            label={t("completeProfile.address")}
           />
 
-          {/* Buttons */}
           <div className="pt-2 flex items-center justify-between">
             <button
               type="button"
@@ -319,14 +353,19 @@ const CompleteProfileForm = () => {
               }}
               className="text-sm font-medium flex items-center gap-1 text-black"
             >
-              Skip
+              {t("completeProfile.buttons.skip")}
             </button>
             <div className="w-full max-w-[110px]">
-              <Button type="submit" title="Save" isLoading={loading} />
+              <Button
+                type="submit"
+                title={t("completeProfile.buttons.save")}
+                isLoading={loading}
+              />
             </div>
           </div>
         </div>
       </form>
+
       <AccountSuccessPopup
         showPopup={showPopup}
         togglePopup={togglePopup}

@@ -8,6 +8,8 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import Loader from "../../components/Common/Loader";
 import { enqueueSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 export const reportReasons = [
   "Fraudulent Listings",
@@ -26,9 +28,10 @@ const ReportMemberModal = ({
 }) => {
   const { communityId, userId } = useParams();
   const navigate = useNavigate();
-  const [selectedReason, setSelectedReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
+
+  const { t } = useTranslation("member");
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -50,7 +53,7 @@ const ReportMemberModal = ({
           `${file.name} is not a valid file type. Only JPG and PNG are allowed.`,
           {
             variant: "error",
-          }
+          },
         );
         return false;
       }
@@ -74,48 +77,49 @@ const ReportMemberModal = ({
   const formik = useFormik({
     initialValues: {
       reason: "",
+      selectedReason: "",
     },
     validationSchema: Yup.object({
+      selectedReason: Yup.string().required(
+        t(`members.form.errors.selectReason`),
+      ),
       reason: Yup.string()
-        .required("Description is required")
-        .min(10, "Description must be at least 10 characters")
-        .max(1000, "Description must be less than 1000 characters"),
+        .required(t(`members.form.errors.reasonRequired`))
+        .min(10, t(`members.form.errors.minReason`))
+        .max(1000, t(`members.form.errors.maxReason`)),
     }),
     onSubmit: async (values, { resetForm }) => {
-      if (!selectedReason) {
-        enqueueSnackbar("Please select a reason before submitting.", {
-          variant: "error",
-        });
-        return;
-      }
-
       setLoading(true);
       try {
         const formData = new FormData();
-        formData.append("title", selectedReason);
+        formData.append("title", values.selectedReason);
         formData.append("description", values.reason);
         images.forEach((img) => formData.append("images", img));
+
+        if (!values.reason) {
+          helpers.setFieldTouched("reason", true);
+          return;
+        }
 
         const response = await axios.post(
           `${BASE_URL}/reports/communities/${communityId}/users/${userId}/report`,
           formData,
           {
             headers: {
+              "Accept-Language": i18n.language,
               Authorization: `Bearer ${getToken()}`,
               "Content-Type": "multipart/form-data",
             },
-          }
+          },
         );
 
         if (response?.data?.success) {
           resetForm();
           setImages([]);
-          setSelectedReason("");
           setOpenReportMemberModal(false);
           setOpenReportMemberSuccessModal(true);
         }
       } catch (error) {
-        console.error("Report error:", error);
         handleApiError(error, navigate);
       } finally {
         setLoading(false);
@@ -132,17 +136,15 @@ const ReportMemberModal = ({
         className="w-full max-w-[471px] bg-white rounded-[16px] lg:rounded-[32px] p-7 lg:p-9 flex flex-col gap-2 shadow-xl"
       >
         <h2 className="text-[22px] font-semibold leading-tight">
-          Reason for reporting
+          {t(`members.headings.reasonForReporting`)}
         </h2>
         <p className="text-[#202020] text-base">
-          To help improve your experience, please let us know why you are
-          reporting this user.
+          {t(`members.subheadings.whyAreYouReporting`)}
         </p>
 
-        {/* Image Upload */}
         <div className="w-full mt-2">
           <label className="text-xs font-medium">
-            Upload Images (Optional)
+            {t(`members.form.labels.uploadImage`)}
           </label>
           <div className="flex flex-col items-center justify-center w-full">
             <label
@@ -152,11 +154,11 @@ const ReportMemberModal = ({
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <p className="mb-1 text-sm text-gray-500">
                   <span className="font-normal text-black">
-                    Upload supporting images
+                    {t(`members.form.labels.uploadSupportingImages`)}
                   </span>
                 </p>
                 <p className="text-xs text-gray-500">
-                  Max 5 images, up to 10MB each (JPG, PNG, JPEG)
+                  {t(`members.form.labels.maxImages`)}
                 </p>
               </div>
               <input
@@ -170,7 +172,6 @@ const ReportMemberModal = ({
             </label>
           </div>
 
-          {/* Preview selected images */}
           {images.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-2">
               {images.map((img, i) => (
@@ -202,28 +203,30 @@ const ReportMemberModal = ({
             <li key={index} className="flex items-center gap-2">
               <input
                 type="radio"
-                name="reportReason"
-                id={`reason-${index}`}
+                name="selectedReason"
                 value={reason}
-                checked={selectedReason === reason}
-                onChange={(e) => setSelectedReason(e.target.value)}
+                checked={formik.values.selectedReason === reason}
+                onChange={formik.handleChange}
                 className="cursor-pointer accent-[var(--button-bg)]"
               />
               <label
-                htmlFor={`reason-${index}`}
+                htmlFor={reason}
                 className="cursor-pointer text-base text-[#202020]"
               >
-                {reason}
+                {t(reason)}
               </label>
             </li>
           ))}
         </ul>
+        {formik.touched.selectedReason && formik.errors.selectedReason && (
+          <p className="text-red-500 text-xs">{formik.errors.selectedReason}</p>
+        )}
 
         {/* Description Textarea (shown when any reason is selected) */}
-        {selectedReason && (
+        {formik.values.selectedReason && (
           <div className="w-full mt-2">
             <textarea
-              placeholder="Please describe your reason..."
+              placeholder={t("Please describe your reason...")}
               className="w-full border border-gray-300 rounded-[10px] p-3 text-sm resize-none outline-none"
               rows="3"
               id="reason"
@@ -247,7 +250,7 @@ const ReportMemberModal = ({
             onClick={() => setOpenReportMemberModal(false)}
             className="w-full h-[48px] rounded-[12px] bg-[#EDEDED] text-gray-700 font-medium hover:bg-gray-300 transition-all"
           >
-            Cancel
+            {t("members.buttons.cancel")}
           </button>
           <button
             type="submit"
@@ -258,7 +261,7 @@ const ReportMemberModal = ({
                 : "bg-[var(--button-bg)] hover:opacity-90"
             }`}
           >
-            {loading ? <Loader /> : "Submit"}
+            {loading ? <Loader /> : t("members.buttons.submit")}
           </button>
         </div>
       </form>

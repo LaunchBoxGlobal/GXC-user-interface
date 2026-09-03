@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../context/AppContext";
 
 const EditProductDeliveryTypeSelector = ({ formik, product }) => {
   const { user } = useAppContext();
+  const { t } = useTranslation("productManagement");
 
   const userAddress = [
     user?.address,
@@ -29,21 +31,21 @@ const EditProductDeliveryTypeSelector = ({ formik, product }) => {
     if (current.includes("self")) {
       formik.setFieldValue(
         "selfPickupAddress",
-        product?.pickupAddress?.address || userAddress
+        product?.pickupAddress?.address || userAddress,
       );
     }
 
     if (current.includes("community")) {
       formik.setFieldValue(
         "communityPickupAddress",
-        product?.communityPickupAddress?.address
+        product?.communityPickupAddress?.address,
       );
     }
   };
 
   return (
     <div className="flex flex-col gap-2 mt-4">
-      <label className="font-medium text-sm">Delivery Type</label>
+      <label className="font-medium text-sm">{t(`deliveryType`)}</label>
 
       <div className="grid grid-cols-2 gap-3">
         <button
@@ -55,7 +57,7 @@ const EditProductDeliveryTypeSelector = ({ formik, product }) => {
               : "bg-[#f5f5f5]"
           }`}
         >
-          Self Pickup
+          {t(`selfPickup`)}
         </button>
 
         <button
@@ -67,7 +69,7 @@ const EditProductDeliveryTypeSelector = ({ formik, product }) => {
               : "bg-[#f5f5f5]"
           }`}
         >
-          Community Pickup
+          {t(`communityPickup`)}
         </button>
       </div>
     </div>

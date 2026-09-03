@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AppProvider } from "./context/AppContext.jsx";
 import { CartProvider } from "./context/cartContext.jsx";
 import { UserProvider } from "./context/userContext.jsx";
+import "./i18n";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,7 +19,7 @@ createRoot(document.getElementById("root")).render(
         </CartProvider>
       </AppProvider>
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );
 
 if ("serviceWorker" in navigator) {

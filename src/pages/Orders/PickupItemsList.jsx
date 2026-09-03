@@ -9,12 +9,14 @@ import { getToken } from "../../utils/getToken";
 import { handleApiError } from "../../utils/handleApiError";
 import { enqueueSnackbar } from "notistack";
 import Loader from "../../components/Common/Loader";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppContext } from "../../context/AppContext";
 import CancelConfirmationPopup from "./CancelConfirmationPopup";
 import OrderCancellationReasonModal from "./OrderCancellationReasonModal";
 import CancelOrderSuccessPopup from "./CancelOrderSuccessPopup";
 import { toTitleCase } from "../../utils/toTitleCase";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const PickupItemsList = ({
   pickupItems,
@@ -33,10 +35,12 @@ const PickupItemsList = ({
   const [loading, setLoading] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const { user } = useAppContext();
+  const { t } = useTranslation("orderManagement");
+  const navigate = useNavigate();
 
   const markItemAsPickupedUp = async (item) => {
     if (!item?.id) {
-      enqueueSnackbar("Something went wrong! Try again.", {
+      enqueueSnackbar(t(`pickupItemList.errors.somethingWrong`), {
         variant: "error",
       });
 
@@ -45,7 +49,7 @@ const PickupItemsList = ({
     }
 
     if (item?.sellerStatus === "cancelled") {
-      enqueueSnackbar("This product has been cancelled by the seller.", {
+      enqueueSnackbar(t(`pickupItemList.messages.productCancelled`), {
         variant: "error",
         autoHideDuration: 3000,
       });
@@ -61,23 +65,17 @@ const PickupItemsList = ({
         { status: "picked_up" },
         {
           headers: {
+            "Accept-Language": i18n.language,
             Authorization: `Bearer ${getToken()}`,
           },
-        }
+        },
       );
 
       if (response?.data?.success) {
         setShowDeliveryConfirmationPopup(true);
       }
     } catch (error) {
-      enqueueSnackbar(
-        error?.response?.data?.message ||
-          error?.message ||
-          "Something went wrong.",
-        {
-          variant: "error",
-        }
-      );
+      console.log("err >>> ", error);
       handleApiError(error, navigate);
     } finally {
       setLoading(false);
@@ -92,7 +90,7 @@ const PickupItemsList = ({
     useState(false);
   return (
     <div className="w-full">
-      <h2 className="font-semibold mb-4">Pickup Items</h2>
+      <h2 className="font-semibold mb-4">{t(`pickupItemList.pickupItems`)}</h2>
       <div className="w-full space-y-5">
         {pickupItems &&
           pickupItems?.map((item) => {
@@ -129,24 +127,24 @@ const PickupItemsList = ({
                         item?.overallStatus !== "completed" ? (
                           <>
                             <p className={`text-sm font-medium text-red-500`}>
-                              Missing
+                              {t(`pickupItemList.statuses.missing`)}
                             </p>
                             <p
                               className={`font-medium leading-none text-sm ${
                                 item?.report?.status === "pending"
                                   ? "text-[#FF7700]"
                                   : item?.report?.status === "resolved"
-                                  ? "text-green-500"
-                                  : "text-red-500"
+                                    ? "text-green-500"
+                                    : "text-red-500"
                               }`}
                             >
                               {item?.report?.status === "pending"
                                 ? "Dispute Raised – Under Review"
                                 : item?.report?.status === "resolved"
-                                ? "Resolved"
-                                : item?.report?.status === "rejected"
-                                ? "Rejected"
-                                : ""}
+                                  ? "Resolved"
+                                  : item?.report?.status === "rejected"
+                                    ? "Rejected"
+                                    : ""}
                             </p>
                           </>
                         ) : (
@@ -158,17 +156,17 @@ const PickupItemsList = ({
                                 item?.overallStatus === "ready"
                                   ? "text-green-500"
                                   : item?.overallStatus === "cancelled"
-                                  ? "text-red-500"
-                                  : item?.overallStatus === "in_progress"
-                                  ? "text-[#FF7700]"
-                                  : item?.overallStatus === "pending"
-                                  ? "text-[#FF7700]"
-                                  : item?.overallStatus === "delivered"
-                                  ? "text-green-500"
-                                  : "text-gray-500"
+                                    ? "text-red-500"
+                                    : item?.overallStatus === "in_progress"
+                                      ? "text-[#FF7700]"
+                                      : item?.overallStatus === "pending"
+                                        ? "text-[#FF7700]"
+                                        : item?.overallStatus === "delivered"
+                                          ? "text-green-500"
+                                          : "text-gray-500"
                               }`}
                             >
-                              {toTitleCase(item?.overallStatus)}
+                              {t(item?.overallStatus)}
                             </p>
                           </div>
                         )}
@@ -203,7 +201,7 @@ const PickupItemsList = ({
                                 setOpenFeedbackModal(true);
                               }}
                             >
-                              Write a review
+                              {t(`pickupItemList.buttons.writeReview`)}
                             </button>
                           )}
                         {/* product link */}
@@ -236,7 +234,7 @@ const PickupItemsList = ({
                                   }}
                                   className="w-[148px] h-[48px] bg-[var(--button-bg)] text-white rounded-[12px] text-sm font-medium disabled:opacity-70 disabled:cursor-not-allowed"
                                 >
-                                  Mark As Missing
+                                  {t(`pickupItemList.buttons.markMissing`)}
                                 </button>
                               )}
                             <button
@@ -252,7 +250,7 @@ const PickupItemsList = ({
                               {loadingItemId === item?.id ? (
                                 <Loader />
                               ) : (
-                                "Confirm Pickup"
+                                t(`pickupItemList.buttons.confirmPickup`)
                               )}
                             </button>
                           </>
@@ -267,7 +265,7 @@ const PickupItemsList = ({
                     user?.id !== item?.seller?.id && (
                       <div className="w-full mt-4">
                         <h3 className="text-sm font-semibold leading-none">
-                          Pickup Address
+                          {t(`pickupItemList.pickupAddress`)}
                         </h3>
                         <div className="w-full flex items-center gap-2 mt-1">
                           <div className="min-w-4">
@@ -294,7 +292,7 @@ const PickupItemsList = ({
                     <div className="w-full border border-gray-300 my-4" />
                     <div className="w-full">
                       <h3 className="font-semibold leading-none">
-                        Vendor Details
+                        {t(`pickupItemList.vendorDetails`)}
                       </h3>
                       <div className="w-full flex items-center justify-between">
                         <div className="w-full flex items-center gap-3 mt-3">
@@ -341,7 +339,9 @@ const PickupItemsList = ({
                   <div className="w-full">
                     <div className="w-full border border-gray-300 my-4" />
                     <h3 className="font-semibold leading-none">
-                      Cancellation Reason
+                      {t(
+                        `pickupItemList.deliveryItems.sections.cancellationReason`,
+                      )}
                     </h3>
                     <p className="font-normal leading-[1.2] mt-1 break-words">
                       {item?.cancellation_reason}

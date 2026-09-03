@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
@@ -12,6 +12,8 @@ import MemberHeader from "./MemberHeader";
 import MemberReportConfirmationPopup from "./MemberReportConfirmationPopup";
 import ReportMemberModal from "./ReportMemberModal";
 import ReportMemberSuccessModal from "./ReportMemberSuccessModal";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const MemberDetailsPage = () => {
   const { communityId, userId } = useParams();
@@ -23,6 +25,7 @@ const MemberDetailsPage = () => {
   const [searchParams] = useSearchParams();
   const isOrderPlaced = searchParams.get("isOrderPlaced") || false;
   const isBuyer = searchParams.get("isBuyer");
+  const { t } = useTranslation("member");
 
   const [
     showMemberReportConfimationPopup,
@@ -40,8 +43,11 @@ const MemberDetailsPage = () => {
       const response = await axios.get(
         `${BASE_URL}/communities/${communityId}/members/${userId}/details`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
       setMember(response?.data?.data?.member);
     } catch (error) {
@@ -50,7 +56,7 @@ const MemberDetailsPage = () => {
       setError(
         error?.response?.data?.message ||
           error?.message ||
-          "Failed to load member details. Please try again."
+          "Failed to load member details. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -61,7 +67,7 @@ const MemberDetailsPage = () => {
     fetchUserProfile();
   }, []);
 
-  // 🧠 1. Loading UI
+  // Loading UI
   if (loading) {
     return (
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-2">
@@ -72,7 +78,7 @@ const MemberDetailsPage = () => {
     );
   }
 
-  // ❌ 2. Error UI
+  // Error UI
   if (error) {
     return (
       <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28">
@@ -82,7 +88,7 @@ const MemberDetailsPage = () => {
           className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
         >
           <HiArrowLeft />
-          Back
+          {t(`members.buttons.back`)}
         </button>
         <div className="w-full bg-[var(--light-bg)] p-5 rounded-[30px] mt-5">
           <div className="w-full rounded-[20px] p-5 bg-white text-center min-h-[100vh] flex items-center justify-center">
@@ -93,7 +99,7 @@ const MemberDetailsPage = () => {
     );
   }
 
-  // ✅ 3. Normal UI
+  //  Normal UI
   return (
     <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-28 min-h-[120vh]">
       <button
@@ -102,7 +108,7 @@ const MemberDetailsPage = () => {
         className="w-full max-w-[48px] flex items-center justify-between text-sm text-white"
       >
         <HiArrowLeft />
-        Back
+        {t(`members.buttons.back`)}
       </button>
 
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] p-4 mt-5 space-y-8">
@@ -126,7 +132,7 @@ const MemberDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                Member Details
+                {t(`members.buttons.memberDetails`)}
               </button>
               <button
                 type="button"
@@ -137,7 +143,7 @@ const MemberDetailsPage = () => {
                     : ""
                 } font-medium rounded-[8px]`}
               >
-                Reviews
+                {t(`members.buttons.reviews`)}
               </button>
             </div>
 

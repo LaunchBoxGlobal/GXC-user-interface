@@ -6,6 +6,8 @@ import { getToken } from "../utils/getToken";
 import { handleApiError } from "../utils/handleApiError";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 const UserContext = createContext();
 
@@ -20,12 +22,14 @@ export const UserProvider = ({ children }) => {
   const [selectedCommunity, setSelectedCommunity] = useState(
     Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
-      : null
+      : null,
   );
+
+  const { t } = useTranslation("common");
 
   const communityFromQuery = searchParams.get("community");
 
-  /** 🧩 Check if user is still a member of selected community */
+  /** Check if user is still a member of selected community */
   const checkIamAlreadyMember = async () => {
     const community = Cookies.get("selected-community")
       ? JSON.parse(Cookies.get("selected-community"))
@@ -40,24 +44,17 @@ export const UserProvider = ({ children }) => {
       const res = await axios.get(
         `${BASE_URL}/communities/${community.slug}/my-membership`,
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
       const membership = res?.data?.data?.membership;
       const status = membership?.status;
 
       if (status === "removed" || status === "banned") {
-        // enqueueSnackbar(
-        //   status === "removed"
-        //     ? `You’ve been removed from this community.`
-        //     : status === "banned"
-        //     ? `You've been blocked from this community.`
-        //     : `Something went wrong.`,
-        //   {
-        //     variant: "error",
-        //   }
-        // );
         Cookies.remove("selected-community");
         setSelectedCommunity(null);
         fetchCommunities();
@@ -66,25 +63,6 @@ export const UserProvider = ({ children }) => {
         }
       }
 
-      // if (status === "removed") {
-      //   enqueueSnackbar("You’ve been removed from this community.", {
-      //     variant: "error",
-      //     autoHideDuration: 3000,
-      //   });
-
-      //   fetchCommunities();
-      //   navigate(`/`);
-      // } else if (status === "banned") {
-      //   enqueueSnackbar("You've been blocked from this community.", {
-      //     variant: "error",
-      //     autoHideDuration: 3000,
-      //   });
-
-      //   fetchCommunities();
-      //   navigate(`/`);
-      // } else {
-      //   setIsBlocked(false);
-      // }
       setIsBlocked(false);
     } catch (error) {
       console.log("checkIamAlreadyMember error >>> ", error);
@@ -94,7 +72,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  /** 🧩 Fetch user’s joined communities */
+  /** Fetch user’s joined communities */
   const fetchCommunities = async () => {
     const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     const token = getToken();
@@ -102,7 +80,10 @@ export const UserProvider = ({ children }) => {
     if (!token) return;
     try {
       const res = await axios.get(`${BASE_URL}/communities/my-joined`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       const list = res?.data?.data?.communities || [];
@@ -112,11 +93,6 @@ export const UserProvider = ({ children }) => {
       if (list.length === 0 || !list.length) {
         Cookies.remove("selected-community");
         setSelected(null);
-        // navigate({
-        //   pathname: "/",
-        //   search: window?.location?.search || "",
-        // });
-        // return;
       }
 
       const currentPath = window.location.pathname;
@@ -144,7 +120,7 @@ export const UserProvider = ({ children }) => {
         list.find(
           (c) =>
             c.slug?.toLowerCase() === communityFromQuery.toLowerCase() ||
-            c.name?.toLowerCase() === communityFromQuery.toLowerCase()
+            c.name?.toLowerCase() === communityFromQuery.toLowerCase(),
         );
 
       // ✅ Determine final selected community
@@ -182,16 +158,17 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await axios.get(`${BASE_URL}/seller/stripe/return`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
       if (res?.data?.success) {
         navigate("/product-management/add-product");
-        enqueueSnackbar("Your account has been created!", {
+        enqueueSnackbar(t("Your account has been created!"), {
           variant: "success",
         });
       } else {
-        enqueueSnackbar("Your account could not be created!", {
+        enqueueSnackbar(t("Your account could not be created!"), {
           variant: "error",
         });
         navigate("/product-management");

@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { useAppContext } from "../../context/AppContext";
 
 const ProductTypeTabs = () => {
   const { productType, setProductType } = useAppContext();
+  const { t } = useTranslation("productManagement");
   return (
     // <div className="w-full flex items-center justify-end mt-10">
     <div className="w-full max-w-[210px] rounded-[9px] h-[49px] grid grid-cols-2 bg-white custom-shadow p-1">
@@ -14,7 +16,7 @@ const ProductTypeTabs = () => {
             : "bg-white text-[var(--button-bg)]"
         } font-medium text-sm rounded-[9px]`}
       >
-        Active
+        {t(`buttons.active`)}
       </button>
       <button
         type="button"
@@ -25,7 +27,7 @@ const ProductTypeTabs = () => {
             : "bg-white text-[var(--button-bg)]"
         } font-medium text-sm rounded-[9px]`}
       >
-        Sold
+        {t(`buttons.sold`)}
       </button>
     </div>
     // </div>

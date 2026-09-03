@@ -6,6 +6,9 @@ import { getToken } from "../../utils/getToken";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiError";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
+import formatAmount from "../../utils/formatAmount";
+import i18n from "i18next";
 
 const debounce = (fn, delay) => {
   let timeout;
@@ -23,6 +26,7 @@ const TransactionHistoryPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { fetchNotificaiontCount } = useAppContext();
+  const { t } = useTranslation("transactionHistory");
 
   const LIMIT = 10;
   const page = Number(searchParams.get("page") || 1);
@@ -37,7 +41,10 @@ const TransactionHistoryPage = () => {
   const getRevenue = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/user/financial-summary`, {
-        headers: { Authorization: `Bearer ${getToken()}` },
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
 
       setUserBalance(response?.data?.data);
@@ -59,6 +66,7 @@ const TransactionHistoryPage = () => {
           search: searchTerm || undefined,
         },
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -82,31 +90,33 @@ const TransactionHistoryPage = () => {
       fetchNotificaiontCount();
     }, 500);
     debouncedFetch();
-  }, [sellerType, page, searchTerm]);
+  }, [sellerType, page, searchTerm, i18n?.language]);
 
   return (
     <div className="w-full relative padding-x min-h-screen">
       <div className="w-full rounded-[15px] relative -top-24 bg-[#F7F7F7] p-4 min-h-screen">
         <div className="w-full bg-white p-6 lg:p-8 rounded-[12px]">
           <h2 className="font-medium text-lg lg:text-xl leading-none">
-            {sellerType === "seller" ? "Available Balance" : "Total Purchases"}
+            {sellerType === "seller"
+              ? t(`availableBalance`)
+              : t(`totalPurchases`)}
           </h2>
           {sellerType === "seller" ? (
             <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">
               {userBalance &&
                 `$${
                   userBalance?.balanceAmount > 0
-                    ? userBalance?.balanceAmount.toFixed(2)
-                    : userBalance?.balanceAmount
+                    ? formatAmount(userBalance?.balanceAmount.toFixed(2))
+                    : `$0`
                 }`}
             </p>
           ) : (
             <p className="text-[var(--button-bg)] text-[34px] lg:text-[45px] font-semibold">
               {userBalance &&
-                `$${
+                `${
                   userBalance?.totalSpent > 0
-                    ? userBalance?.totalSpent.toFixed(2)
-                    : userBalance?.totalSpent
+                    ? `$${formatAmount(userBalance?.totalSpent.toFixed(2))}`
+                    : `$0`
                 }`}
             </p>
           )}

@@ -14,6 +14,18 @@ import OrderSuccessPopup from "./OrderSuccessPopup";
 import { FaLocationDot } from "react-icons/fa6";
 import { useUser } from "../../context/userContext";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+import UserPaymentMethod from "./UserPaymentMethod";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+
+import {
+  createSetupIntent,
+  confirmSetupIntent,
+  confirmOneTimePayment,
+} from "./stripeService";
+import Loading from "./Loading";
+import CheckoutError from "./CheckoutError";
 
 const Checkout = () => {
   const {
@@ -33,7 +45,7 @@ const Checkout = () => {
   const [removingItems, setRemovingItems] = useState(false);
 
   const isAnyDeliveryTypeProduct = cartProducts?.some(
-    (p) => p?.product?.selectedDeliveryMethod === "delivery"
+    (p) => p?.product?.selectedDeliveryMethod === "delivery",
   );
 
   const ids = cartProducts?.map((p) => p?.product?.id);
@@ -50,9 +62,16 @@ const Checkout = () => {
   const [ShowOrderPlacePopup, setShowOrderPlacePopup] = useState(false);
   const [orderId, setOrderId] = useState(null);
 
+  const [saveCard, setSaveCard] = useState(false);
+
   const handleCloseSuccessPopup = () => {
     setShowOrderPlacePopup((prev) => !prev);
   };
+
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const { t } = useTranslation("cart");
 
   useEffect(() => {
     document.title = "Checkout - GiveXChange";
@@ -65,30 +84,24 @@ const Checkout = () => {
     if (cartProducts?.length <= 0) {
       navigate("/");
       enqueueSnackbar(
-        "No items in your cart! Product is no longer available.",
+        t("No items in your cart! Product is no longer available."),
         {
           variant: "error",
-        }
+        },
       );
     }
   }, [cartProducts, navigate]);
 
   const pickupItems = cartProducts?.filter(
-    (pr) => pr?.product?.selectedDeliveryMethod === "pickup"
+    (pr) => pr?.product?.selectedDeliveryMethod === "pickup",
   );
   const deliveryItems = cartProducts?.filter(
-    (pr) => pr?.product?.selectedDeliveryMethod === "delivery"
+    (pr) => pr?.product?.selectedDeliveryMethod === "delivery",
   );
 
   const handleNavigate = () => {
-    // if (isAnyDeliveryTypeProduct || !selectedAddress) {
-    //   enqueueSnackbar("Please select a delivery address!", {
-    //     variant: "error",
-    //   });
-    //   return;
-    // }
     if (!selectedPaymentMethod) {
-      enqueueSnackbar("Please select a payment method!", {
+      enqueueSnackbar(t("Please select a payment method!"), {
         variant: "error",
       });
       return;
@@ -96,117 +109,157 @@ const Checkout = () => {
     navigate(`/cart/${selectedCommunity?.id}/checkout`);
   };
 
-  // Place order function
+  const deleteAllCartItems = async () => {
+    await axios.delete(
+      `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
+      {
+        headers: {
+          "Accept-Language": i18n.language,
+          Authorization: `Bearer ${getToken()}`,
+        },
+      },
+    );
+  };
+
   const handlePlaceOrder = async () => {
-    if (!ids || ids?.length <= 0) {
-      enqueueSnackbar("Something went wrong. Try again!");
+    const cardElement = elements.getElement(CardElement);
+
+    if (!selectedPaymentMethod?.id && !cardElement) {
+      enqueueSnackbar(
+        t("Please select a saved card or enter new card details"),
+        {
+          variant: "error",
+        },
+      );
       return;
     }
 
-    if (!savedPaymentMethod) {
-      enqueueSnackbar("Something went wrong. Try again!");
+    if (!stripe || !elements) {
+      enqueueSnackbar("Stripe not initialized", { variant: "error" });
       return;
     }
 
-    checkIamAlreadyMember();
+    if (!ids || ids.length === 0) {
+      enqueueSnackbar("Cart is empty", { variant: "error" });
+      return;
+    }
 
     setRemovingItems(true);
+
     try {
+      let paymentMethodId = null;
+
+      /**
+       * ============================
+       * CASE 1: USER SELECTED SAVED CARD
+       * ============================
+       */
+      if (selectedPaymentMethod?.id) {
+        paymentMethodId = selectedPaymentMethod.id;
+      } else if (saveCard) {
+        /**
+         * ============================
+         * CASE 2: NEW CARD + SAVE CARD
+         * ============================
+         */
+        const clientSecret = await createSetupIntent();
+
+        paymentMethodId = await confirmSetupIntent(
+          stripe,
+          elements,
+          user,
+          clientSecret,
+        );
+      } else {
+        /**
+         * ============================
+         * CASE 2: NEW CARD + ONE TIME PAYMENT
+         * ============================
+         */
+        const paymentMethod = await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+        });
+
+        if (!paymentMethod || !paymentMethod?.paymentMethod?.id) {
+          enqueueSnackbar("Please add or select your payment method.", {
+            variant: "error",
+          });
+          return;
+        }
+
+        paymentMethodId = paymentMethod.paymentMethod.id;
+      }
+
+      /**
+       * ============================
+       * CALL CHECKOUT API
+       * ============================
+       */
+      if (!paymentMethodId) {
+        enqueueSnackbar("Please add or select your payment method.", {
+          variant: "error",
+        });
+        return;
+      }
       const response = await axios.post(
         `${BASE_URL}/communities/${cartDetails?.communityId}/checkout`,
         {
           productIds: ids,
-          paymentMethodId: savedPaymentMethod?.id,
+          paymentMethodId,
           deliveryAddress: user?.address || "",
           deliveryCity: user?.city || "",
           deliveryState: user?.state || "",
           deliveryZipcode: user?.zipcode || "",
           deliveryCountry: user?.country || "",
         },
-        { headers: { Authorization: `Bearer ${getToken()}` } }
+        {
+          headers: {
+            "Accept-Language": i18n.language,
+            Authorization: `Bearer ${getToken()}`,
+          },
+        },
       );
 
+      /**
+       * ============================
+       * SUCCESS FLOW
+       * ============================
+       */
       if (response?.data?.success) {
-        // console.log("place order response >>> ", response?.data);
         setOrderId(response?.data?.data?.orderNumber);
 
-        await axios.delete(
-          `${BASE_URL}/communities/${cartDetails?.communityId}/cart`,
-          {
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          }
-        );
+        await deleteAllCartItems();
         fetchCartCount();
-        Cookies.remove("newDeliveryAddress");
-        Cookies.remove("userSelectedDeliveryAddress");
-        Cookies.remove("userSelectedPaymentMethod");
-        // fetchCartProducts();
         setCartProducts(null);
-        // return;
+
+        Cookies.remove("userSelectedPaymentMethod");
+        Cookies.remove("userSelectedDeliveryAddress");
+
         setShowOrderPlacePopup(true);
       }
     } catch (error) {
-      console.log("error on checkout >>> ", error);
-      if (
-        error?.status === 400 &&
-        error.response.data?.message == "Some products are not in your cart"
-      ) {
-        enqueueSnackbar(
-          `Some products are not available and removed from your cart`,
-          {
-            variant: "error",
-          }
-        );
-        checkIamAlreadyMember();
-        fetchCartCount();
-        fetchCartProducts();
-        Cookies.remove("newDeliveryAddress");
-        Cookies.remove("userSelectedDeliveryAddress");
-        Cookies.remove("userSelectedPaymentMethod");
-        // navigate(`/`);
-        return;
-      }
+      console.error(error);
+
+      // enqueueSnackbar(error?.message || error || "Payment failed. Please try again.", {
+      //   variant: "error",
+      // });
       handleApiError(error, navigate);
     } finally {
       setRemovingItems(false);
     }
   };
 
-  // ✅ Loader
-  if (loading) {
-    return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex items-center justify-center">
-            <Loader />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <Loading />;
 
-  // ✅ Error UI
-  if (error) {
+  if (error)
     return (
-      <div className="w-full bg-transparent rounded-[10px] padding-x relative -top-20">
-        <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-2">
-          <div className="w-full rounded-[18px] relative min-h-[60vh] bg-white flex flex-col items-center justify-center gap-4">
-            <p className="text-lg font-semibold text-gray-800 text-center max-w-md">
-              {error}
-            </p>
-            <button
-              onClick={fetchCartProducts}
-              className="bg-[var(--primary-color)] text-white px-5 py-2 rounded-lg hover:opacity-90 transition"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
+      <CheckoutError
+        t={t}
+        error={error}
+        fetchCartProducts={fetchCartProducts}
+      />
     );
-  }
 
   const handleNavigateBack = () => {
     if (cartProducts) {
@@ -224,7 +277,7 @@ const Checkout = () => {
           onClick={() => handleNavigateBack()}
           className="text-sm text-white flex items-center gap-2"
         >
-          <FiArrowLeft className="text-base" /> Back
+          <FiArrowLeft className="text-base" /> {t(`buttons.back`)}
         </button>
       </div>
       <div className="w-full bg-[var(--light-bg)] rounded-[30px] relative p-4 mt-5">
@@ -234,17 +287,30 @@ const Checkout = () => {
               <div className="w-full col-span-2 p-5 lg:p-7 bg-white rounded-[18px] min-h-[70vh]">
                 <div className="w-full flex items-center justify-between">
                   <h1 className="text-[24px] font-semibold leading-none">
-                    Checkout
+                    {t(`checkout`)}
                   </h1>
                 </div>
+
                 <div className="w-full border my-5" />
 
+                <>
+                  <UserPaymentMethod
+                    selectedPaymentMethod={selectedPaymentMethod}
+                    setSelectedPaymentMethod={setSelectedPaymentMethod}
+                    saveCard={saveCard}
+                    setSaveCard={setSaveCard}
+                  />
+                  <div className="w-full border my-5" />
+                </>
+
+                {/* user address + payment method */}
                 <div className="w-full mb-5">
+                  {/* User selected delivery address */}
                   {isAnyDeliveryTypeProduct && savedAddress && (
                     <>
                       <div className="w-full">
                         <p className="font-semibold leading-none">
-                          Delivery Address
+                          {t(`deliveryAddress`)}
                         </p>
                         <div
                           className={`w-full flex items-center justify-between h-[46px] bg-[var(--secondary-bg)] mt-2 rounded-[12px] px-3`}
@@ -261,30 +327,13 @@ const Checkout = () => {
                       <div className="w-full border my-5" />
                     </>
                   )}
-
-                  {/* Payment Method */}
-
-                  <div className="w-full">
-                    <p className="font-semibold leading-none">Payment Method</p>
-                    <div
-                      className={`w-full flex items-center justify-start gap-3 h-[46px] bg-[var(--secondary-bg)] mt-2 rounded-[12px] px-3`}
-                    >
-                      <img
-                        src="/stripe-icon.png"
-                        alt="stripe icon"
-                        className="w-[34px] h-[24px]"
-                      />
-                      <div className="w-full max-w-[90%] text-sm">
-                        <p>**** **** **** {savedPaymentMethod?.last4}</p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                <div className="w-full border my-5" />
                 {cartProducts && pickupItems && pickupItems?.length > 0 && (
                   <div className="w-full">
-                    <p className="text-[20px] font-semibold">Pickup Items</p>
+                    <p className="text-[20px] font-semibold">
+                      {t(`pickupItems`)}
+                    </p>
                     <div className="border my-5" />
                     {pickupItems?.map((product, index) => (
                       <div
@@ -307,7 +356,7 @@ const Checkout = () => {
                                 {product?.product?.title?.length > 30
                                   ? `${product?.product?.title?.slice(
                                       0,
-                                      30
+                                      30,
                                     )}...`
                                   : product?.product?.title}
                               </p>
@@ -316,14 +365,14 @@ const Checkout = () => {
                                 "pickup"
                                   ? "Pickup"
                                   : product?.product?.selectedDeliveryMethod ===
-                                    "delivery"
-                                  ? "Delivery"
-                                  : ""}
+                                      "delivery"
+                                    ? "Delivery"
+                                    : ""}
                               </p>
                               <div className="w-full lg:hidden flex items-end justify-between">
                                 <div className="flex flex-col items-start justify-center gap-0 col-span-4">
                                   <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-sm">
-                                    Price
+                                    {t(`price`)}
                                   </p>
                                   <p className="font-semibold text-sm lg:text-[20px] leading-none">
                                     ${product?.product?.price}
@@ -344,7 +393,7 @@ const Checkout = () => {
                           </div>
                           <div className="hidden lg:flex flex-col items-end justify-center gap-2 col-span-4 lg:col-span-1">
                             <p className="font-normal text-[#7B7B7B] leading-none text-sm">
-                              Price
+                              {t(`price`)}
                             </p>
                             <p className="font-semibold text-[20px] leading-none">
                               ${product?.product?.price}
@@ -356,17 +405,12 @@ const Checkout = () => {
                           product?.product?.pickupAddress && (
                             <div className="flex flex-col items-start justify-start gap-1 mt-3">
                               <p className="text-sm font-semibold">
-                                Pickup Address:{" "}
+                                {t(`pickupAddress`)}:{" "}
                               </p>
                               <div className="flex items-center gap-2">
                                 <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
                                 <p className="text-sm">
                                   {product?.product?.pickupAddress}
-                                  {/* {" "}
-                                  {product?.product?.pickupCity}{" "}
-                                  {product?.product?.pickupState}{" "}
-                                  {product?.product?.zipcode}{" "}
-                                  {product?.product?.pickupCountry} */}
                                 </p>
                               </div>
                             </div>
@@ -375,10 +419,9 @@ const Checkout = () => {
                     ))}
                   </div>
                 )}
+
                 {cartProducts && deliveryItems && deliveryItems?.length > 0 && (
                   <div className="w-full mt-5">
-                    {/* <p className="text-[20px] font-semibold">Delivery Items</p> */}
-                    {/* <div className="border my-5" /> */}
                     {deliveryItems?.map((product, index) => (
                       <div
                         className={`w-full border-b ${
@@ -400,7 +443,7 @@ const Checkout = () => {
                                 {product?.product?.title?.length > 30
                                   ? `${product?.product?.title?.slice(
                                       0,
-                                      30
+                                      30,
                                     )}...`
                                   : product?.product?.title}
                               </p>
@@ -409,14 +452,14 @@ const Checkout = () => {
                                 "pickup"
                                   ? "Pickup"
                                   : product?.product?.selectedDeliveryMethod ===
-                                    "delivery"
-                                  ? "Community Pickup"
-                                  : ""}
+                                      "delivery"
+                                    ? "Community Pickup"
+                                    : ""}
                               </p>
                               <div className="w-full lg:hidden flex items-end justify-between">
                                 <div className="flex flex-col items-start justify-center gap-0 col-span-4">
                                   <p className="font-normal text-[#7B7B7B] leading-none text-xs lg:text-sm">
-                                    Price
+                                    {t(`price`)}
                                   </p>
                                   <p className="font-semibold text-sm lg:text-[20px] leading-none">
                                     ${product?.product?.price}
@@ -437,7 +480,7 @@ const Checkout = () => {
                           </div>
                           <div className="hidden lg:flex flex-col items-end justify-center gap-2 col-span-4 lg:col-span-1">
                             <p className="font-normal text-[#7B7B7B] leading-none text-sm">
-                              Price
+                              {t(`price`)}
                             </p>
                             <p className="font-semibold text-[20px] leading-none">
                               ${product?.product?.price}
@@ -449,7 +492,7 @@ const Checkout = () => {
                           product?.product?.communityPickupAddress && (
                             <div className="flex flex-col items-start justify-start gap-1 mt-3">
                               <p className="text-sm font-semibold">
-                                Pickup Address:{" "}
+                                {t(`pickupAddress`)}:{" "}
                               </p>
                               <div className="flex items-center gap-2">
                                 <FaLocationDot className="min-w-3 text-base text-[var(--button-bg)]" />
@@ -477,7 +520,7 @@ const Checkout = () => {
             </div>
           ) : (
             <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-[18px]">
-              <p className="text-base font-medium">Your cart is empty.</p>
+              <p className="text-base font-medium">{t(`cartIsEmpty`)}</p>
             </div>
           )}
         </div>

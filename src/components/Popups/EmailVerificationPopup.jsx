@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
+import { useTranslation } from "react-i18next";
 
 const EmailVerificationPopup = ({ togglePopup }) => {
   const { setShowEmailVerificationPopup, showEmailVerificationPopup } =
     useAppContext();
+  const { t } = useTranslation("auth");
 
   useEffect(() => {
     document.title = `Account verified - GiveXChange`;
@@ -25,15 +27,15 @@ const EmailVerificationPopup = ({ togglePopup }) => {
                 className="w-[31px] h-[23px] invert brightness-0"
               />
             </div>
-            <h1 className="font-semibold text-[32px] leading-[1.3] mt-7 mb-6">
-              Email has been <br /> verified successfully
+            <h1 className="font-semibold text-[32px] leading-[1] mt-7 mb-6">
+              {t(`auth.email_verified`)}
             </h1>
             <button
               type="button"
               onClick={() => togglePopup()}
               className="w-full bg-[var(--button-bg)] text-white rounded-[8px] font-medium text-center h-[49px] block py-[14px]"
             >
-              Continue
+              {t(`button.continue`)}
             </button>
           </div>
         </div>

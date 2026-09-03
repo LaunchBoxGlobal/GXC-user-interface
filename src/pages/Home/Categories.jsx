@@ -4,8 +4,9 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import axios from "axios";
 import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
+import i18n from "i18next";
 
-const Categories = memo(() => {
+const Categories = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const currentCategoryId = searchParams.get("categoryId");
@@ -16,6 +17,7 @@ const Categories = memo(() => {
     try {
       const res = await axios.get(`${BASE_URL}/categories`, {
         headers: {
+          "Accept-Language": i18n.language,
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -28,7 +30,7 @@ const Categories = memo(() => {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [i18n?.language]);
 
   const handleCategoryClick = (c) => {
     const params = new URLSearchParams(searchParams);
@@ -112,6 +114,6 @@ const Categories = memo(() => {
       </div>
     </div>
   );
-});
+};
 
 export default Categories;

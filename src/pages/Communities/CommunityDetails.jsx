@@ -5,6 +5,8 @@ import { BASE_URL } from "../../data/baseUrl";
 import { getToken } from "../../utils/getToken";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const CommunityDetails = ({
   community,
@@ -15,6 +17,7 @@ const CommunityDetails = ({
   errorMessage,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(`community`);
 
   const handleAcceptInvite = async () => {
     if (!canJoin) {
@@ -31,8 +34,8 @@ const CommunityDetails = ({
         `${BASE_URL}/communities/${communityTitle}/join`,
         { slug: communityTitle },
         {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        }
+          headers: { "Accept-Language": i18n.language, Authorization: `Bearer ${getToken()}` },
+        },
       );
 
       if (res?.data?.success) {
@@ -64,7 +67,8 @@ const CommunityDetails = ({
           <div className="w-full flex items-center justify-between">
             {community && (
               <h1 className="text-2xl font-bold">
-                Community: {community?.community?.name}
+                {t(`communities.headings.community`)}:{" "}
+                {community?.community?.name}
               </h1>
             )}
 
@@ -76,9 +80,9 @@ const CommunityDetails = ({
               {loading ? (
                 <Loader />
               ) : canJoin ? (
-                "Join Community"
+                `${t(`communities.buttons.joinCommunity`)}`
               ) : (
-                "Community is diabled by the owner"
+                `${t(`communities.buttons.communityDisabled`)}`
               )}
             </button>
           </div>
@@ -86,7 +90,10 @@ const CommunityDetails = ({
             <p className="mt-4">{community?.community?.description}</p>
           )}
           {community && (
-            <p>Total Member: {community?.community?.memberCount}</p>
+            <p>
+              {t(`communities.headings.totalMembers`)}:{" "}
+              {community?.community?.memberCount}
+            </p>
           )}
         </>
       ) : (

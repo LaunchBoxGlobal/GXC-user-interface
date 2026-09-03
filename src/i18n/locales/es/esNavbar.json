@@ -1,0 +1,9 @@
+{
+    "links": {
+        "home": "Hogar",
+        "product_management": "Gestión de Productos",
+        "order_management": "Gestión de Pedidos",
+        "transaction_history": "Historial de Transacciones",
+        "reporting": "Informes"
+    }
+}

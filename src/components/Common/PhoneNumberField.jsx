@@ -53,6 +53,8 @@ const PhoneNumberField = ({
         </select>
 
         <input
+          id={name}
+          name={name}
           type="tel"
           value={displayedNumber}
           onChange={handleNumberChange}
