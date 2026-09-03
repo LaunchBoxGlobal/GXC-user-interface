@@ -146,10 +146,10 @@ const Navbar = () => {
       <div className="flex items-center justify-end gap-5 xl:hidden">
         {/* Right icons */}
         <div className="flex items-center gap-5">
-          <LanguageSwitcher
+          {/* <LanguageSwitcher
             className={languageTogglerStyle}
             isScrolled={isScrolled}
-          />
+          /> */}
 
           {/* Cart */}
           <Link to={`/cart/${selectedCommunity?.id}`}>
