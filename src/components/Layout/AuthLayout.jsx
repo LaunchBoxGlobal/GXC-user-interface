@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import LanguageSwitcher from "../../LanguageSwitcher";
 
@@ -13,9 +13,9 @@ const AuthLayout = ({ children }) => {
     "appearance-none bg-white border border-gray-300 text-gray-700 py-1 lg:py-1.5 pl-1.5 lg:pl-2 pr-7 lg:pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-blue-950 text-sm cursor-pointer";
 
   return (
-    <main className="w-full min-h-screen relative grid grid-cols-1 lg:grid-cols-2 p-4 auth-bg">
+    <main className="w-full min-h-screen relative grid grid-cols-1 lg:grid-cols-2 auth-bg">
       <div className="w-full h-full bg-transparent hidden lg:block">
-        <div className="w-full h-full bg-[#4E9D4B] rounded-[20px] relative overflow-hidden flex flex-col justify-between gap-0">
+        <div className="w-full h-full bg-[#4E9D4B] relative overflow-hidden flex flex-col justify-between gap-0">
           <div className="w-full p-10">
             <h1 className="text-[45px] leading-none font-medium text-white">
               Community <br /> Market Place
@@ -59,11 +59,18 @@ const AuthLayout = ({ children }) => {
               />
             </div>
           ) : location?.pathname === "/change-password" ? (
-            <img
-              src="/change-password-mockup.png"
-              alt="change-password-mockup"
-              className="w-full h-full object-cover rounded-[20px]"
-            />
+            <div className="w-full relative mt-20">
+              <img
+                src="/forgot-password-vector.png"
+                alt="forgot-password-vector"
+                className="w-full max-w-[95%] mx-auto h-auto object-cover rounded-[20px] absolute bottom-0 left-1/2 -translate-x-1/2 z-0"
+              />
+              <img
+                src="/change-password-image.png"
+                alt="change-password-mockup"
+                className="w-full object-cover rounded-[20px] brightness-75 max-w-[90%] mx-auto"
+              />
+            </div>
           ) : location?.pathname === "/signup" ? (
             <img
               src="/signup-screen-mockup.svg"

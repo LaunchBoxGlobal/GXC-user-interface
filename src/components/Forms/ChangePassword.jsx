@@ -68,8 +68,8 @@ const ChangePassword = () => {
       } catch (error) {
         console.log(`reset password error >>> `, error);
         enqueueSnackbar(
-          res?.message ||
-            res?.response?.data?.message ||
+          error?.response?.data?.message ||
+            error?.message ||
             "Something went wrong",
           {
             variant: "error",
